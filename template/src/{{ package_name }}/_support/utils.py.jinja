@@ -15,8 +15,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from core.decorators import handle_exceptions_valued
-from core.logging_manager import log_message
+from {{ package_name }}._support.decorators import handle_exceptions_valued
+from {{ package_name }}._support.logging_manager import log_message
 
 warnings.filterwarnings("ignore")
 
@@ -76,13 +76,15 @@ def load_project_env(dotenv_filename: str = ".env") -> bool:
         bool: True if the .env file was found and loaded, False otherwise.
 
     Example:
-        from src.core.utils import load_project_env
+        from {{ package_name }}._support.utils import load_project_env
         load_project_env()
     """
 
     try:
-        which_python = subprocess.check_output(["which", "python"], text=True).strip()
-        python_path = Path(which_python)
+        which_python = shutil.which("python")
+        if which_python is None:
+            raise RuntimeError("python executable not found on PATH")
+        python_path = Path(which_python).resolve()
         # Walk up until we find the directory that contains `.venv`
         for parent in python_path.parents:
             if (parent / ".venv").is_dir():
@@ -91,7 +93,7 @@ def load_project_env(dotenv_filename: str = ".env") -> bool:
         else:
             raise RuntimeError(".venv not found in python path hierarchy")
     except Exception as e:
-        log_message(f"Could not determine project root from `which python`: {e}")
+        log_message(f"Could not determine project root from Python executable: {e}")
         return False
 
     log_message(f"Python interpreter detected at: {which_python}")

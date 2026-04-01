@@ -1,5 +1,6 @@
 """Test cases for validating the Copier template."""
 
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -27,6 +28,14 @@ def get_default_command_list(test_dir: Path) -> list[str]:
     ]
 
 
+def test_skip_if_exists_preserves_readme_on_update() -> None:
+    """Regression guard: README must stay in _skip_if_exists so copier update skips it."""
+    copier_yaml = Path(__file__).resolve().parent.parent / "copier.yml"
+    text = copier_yaml.read_text()
+    assert "README.md" in text
+    assert "_skip_if_exists:" in text
+
+
 @pytest.fixture
 def temp_project_dir(tmp_path: Path) -> Path:
     """Fixture to provide a temporary directory for project generation."""
@@ -35,9 +44,8 @@ def temp_project_dir(tmp_path: Path) -> Path:
 
 def test_prerequisites() -> None:
     """Test that required tools are available."""
-    for package in ["uv", "copier"]:
-        result = run_command(["which", package])
-        assert result.returncode == 0, f"{package} not found"
+    for exe in ("uv", "copier"):
+        assert shutil.which(exe) is not None, f"{exe} not found on PATH"
 
 
 def test_generate_default_project(temp_project_dir: Path) -> None:
@@ -112,36 +120,56 @@ def test_update_workflow(tmp_path: Path) -> None:
     # Generate project
     run_command(get_default_command_list(test_dir))
 
+    # Post-copy tasks may modify files (e.g. ruff); commit a clean baseline for copier update.
+    run_command(["git", "add", "-A"], cwd=test_dir)
+    run_command(
+        [
+            "git",
+            "-c",
+            "user.name=Template Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "--no-verify",
+            "-m",
+            "chore: initial generated project",
+        ],
+        cwd=test_dir,
+    )
+
     # Make a user change
     readme = test_dir / "README.md"
     with readme.open("a") as f:
         f.write("\n# User change\n")
 
-    # Change to project directory and try update
-    # Try to update (should skip README.md)
-    run_command(["copier", "update", "--defaults", "--trust"], cwd=test_dir, check=False)
+    # Copier refuses to update a dirty working tree; commit the local edit first.
+    run_command(["git", "add", "README.md"], cwd=test_dir)
+    run_command(
+        [
+            "git",
+            "-c",
+            "user.name=Template Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "--no-verify",
+            "-m",
+            "chore: user readme edit",
+        ],
+        cwd=test_dir,
+    )
+
+    # Update should skip README.md (see _skip_if_exists in copier.yml).
+    result = run_command(["copier", "update", "--defaults", "--trust"], cwd=test_dir, check=False)
+    if result.returncode != 0 and (
+        "pathspec" in result.stderr or "did not match any file" in result.stderr
+    ):
+        pytest.skip(
+            "Copier could not check out the template commit in its temp clone "
+            "(e.g. git partial clone); README preservation was not exercised."
+        )
+    assert result.returncode == 0, result.stderr
 
     # Check user change is preserved
     updated_content = readme.read_text()
     assert "# User change" in updated_content, "Update overwrote user changes"
-
-
-def test_copy_from_github(tmp_path: Path) -> None:
-    """Test copying template directly from GitHub shortcut."""
-    pytest.skip("Temporarily disabled until this template is hosted remotely")
-    target = tmp_path / "my-new-project"
-    cmd = [
-        "copier",
-        "copy",
-        "gh:balajiselvaraj1601/python_project_template",
-        str(target),
-        "--trust",
-        "--defaults",
-        "--data",
-        "project_name=GitHub Project",
-    ]
-    run_command(cmd)
-
-    # Verify structure from GitHub copy
-    assert (target / "pyproject.toml").exists(), "Missing pyproject.toml from GitHub copy"
-    assert (target / "src").is_dir(), "Missing src/ directory from GitHub copy"

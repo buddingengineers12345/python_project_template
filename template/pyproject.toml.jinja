@@ -8,13 +8,17 @@ authors = [
 readme = "README.md"
 requires-python = ">={{ python_min_version }}"
 license = { text = "{{ license }}" }
-keywords = ["data-science", "library"]
+keywords = ["python", "library"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: {{ license }} License",
-    "Programming Language :: Python :: 3",
+{% if license == "MIT" %}    "License :: OSI Approved :: MIT License",
+{% elif license == "Apache-2.0" %}    "License :: OSI Approved :: Apache Software License",
+{% elif license == "BSD-3-Clause" %}    "License :: OSI Approved :: BSD License",
+{% elif license == "GPL-3.0" %}    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+{% else %}    "License :: Other/Proprietary License",
+{% endif %}    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: {{ python_min_version }}",
     "Programming Language :: Python :: 3 :: Only",
     "Typing :: Typed",
@@ -162,6 +166,7 @@ source = ["{{ package_name }}"]
 omit = [
     "*/tests/*",
     "*/__pycache__/*",
+    "*/_support/*",
 ]
 
 [tool.coverage.report]

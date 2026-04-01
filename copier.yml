@@ -1,5 +1,4 @@
-# Copier Template Configuration for Python Data-Science Libraries
-# Modern, uv-first, Copilot-optimized template
+# Copier template: uv-first Python package (optional NumPy/pandas, docs, strict typing)
 
 # -------------------------------------------------------------------------
 # Template metadata
@@ -40,8 +39,8 @@ _skip_if_exists:
 # prompts clear and provide sensible defaults to simplify onboarding.
 project_name:
   type: str
-  help: Human-readable project name (e.g., "My Data Library")
-  placeholder: "My Data Library"
+  help: Human-readable project name (e.g., "My Library")
+  placeholder: "My Library"
 
 project_slug:
   type: str
@@ -60,7 +59,7 @@ package_name:
 project_description:
   type: str
   help: Short description of the project
-  default: "A Python data-science library"
+  default: "A Python library"
 
 author_name:
   type: str
@@ -110,13 +109,15 @@ include_pandas_support:
 include_numpy:
   type: bool
   help: Include NumPy in dependencies?
-  default: true
+  default: false
 
 codecov_token:
   type: str
-  help: Codecov token (optional, can be added later)
+  help: >-
+    Optional; rarely needed. CI uses the GitHub secret CODECOV_TOKEN, not this field.
+    Leave empty and add the secret under repo Settings → Secrets if you use Codecov.
   default: ""
-  placeholder: "Leave empty to configure later"
+  placeholder: "Leave empty; use GitHub secret CODECOV_TOKEN"
 
 # -------------------------------------------------------------------------
 # Computed values

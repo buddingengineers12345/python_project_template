@@ -71,11 +71,11 @@ precommit:
 # -------------------------------------------------------------------------
 
 sync:
-    @uv sync --extra dev
+    @uv sync --frozen --extra dev
 
 update:
     @uv lock --upgrade
-    @uv sync --extra dev
+    @uv sync --frozen --extra dev
 
 # -------------------------------------------------------------------------
 # Docs (optional)
@@ -122,15 +122,8 @@ static_check:
     @just lint
     @just type
 
-# -------------------------------------------------------------------------
-# CI (local mirror of GitHub Actions)
-# -------------------------------------------------------------------------
-
 ci:
-    @just fix
-    @just fmt
-    @just lint
-    @just type
+    @just static_check
     @just test
     @just precommit
 
