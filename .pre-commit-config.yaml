@@ -1,0 +1,57 @@
+# .pre-commit-config.yaml
+# Production-ready pre-commit configuration optimized for uv / ruff / BasedPyright.
+# - Uses uv to run repo-managed tool versions
+# - Keeps fast checks at commit stage, heavier checks at push/CI
+# - Pin external hooks; review revs regularly (Renovate can help)
+
+default_install_hook_types: [pre-commit]
+
+repos:
+  # ---------------------------------------------------------------------------
+  # Local hooks (use uv so versions are managed by pyproject.toml)
+  # ---------------------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: Ruff Format
+        entry: uv run ruff format
+        language: system
+        types: [python]
+        pass_filenames: true
+        stages: [pre-commit]
+
+      - id: ruff-check
+        name: Ruff Lint (auto-fix)
+        entry: uv run ruff check --fix
+        language: system
+        types: [python]
+        pass_filenames: true
+        stages: [pre-commit]
+
+      - id: basedpyright
+        name: BasedPyright (type check)
+        entry: uv run basedpyright
+        language: system
+        types: [python]
+        pass_filenames: false
+        stages: [pre-commit]
+
+  # ---------------------------------------------------------------------------
+  # Basic hygiene, YAML/TOML checks
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+        args: ["--maxkb=1000"]
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: check-json
+        exclude: ^\.vscode/.*\.json$ # VS Code uses JSONC (allows comments)
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      # - id: no-commit-to-branch
+      #   args: ["--branch", "main", "--branch", "master"]

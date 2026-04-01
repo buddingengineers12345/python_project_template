@@ -1,0 +1,209 @@
+"""Decorators for various purposes.
+
+This module contains decorator functions that can be used to wrap other
+functions for logging, timing, exception handling, and other utilities.
+"""
+
+from __future__ import annotations
+
+import copy
+import inspect
+import logging
+import time
+from functools import wraps
+from typing import TYPE_CHECKING, ParamSpec, TypeVar
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+from core.logging_manager import get_logger, log_message
+
+# Generic ParamSpec and return type for decorators
+P = ParamSpec("P")
+R = TypeVar("R")
+logger = get_logger(__name__)
+
+
+# =============================================================================
+# EXCEPTION HANDLING DECORATOR
+# =============================================================================
+
+
+def handle_exceptions(func: Callable[P, R]) -> Callable[P, R]:
+    """Decorator to handle exceptions in any sync or async function.
+
+    Wraps the function in a try-except block, logs any exceptions with full
+    traceback information using the module's logger, and re-raises the
+    exception. Supports both sync and async functions — replaces the
+    now-removed ``handle_exceptions_async``.
+
+    Args:
+        func: The sync or async function to be decorated.
+
+    Returns:
+        A wrapped function that logs exceptions before re-raising them.
+
+    Example:
+        @handle_exceptions
+        def risky_operation() -> str:
+            return potentially_failing_function()
+
+        @handle_exceptions
+        async def risky_async_operation() -> str:
+            return await potentially_failing_async_function()
+    """
+    if inspect.iscoroutinefunction(func):
+
+        @wraps(func)
+        async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+            try:
+                return await func(*args, **kwargs)  # type: ignore[misc]
+            except Exception as e:
+                logger.error(
+                    f"Exception in {func.__name__}: {e}",
+                    exc_info=True,
+                )
+                raise
+
+        return async_wrapper  # type: ignore[return-value]
+
+    @wraps(func)
+    def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            logger.error(
+                f"Exception in {func.__name__}: {e}",
+                exc_info=True,
+            )
+            raise
+
+    return sync_wrapper
+
+
+# =============================================================================
+# TIMING DECORATOR
+# =============================================================================
+
+
+def time_function(func: Callable[P, R]) -> Callable[P, R]:
+    """Decorator to time the execution of any sync or async function.
+
+    Measures the time taken to execute the function and logs the timing
+    information using the module's logger. Timing is logged even if the
+    function raises an exception. Supports both sync and async functions.
+
+    Args:
+        func: The sync or async function to be decorated.
+
+    Returns:
+        A wrapped function that logs execution time before returning.
+
+    Example:
+        @time_function
+        def expensive_operation() -> list[int]:
+            return sorted(range(1_000_000))
+
+        @time_function
+        async def expensive_async_operation() -> list[int]:
+            return await fetch_large_dataset()
+    """
+    if inspect.iscoroutinefunction(func):
+
+        @wraps(func)
+        async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+            start_time = time.perf_counter()
+            try:
+                return await func(*args, **kwargs)  # type: ignore[misc]
+            finally:
+                elapsed = time.perf_counter() - start_time
+                log_message(f"Function {func.__name__} executed in {elapsed:.4f} seconds")
+
+        return async_wrapper  # type: ignore[return-value]
+
+    @wraps(func)
+    def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+        start_time = time.perf_counter()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            elapsed = time.perf_counter() - start_time
+            log_message(f"Function {func.__name__} executed in {elapsed:.4f} seconds")
+
+    return sync_wrapper
+
+
+# =============================================================================
+# EXCEPTION HANDLING WITH DEFAULT VALUE DECORATOR
+# =============================================================================
+
+
+def handle_exceptions_valued(
+    default: object = None,
+    level: int = logging.ERROR,
+) -> Callable[[Callable[P, R]], Callable[P, R | None]]:
+    """Decorator that catches exceptions, logs them, and returns a default value.
+
+    Supports both sync and async functions. The default value is deep-copied
+    on each exception to prevent mutable defaults (e.g. ``[]``, ``{}``) from
+    being shared across calls.
+
+    Args:
+        default: The value to return if an exception occurs. Should be
+            of the same type as the function's return type, or ``None``.
+            Mutable defaults such as ``[]`` or ``{}`` are safe — a deep
+            copy is returned each time.
+        level:   The logging level used when recording the exception.
+            Defaults to ``logging.ERROR``. Pass ``logging.WARNING`` for
+            optional dependencies where failure is expected (e.g.
+            ``ImportError`` on optional packages).
+
+    Returns:
+        A decorator function that wraps callables to handle exceptions.
+
+    Example:
+        @handle_exceptions_valued(False)
+        def process_one(...) -> bool:
+            ...
+
+        @handle_exceptions_valued({})
+        async def fetch_data(...) -> dict:
+            ...
+
+        @handle_exceptions_valued(None, level=logging.WARNING)
+        def setup_optional_integration() -> None:
+            ...
+    """
+
+    def decorator(func: Callable[P, R]) -> Callable[P, R | None]:
+        if inspect.iscoroutinefunction(func):
+
+            @wraps(func)
+            async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R | None:
+                try:
+                    return await func(*args, **kwargs)  # type: ignore[misc]
+                except Exception as e:
+                    logger.log(
+                        level,
+                        f"Exception in {func.__name__}: {e}",
+                        exc_info=True,
+                    )
+                    return copy.deepcopy(default)  # type: ignore[return-value]
+
+            return async_wrapper  # type: ignore[return-value]
+
+        @wraps(func)
+        def sync_wrapper(*args: P.args, **kwargs: P.kwargs) -> R | None:
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                logger.log(
+                    level,
+                    f"Exception in {func.__name__}: {e}",
+                    exc_info=True,
+                )
+                return copy.deepcopy(default)  # type: ignore[return-value]
+
+        return sync_wrapper  # type: ignore[return-value]
+
+    return decorator

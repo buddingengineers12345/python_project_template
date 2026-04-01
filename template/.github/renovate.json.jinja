@@ -1,0 +1,57 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "🤖 Dependency Updates",
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 10,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "before 6am on monday"
+    ]
+  },
+  "packageRules": [
+    {
+      "matchManagers": [
+        "pip_requirements"
+      ],
+      "groupName": "Python dependencies"
+    },
+    {
+      "matchPackagePatterns": [
+        "^pytest",
+        "^coverage"
+      ],
+      "groupName": "Testing tools"
+    },
+    {
+      "matchPackagePatterns": [
+        "^ruff",
+        "^basedpyright"
+      ],
+      "groupName": "Linting and type checking"
+    },
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "Non-major updates",
+      "automerge": false
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": [
+      "security"
+    ]
+  }
+}

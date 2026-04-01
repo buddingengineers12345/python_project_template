@@ -1,0 +1,60 @@
+"""File and JSON utilities used across the project.
+
+This module provides lightweight helpers for working with JSON files and
+filesystem paths. Utilities here are intentionally small and dependency-free
+so they can be used during project initialization or in other modules that
+need simple file-based configuration or data loading.
+
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any, cast
+
+# =============================================================================
+# JSON UTILITIES
+# =============================================================================
+
+
+def load_json(file_path: str) -> dict[str, Any]:
+    """Load a JSON file and return its contents as a dictionary.
+
+    Args:
+        file_path (str): The path to the JSON file to load.
+
+    Returns:
+        dict[str, Any]: The contents of the JSON file as a dictionary.
+
+    Examples:
+        data = load_json("/etc/config.json")
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+        json.JSONDecodeError: If the file contains invalid JSON.
+    """
+    with Path(file_path).open("r", encoding="utf-8") as f:
+        data = json.load(f)
+        return cast("dict[str, Any]", data)
+
+
+def load_markdown(file_path: str) -> str:
+    """Load a markdown file and return its contents as a string.
+
+    Args:
+        file_path (str): The path to the markdown file to load.
+
+    Returns:
+        str: The contents of the markdown file as a string.
+
+    Examples:
+        content = load_markdown("docs/README.md")
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+        UnicodeDecodeError: If the file cannot be decoded as UTF-8.
+    """
+    with Path(file_path).open("r", encoding="utf-8") as f:
+        content = f.read()
+        return content

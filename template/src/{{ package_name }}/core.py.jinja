@@ -1,0 +1,75 @@
+"""Core functionality for {{ project_name }}."""
+
+from typing import TypeVar
+
+{% if include_numpy %}
+import numpy as np
+import numpy.typing as npt
+{% endif %}
+{% if include_pandas_support %}
+import pandas as pd
+{% endif %}
+
+T = TypeVar("T")
+
+
+def example_function(value: T) -> T:
+    """Return the input value unchanged.
+
+    This is an example function to demonstrate the project structure.
+    Replace this with your actual functionality.
+
+    Args:
+        value: Any value to return.
+
+    Returns:
+        The same value that was passed in.
+
+    Examples:
+        >>> example_function(42)
+        42
+        >>> example_function("hello")
+        'hello'
+    """
+    return value
+
+
+{% if include_numpy %}
+def example_array_function(arr: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    """Compute the square of each element in a NumPy array.
+
+    Args:
+        arr: Input array of floats.
+
+    Returns:
+        Array with squared values.
+
+    Examples:
+        >>> import numpy as np
+        >>> result = example_array_function(np.array([1.0, 2.0, 3.0]))
+        >>> result
+        array([1., 4., 9.])
+    """
+    return arr ** 2
+{% endif %}
+
+
+{% if include_pandas_support %}
+def example_dataframe_function(df: pd.DataFrame) -> pd.DataFrame:
+    """Return a copy of the input DataFrame.
+
+    Args:
+        df: Input DataFrame.
+
+    Returns:
+        A copy of the input DataFrame.
+
+    Examples:
+        >>> import pandas as pd
+        >>> df = pd.DataFrame({"a": [1, 2, 3]})
+        >>> result = example_dataframe_function(df)
+        >>> result.equals(df)
+        True
+    """
+    return df.copy()
+{% endif %}

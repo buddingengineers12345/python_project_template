@@ -1,0 +1,38 @@
+# {{ project_name }}
+
+{{ project_description }}
+
+## Quickstart
+
+Install `uv` (see `https://astral.sh/uv/`), then:
+
+```bash
+uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
+```
+
+Run tests:
+
+```bash
+uv run pytest
+```
+
+## Development
+
+Common commands:
+
+```bash
+just ci
+```
+
+## Project layout
+
+- `src/{{ package_name }}/`: library code
+- `tests/`: test suite
+{% if include_docs -%}
+- `docs/`: documentation source
+{%- endif %}
+
+## License
+
+{{ license }}
+

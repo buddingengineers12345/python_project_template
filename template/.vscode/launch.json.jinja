@@ -1,0 +1,89 @@
+{
+  // ============================================================
+  // VS Code Debug Configurations for Python Library Development
+  // ============================================================
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // --------------------------------------------------------
+      // Debug a single pytest test (cursor-based)
+      // --------------------------------------------------------
+      "name": "Debug Pytest (Current Test)",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "justMyCode": true,
+      "args": [
+        "-q",
+        "${file}::${selectedText}"
+      ],
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      // --------------------------------------------------------
+      // Debug all tests
+      // --------------------------------------------------------
+      "name": "Debug Pytest (All Tests)",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "justMyCode": true,
+      "args": [
+        "tests",
+        "-v"
+      ],
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      // --------------------------------------------------------
+      // Debug tests with coverage disabled (faster iteration)
+      // --------------------------------------------------------
+      "name": "Debug Pytest (Fast / No Coverage)",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "justMyCode": true,
+      "args": [
+        "tests",
+        "-v",
+        "--no-cov"
+      ],
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      // --------------------------------------------------------
+      // Debug a Python module inside src/
+      // Useful for quick experiments & repros
+      // --------------------------------------------------------
+      "name": "Debug Module (src)",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "justMyCode": true,
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      // --------------------------------------------------------
+      // Attach debugger to a running Python process
+      // (advanced use: long-running experiments)
+      // --------------------------------------------------------
+      "name": "Attach to Python Process",
+      "type": "python",
+      "request": "attach",
+      "processId": "${command:pickProcess}",
+      "justMyCode": true
+    }
+  ]
+}

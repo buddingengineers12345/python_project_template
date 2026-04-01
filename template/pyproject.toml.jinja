@@ -1,0 +1,183 @@
+[project]
+name = "{{ package_name }}"
+version = "0.1.0"
+description = "{{ project_description }}"
+authors = [
+    { name = "{{ author_name }}", email = "{{ author_email }}" }
+]
+readme = "README.md"
+requires-python = ">={{ python_min_version }}"
+license = { text = "{{ license }}" }
+keywords = ["data-science", "library"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: {{ license }} License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: {{ python_min_version }}",
+    "Programming Language :: Python :: 3 :: Only",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    {% if include_numpy %}"numpy>=1.26", {% endif %}
+    {% if include_pandas_support %}"pandas>=2.0", {% endif %}
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.8.0",
+    "basedpyright>=1.21.0",
+    "pre-commit>=4.0.0",
+    "hatchling>=1.26.0",
+]
+
+test = [
+    "pytest>=8.0.0",
+    "pytest-xdist>=3.5.0",
+    "pytest-cov>=6.0.0",
+    "coverage[toml]>=7.6.0",
+]
+
+{% if include_docs %}
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.27.0",
+]
+{% endif %}
+
+[project.urls]
+Homepage = "https://github.com/{{ github_username }}/{{ project_slug }}"
+Documentation = "https://github.com/{{ github_username }}/{{ project_slug }}#readme"
+Repository = "https://github.com/{{ github_username }}/{{ project_slug }}"
+Issues = "https://github.com/{{ github_username }}/{{ project_slug }}/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{ package_name }}"]
+
+# ==========================================================================
+# Ruff Configuration
+# ==========================================================================
+
+[tool.ruff]
+line-length = 100
+target-version = "py{{ python_min_version | replace('.', '') }}"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "I",      # isort
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "SIM",    # flake8-simplify
+    "C4",     # flake8-comprehensions
+    "RUF",    # ruff-specific rules
+    "TCH",    # flake8-type-checking
+    "PGH",    # pygrep-hooks
+    "PT",     # flake8-pytest-style
+    "ARG",    # flake8-unused-arguments
+]
+
+ignore = [
+    "E501",   # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ARG", "S101"]  # Allow unused args and asserts in tests
+
+[tool.ruff.lint.isort]
+known-first-party = ["{{ package_name }}"]
+
+# ==========================================================================
+# BasedPyright Configuration
+# ==========================================================================
+
+[tool.basedpyright]
+typeCheckingMode = "strict"
+pythonVersion = "{{ python_min_version }}"
+pythonPlatform = "All"
+
+# Strict typing settings
+reportUnusedImport = "error"
+reportUnusedVariable = "error"
+reportDuplicateImport = "error"
+reportImplicitOverride = "error"
+reportIncompatibleMethodOverride = "error"
+reportIncompatibleVariableOverride = "error"
+
+# Be lenient with external packages
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
+reportUnknownLambdaType = false
+
+# Source configuration
+include = ["src", "tests"]
+exclude = [
+    "**/__pycache__",
+    "**/.*",
+    "build",
+    "dist",
+]
+
+# ==========================================================================
+# Pytest Configuration
+# ==========================================================================
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov={{ package_name }}",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+
+# ==========================================================================
+# Coverage Configuration
+# ==========================================================================
+
+[tool.coverage.run]
+branch = true
+source = ["{{ package_name }}"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+fail_under = 85
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+    "@overload",
+]
+
+[tool.coverage.xml]
+output = "coverage.xml"

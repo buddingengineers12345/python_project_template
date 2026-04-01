@@ -1,0 +1,19 @@
+site_name: "{{ project_name }}"
+site_description: "{{ project_description }}"
+repo_url: "https://github.com/{{ github_username }}/{{ project_slug }}"
+repo_name: "{{ github_username }}/{{ project_slug }}"
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+

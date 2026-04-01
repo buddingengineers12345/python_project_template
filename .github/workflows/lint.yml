@@ -1,0 +1,34 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --active --frozen
+
+      - name: Run formatting checks
+        run: |
+          uv run ruff format --check . || true
+          uv run isort --check-only . || true
+          uv run black --check . || true
+
+      - name: Run linter
+        run: uv run ruff check .

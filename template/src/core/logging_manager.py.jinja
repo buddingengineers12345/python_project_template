@@ -1,0 +1,289 @@
+"""Logging and formatting utilities for the advanced planner system.
+
+This module provides centralized logging configuration and formatting utilities
+for consistent output across all modules. It handles logger creation, section
+headers, and structured field logging.
+
+"""
+
+import logging
+import os
+import textwrap
+from typing import Any
+
+# =============================================================================
+# GLOBAL CONSTANTS
+# =============================================================================
+
+# Log level may be overridden via the LOG_LEVEL environment variable
+LOG_LEVEL = int(os.getenv("LOG_LEVEL", str(logging.INFO)))
+
+# Separator and formatting widths for structured log output
+PRINT_WIDTH_COUNT: int = 75
+LOG_LINE_WIDTH: int = 75
+PADDING_WIDTH: int = 30
+
+# =============================================================================
+# LOGGING CONFIGURATION
+# =============================================================================
+
+# Configure root logger formatting
+
+if LOG_LEVEL == logging.DEBUG:
+    logging.basicConfig(
+        level=LOG_LEVEL,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+else:
+    logging.basicConfig(
+        level=LOG_LEVEL,
+        format="%(message)s",
+    )
+
+# Reduce noisy logs from HTTP libraries
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+# =============================================================================
+# GENERAL UTILITIES FOR LOGGING
+# =============================================================================
+
+
+def get_logger(name: str) -> logging.Logger:
+    """
+    Get a configured logger instance for the given module name.
+
+    Args:
+        name (str): The name of the module requesting the logger (typically
+            ``__name__``).
+
+    Returns:
+        logging.Logger: Configured logger instance.
+
+    Examples:
+        logger = get_logger(__name__)
+        logger.info("hello")
+
+    Raises:
+        No explicit exceptions - errors from the logging module propagate as
+        runtime logging errors.
+    """
+    return logging.getLogger(name)
+
+
+def list_to_numbered_string(items: list[str]) -> str:
+    """
+    Convert a list of strings into a numbered string format.
+
+    Args:
+        items (list[str]): A list of strings to be numbered.
+
+    Returns:
+        str: A string with each item numbered starting from 1, in the format
+        ``"\n  1. Item\n  2. Item\n..."``. Returns an empty string when
+        ``items`` is empty.
+
+    Examples:
+        list_to_numbered_string(["alpha", "beta"]) -> "\n1. alpha\n2. beta"
+
+    Raises:
+        No exceptions are raised for normal list inputs.
+    """
+    if not items:
+        return ""
+
+    numbered_items = []
+    for i, item in enumerate(items, start=1):
+        numbered_items.append(f"{i}. {item}")
+
+    return "\n" + "\n".join(numbered_items)
+
+
+def wrap_text(text: str, width: int = LOG_LINE_WIDTH) -> str:
+    """
+    Wrap a long string into lines no longer than ``width`` characters.
+
+    Preserves existing newlines and wraps long paragraphs for improved
+    readability in logs.
+
+    Args:
+        text (str): The input text to wrap.
+        width (int): Maximum line width (defaults to ``LOG_LINE_WIDTH``).
+
+    Returns:
+        str: The wrapped text. Returns an empty string when ``text`` is falsy.
+
+    Examples:
+        wrap_text("a long paragraph...", width=50)
+
+    Raises:
+        No explicit exceptions; invalid types will raise standard TypeError.
+    """
+
+    if not text:
+        return ""
+
+    # Preserve existing paragraphs
+    paragraphs = str(text).split("\n")
+    wrapped = [textwrap.fill(p, width=width) for p in paragraphs]
+    return "\n".join(wrapped)
+
+
+# =============================================================================
+# LOGGING SECTIONS AND SUB-SECTIONS
+# =============================================================================
+
+
+def log_section(title: str, level: int = logging.INFO) -> None:
+    """
+    Log a formatted section header.
+
+    Args:
+        title (str): The title of the section to log.
+        level (int): The logging level to use (default: ``logging.INFO``).
+
+    Examples:
+        log_section("Initialization")
+
+    Raises:
+        No exceptions; logging module errors propagate normally.
+    """
+    logger = get_logger(__name__)
+    separator = "=" * int(LOG_LINE_WIDTH * 1.1)
+
+    if level == logging.DEBUG:
+        logger.debug(separator)
+        logger.debug(title)
+        logger.debug(separator)
+    elif level == logging.INFO:
+        logger.info(separator)
+        logger.info(title)
+        logger.info(separator)
+
+
+def log_sub_section(title: str, level: int = logging.INFO) -> None:
+    """
+    Log a formatted sub-section header.
+
+    Args:
+        title (str): The title of the sub-section to log.
+        level (int): The logging level to use (default: ``logging.INFO``).
+
+    Examples:
+        log_sub_section("Details")
+
+    Raises:
+        No exceptions; logging module errors propagate normally.
+    """
+    logger = get_logger(__name__)
+    separator = "-" * LOG_LINE_WIDTH
+
+    if level == logging.DEBUG:
+        logger.debug(separator)
+        logger.debug(title)
+        logger.debug(separator)
+    elif level == logging.INFO:
+        logger.info(separator)
+        logger.info(title)
+        logger.info(separator)
+
+
+def log_section_divider(level: int = logging.INFO) -> None:
+    """
+    Log a divider line for separating sections in logs.
+
+    Args:
+        level (int): The logging level to use (default: ``logging.INFO``).
+
+    Examples:
+        log_section_divider()
+
+    Raises:
+        No exceptions; logging module errors propagate normally.
+    """
+    logger = get_logger(__name__)
+    separator = "-" * LOG_LINE_WIDTH
+
+    if level == logging.DEBUG:
+        logger.debug(separator)
+    elif level == logging.INFO:
+        logger.info(separator)
+
+
+# =============================================================================
+# LOGGING FIELDS
+# =============================================================================
+
+
+def log_fields(fields: dict[str, Any], level: int = logging.INFO) -> None:
+    """
+    Log a dictionary of fields in a structured format with aligned colons.
+
+    This function formats key-value pairs so that all colons appear in the same
+    column for better readability. The ``PADDING_WIDTH`` constant determines the
+    minimum width allocated for keys, ensuring vertical alignment of colons.
+
+    Args:
+        fields (dict[str, Any]): Dictionary of field names and values to log.
+        level (int): The logging level to use (default: ``logging.INFO``).
+
+    Examples:
+        log_fields({"status": "ok", "items": ["a", "b"]})
+
+    Raises:
+        No explicit exceptions; formatting issues will raise standard errors.
+    """
+    logger = get_logger(__name__)
+
+    if not fields:
+        logger.info("No fields to display.")
+        return
+
+    for key, value in fields.items():
+        formatted_value = list_to_numbered_string(value) if isinstance(value, list) else value
+
+        # Wrap long strings for both single-line and numbered outputs
+        if isinstance(formatted_value, str):
+            # If it's a numbered string (starts with '\n1.'), wrap each line
+            if formatted_value.startswith("\n"):
+                lines = formatted_value.split("\n")
+                wrapped_lines = [lines[0]] + [
+                    wrap_text(line, width=LOG_LINE_WIDTH) for line in lines[1:]
+                ]
+                formatted_value = "\n" + "\n".join(wrapped_lines[1:])
+            else:
+                formatted_value = wrap_text(formatted_value, width=LOG_LINE_WIDTH)
+
+        if level == logging.DEBUG:
+            logger.debug("  %-*s : %s", PADDING_WIDTH, key, formatted_value)
+        elif level == logging.INFO:
+            logger.info("  %-*s : %s", PADDING_WIDTH, key, formatted_value)
+
+
+# =============================================================================
+# LOGGING MESSAGES
+# =============================================================================
+
+
+def log_message(message: str, level: int = logging.INFO) -> None:
+    """
+    Log a simple message at the specified logging level.
+
+    Args:
+        message (str): The message to log.
+        level (int): The logging level to use (default: ``logging.INFO``).
+
+    Examples:
+        log_message("Starting up")
+
+    Raises:
+        No explicit exceptions; logging errors propagate from the logging module.
+    """
+    logger = get_logger(__name__)
+    wrapped = wrap_text(message, width=LOG_LINE_WIDTH)
+
+    if level == logging.DEBUG:
+        logger.debug(wrapped)
+    elif level == logging.INFO:
+        logger.info(wrapped)

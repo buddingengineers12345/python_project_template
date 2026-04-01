@@ -1,0 +1,33 @@
+[project]
+name = "python-starter-template"
+version = "0.0.0"
+description = "Copier template repository for generating uv-first Python projects."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "copier>=9.0.0",
+  "pytest>=8.0.0",
+  "pytest-xdist>=3.5.0",
+  "ruff>=0.8.0",
+  "basedpyright>=1.21.0",
+  "pre-commit>=4.0.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = ["-q"]
+

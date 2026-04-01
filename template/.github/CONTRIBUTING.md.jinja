@@ -1,0 +1,120 @@
+# Contributing
+
+Thank you for considering contributing to this project! 🎉
+Contributions of all kinds—bug fixes, new features, documentation improvements, and refactors—are welcome and appreciated.
+
+This guide describes the expected workflow and standards to help keep contributions consistent and easy to review.
+
+---
+
+## Before You Start
+
+Before making any changes, please:
+
+- Read the project **README.md** for setup instructions and background context
+- Search existing **issues** and **pull requests** to avoid duplicating work
+- For larger or breaking changes, consider opening an issue first to discuss the approach
+
+---
+
+## Getting Started
+
+### 1. Fork the Repository
+
+Create a fork of the repository on GitHub.
+
+### 2. Create a Feature Branch
+
+Create a new branch with a descriptive name:
+
+```bash
+git checkout -b feature/short-description
+```
+
+### 3. Set Up the Development Environment
+
+Follow the setup instructions in the repository `README.md`.
+
+---
+
+## Testing
+
+All changes must be tested.
+
+- Run the full test suite locally:
+  ```bash
+  uv run pytest
+  ```
+
+- Add or update tests for:
+  - New features
+  - Bug fixes
+  - Any change that affects behavior
+
+Pull requests with failing or missing tests will not be merged.
+
+---
+
+## Code Style and Quality
+
+This project enforces automated formatting and linting.
+
+Before submitting your changes, run:
+
+```bash
+uv run ruff
+uv run black
+```
+
+Ensure that:
+
+- Code is properly formatted
+- Linting issues are resolved
+- Type hints and docstrings are added where appropriate
+
+---
+
+## Making Changes
+
+When working on your contribution:
+
+- Keep commits **small and focused**
+- Follow existing patterns and project structure
+- Avoid unrelated refactors or formatting-only changes
+- Write clear and descriptive commit messages
+
+---
+
+## Submitting a Pull Request
+
+1. Push your branch to your fork
+2. Open a pull request against the main repository
+3. In the pull request description:
+   - Clearly explain what the change does
+   - Reference related issues (for example, `Closes #123`)
+   - Call out any breaking changes or follow-up work
+
+Maintainers may request changes or clarifications before merging.
+
+---
+
+## Pull Request Checklist
+
+Before submitting your pull request, confirm that:
+
+- [ ] Tests pass locally
+- [ ] New functionality includes appropriate tests
+- [ ] Code follows project style and conventions
+- [ ] Documentation has been updated if needed
+- [ ] The pull request is scoped to a single logical change
+
+---
+
+## Code of Conduct
+
+By participating in this project, you agree to follow the project’s **Code of Conduct**.
+Please help maintain a respectful, inclusive, and welcoming environment for everyone.
+
+---
+
+Thank you for contributing and helping improve the project! 🚀

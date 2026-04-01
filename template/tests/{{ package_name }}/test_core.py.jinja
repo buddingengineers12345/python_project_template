@@ -1,0 +1,54 @@
+"""Unit tests for core functionality."""
+
+{% if include_numpy %}
+import numpy as np
+{% endif %}
+{% if include_pandas_support %}
+import pandas as pd
+{% endif %}
+import pytest
+from typing import Any
+
+from {{ package_name }}.core import example_function
+{% if include_numpy %}
+from {{ package_name }}.core import example_array_function
+{% endif %}
+{% if include_pandas_support %}
+from {{ package_name }}.core import example_dataframe_function
+{% endif %}
+
+@pytest.mark.parametrize("input_value", [42, "hello", [1, 2, 3]])
+def test_example_function_various_inputs(input_value: Any) -> None:
+    """Test example_function with multiple input types using parametrize."""
+    assert example_function(input_value) == input_value
+
+
+{% if include_numpy %}
+@pytest.mark.parametrize(("arr", "expected"), [
+    (np.array([1.0, 2.0, 3.0]), np.array([1.0, 4.0, 9.0])),
+    (np.array([-1.0, -2.0, -3.0]), np.array([1.0, 4.0, 9.0])),
+])
+def test_example_array_function_parametrized(arr: Any, expected: Any) -> None:
+    """Test example_array_function with multiple arrays using parametrize."""
+    result = example_array_function(arr)
+    np.testing.assert_array_equal(result, expected)
+{% endif %}
+
+
+{% if include_pandas_support %}
+def test_example_dataframe_function() -> None:
+    """Test example_dataframe_function returns a copy."""
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+    result = example_dataframe_function(df)
+
+    # Should be equal but not the same object
+    pd.testing.assert_frame_equal(result, df)
+    assert result is not df
+
+
+def test_example_dataframe_function_empty() -> None:
+    """Test example_dataframe_function with an empty DataFrame."""
+    df = pd.DataFrame()
+    result = example_dataframe_function(df)
+    pd.testing.assert_frame_equal(result, df)
+{% endif %}

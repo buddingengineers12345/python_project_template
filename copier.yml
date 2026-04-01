@@ -1,0 +1,175 @@
+# Copier Template Configuration for Python Data-Science Libraries
+# Modern, uv-first, Copilot-optimized template
+
+# -------------------------------------------------------------------------
+# Template metadata
+# -------------------------------------------------------------------------
+# Minimal required Copier version for this template and where the
+# template lives inside the repository.
+_min_copier_version: "9.11.2"
+_subdirectory: template
+
+# Jinja extensions enabled for rendering templates. Add extensions
+_jinja_extensions:
+  - jinja2_time.TimeExtension
+  - jinja2.ext.do
+  - jinja2.ext.loopcontrols
+
+# File used to persist answers between runs so re-running copier
+# can reuse previously provided values.
+_answers_file: ".copier-answers.yml"
+
+# -------------------------------------------------------------------------
+# Lifecycle (update safety)
+# -------------------------------------------------------------------------
+# Files and directories listed here will be preserved on template
+# updates to avoid overwriting user edits in generated projects.
+_skip_if_exists:
+  - pyproject.toml
+  - README.md
+  - CONTRIBUTING.md
+  - src/{{ package_name }}/__init__.py
+  - "*.md"
+  - mkdocs.yml
+  - docs/
+
+# -------------------------------------------------------------------------
+# Questions / Prompts
+# -------------------------------------------------------------------------
+# Interactive prompts presented when generating a project. Keep
+# prompts clear and provide sensible defaults to simplify onboarding.
+project_name:
+  type: str
+  help: Human-readable project name (e.g., "My Data Library")
+  placeholder: "My Data Library"
+
+project_slug:
+  type: str
+  default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
+  help: Slug for URLs and package distribution
+
+package_name:
+  type: str
+  default: "{{ project_name | lower | replace(' ', '_') | replace('-', '_') }}"
+  help: Python package name (must be valid Python identifier)
+  validator: >-
+    {% if not package_name.replace('_', '').isalnum() %}
+    Package name must be a valid Python identifier (alphanumeric and underscores only)
+    {% endif %}
+
+project_description:
+  type: str
+  help: Short description of the project
+  default: "A Python data-science library"
+
+author_name:
+  type: str
+  help: Author's full name
+  default: "Your Name"
+
+author_email:
+  type: str
+  help: Author's email
+  default: "you@example.com"
+
+github_username:
+  type: str
+  help: GitHub username or organization
+  default: "yourusername"
+
+python_min_version:
+  type: str
+  help: Minimum Python version
+  default: "3.11"
+  choices:
+    - "3.11"
+    - "3.12"
+    - "3.13"
+
+license:
+  type: str
+  help: Project license
+  default: MIT
+  choices:
+    - MIT
+    - Apache-2.0
+    - BSD-3-Clause
+    - GPL-3.0
+    - Proprietary
+
+include_docs:
+  type: bool
+  help: Include MkDocs documentation setup?
+  default: true
+
+include_pandas_support:
+  type: bool
+  help: Include pandas in dependencies?
+  default: false
+
+include_numpy:
+  type: bool
+  help: Include NumPy in dependencies?
+  default: true
+
+codecov_token:
+  type: str
+  help: Codecov token (optional, can be added later)
+  default: ""
+  placeholder: "Leave empty to configure later"
+
+# -------------------------------------------------------------------------
+# Computed values
+# -------------------------------------------------------------------------
+# Template-generated computed values (not asked interactively).
+# Use these for dynamic defaults and CI matrix generation.
+current_year:
+  type: str
+  default: "{% now 'utc', '%Y' %}"
+
+github_actions_python_versions:
+  type: str
+  default: >-
+    {% if python_min_version == "3.11" -%}
+    ["3.11", "3.12", "3.13"]
+    {%- elif python_min_version == "3.12" -%}
+    ["3.12", "3.13"]
+    {%- else -%}
+    ["3.13"]
+    {%- endif %}
+
+# -------------------------------------------------------------------------
+# Post-generation tasks
+# -------------------------------------------------------------------------
+# Commands run after template rendering. Keep tasks idempotent and
+# safe; failing tasks should not leave the repository in a broken state.
+_tasks:
+  - ["git", "init"]
+  - command: python -m pip install --upgrade pip
+  - command: python -m pip install --upgrade uv
+  - command: uv lock
+  - command: >-
+      {% if include_docs -%}
+      uv sync --frozen --extra dev --extra test --extra docs
+      {%- else -%}
+      uv sync --frozen --extra dev --extra test
+      {%- endif %}
+  - command: uv run pre-commit install
+  - command: uv run pre-commit install --hook-type pre-push
+  - command: uv run ruff check --fix .
+  - command: uv run basedpyright
+  - command: echo "✅ Project {{ project_name }} created successfully!"
+  - command: echo "📁 Location $(pwd)"
+  - command: echo "🚀 Run 'just ci' to verify everything works"
+
+
+# -------------------------------------------------------------------------
+# Template-only exclusions
+# -------------------------------------------------------------------------
+# Files and directories present in the template repo that should not
+# be copied into generated projects (editor state, virtualenvs, etc.).
+_exclude:
+  - ".git"
+  - ".venv"
+  - "__pycache__"
+  - "*.pyc"

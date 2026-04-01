@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security
+    url: {{ security_contact_url | default('https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/security') }}
+    about: Report a vulnerability
+template:
+  - name: Bug report
+    path: bug_report.md
+  - name: Feature request
+    path: feature_request.md
