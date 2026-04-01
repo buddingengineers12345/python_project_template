@@ -29,10 +29,11 @@ def get_default_command_list(test_dir: Path) -> list[str]:
 
 
 def test_skip_if_exists_preserves_readme_on_update() -> None:
-    """Regression guard: README must stay in _skip_if_exists so copier update skips it."""
+    """Regression guard: key user files stay in _skip_if_exists so copier update skips them."""
     copier_yaml = Path(__file__).resolve().parent.parent / "copier.yml"
     text = copier_yaml.read_text()
     assert "README.md" in text
+    assert "CLAUDE.md" in text
     assert "_skip_if_exists:" in text
 
 
@@ -62,6 +63,12 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
     # Check pyproject.toml content
     pyproject_content = (temp_project_dir / "pyproject.toml").read_text()
     assert 'name = "test_project"' in pyproject_content, "Incorrect project name in pyproject.toml"
+
+    claude_md = temp_project_dir / "CLAUDE.md"
+    assert claude_md.is_file(), "Missing CLAUDE.md"
+    claude_content = claude_md.read_text()
+    assert "Test Project" in claude_content, "CLAUDE.md should include rendered project name"
+    assert "uv sync --frozen --extra dev" in claude_content, "CLAUDE.md should document uv sync setup"
 
 
 def test_ci_checks_default_project(temp_project_dir: Path) -> None:
@@ -107,6 +114,12 @@ def test_generate_full_featured_project(tmp_path: Path) -> None:
 
     # Verify full features
     assert (test_dir / "mkdocs.yml").exists(), "Missing mkdocs.yml for docs"
+
+    justfile_content = (test_dir / "justfile").read_text()
+    assert "docs:" in justfile_content, "just docs recipe expected when include_docs"
+    claude_full = (test_dir / "CLAUDE.md").read_text()
+    assert "--extra docs" in claude_full, "CLAUDE.md should include docs extra when docs enabled"
+    assert "just docs" in claude_full, "CLAUDE.md should reference just docs when docs enabled"
 
     # Check pandas in dependencies
     pyproject_content = (test_dir / "pyproject.toml").read_text()

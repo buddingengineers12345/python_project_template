@@ -1,0 +1,36 @@
+# {{ project_name }} — Claude Project Knowledge
+
+## What this project is
+
+{{ project_description }}
+
+## Setup
+
+```bash
+uv sync --frozen --extra dev{% if include_docs %} --extra docs{% endif %}
+just precommit-install
+```
+
+## Common commands
+
+| Task | Command |
+|---|---|
+| Run tests | `just test` |
+| Lint | `just lint` |
+| Format | `just fmt` |
+| Type check | `just type` |
+| Full CI | `just ci` |
+{% if include_docs %}| Serve docs | `just docs` |
+{% endif %}
+
+## Package structure
+
+Source code lives under `src/{{ package_name }}/`.
+Tests live under `tests/`.
+
+## Code style
+
+- Line length: 100 characters
+- Python {{ python_min_version }}+
+- Ruff rules: E, F, I, UP, B, SIM, C4, RUF
+- Type annotations required (basedpyright)

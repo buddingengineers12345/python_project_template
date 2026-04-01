@@ -224,3 +224,6 @@ mlruns/
 
 # Data folder and its contents
 data/
+
+# Claude Code local state (do not commit)
+.claude/todos/

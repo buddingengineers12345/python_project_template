@@ -27,6 +27,7 @@ _skip_if_exists:
   - pyproject.toml
   - README.md
   - CONTRIBUTING.md
+  - CLAUDE.md
   - src/{{ package_name }}/__init__.py
   - "*.md"
   - mkdocs.yml

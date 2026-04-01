@@ -74,16 +74,20 @@ precommit:
 # -------------------------------------------------------------------------
 
 sync:
-    @uv sync --extra dev --extra test
+    @uv sync --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 
 update:
     @uv lock --upgrade
-    @uv sync --extra dev --extra test
+    @uv sync --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 
 # -------------------------------------------------------------------------
 # Docs (optional)
 # -------------------------------------------------------------------------
+{% if include_docs %}
 
+docs:
+    @uv run --active mkdocs serve
+{% endif %}
 
 # -------------------------------------------------------------------------
 # Build & Publish
