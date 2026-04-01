@@ -1,4 +1,11 @@
-"""Test cases for validating the Copier template."""
+"""Integration tests for the Copier template.
+
+This package is a meta-template: tests invoke ``copier copy`` and ``copier update``,
+then assert on the rendered tree and (where applicable) run the generated project's
+tooling. They guard template variables, ``_skip_if_exists``, and post-generation tasks.
+"""
+
+from __future__ import annotations
 
 import shutil
 import subprocess
@@ -8,14 +15,41 @@ import pytest
 
 
 def run_command(
-    cmd: list[str], cwd: Path | None = None, check: bool = True
-) -> subprocess.CompletedProcess:
-    """Run a command and return the result."""
+    cmd: list[str],
+    cwd: Path | None = None,
+    *,
+    check: bool = True,
+) -> subprocess.CompletedProcess[str]:
+    """Run a subprocess and capture stdout/stderr as text.
+
+    Args:
+        cmd: Argument list passed to :func:`subprocess.run` (executable first).
+        cwd: Working directory for the child process. ``None`` uses the current
+            process directory.
+        check: If ``True``, raise :class:`subprocess.CalledProcessError` on non-zero exit.
+
+    Returns:
+        The completed process result with ``stdout`` and ``stderr`` populated when
+        capture is enabled.
+
+    Raises:
+        subprocess.CalledProcessError: When ``check`` is ``True`` and the command exits
+            with a non-zero status.
+        FileNotFoundError: When the executable (first element of ``cmd``) is missing.
+    """
     return subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
 
 
 def get_default_command_list(test_dir: Path) -> list[str]:
-    """Get the default command list for running copier."""
+    """Build the Copier CLI invocation used by most tests.
+
+    Args:
+        test_dir: Destination directory for the rendered project.
+
+    Returns:
+        A list suitable as the first argument to :func:`run_command`, including
+        ``--trust`` and ``--defaults`` for non-interactive runs.
+    """
     return [
         "copier",
         "copy",
@@ -29,9 +63,13 @@ def get_default_command_list(test_dir: Path) -> list[str]:
 
 
 def test_skip_if_exists_preserves_readme_on_update() -> None:
-    """Regression guard: key user files stay in _skip_if_exists so copier update skips them."""
+    """Ensure critical paths remain under ``_skip_if_exists`` in ``copier.yml``.
+
+    Copier must not overwrite user-edited files such as ``README.md`` or
+    ``CLAUDE.md`` when the user runs ``copier update``.
+    """
     copier_yaml = Path(__file__).resolve().parent.parent / "copier.yml"
-    text = copier_yaml.read_text()
+    text = copier_yaml.read_text(encoding="utf-8")
     assert "README.md" in text
     assert "CLAUDE.md" in text
     assert "_skip_if_exists:" in text
@@ -39,59 +77,58 @@ def test_skip_if_exists_preserves_readme_on_update() -> None:
 
 @pytest.fixture
 def temp_project_dir(tmp_path: Path) -> Path:
-    """Fixture to provide a temporary directory for project generation."""
+    """Return a dedicated subdirectory under pytest's ``tmp_path`` for one test.
+
+    Args:
+        tmp_path: Pytest fixture providing a per-test temporary directory.
+
+    Returns:
+        Path to ``tmp_path / "test_project"``.
+    """
     return tmp_path / "test_project"
 
 
 def test_prerequisites() -> None:
-    """Test that required tools are available."""
+    """Assert host tooling required by the test suite is on ``PATH``."""
     for exe in ("uv", "copier"):
         assert shutil.which(exe) is not None, f"{exe} not found on PATH"
 
 
 def test_generate_default_project(temp_project_dir: Path) -> None:
-    """Test generating a project with default configuration."""
-    # Generate project
-    run_command(get_default_command_list(temp_project_dir))
+    """Render a project with default answers and validate layout and key files."""
+    _ = run_command(get_default_command_list(temp_project_dir))
 
-    # Verify structure
     assert (temp_project_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
     assert (temp_project_dir / "src").is_dir(), "Missing src/ directory"
     assert (temp_project_dir / "tests").is_dir(), "Missing tests/ directory"
     assert (temp_project_dir / ".github" / "workflows" / "ci.yml").exists(), "Missing CI workflow"
 
-    # Check pyproject.toml content
-    pyproject_content = (temp_project_dir / "pyproject.toml").read_text()
+    pyproject_content = (temp_project_dir / "pyproject.toml").read_text(encoding="utf-8")
     assert 'name = "test_project"' in pyproject_content, "Incorrect project name in pyproject.toml"
 
     claude_md = temp_project_dir / "CLAUDE.md"
     assert claude_md.is_file(), "Missing CLAUDE.md"
-    claude_content = claude_md.read_text()
+    claude_content = claude_md.read_text(encoding="utf-8")
     assert "Test Project" in claude_content, "CLAUDE.md should include rendered project name"
     assert "uv sync --frozen --extra dev" in claude_content, "CLAUDE.md should document uv sync setup"
 
 
 def test_ci_checks_default_project(temp_project_dir: Path) -> None:
-    """Test running CI checks on default generated project."""
-    # Generate project
-    run_command(get_default_command_list(temp_project_dir))
+    """Generate a default project and run sync, type-check, and tests inside it."""
+    _ = run_command(get_default_command_list(temp_project_dir))
 
-    # Sync dependencies
-    run_command(["uv", "sync", "--extra", "dev", "--extra", "test"], cwd=temp_project_dir)
+    _ = run_command(["uv", "sync", "--extra", "dev", "--extra", "test"], cwd=temp_project_dir)
 
-    # Type check
-    run_command(["uv", "run", "basedpyright"], cwd=temp_project_dir)
+    _ = run_command(["uv", "run", "basedpyright"], cwd=temp_project_dir)
 
-    # Run tests
-    run_command(["uv", "run", "pytest"], cwd=temp_project_dir)
+    _ = run_command(["uv", "run", "pytest"], cwd=temp_project_dir)
 
 
 def test_generate_full_featured_project(tmp_path: Path) -> None:
-    """Test generating a project with all features enabled."""
+    """Render with optional features enabled and assert docs, CLAUDE, and pandas wiring."""
     test_dir = tmp_path / "test_full"
 
-    # Generate project with all features
-    run_command(
+    _ = run_command(
         [
             "copier",
             "copy",
@@ -112,30 +149,26 @@ def test_generate_full_featured_project(tmp_path: Path) -> None:
         ]
     )
 
-    # Verify full features
     assert (test_dir / "mkdocs.yml").exists(), "Missing mkdocs.yml for docs"
 
-    justfile_content = (test_dir / "justfile").read_text()
+    justfile_content = (test_dir / "justfile").read_text(encoding="utf-8")
     assert "docs:" in justfile_content, "just docs recipe expected when include_docs"
-    claude_full = (test_dir / "CLAUDE.md").read_text()
+    claude_full = (test_dir / "CLAUDE.md").read_text(encoding="utf-8")
     assert "--extra docs" in claude_full, "CLAUDE.md should include docs extra when docs enabled"
     assert "just docs" in claude_full, "CLAUDE.md should reference just docs when docs enabled"
 
-    # Check pandas in dependencies
-    pyproject_content = (test_dir / "pyproject.toml").read_text()
+    pyproject_content = (test_dir / "pyproject.toml").read_text(encoding="utf-8")
     assert "pandas" in pyproject_content, "pandas not in dependencies"
 
 
 def test_update_workflow(tmp_path: Path) -> None:
-    """Test that update workflow preserves user changes."""
+    """Confirm ``copier update`` keeps user edits to ``README.md`` when it is skipped."""
     test_dir = tmp_path / "test_update"
 
-    # Generate project
-    run_command(get_default_command_list(test_dir))
+    _ = run_command(get_default_command_list(test_dir))
 
-    # Post-copy tasks may modify files (e.g. ruff); commit a clean baseline for copier update.
-    run_command(["git", "add", "-A"], cwd=test_dir)
-    run_command(
+    _ = run_command(["git", "add", "-A"], cwd=test_dir)
+    _ = run_command(
         [
             "git",
             "-c",
@@ -150,14 +183,12 @@ def test_update_workflow(tmp_path: Path) -> None:
         cwd=test_dir,
     )
 
-    # Make a user change
     readme = test_dir / "README.md"
-    with readme.open("a") as f:
-        f.write("\n# User change\n")
+    with readme.open("a", encoding="utf-8") as handle:
+        _ = handle.write("\n# User change\n")
 
-    # Copier refuses to update a dirty working tree; commit the local edit first.
-    run_command(["git", "add", "README.md"], cwd=test_dir)
-    run_command(
+    _ = run_command(["git", "add", "README.md"], cwd=test_dir)
+    _ = run_command(
         [
             "git",
             "-c",
@@ -172,17 +203,15 @@ def test_update_workflow(tmp_path: Path) -> None:
         cwd=test_dir,
     )
 
-    # Update should skip README.md (see _skip_if_exists in copier.yml).
     result = run_command(["copier", "update", "--defaults", "--trust"], cwd=test_dir, check=False)
     if result.returncode != 0 and (
         "pathspec" in result.stderr or "did not match any file" in result.stderr
     ):
         pytest.skip(
             "Copier could not check out the template commit in its temp clone "
-            "(e.g. git partial clone); README preservation was not exercised."
+            + "(e.g. git partial clone); README preservation was not exercised."
         )
     assert result.returncode == 0, result.stderr
 
-    # Check user change is preserved
-    updated_content = readme.read_text()
+    updated_content = readme.read_text(encoding="utf-8")
     assert "# User change" in updated_content, "Update overwrote user changes"

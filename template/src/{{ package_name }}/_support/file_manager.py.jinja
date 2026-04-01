@@ -1,10 +1,7 @@
-"""File and JSON utilities used across the project.
+"""Small filesystem helpers for JSON and Markdown files.
 
-This module provides lightweight helpers for working with JSON files and
-filesystem paths. Utilities here are intentionally small and dependency-free
-so they can be used during project initialization or in other modules that
-need simple file-based configuration or data loading.
-
+Functions accept path-like inputs and use UTF-8 encoding. They are suitable for
+configuration snippets and documentation fragments loaded at runtime.
 """
 
 from __future__ import annotations
@@ -13,48 +10,39 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
-# =============================================================================
-# JSON UTILITIES
-# =============================================================================
 
-
-def load_json(file_path: str) -> dict[str, Any]:
-    """Load a JSON file and return its contents as a dictionary.
+def load_json(file_path: str | Path) -> dict[str, Any]:
+    """Parse a JSON object from a UTF-8 encoded file.
 
     Args:
-        file_path (str): The path to the JSON file to load.
+        file_path: Path to a JSON document.
 
     Returns:
-        dict[str, Any]: The contents of the JSON file as a dictionary.
-
-    Examples:
-        data = load_json("/etc/config.json")
+        The top-level JSON object as a dictionary.
 
     Raises:
-        FileNotFoundError: If the file does not exist.
-        json.JSONDecodeError: If the file contains invalid JSON.
+        FileNotFoundError: If ``file_path`` does not exist.
+        json.JSONDecodeError: If the file is not valid JSON.
     """
-    with Path(file_path).open("r", encoding="utf-8") as f:
-        data = json.load(f)
+    path = Path(file_path)
+    with path.open(encoding="utf-8") as handle:
+        data = json.load(handle)
         return cast("dict[str, Any]", data)
 
 
-def load_markdown(file_path: str) -> str:
-    """Load a markdown file and return its contents as a string.
+def load_markdown(file_path: str | Path) -> str:
+    """Read a Markdown file and return its text.
 
     Args:
-        file_path (str): The path to the markdown file to load.
+        file_path: Path to a UTF-8 text file.
 
     Returns:
-        str: The contents of the markdown file as a string.
-
-    Examples:
-        content = load_markdown("docs/README.md")
+        Full file contents as a string.
 
     Raises:
-        FileNotFoundError: If the file does not exist.
-        UnicodeDecodeError: If the file cannot be decoded as UTF-8.
+        FileNotFoundError: If ``file_path`` does not exist.
+        UnicodeDecodeError: If the bytes are not valid UTF-8.
     """
-    with Path(file_path).open("r", encoding="utf-8") as f:
-        content = f.read()
-        return content
+    path = Path(file_path)
+    with path.open(encoding="utf-8") as handle:
+        return handle.read()

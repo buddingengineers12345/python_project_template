@@ -1,15 +1,15 @@
-"""Test that the package can be imported successfully."""
+"""Smoke tests ensuring the **{{ package_name }}** package imports cleanly."""
 
 import {{ package_name }}
 
 
 def test_import() -> None:
-    """Test that the package imports without errors."""
+    """Import the package and assert :data:`{{ package_name }}.__version__` is set."""
     assert {{ package_name }}.__version__ is not None
 
 
 def test_version_format() -> None:
-    """Test that the version string follows semantic versioning."""
+    """Assert the version string has at least major and minor segments."""
     version = {{ package_name }}.__version__
     parts = version.split(".")
     assert len(parts) >= 2, f"Version {version} should have at least major.minor"

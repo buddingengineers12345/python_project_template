@@ -1,4 +1,10 @@
-"""Unit tests for core functionality."""
+"""Tests for :mod:`{{ package_name }}.core` example API."""
+
+from __future__ import annotations
+
+from typing import Any
+
+import pytest
 
 {% if include_numpy %}
 import numpy as np
@@ -6,8 +12,6 @@ import numpy as np
 {% if include_pandas_support %}
 import pandas as pd
 {% endif %}
-import pytest
-from typing import Any
 
 from {{ package_name }}.core import example_function
 {% if include_numpy %}
@@ -17,19 +21,23 @@ from {{ package_name }}.core import example_array_function
 from {{ package_name }}.core import example_dataframe_function
 {% endif %}
 
+
 @pytest.mark.parametrize("input_value", [42, "hello", [1, 2, 3]])
 def test_example_function_various_inputs(input_value: Any) -> None:
-    """Test example_function with multiple input types using parametrize."""
+    """``example_function`` must return its argument for diverse input types."""
     assert example_function(input_value) == input_value
 
 
 {% if include_numpy %}
-@pytest.mark.parametrize(("arr", "expected"), [
-    (np.array([1.0, 2.0, 3.0]), np.array([1.0, 4.0, 9.0])),
-    (np.array([-1.0, -2.0, -3.0]), np.array([1.0, 4.0, 9.0])),
-])
+@pytest.mark.parametrize(
+    ("arr", "expected"),
+    [
+        (np.array([1.0, 2.0, 3.0]), np.array([1.0, 4.0, 9.0])),
+        (np.array([-1.0, -2.0, -3.0]), np.array([1.0, 4.0, 9.0])),
+    ],
+)
 def test_example_array_function_parametrized(arr: Any, expected: Any) -> None:
-    """Test example_array_function with multiple arrays using parametrize."""
+    """``example_array_function`` squares each element (sign lost after squaring)."""
     result = example_array_function(arr)
     np.testing.assert_array_equal(result, expected)
 {% endif %}
@@ -37,17 +45,16 @@ def test_example_array_function_parametrized(arr: Any, expected: Any) -> None:
 
 {% if include_pandas_support %}
 def test_example_dataframe_function() -> None:
-    """Test example_dataframe_function returns a copy."""
+    """Copied DataFrame must be equal to the original but not the same object."""
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
     result = example_dataframe_function(df)
 
-    # Should be equal but not the same object
     pd.testing.assert_frame_equal(result, df)
     assert result is not df
 
 
 def test_example_dataframe_function_empty() -> None:
-    """Test example_dataframe_function with an empty DataFrame."""
+    """Empty DataFrame must copy successfully."""
     df = pd.DataFrame()
     result = example_dataframe_function(df)
     pd.testing.assert_frame_equal(result, df)

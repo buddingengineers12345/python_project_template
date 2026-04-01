@@ -1,12 +1,11 @@
-"""System and environment utility helpers.
+"""Environment and process utilities (standard library only in hot paths).
 
-This module contains small utilities for probing the runtime environment,
-such as detecting the presence of vendor-specific hardware or tools.
-
-These helpers are intentionally lightweight and use only the standard library
-so they are safe to call during initialization and in CI.
-
+Helpers here probe the runtime (e.g. GPU presence) and load project configuration.
+They are intentionally small and dependency-light where possible so they are safe to
+call during startup and in CI.
 """
+
+from __future__ import annotations
 
 import shutil
 import subprocess
@@ -21,35 +20,21 @@ from {{ package_name }}._support.logging_manager import log_message
 warnings.filterwarnings("ignore")
 
 
-# =============================================================================
-# GPU DETECTION UTILITIES
-# =============================================================================
-
-
 @handle_exceptions_valued(False)
 def has_nvidia_gpu() -> bool:
-    """Check if an NVIDIA GPU is available on the system.
+    """Return whether ``nvidia-smi`` runs successfully (NVIDIA driver stack present).
 
-    This function attempts to run the ``nvidia-smi`` command, which is a
-    utility provided by NVIDIA for monitoring GPU status. If the command
-    executes successfully, it indicates that an NVIDIA GPU is present and
-    accessible.
+    A successful invocation of ``nvidia-smi`` is treated as evidence that an NVIDIA
+    GPU and drivers are available. Any subprocess or command error results in
+    ``False``.
 
     Returns:
-        bool: True if an NVIDIA GPU is detected, False otherwise.
-
-    Examples:
-        if has_nvidia_gpu():
-            log_message("NVIDIA GPU detected")
-
-    Raises:
-        No exceptions are raised for normal execution; subprocess/Cmd errors
-        are caught and interpreted as no GPU present.
+        ``True`` if ``nvidia-smi`` exists on ``PATH`` and exits successfully;
+        ``False`` otherwise.
 
     Note:
-        This function is specific to NVIDIA GPUs and will return False on
-        systems without NVIDIA drivers or on non-NVIDIA hardware (e.g., AMD,
-        Intel integrated graphics, or Apple Silicon).
+        This check is NVIDIA-specific. Systems with only AMD, Intel, or Apple GPUs
+        typically return ``False`` even when a GPU is present.
     """
     cmd = shutil.which("nvidia-smi")
     if cmd is None:
@@ -59,41 +44,33 @@ def has_nvidia_gpu() -> bool:
 
 
 def load_project_env(dotenv_filename: str = ".env") -> bool:
-    """Load environment variables from the project root .env file.
+    """Load key/value pairs from a ``.env`` file at the inferred project root.
 
-    This function runs `which python` to get the current interpreter path,
-    then extracts the project root as the directory containing the `.venv` folder.
-
-    e.g. `which python` returns:
-        /Users/kzqr495/Documents/workspace/google_adk_guide/.venv/bin/python
-    so the project root is extracted as:
-        /Users/kzqr495/Documents/workspace/google_adk_guide
+    The project root is found by walking parents of the resolved ``python`` on
+    ``PATH`` until a directory containing a ``.venv`` folder is found, then
+    ``dotenv_filename`` is loaded from that directory if it exists.
 
     Args:
-        dotenv_filename (str): The name of the .env file to load (default: ".env").
+        dotenv_filename: Name of the env file relative to the project root.
 
     Returns:
-        bool: True if the .env file was found and loaded, False otherwise.
-
-    Example:
-        from {{ package_name }}._support.utils import load_project_env
-        load_project_env()
+        ``True`` if the file existed and was loaded; ``False`` if the file is
+        missing or the project root could not be determined (after logging).
     """
-
     try:
         which_python = shutil.which("python")
         if which_python is None:
             raise RuntimeError("python executable not found on PATH")
         python_path = Path(which_python).resolve()
-        # Walk up until we find the directory that contains `.venv`
+        project_root: Path | None = None
         for parent in python_path.parents:
             if (parent / ".venv").is_dir():
                 project_root = parent
                 break
-        else:
+        if project_root is None:
             raise RuntimeError(".venv not found in python path hierarchy")
-    except Exception as e:
-        log_message(f"Could not determine project root from Python executable: {e}")
+    except Exception as exc:
+        log_message(f"Could not determine project root from Python executable: {exc}")
         return False
 
     log_message(f"Python interpreter detected at: {which_python}")
@@ -108,15 +85,16 @@ def load_project_env(dotenv_filename: str = ".env") -> bool:
 
 
 def get_simple_attributes(obj: object) -> dict[str, str | int | float]:
-    """
-    Creates a dictionary of all simple attributes (str, int, float)
-    from a class instance, ignoring dicts, nested objects, callables, etc.
+    """Collect public attributes of ``obj`` whose values are ``str``, ``int``, or ``float``.
+
+    Attributes whose names start with ``_``, or whose values are callables,
+    containers, or other complex types, are omitted.
 
     Args:
-        obj: Any class instance
+        obj: Any object supporting :func:`vars` (typically a class instance).
 
     Returns:
-        dict: A dictionary of attribute_name -> value for simple types only
+        Mapping from attribute name to value for simple scalar fields only.
     """
     allowed_types = (str, int, float)
 

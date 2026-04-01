@@ -1,4 +1,8 @@
-"""Core functionality for {{ project_name }}."""
+"""Core public API for **{{ project_name }}**.
+
+This module holds small example functions that illustrate typing, optional NumPy/pandas
+integration, and docstring style. Replace them with your library's real behavior.
+"""
 
 from typing import TypeVar
 
@@ -14,16 +18,16 @@ T = TypeVar("T")
 
 
 def example_function(value: T) -> T:
-    """Return the input value unchanged.
+    """Return ``value`` unchanged (identity placeholder).
 
-    This is an example function to demonstrate the project structure.
-    Replace this with your actual functionality.
+    Use this pattern as a starting point for typed helpers: document parameters,
+    return type, and edge cases your real implementation will handle.
 
     Args:
-        value: Any value to return.
+        value: Arbitrary input; returned as-is.
 
     Returns:
-        The same value that was passed in.
+        The same object that was passed in.
 
     Examples:
         >>> example_function(42)
@@ -36,39 +40,38 @@ def example_function(value: T) -> T:
 
 {% if include_numpy %}
 def example_array_function(arr: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-    """Compute the square of each element in a NumPy array.
+    """Return a new array whose elements are the squares of ``arr``.
 
     Args:
-        arr: Input array of floats.
+        arr: One-dimensional or multi-dimensional array of ``float64`` values.
 
     Returns:
-        Array with squared values.
+        An array of the same shape as ``arr`` with each element squared.
 
     Examples:
         >>> import numpy as np
-        >>> result = example_array_function(np.array([1.0, 2.0, 3.0]))
-        >>> result
+        >>> example_array_function(np.array([1.0, 2.0, 3.0]))
         array([1., 4., 9.])
     """
-    return arr ** 2
+    return arr**2
 {% endif %}
 
 
 {% if include_pandas_support %}
 def example_dataframe_function(df: pd.DataFrame) -> pd.DataFrame:
-    """Return a copy of the input DataFrame.
+    """Return a shallow-safe copy of ``df`` (mutations to the copy do not affect ``df``).
 
     Args:
-        df: Input DataFrame.
+        df: Any :class:`pandas.DataFrame`.
 
     Returns:
-        A copy of the input DataFrame.
+        A new DataFrame with the same data as ``df``.
 
     Examples:
         >>> import pandas as pd
         >>> df = pd.DataFrame({"a": [1, 2, 3]})
-        >>> result = example_dataframe_function(df)
-        >>> result.equals(df)
+        >>> out = example_dataframe_function(df)
+        >>> out.equals(df)
         True
     """
     return df.copy()
