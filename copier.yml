@@ -147,9 +147,7 @@ github_actions_python_versions:
 # safe; failing tasks should not leave the repository in a broken state.
 _tasks:
   - ["git", "init"]
-  - command: python -m ensurepip --upgrade
-  - command: python -m pip install --upgrade pip
-  - command: python -m pip install --upgrade uv
+  - command: uv self update || true
   - command: uv lock
   - command: >-
       {% if include_docs -%}

@@ -31,4 +31,3 @@ ignore = ["E501"]
 minversion = "8.0"
 testpaths = ["tests"]
 addopts = ["-q"]
-
