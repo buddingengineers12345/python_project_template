@@ -11,6 +11,7 @@ dependencies = []
 [project.optional-dependencies]
 dev = [
   "copier>=9.0.0",
+  "jinja2-time>=0.2.0",
   "pytest>=8.0.0",
   "pytest-xdist>=3.5.0",
   "ruff>=0.8.0",

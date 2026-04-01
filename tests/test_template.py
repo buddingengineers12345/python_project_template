@@ -128,6 +128,7 @@ def test_update_workflow(tmp_path: Path) -> None:
 
 def test_copy_from_github(tmp_path: Path) -> None:
     """Test copying template directly from GitHub shortcut."""
+    pytest.skip("Temporarily disabled until this template is hosted remotely")
     target = tmp_path / "my-new-project"
     cmd = [
         "copier",
