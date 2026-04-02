@@ -63,6 +63,8 @@ just ci
 - 🤖 **`--data key=value`**: provide answers non-interactively (great for scripts)
 - 📌 **`--data-file path.yml`**: provide answers from a YAML file
 - 🔖 **`--vcs-ref ref`**: generate from a specific git ref (tag/branch/commit) of the template
+- 🧪 **`--vcs-ref HEAD`**: when developing a **local** template clone, use the current working tree (including uncommitted changes). By default Copier may pick the latest PEP 440 **tag** instead of your dirty tree.
+- ⏭️ **`--skip-tasks`**: render files without running `_tasks` (faster checks; tasks still run on `copier update` unless you pass `--skip-tasks` there too)
 
 ## Template options 🧰
 
@@ -94,15 +96,28 @@ Then, from inside the generated project folder (make sure `git status` is clean)
 copier update --trust
 ```
 
-If Copier cannot apply some changes automatically, it may produce `*.rej` files containing unresolved diffs.
-Review and resolve those before committing.
+Use **`copier update --defaults`** to reuse all previous answers without re-prompting. To change one answer only:  
+`copier update --defaults --data key=value`, or put overrides in a YAML file and use **`--data-file`**. To refresh answers against the template **without** bumping template version: **`copier update --vcs-ref=:current:`**.
+
+**`copier recopy`** reapplies the template while keeping stored answers; it does **not** use Copier’s smart merge used by **`copier update`**. Prefer `copier update` for day-to-day sync; use `recopy` when recovering from a broken update or when you explicitly want a full re-application (then reconcile with Git).
+
+**`copier check-update`** reports whether a newer template version exists (`--output-format json`, **`--quiet`** exits `2` when an update is available — useful in automation).
+
+If Copier cannot apply some changes automatically, it either writes **inline conflict markers** (default, **`--conflict inline`**) or separate **`*.rej`** files (**`--conflict rej`**). Review and resolve before committing. Generated projects include pre-commit hooks: **`check-merge-conflict`** (inline) and a hook that rejects **`*.rej`** files if you use rejection-file mode.
 
 Important:
 
 - Never manually edit `.copier-answers.yml` — it can break Copier’s update algorithm.
 - This template is intentionally conservative about overwriting user-edited files (see `copier.yml` → `_skip_if_exists`).
+- Prefer **SSH** or a clean Git remote URL for the template so credentials do not end up inside `.copier-answers.yml`.
 
 ## Developing this template 🧪
+
+### Maintainer notes (releases and migrations)
+
+- **Version tags**: Consumers get the best `copier update` experience when this template uses **PEP 440**-compatible Git tags (Copier compares tags to choose versions).
+- **`_migrations`**: When a template change is breaking (e.g. renaming paths or reshaping answers), consider adding **`_migrations`** in `copier.yml` with a **`version`** threshold so update-time scripts run in the right order. See Copier’s configuring and updating docs.
+- **Shallow clones** of the template repo can make Copier’s Git usage heavier; prefer full clones in CI if you see resource issues.
 
 Install dev dependencies for this template repo (uses the committed lockfile):
 

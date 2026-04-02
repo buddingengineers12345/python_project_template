@@ -12,6 +12,12 @@ repos:
   # ---------------------------------------------------------------------------
   - repo: local
     hooks:
+      # If you run `copier update --conflict rej`, reject committing unresolved .rej files.
+      - id: forbidden-rej-files
+        name: forbid Copier .rej rejection files
+        entry: found Copier update rejection files; review and remove them before committing.
+        language: fail
+        files: \.rej$
       - id: ruff-format
         name: Ruff Format
         entry: uv run ruff format

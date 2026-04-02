@@ -124,6 +124,11 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
     )
     assert "--extra test" in claude_content, "CLAUDE.md should include test extra for pytest"
 
+    claude_ide = temp_project_dir / ".claude"
+    assert claude_ide.is_dir(), "Missing .claude directory from template"
+    assert (claude_ide / "settings.json").is_file(), "Missing .claude/settings.json"
+    assert (claude_ide / "commands" / "test.md").is_file(), "Missing .claude/commands/test.md"
+
 
 def test_generate_defaults_only_cli(tmp_path: Path) -> None:
     """Render using only ``--defaults`` (no ``--data``) like common non-interactive usage."""
@@ -133,6 +138,48 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
     assert (test_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
     answers = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
     assert "project_name" in answers, "Defaults-only run should still persist a project_name answer"
+
+
+def test_codecov_token_not_stored_in_answers_file(tmp_path: Path) -> None:
+    """Secret answers must not be written to ``.copier-answers.yml``."""
+    test_dir = tmp_path / "secret_codecov"
+    token = "fake-codecov-token-not-for-production"
+    _ = run_command(
+        [
+            "copier",
+            "copy",
+            ".",
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+            "--data",
+            f"codecov_token={token}",
+        ]
+    )
+    answers_text = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
+    assert token not in answers_text, "Secret codecov_token must not appear in answers file"
+
+
+def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
+    """Questions with ``when: false`` must not be stored in the answers file."""
+    test_dir = tmp_path / "computed_answers"
+    _ = run_command(
+        ["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
+    )
+    answers_text = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
+    assert "current_year:" not in answers_text
+    assert "github_actions_python_versions:" not in answers_text
+
+
+def test_answers_file_warns_never_edit_manually(tmp_path: Path) -> None:
+    """Generated answers file should match Copier docs banner text."""
+    test_dir = tmp_path / "answers_banner"
+    _ = run_command(
+        ["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
+    )
+    first_line = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8").splitlines()[0]
+    assert "NEVER EDIT MANUALLY" in first_line
 
 
 def test_generate_programmatic_run_copy_local(tmp_path: Path) -> None:

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(just:*)",
+      "Bash(uv:*)",
+      "Bash(copier:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(uv publish:*)"
+    ]
+  }
+}

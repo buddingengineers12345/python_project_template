@@ -45,10 +45,11 @@ just ci
 
 This project was generated with Copier.
 
-### Generating again
+### Generating again vs updating
 
-If you run `copier copy` into a preexisting destination, Copier will "recopy" it and ignore prior history.
-This is **not** the recommended approach for updates when you want Copier to respect your project evolution.
+- **`copier recopy`** (or `copier copy` into an existing tree) reapplies the template while keeping answers;
+  it does **not** use Copier’s smart merge. Prefer **`copier update`** when you want template changes merged
+  with your local edits.
 
 ### Updating this project
 
@@ -59,8 +60,19 @@ then you can update by running:
 copier update
 ```
 
-During updates, Copier compares the template evolution with your local changes and may create `*.rej` files when it can't resolve conflicts automatically.
-Review those files before committing.
+Add **`--trust`** if the template uses tasks. Use **`--defaults`** to skip re-prompting. To change one answer:
+**`copier update --defaults --data key=value`**, or **`--data-file`**. To refresh answers without changing template version:
+**`copier update --vcs-ref=:current:`**.
+
+Check whether a newer template exists: **`copier check-update`** (automation: **`--output-format json`**, **`--quiet`**
+exits with code `2` when an update is available).
+
+During updates, Copier compares the template with your project. Unresolved hunks appear as **inline conflict markers**
+(default **`--conflict inline`**) or as **`*.rej`** files if you use **`--conflict rej`**. This repo’s pre-commit
+config includes **`check-merge-conflict`** and a hook that fails on committed **`*.rej`** files.
+
+When developing a **local** template clone, **`copier copy --vcs-ref HEAD TEMPLATE .`** uses the current working tree
+(including uncommitted files); otherwise Copier may select the latest tag instead.
 
 ⚠️ Never edit `.copier-answers.yml` manually.
 

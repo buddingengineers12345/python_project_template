@@ -26,12 +26,19 @@ just precommit-install
 
 - **Generate** a new project: `copier copy TEMPLATE DESTINATION`.
 - **Update** an existing generated project to the latest template version: `copier update`.
+- **`copier recopy`**: full re-application with saved answers; no smart merge — prefer **`copier update`** for routine sync.
 
 For updates, Copier works best when:
 
 1. The template includes a valid `.copier-answers.yml` file.
-2. The template is versioned with git tags.
+2. The template is versioned with git tags (PEP 440).
 3. The destination folder is versioned with git.
+
+Use **`copier update --trust`** if the template runs tasks. **`--defaults`**, **`--data`**, **`--data-file`**, and
+**`--vcs-ref=:current:`** behave as in Copier’s updating docs. **`copier check-update`** reports newer template
+versions (JSON and exit codes with **`--quiet`** for scripts).
+
+Template **`_tasks`** typically run on both copy and update unless you pass **`--skip-tasks`**.
 
 ### Never edit `.copier-answers.yml` by hand
 
@@ -40,14 +47,15 @@ Do not manually change the answers file (`.copier-answers.yml`, controlled by `_
 
 ### Handle update conflicts
 
-When Copier can't apply a change automatically you may see `*.rej` files. Review them before
-committing. The recommended approach is typically a pre-commit hook that forbids committing
-rejection files.
+**`--conflict inline`** (default) embeds markers in files; **`--conflict rej`** writes **`*.rej`** files.
+Pre-commit here covers both cases. Prefer SSH or credential-free template URLs so secrets do not land in
+`.copier-answers.yml`.
 
 ## Package structure
 
 Source code lives under `src/{{ package_name }}/`.
 Tests live under `tests/`.
+The `.claude/` directory holds optional Claude Code slash-command prompts for local workflows (tests, CI, template updates).
 
 ## Code style
 

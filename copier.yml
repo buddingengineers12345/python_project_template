@@ -115,9 +115,11 @@ include_numpy:
 
 codecov_token:
   type: str
+  secret: true
   help: >-
     Optional; rarely needed. CI uses the GitHub secret CODECOV_TOKEN, not this field.
     Leave empty and add the secret under repo Settings → Secrets if you use Codecov.
+    (Secret answers are not written to .copier-answers.yml.)
   default: ""
   placeholder: "Leave empty; use GitHub secret CODECOV_TOKEN"
 
@@ -128,10 +130,12 @@ codecov_token:
 # Use these for dynamic defaults and CI matrix generation.
 current_year:
   type: str
+  when: false
   default: "{% now 'utc', '%Y' %}"
 
 github_actions_python_versions:
   type: str
+  when: false
   default: >-
     {% if python_min_version == "3.11" -%}
     ["3.11", "3.12", "3.13"]
@@ -152,6 +156,10 @@ github_actions_python_versions:
 # - To avoid template generation failing on machines without `uv`, we bootstrap `uv` first.
 #   We try `pip` if available; otherwise we fall back to Astral's installer script.
 # - Keep tasks idempotent. It's okay if `uv self update` fails (offline / restricted envs).
+#
+# Copy vs update: these tasks run after both `copier copy` and `copier update` (not gated
+# with _copier_operation) so the lockfile and local env stay aligned with the template after
+# updates. Consumers may use `copier update --skip-tasks` when they want to skip them.
 _tasks:
   - ["git", "init"]
   - command: >-
