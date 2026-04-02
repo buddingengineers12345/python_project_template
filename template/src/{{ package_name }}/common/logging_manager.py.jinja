@@ -86,20 +86,13 @@ def log_section(title: str, level: int = logging.INFO) -> None:
 
     Args:
         title: Heading text.
-        level: ``logging.DEBUG`` or ``logging.INFO`` (other levels fall through
-            with no output in the current implementation).
+        level: Logging level (e.g., logging.DEBUG, logging.INFO).
     """
     logger = get_logger(__name__)
     separator = "=" * int(LOG_LINE_WIDTH * 1.1)
-
-    if level == logging.DEBUG:
-        logger.debug(separator)
-        logger.debug(title)
-        logger.debug(separator)
-    elif level == logging.INFO:
-        logger.info(separator)
-        logger.info(title)
-        logger.info(separator)
+    logger.log(level, separator)
+    logger.log(level, title)
+    logger.log(level, separator)
 
 
 def log_sub_section(title: str, level: int = logging.INFO) -> None:
@@ -107,34 +100,24 @@ def log_sub_section(title: str, level: int = logging.INFO) -> None:
 
     Args:
         title: Sub-heading text.
-        level: ``logging.DEBUG`` or ``logging.INFO``.
+        level: Logging level (e.g., logging.DEBUG, logging.INFO).
     """
     logger = get_logger(__name__)
     separator = "-" * LOG_LINE_WIDTH
-
-    if level == logging.DEBUG:
-        logger.debug(separator)
-        logger.debug(title)
-        logger.debug(separator)
-    elif level == logging.INFO:
-        logger.info(separator)
-        logger.info(title)
-        logger.info(separator)
+    logger.log(level, separator)
+    logger.log(level, title)
+    logger.log(level, separator)
 
 
 def log_section_divider(level: int = logging.INFO) -> None:
     """Emit a single horizontal rule line.
 
     Args:
-        level: ``logging.DEBUG`` or ``logging.INFO``.
+        level: Logging level (e.g., logging.DEBUG, logging.INFO).
     """
     logger = get_logger(__name__)
     separator = "-" * LOG_LINE_WIDTH
-
-    if level == logging.DEBUG:
-        logger.debug(separator)
-    elif level == logging.INFO:
-        logger.info(separator)
+    logger.log(level, separator)
 
 
 def log_fields(fields: dict[str, Any], level: int = logging.INFO) -> None:
@@ -145,12 +128,12 @@ def log_fields(fields: dict[str, Any], level: int = logging.INFO) -> None:
 
     Args:
         fields: Mapping to print as key/value lines.
-        level: ``logging.DEBUG`` or ``logging.INFO``.
+        level: Logging level (e.g., logging.DEBUG, logging.INFO).
     """
     logger = get_logger(__name__)
 
     if not fields:
-        logger.info("No fields to display.")
+        logger.log(level, "No fields to display.")
         return
 
     for key, value in fields.items():
@@ -168,10 +151,7 @@ def log_fields(fields: dict[str, Any], level: int = logging.INFO) -> None:
             else:
                 formatted_value = wrap_text(formatted_value, width=LOG_LINE_WIDTH)
 
-        if level == logging.DEBUG:
-            logger.debug("  %-*s : %s", PADDING_WIDTH, key, formatted_value)
-        elif level == logging.INFO:
-            logger.info("  %-*s : %s", PADDING_WIDTH, key, formatted_value)
+        logger.log(level, "  %-*s : %s", PADDING_WIDTH, key, formatted_value)
 
 
 def log_message(message: str, level: int = logging.INFO) -> None:
@@ -179,12 +159,8 @@ def log_message(message: str, level: int = logging.INFO) -> None:
 
     Args:
         message: Free-form text.
-        level: ``logging.DEBUG`` or ``logging.INFO``.
+        level: Logging level (e.g., logging.DEBUG, logging.INFO).
     """
     logger = get_logger(__name__)
     wrapped = wrap_text(message, width=LOG_LINE_WIDTH)
-
-    if level == logging.DEBUG:
-        logger.debug(wrapped)
-    elif level == logging.INFO:
-        logger.info(wrapped)
+    logger.log(level, wrapped)

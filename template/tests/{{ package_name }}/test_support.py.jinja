@@ -1,0 +1,53 @@
+"""Tests for :mod:`{{ package_name }}._support` utilities."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from {{ package_name }}._support.file_manager import load_json, load_markdown
+from {{ package_name }}._support.logging_manager import (
+    list_to_numbered_string,
+    wrap_text,
+)
+
+
+def test_load_json(tmp_path: Path) -> None:
+    """Round-trip a JSON file through load_json."""
+    data = {"key": "value", "number": 42}
+    path = tmp_path / "test.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    result = load_json(path)
+    assert result == data
+
+
+def test_load_markdown(tmp_path: Path) -> None:
+    """Round-trip a Markdown file through load_markdown."""
+    content = "# Hello\n\nWorld"
+    path = tmp_path / "test.md"
+    path.write_text(content, encoding="utf-8")
+    result = load_markdown(path)
+    assert result == content
+
+
+def test_list_to_numbered_string_empty() -> None:
+    """Empty list returns empty string."""
+    assert list_to_numbered_string([]) == ""
+
+
+def test_list_to_numbered_string() -> None:
+    """Items are numbered starting at 1."""
+    result = list_to_numbered_string(["a", "b", "c"])
+    assert "1. a" in result
+    assert "2. b" in result
+    assert "3. c" in result
+
+
+def test_wrap_text_empty() -> None:
+    """Falsey input returns empty string."""
+    assert wrap_text("") == ""
+
+
+def test_wrap_text_short() -> None:
+    """Short text passes through unchanged."""
+    assert wrap_text("hello world", width=80) == "hello world"

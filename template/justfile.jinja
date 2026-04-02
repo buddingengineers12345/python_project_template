@@ -74,11 +74,11 @@ precommit:
 # -------------------------------------------------------------------------
 
 sync:
-    @uv sync --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
+    @uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 
 update:
     @uv lock --upgrade
-    @uv sync --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
+    @uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 
 # -------------------------------------------------------------------------
 # Docs (optional)
@@ -120,7 +120,7 @@ clean:
     @find . -type f -name "*.pyc" -delete
 
 # -------------------------------------------------------------------------
-# CI (local mirror of GitHub Actions)
+# Static checks (lint + format + type)
 # -------------------------------------------------------------------------
 
 static_check:

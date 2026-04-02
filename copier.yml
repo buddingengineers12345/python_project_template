@@ -26,12 +26,12 @@ _answers_file: ".copier-answers.yml"
 _skip_if_exists:
   - pyproject.toml
   - README.md
-  - CONTRIBUTING.md
   - CLAUDE.md
   - src/{{ package_name }}/__init__.py
-  - "*.md"
   - mkdocs.yml
   - docs/
+  - .github/CONTRIBUTING.md
+  - .github/CODE_OF_CONDUCT.md
 
 # -------------------------------------------------------------------------
 # Questions / Prompts
@@ -209,7 +209,7 @@ _tasks:
       {%- endif %}
   - command: uv run pre-commit install
   - command: uv run pre-commit install --hook-type pre-push
-  - command: uv run ruff check --fix .
+  - command: uv run ruff check --fix --unsafe-fixes .
   - command: uv run basedpyright
   - command: echo "✅ Project {{ project_name }} created successfully!"
   - command: echo "📁 Location $(pwd)"
