@@ -12,6 +12,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from copier import run_copy
 
 
 def run_command(
@@ -113,6 +114,58 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
     assert "uv sync --frozen --extra dev" in claude_content, (
         "CLAUDE.md should document uv sync setup"
     )
+
+
+def test_generate_defaults_only_cli(tmp_path: Path) -> None:
+    """Render using only ``--defaults`` (no ``--data``) like common non-interactive usage."""
+    test_dir = tmp_path / "defaults_only"
+    _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+
+    assert (test_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
+    answers = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
+    assert "project_name" in answers, "Defaults-only run should still persist a project_name answer"
+
+
+def test_generate_programmatic_run_copy_local(tmp_path: Path) -> None:
+    """Render programmatically with :func:`copier.run_copy` from a local path."""
+    test_dir = tmp_path / "programmatic_local"
+    _worker = run_copy(
+        ".",
+        test_dir,
+        defaults=True,
+        unsafe=True,
+        skip_tasks=True,
+    )
+    assert (test_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
+
+
+def test_generate_from_vcs_git_file_url(tmp_path: Path) -> None:
+    """Render from a VCS-style template source (git+file://...) without network access."""
+    template_repo = tmp_path / "template_repo"
+    dest_dir = tmp_path / "from_vcs"
+
+    # Create a clean git repo that looks like a real template source.
+    _ = shutil.copytree(
+        Path("."),
+        template_repo,
+        dirs_exist_ok=True,
+        ignore=shutil.ignore_patterns(
+            ".git", ".venv", "__pycache__", "*.pyc", ".ruff_cache", ".pytest_cache"
+        ),
+    )
+    _ = run_command(["git", "init"], cwd=template_repo)
+    _ = run_command(["git", "config", "user.email", "test@example.com"], cwd=template_repo)
+    _ = run_command(["git", "config", "user.name", "Template Test"], cwd=template_repo)
+    _ = run_command(["git", "add", "-A"], cwd=template_repo)
+    _ = run_command(
+        ["git", "commit", "--no-verify", "-m", "chore: init template repo"], cwd=template_repo
+    )
+
+    vcs_src = f"git+file://{template_repo}"
+    _ = run_command(
+        ["copier", "copy", vcs_src, str(dest_dir), "--trust", "--defaults", "--skip-tasks"],
+    )
+    assert (dest_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
 
 
 def test_ci_checks_default_project(temp_project_dir: Path) -> None:
