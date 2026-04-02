@@ -2,34 +2,51 @@
 
 {{ project_description }}
 
+## What this project includes
+
+- **uv-first workflow** with a committed lockfile (`uv.lock`)
+- **Quality gates**: ruff (format + lint), basedpyright (type checking), pytest
+- **One-command workflows** via `just` (mirrors local/CI checks)
+{% if include_docs -%}
+- **Docs**: MkDocs site in `docs/` (served via `just docs`)
+{%- endif %}
+
 ## Quickstart
 
-Install `uv` (see `https://astral.sh/uv/`), then:
+Prerequisites:
+
+- Python {{ python_min_version }}+
+- `uv` (install from `https://astral.sh/uv/`)
+
+Create the environment and install dependencies:
 
 ```bash
 uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 ```
 
-Run tests:
-
-```bash
-uv run pytest
-```
-
-## Development
-
-Common commands:
+Run the full local CI mirror:
 
 ```bash
 just ci
 ```
 
+## Common commands
+
+- `just test`
+- `just fmt`
+- `just lint`
+- `just type`
+- `just ci`
+{% if include_docs -%}
+- `just docs`
+{%- endif %}
+
 ## Project layout
 
-- `src/{{ package_name }}/`: library code
+- `src/{{ package_name }}/`: package source
 - `tests/`: test suite
 {% if include_docs -%}
-- `docs/`: documentation source
+- `docs/`: documentation
 {%- endif %}
 
 ## License
