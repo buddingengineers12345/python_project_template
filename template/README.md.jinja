@@ -11,12 +11,12 @@
 - **Docs**: MkDocs site in `docs/` (served via `just docs`)
 {%- endif %}
 
-## Quickstart
-
-Prerequisites:
+## Prerequisites
 
 - Python {{ python_min_version }}+
-- `uv` (install from `https://astral.sh/uv/`)
+- `uv` (install from https://astral.sh/uv/)
+
+## Quickstart
 
 Create the environment and install dependencies:
 
@@ -40,6 +40,33 @@ just ci
 {% if include_docs -%}
 - `just docs`
 {%- endif %}
+
+## Copier usage (generated-project docs)
+
+This project was generated with Copier.
+
+### Generating again
+
+If you run `copier copy` into a preexisting destination, Copier will "recopy" it and ignore prior history.
+This is **not** the recommended approach for updates when you want Copier to respect your project evolution.
+
+### Updating this project
+
+If the template includes a valid `.copier-answers.yml` file and both the template and this project are versioned with git tags,
+then you can update by running:
+
+```bash
+copier update
+```
+
+During updates, Copier compares the template evolution with your local changes and may create `*.rej` files when it can't resolve conflicts automatically.
+Review those files before committing.
+
+⚠️ Never edit `.copier-answers.yml` manually.
+
+### Trusted templates
+
+Generate projects only from trusted templates, as Copier tasks run with the same level of access as your user.
 
 ## Project layout
 

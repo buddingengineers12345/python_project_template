@@ -2,12 +2,13 @@
 
 ## What this repo is
 
-This is a **Copier template repository**. Running `copier copy . /path/to/dest --trust`
-renders the `template/` directory into a new Python project. This repo is NOT a runnable
-Python application — it is the source that generates other applications.
+This repository is a **Copier template repository** (a meta-project). Running Copier against
+this repo **generates** a new Python project by rendering the `template/` directory into a
+destination folder.
 
-The `template/` directory contains Jinja2-rendered files (`.jinja` suffix or Copier
-conventions). Do not edit rendered output here; edit the source templates.
+> [!WARNING]
+> Copier can run **template tasks** during `copier copy`/`copier update`. Only use the
+> `--trust` flag with templates you trust.
 
 ## Directory structure
 
@@ -77,6 +78,28 @@ copier copy . /tmp/test-output --trust \
 ```
 
 Clean up afterward: `rm -rf /tmp/test-output`
+
+## Copy vs update (important)
+
+- **Generate** a new project: `copier copy TEMPLATE DESTINATION`.
+- **Update** an existing generated project to the latest template version: `copier update`.
+
+For updates, Copier works best when:
+
+1. The template includes a valid `.copier-answers.yml`.
+2. The template is versioned with git tags.
+3. The destination folder is versioned with git.
+
+### Never edit `.copier-answers.yml` by hand
+
+Do not manually change the answers file (`.copier-answers.yml`, controlled by `_answers_file` in
+`copier.yml`). The update algorithm relies on it and manual edits can lead to unpredictable diffs.
+
+### Handle update conflicts
+
+When Copier can't apply a change automatically you may see `*.rej` files. Review them before
+committing. The recommended approach is typically a pre-commit hook that forbids committing
+rejection files.
 
 ## How tests work
 

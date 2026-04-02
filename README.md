@@ -40,6 +40,10 @@ Prerequisites:
 - 🌱 Git
 - 🧩 `copier`
 
+> [!WARNING]
+> Generate from **trusted templates**: when a template uses Copier `tasks`, they run with the
+> same access level as your user.
+
 Generate a project from this repo root:
 
 ```bash
@@ -57,6 +61,8 @@ just ci
 - ✅ **`--defaults`**: accept defaults for all questions
 - 🔒 **`--trust`**: allow post-generation tasks (bootstraps `uv`, installs deps, runs checks, installs hooks)
 - 🤖 **`--data key=value`**: provide answers non-interactively (great for scripts)
+- 📌 **`--data-file path.yml`**: provide answers from a YAML file
+- 🔖 **`--vcs-ref ref`**: generate from a specific git ref (tag/branch/commit) of the template
 
 ## Template options 🧰
 
@@ -74,13 +80,27 @@ During `copier copy`, you’ll be prompted for:
 
 ## Updating a generated project 🔁
 
-Generated projects store answers in `.copier-answers.yml`. To update a project to the latest template:
+Generated projects store answers in `.copier-answers.yml`.
+
+For the update to work best, ensure:
+
+1. The template includes a valid `.copier-answers.yml`
+2. The template is versioned with git tags
+3. The destination folder is versioned with git
+
+Then, from inside the generated project folder (make sure `git status` is clean), run:
 
 ```bash
-copier update --trust --defaults
+copier update --trust
 ```
 
-This template is intentionally conservative about overwriting user-edited files (see `copier.yml` → `_skip_if_exists`).
+If Copier cannot apply some changes automatically, it may produce `*.rej` files containing unresolved diffs.
+Review and resolve those before committing.
+
+Important:
+
+- Never manually edit `.copier-answers.yml` — it can break Copier’s update algorithm.
+- This template is intentionally conservative about overwriting user-edited files (see `copier.yml` → `_skip_if_exists`).
 
 ## Developing this template 🧪
 
@@ -106,6 +126,14 @@ Other useful commands:
 
 ## FAQ ❓
 
+### Can Copier be applied over a preexisting project?
+
+Yes. Copier understands this use case (it powers features like updating).
+
+### Should I edit `.copier-answers.yml` manually?
+
+No. Updates rely on that file; editing it manually can lead to unpredictable diffs.
+
 ### Why is this “uv-first”?
 
 Both this template repo and generated projects expect a committed `uv.lock`. In CI and locally, `uv sync --frozen` keeps installs reproducible and fails fast on drift.
@@ -117,3 +145,8 @@ If you enable coverage upload in your CI setup, configure a GitHub **repository 
 ## References 🔗
 
 - Copier docs: `https://github.com/copier-org/copier`
+- Copier docs (official): generating, updating, configuring, FAQ
+- `https://copier.readthedocs.io/en/stable/creating/`
+- `https://copier.readthedocs.io/en/v6.0.0/updating/`
+- `https://copier.readthedocs.io/en/stable/configuring/`
+- `https://copier.readthedocs.io/en/stable/faq/`
