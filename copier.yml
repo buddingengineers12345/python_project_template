@@ -41,6 +41,7 @@ _skip_if_exists:
 project_name:
   type: str
   help: Human-readable project name (e.g., "My Library")
+  default: "My Library"
   placeholder: "My Library"
 
 project_slug:
