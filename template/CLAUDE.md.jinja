@@ -22,6 +22,28 @@ just precommit-install
 | Full CI | `just ci` |
 {% if include_docs %}| Serve docs | `just docs` |{% endif %}
 
+## Copy vs update (important)
+
+- **Generate** a new project: `copier copy TEMPLATE DESTINATION`.
+- **Update** an existing generated project to the latest template version: `copier update`.
+
+For updates, Copier works best when:
+
+1. The template includes a valid `.copier-answers.yml` file.
+2. The template is versioned with git tags.
+3. The destination folder is versioned with git.
+
+### Never edit `.copier-answers.yml` by hand
+
+Do not manually change the answers file (`.copier-answers.yml`, controlled by `_answers_file` in
+`copier.yml`). The update algorithm relies on it and manual edits can lead to unpredictable diffs.
+
+### Handle update conflicts
+
+When Copier can't apply a change automatically you may see `*.rej` files. Review them before
+committing. The recommended approach is typically a pre-commit hook that forbids committing
+rejection files.
+
 ## Package structure
 
 Source code lives under `src/{{ package_name }}/`.
