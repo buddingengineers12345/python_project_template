@@ -4,7 +4,12 @@ import argparse
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, Protocol, cast, override
+from typing import Literal, Protocol, cast
+
+try:
+    from typing import override  # py>=3.12
+except ImportError:  # pragma: no cover
+    from typing_extensions import override  # py<3.12
 
 _VERSION_RE = re.compile(r'^(?P<prefix>\s*version\s*=\s*")(?P<ver>\d+\.\d+\.\d+)(".*)$')
 
