@@ -58,4 +58,3 @@ This template repository and generated projects are expected to commit a `uv.loc
 ### Codecov in generated projects
 
 The template can wire GitHub Actions to upload coverage. Configure a **repository secret** named `CODECOV_TOKEN` in GitHub (Codecov’s token); you do not need to paste that token into Copier answers.
-

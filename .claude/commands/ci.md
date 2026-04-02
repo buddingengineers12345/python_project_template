@@ -6,7 +6,6 @@ Execute `just ci` which runs in this order:
 3. `just lint` — ruff lint check
 4. `just type` — basedpyright type check
 5. `just test` — pytest
-6. `just precommit` — pre-commit on all files
 
 After running, summarize:
 - Which steps passed and which failed

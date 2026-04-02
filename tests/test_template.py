@@ -110,7 +110,9 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
     assert claude_md.is_file(), "Missing CLAUDE.md"
     claude_content = claude_md.read_text(encoding="utf-8")
     assert "Test Project" in claude_content, "CLAUDE.md should include rendered project name"
-    assert "uv sync --frozen --extra dev" in claude_content, "CLAUDE.md should document uv sync setup"
+    assert "uv sync --frozen --extra dev" in claude_content, (
+        "CLAUDE.md should document uv sync setup"
+    )
 
 
 def test_ci_checks_default_project(temp_project_dir: Path) -> None:
