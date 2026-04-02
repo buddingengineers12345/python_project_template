@@ -13,8 +13,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from {{ package_name }}._support.decorators import handle_exceptions_valued
-from {{ package_name }}._support.logging_manager import log_message
+from {{ package_name }}.common.decorators import handle_exceptions_valued
+from {{ package_name }}.common.logging_manager import log_message
 
 
 @handle_exceptions_valued(False)

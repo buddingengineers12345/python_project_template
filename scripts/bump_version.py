@@ -4,7 +4,7 @@ import argparse
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, Protocol, cast, override
+from typing import Literal, Protocol, cast
 
 _VERSION_RE = re.compile(r'^(?P<prefix>\s*version\s*=\s*")(?P<ver>\d+\.\d+\.\d+)(".*)$')
 
@@ -37,7 +37,6 @@ class Version:
             return Version(self.major, self.minor + 1, 0)
         return Version(self.major + 1, 0, 0)
 
-    @override
     def __str__(self) -> str:
         return f"{self.major}.{self.minor}.{self.patch}"
 

@@ -225,3 +225,6 @@ data/
 
 # Claude Code local state (do not commit)
 .claude/todos/
+
+# Stray root file (accidental)
+/1
