@@ -76,24 +76,24 @@ These are **generated-project** assets (or Copier plumbing):
 
 ### Same “slot,” different content (noteworthy drift)
 
-1. **GitHub Actions action versions**  
+1. **GitHub Actions action versions**
    Root workflows tend to use **newer** pins (e.g. `actions/checkout@v6`, `astral-sh/setup-uv@v7`). Template workflows often use **older** pins (`checkout@v4`, `setup-uv@v5`). Same idea, different freshness.
 
-2. **`lint.yml` vs `lint.yml.jinja`**  
+2. **`lint.yml` vs `lint.yml.jinja`**
    Root runs **BasedPyright** and **pre-commit** in the lint job. Template `lint.yml.jinja` stops after **Ruff** (type-checking lives in **`ci.yml.jinja`** as a separate job). So “Lint” is not the same step boundary across root vs generated projects.
 
-3. **Test orchestration**  
+3. **Test orchestration**
    Root has a dedicated **`tests.yml`** (pytest, two Python versions). Template embeds tests in **`ci.yml.jinja`** with a **dynamic matrix** from `github_actions_python_versions` in `copier.yml` and adds **coverage** + optional **Codecov**.
 
-4. **`justfile` vs `justfile.jinja`**  
-   - Root `sync`/`update` use `--frozen --extra dev`; template uses extras for **test** and optional **docs**, and template `sync`/`update` omit `--frozen` in the recipes (relying on lockfile from post-gen tasks).  
-   - Template duplicates a section header around the `ci` recipe (“CI (local mirror…)”) compared to root’s cleaner `static_check` + `ci` split.  
+4. **`justfile` vs `justfile.jinja`**
+   - Root `sync`/`update` use `--frozen --extra dev`; template uses extras for **test** and optional **docs**, and template `sync`/`update` omit `--frozen` in the recipes (relying on lockfile from post-gen tasks).
+   - Template duplicates a section header around the `ci` recipe (“CI (local mirror…)”) compared to root’s cleaner `static_check` + `ci` split.
    - Root `test` targets the repo root; template scopes Ruff/pytest to **`src`** and **`tests/`**.
 
-5. **`.gitignore` vs `.gitignore.jinja`**  
+5. **`.gitignore` vs `.gitignore.jinja`**
    Root includes **`.claude/todos/`** (Claude Code local state). Template copy has an stray line **`1`** under “Specific files to ignore” and **omits** `.claude/todos/`. So the copy script has not produced a byte-identical pair.
 
-6. **`pyproject.toml` vs `pyproject.toml.jinja`**  
+6. **`pyproject.toml` vs `pyproject.toml.jinja`**
    Root has **no** `[build-system]` / Hatch / package layout; template is a full package with **optional** `docs` extra, **test** extra with coverage tools, and stricter Ruff configuration (extra rules, `src` layout). They should **not** be merged blindly.
 
 ---

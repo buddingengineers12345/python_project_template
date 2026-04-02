@@ -164,9 +164,7 @@ def test_codecov_token_not_stored_in_answers_file(tmp_path: Path) -> None:
 def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
     """Questions with ``when: false`` must not be stored in the answers file."""
     test_dir = tmp_path / "computed_answers"
-    _ = run_command(
-        ["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
-    )
+    _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
     answers_text = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
     assert "current_year:" not in answers_text
     assert "github_actions_python_versions:" not in answers_text
@@ -175,9 +173,7 @@ def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
 def test_answers_file_warns_never_edit_manually(tmp_path: Path) -> None:
     """Generated answers file should match Copier docs banner text."""
     test_dir = tmp_path / "answers_banner"
-    _ = run_command(
-        ["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
-    )
+    _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
     first_line = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8").splitlines()[0]
     assert "NEVER EDIT MANUALLY" in first_line
 

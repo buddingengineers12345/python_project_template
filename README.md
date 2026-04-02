@@ -96,7 +96,7 @@ Then, from inside the generated project folder (make sure `git status` is clean)
 copier update --trust
 ```
 
-Use **`copier update --defaults`** to reuse all previous answers without re-prompting. To change one answer only:  
+Use **`copier update --defaults`** to reuse all previous answers without re-prompting. To change one answer only:
 `copier update --defaults --data key=value`, or put overrides in a YAML file and use **`--data-file`**. To refresh answers against the template **without** bumping template version: **`copier update --vcs-ref=:current:`**.
 
 **`copier recopy`** reapplies the template while keeping stored answers; it does **not** use Copier’s smart merge used by **`copier update`**. Prefer `copier update` for day-to-day sync; use `recopy` when recovering from a broken update or when you explicitly want a full re-application (then reconcile with Git).
