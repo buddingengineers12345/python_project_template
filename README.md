@@ -1,4 +1,4 @@
-# uv-first Python project template (Copier)
+# Python Starter Template
 
 This repository is a **Copier template** for generating a modern, batteries-included Python project that is:
 
