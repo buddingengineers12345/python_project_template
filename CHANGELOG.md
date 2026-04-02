@@ -13,3 +13,4 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - GitHub Actions workflows for linting, testing, and a manual release workflow.
 - Template scaffolding for a modern `uv`-first Python project (optional docs, strict typing, and tests).
 
+
