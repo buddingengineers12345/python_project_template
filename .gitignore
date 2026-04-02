@@ -1,7 +1,6 @@
 # Local ignores
 runner.sh
 full_runner.sh
-docs/
 # ==========================================================================
 # Python Core
 # ==========================================================================
@@ -218,9 +217,11 @@ optuna_results.csv
 mlflow.db
 mlruns/
 
-
 # Data folder and its contents
 data/
+
+# Claude Code local state
+.claude/todos/
 
 # Claude Code local state (do not commit)
 .claude/todos/

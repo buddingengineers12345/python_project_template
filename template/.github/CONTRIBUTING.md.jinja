@@ -62,8 +62,9 @@ This project enforces automated formatting and linting.
 Before submitting your changes, run:
 
 ```bash
-uv run ruff
-uv run black
+just fmt    # ruff format
+just lint   # ruff lint
+just type   # basedpyright type check
 ```
 
 Ensure that:
