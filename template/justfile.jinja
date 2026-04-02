@@ -1,5 +1,5 @@
 # ==========================================================================
-# Justfile for google_adk_guide
+# Justfile for {{ project_name }}
 #
 # Usage:
 #   just            # list commands
@@ -16,7 +16,7 @@ default:
 # -------------------------------------------------------------------------
 
 _set_env:
-    @echo "Using Python >= 3.11"
+    @echo "Using Python >= {{ python_min_version }}"
     @uv --version > /dev/null
 
 # -------------------------------------------------------------------------
@@ -53,7 +53,7 @@ test-parallel:
 
 coverage:
     @uv run --active pytest tests/ \
-        --cov=src \
+        --cov={{ package_name }} \
         --cov-report=term-missing \
         --cov-report=html \
         --cov-report=xml
@@ -156,5 +156,5 @@ doctor:
     @uv run --active pytest --version
     @echo ""
     @echo "=== Project ==="
-    @echo "Package: google_adk_guide"
-    @echo "Python: >= 3.11"
+    @echo "Package: {{ package_name }}"
+    @echo "Python: >= {{ python_min_version }}"

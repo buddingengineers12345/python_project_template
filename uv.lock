@@ -533,7 +533,7 @@ wheels = [
 ]
 
 [[package]]
-name = "python-starter-template"
+name = "python-project-template"
 version = "0.0.0"
 source = { virtual = "." }
 
@@ -551,7 +551,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "basedpyright", marker = "extra == 'dev'", specifier = ">=1.21.0" },
-    { name = "copier", marker = "extra == 'dev'", specifier = ">=9.0.0" },
+    { name = "copier", marker = "extra == 'dev'", specifier = ">=9.11.2" },
     { name = "jinja2-time", marker = "extra == 'dev'", specifier = ">=0.2.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },

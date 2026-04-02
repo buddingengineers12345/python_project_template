@@ -1,4 +1,4 @@
-# Python Starter Template
+# Python Project Template
 
 <!--
 Badges: keep this row tight (5–8 max) and only include what is accurate for THIS repo.

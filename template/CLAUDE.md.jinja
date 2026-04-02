@@ -7,7 +7,7 @@
 ## Setup
 
 ```bash
-uv sync --frozen --extra dev{% if include_docs %} --extra docs{% endif %}
+uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 just precommit-install
 ```
 
@@ -31,5 +31,5 @@ Tests live under `tests/`.
 
 - Line length: 100 characters
 - Python {{ python_min_version }}+
-- Ruff rules: E, F, I, UP, B, SIM, C4, RUF
+- Ruff: rule set in `[tool.ruff.lint]` in `pyproject.toml` (E, F, I, UP, B, SIM, C4, RUF, TCH, PGH, PT, ARG; tests use per-file ignores)
 - Type annotations required (basedpyright)

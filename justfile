@@ -1,5 +1,5 @@
 # ==========================================================================
-# Justfile for python_starter_template (Copier template repo)
+# Justfile for python_project_template (Copier template repo)
 #
 # Usage:
 #   just             # list commands
@@ -142,5 +142,5 @@ doctor:
     @uv run --active pytest --version
     @echo ""
     @echo "=== Project ==="
-    @echo "Repo: python_starter_template"
+    @echo "Repo: python_project_template"
     @echo "Python: >= 3.11"

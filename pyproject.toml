@@ -1,5 +1,5 @@
 [project]
-name = "python-starter-template"
+name = "python_project_template"
 version = "0.0.0"
 description = "Copier template repository for generating uv-first Python projects."
 readme = "README.md"
@@ -10,7 +10,7 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = [
-  "copier>=9.0.0",
+  "copier>=9.11.2",
   "jinja2-time>=0.2.0",
   "pytest>=8.0.0",
   "pytest-xdist>=3.5.0",

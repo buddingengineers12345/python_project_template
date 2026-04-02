@@ -102,7 +102,15 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
     assert (temp_project_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
     assert (temp_project_dir / "src").is_dir(), "Missing src/ directory"
     assert (temp_project_dir / "tests").is_dir(), "Missing tests/ directory"
-    assert (temp_project_dir / ".github" / "workflows" / "ci.yml").exists(), "Missing CI workflow"
+    ci_workflow = temp_project_dir / ".github" / "workflows" / "ci.yml"
+    assert ci_workflow.is_file(), "Missing CI workflow"
+    ci_yaml = ci_workflow.read_text(encoding="utf-8")
+    assert "if: matrix.python-version == '3.11'" in ci_yaml, (
+        "Codecov step must gate on minimum Python matrix value (default 3.11)"
+    )
+    assert "{{ python_min_version }}" not in ci_yaml, (
+        "Rendered ci.yml must not contain unreplaced Jinja placeholders"
+    )
 
     pyproject_content = (temp_project_dir / "pyproject.toml").read_text(encoding="utf-8")
     assert 'name = "test_project"' in pyproject_content, "Incorrect project name in pyproject.toml"
@@ -114,6 +122,7 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
     assert "uv sync --frozen --extra dev" in claude_content, (
         "CLAUDE.md should document uv sync setup"
     )
+    assert "--extra test" in claude_content, "CLAUDE.md should include test extra for pytest"
 
 
 def test_generate_defaults_only_cli(tmp_path: Path) -> None:

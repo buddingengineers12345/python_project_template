@@ -82,7 +82,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
-        if: {% raw %}matrix.python-version == {{ python_min_version }}{% endraw %}
+        if: matrix.python-version == '{{ python_min_version }}'
         with:
           token: {% raw %}${{ secrets.CODECOV_TOKEN }}{% endraw %}
           files: ./coverage.xml

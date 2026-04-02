@@ -29,3 +29,9 @@ jobs:
 
       - name: Ruff lint
         run: uv run ruff check .
+
+      - name: BasedPyright
+        run: uv run basedpyright
+
+      - name: Pre-commit (all files)
+        run: uv run pre-commit run --all-files --verbose
