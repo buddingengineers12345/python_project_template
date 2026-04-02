@@ -124,6 +124,25 @@ Other useful commands:
 - 🧠 **`just type`**: type check
 - 🧪 **`just test`**: run template integration tests (renders the template and asserts output)
 
+## Releasing this template 🏷️
+
+This repo uses a manually-triggered GitHub Actions workflow to bump the template repo version, tag it, and create a GitHub Release.
+
+To cut a release:
+
+1. Go to GitHub Actions → workflow `Release`
+2. Click “Run workflow”
+3. Choose either:
+   - `bump`: `patch` / `minor` / `major`, or
+   - `version`: an explicit `X.Y.Z` (overrides `bump`)
+
+The workflow will:
+
+- Update `[project].version` in `pyproject.toml`
+- Commit the change
+- Create and push a tag `vX.Y.Z`
+- Create a GitHub Release with auto-generated release notes
+
 ## FAQ ❓
 
 ### Can Copier be applied over a preexisting project?
