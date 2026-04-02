@@ -9,9 +9,12 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+import tomllib
 from pathlib import Path
+from typing import Any
 
 import pytest
+import yaml
 from copier import run_copy
 
 
@@ -61,6 +64,59 @@ def get_default_command_list(test_dir: Path) -> list[str]:
         "--trust",
         "--defaults",
     ]
+
+
+def load_copier_answers(project_dir: Path) -> dict[str, Any]:
+    """Load ``.copier-answers.yml`` from a generated project."""
+    answers_path = project_dir / ".copier-answers.yml"
+    assert answers_path.is_file(), f"Missing {answers_path}"
+    raw = yaml.safe_load(answers_path.read_text(encoding="utf-8"))
+    assert isinstance(raw, dict)
+    return raw
+
+
+def git_commit_all(project_dir: Path, message: str) -> None:
+    """Create a commit containing all tracked and new files (initial project snapshot)."""
+    run_command(["git", "add", "-A"], cwd=project_dir)
+    run_command(
+        [
+            "git",
+            "-c",
+            "user.name=Template Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "--no-verify",
+            "-m",
+            message,
+        ],
+        cwd=project_dir,
+    )
+
+
+def copy_with_data(
+    dest: Path,
+    data: dict[str, str | bool],
+    *,
+    skip_tasks: bool = True,
+) -> None:
+    """Run ``copier copy`` with explicit ``--data`` pairs (non-interactive)."""
+    cmd: list[str] = ["copier", "copy", ".", str(dest), "--trust", "--defaults"]
+    if skip_tasks:
+        cmd.append("--skip-tasks")
+    for key, value in data.items():
+        if isinstance(value, bool):
+            rendered = "true" if value else "false"
+        else:
+            rendered = str(value)
+        cmd.extend(["--data", f"{key}={rendered}"])
+    run_command(cmd)
+
+
+def load_pyproject(project_dir: Path) -> dict[str, Any]:
+    """Parse ``pyproject.toml`` from a generated project."""
+    with (project_dir / "pyproject.toml").open("rb") as handle:
+        return tomllib.load(handle)
 
 
 def test_skip_if_exists_preserves_readme_on_update() -> None:
@@ -131,13 +187,22 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
 
 
 def test_generate_defaults_only_cli(tmp_path: Path) -> None:
-    """Render using only ``--defaults`` (no ``--data``) like common non-interactive usage."""
+    """Render using only ``--defaults`` (no ``--data``) like common non-interactive usage.
+
+    Without ``--data project_name=...``, Copier uses the template default human name
+    ``My Library``, which becomes package ``my_library`` and slug ``my-library``.
+    Pass explicit ``--data`` when you need a different distribution name.
+    """
     test_dir = tmp_path / "defaults_only"
     _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
 
     assert (test_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
-    answers = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
-    assert "project_name" in answers, "Defaults-only run should still persist a project_name answer"
+    answers = load_copier_answers(test_dir)
+    assert answers.get("project_name") == "My Library"
+    assert answers.get("package_name") == "my_library"
+    assert answers.get("project_slug") == "my-library"
+    pyproject = load_pyproject(test_dir)
+    assert pyproject["project"]["name"] == "my_library"
 
 
 def test_codecov_token_not_stored_in_answers_file(tmp_path: Path) -> None:
@@ -322,3 +387,129 @@ def test_update_workflow(tmp_path: Path) -> None:
 
     updated_content = readme.read_text(encoding="utf-8")
     assert "# User change" in updated_content, "Update overwrote user changes"
+
+
+def test_copier_update_exits_zero_after_copy_and_commit(tmp_path: Path) -> None:
+    """After ``copier copy`` and a git commit, ``copier update`` must complete without error.
+
+    The template source is a real ``git+file://`` repository with a commit so
+    ``.copier-answers.yml`` records a resolvable ``_commit`` (same shape as consumer projects).
+    Copying from a dirty working tree ``.`` without VCS metadata often makes ``copier update``
+    fail when Copier cannot check out the recorded revision.
+    """
+    template_repo = tmp_path / "template_repo"
+    test_dir = tmp_path / "update_clean"
+
+    shutil.copytree(
+        Path("."),
+        template_repo,
+        dirs_exist_ok=True,
+        ignore=shutil.ignore_patterns(
+            ".git", ".venv", "__pycache__", "*.pyc", ".ruff_cache", ".pytest_cache"
+        ),
+    )
+    run_command(["git", "init"], cwd=template_repo)
+    run_command(["git", "config", "user.email", "test@example.com"], cwd=template_repo)
+    run_command(["git", "config", "user.name", "Template Test"], cwd=template_repo)
+    run_command(["git", "add", "-A"], cwd=template_repo)
+    run_command(
+        ["git", "commit", "--no-verify", "-m", "chore: init template repo"],
+        cwd=template_repo,
+    )
+
+    vcs_src = f"git+file://{template_repo}"
+    run_command(
+        [
+            "copier",
+            "copy",
+            vcs_src,
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+            "--data",
+            "project_name=Update Smoke Test",
+            "--data",
+            "include_docs=false",
+        ]
+    )
+
+    run_command(["git", "init"], cwd=test_dir)
+    git_commit_all(test_dir, "chore: initial generated project")
+
+    result = run_command(
+        ["copier", "update", "--defaults", "--trust", "--skip-tasks"],
+        cwd=test_dir,
+        check=False,
+    )
+    assert result.returncode == 0, f"stderr:\n{result.stderr}\nstdout:\n{result.stdout}"
+
+
+def test_answers_file_matches_explicit_copy_data(tmp_path: Path) -> None:
+    """``.copier-answers.yml`` must record the same prompt answers passed via ``--data``."""
+    test_dir = tmp_path / "answers_match"
+    expected: dict[str, str | bool] = {
+        "project_name": "Rocket Telemetry",
+        "project_slug": "rocket-telemetry",
+        "package_name": "rocket_telemetry",
+        "project_description": "Downlink parsing utilities",
+        "author_name": "Mission Control",
+        "author_email": "mc@example.com",
+        "github_username": "example-org",
+        "python_min_version": "3.12",
+        "license": "BSD-3-Clause",
+        "include_docs": False,
+        "include_pandas_support": True,
+        "include_numpy": True,
+    }
+    copy_with_data(test_dir, expected)
+
+    answers = load_copier_answers(test_dir)
+    for key, value in expected.items():
+        assert answers.get(key) == value, f"answers[{key!r}] != {value!r}"
+
+
+def test_pyproject_and_tree_match_explicit_copy_data(tmp_path: Path) -> None:
+    """Rendered files must reflect ``package_name``, tooling flags, and metadata from ``--data``."""
+    test_dir = tmp_path / "tree_match"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Ocean Buoy",
+            "project_slug": "ocean-buoy",
+            "package_name": "ocean_buoy",
+            "project_description": "Marine sensor ingestion",
+            "author_name": "Harbor Lab",
+            "author_email": "dev@harbor.lab",
+            "github_username": "harbor-lab",
+            "python_min_version": "3.13",
+            "license": "Apache-2.0",
+            "include_docs": True,
+            "include_pandas_support": False,
+            "include_numpy": False,
+        },
+    )
+
+    pyproject = load_pyproject(test_dir)
+    proj = pyproject["project"]
+    assert proj["name"] == "ocean_buoy"
+    assert proj["description"] == "Marine sensor ingestion"
+    assert proj["requires-python"] == ">=3.13"
+    assert proj["license"] == {"text": "Apache-2.0"}
+    authors = proj["authors"]
+    assert len(authors) == 1
+    assert authors[0] == {"name": "Harbor Lab", "email": "dev@harbor.lab"}
+
+    deps: list[str] = proj["dependencies"]
+    assert not any("pandas" in d for d in deps)
+    assert not any("numpy" in d for d in deps)
+
+    assert (test_dir / "mkdocs.yml").is_file()
+    assert (test_dir / "src" / "ocean_buoy" / "__init__.py").is_file()
+    assert (test_dir / "tests" / "ocean_buoy" / "test_core.py").is_file()
+
+    readme = (test_dir / "README.md").read_text(encoding="utf-8")
+    assert "Ocean Buoy" in readme
+    urls = proj["urls"]
+    assert urls["Homepage"] == "https://github.com/harbor-lab/ocean-buoy"
+    assert urls["Repository"] == "https://github.com/harbor-lab/ocean-buoy"
