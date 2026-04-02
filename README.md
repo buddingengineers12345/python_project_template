@@ -1,29 +1,44 @@
 # Python Starter Template
 
-This repository is a **Copier template** for generating a modern, batteries-included Python project that is:
+<!--
+Badges: keep this row tight (5–8 max) and only include what is accurate for THIS repo.
+-->
 
-- **uv-first**: reproducible installs with a committed `uv.lock`
-- **fast to iterate**: one `just ci` command mirrors your local/CI checks
-- **strict by default**: ruff for lint/format and basedpyright for type checking
-- **optionally data- and docs-ready**: toggle NumPy/pandas and MkDocs during generation
+[![Lint](https://github.com/buddingengineers12345/python_project_template/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/buddingengineers12345/python_project_template/actions/workflows/lint.yml)
+[![CI Tests](https://github.com/buddingengineers12345/python_project_template/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/buddingengineers12345/python_project_template/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-success.svg)](./LICENSE)
+[![Copier](https://img.shields.io/badge/Template-Copier-blue.svg)](https://github.com/copier-org/copier)
+[![uv](https://img.shields.io/badge/Dependency%20manager-uv-6f43ff.svg)](https://astral.sh/uv/)
 
-This repo is the **template source** (a meta-project), not the generated project itself.
+✨ A **Copier template** for generating a modern Python project that is **uv-first**, **strict by default**, and easy to maintain.
 
-## What you get
+> [!NOTE]
+> This repository is the **template source** (a meta-project). To create a project, you **generate** into a new directory.
 
-- **Dependency workflow**: `uv` + lockfile-first installs (`uv sync --frozen`)
-- **Quality gates**: ruff (format + lint), basedpyright (strict typing), pytest
-- **Automation**: pre-commit hooks and a `justfile` with common commands
-- **CI-ready defaults**: GitHub Actions workflow and coverage upload wiring (optional)
-- **Update-friendly**: conservative `copier update` behavior via `_skip_if_exists`
+## Highlights ✨
 
-## Quickstart: generate a new project
+- 🚀 **uv-first + lockfile-first**: reproducible installs with `uv.lock` and `uv sync --frozen`
+- 🧹 **Quality gates**: ruff (format + lint), basedpyright (type checking), pytest
+- 🛠️ **One-command workflows**: `just ci` mirrors what CI enforces
+- 📚 **Optional docs**: MkDocs (toggle during generation)
+- 📊 **Optional data stack**: NumPy and/or pandas (toggle during generation)
+- 🔁 **Update-friendly**: conservative `copier update` behavior via `_skip_if_exists`
+
+## Table of contents 🧭
+
+- [Quickstart](#quickstart-)
+- [Template options](#template-options-)
+- [Updating a generated project](#updating-a-generated-project-)
+- [Developing this template](#developing-this-template-)
+- [FAQ](#faq-)
+
+## Quickstart ⚡
 
 Prerequisites:
 
-- Python 3.11+
-- Git
-- `copier` (installed however you prefer)
+- 🐍 Python 3.11+
+- 🌱 Git
+- 🧩 `copier`
 
 Generate a project from this repo root:
 
@@ -31,30 +46,33 @@ Generate a project from this repo root:
 copier copy . /path/to/new-project --trust --defaults
 ```
 
-Common flags:
-
-- **`--defaults`**: accept defaults for all questions
-- **`--trust`**: allow running post-generation tasks (install, format, type-check, hooks)
-- **`--data key=value`**: answer questions non-interactively (useful in scripts/CI)
-
-After generation, the new project will include a `justfile`. Typical first run:
+Then, inside the generated project, run:
 
 ```bash
 just ci
 ```
 
-## Template options (prompts)
+### Useful Copier flags
 
-During `copier copy`, you’ll be asked for:
+- ✅ **`--defaults`**: accept defaults for all questions
+- 🔒 **`--trust`**: allow post-generation tasks (bootstraps `uv`, installs deps, runs checks, installs hooks)
+- 🤖 **`--data key=value`**: provide answers non-interactively (great for scripts)
 
-- **Project identity**: `project_name`, `project_slug`, `package_name`, description, author, GitHub org/user
-- **Python baseline**: minimum version (3.11 / 3.12 / 3.13)
-- **Add-ons**:
-  - **Docs**: MkDocs setup (`include_docs`)
-  - **Data stack**: NumPy (`include_numpy`) and pandas (`include_pandas_support`)
-- **Codecov**: leave the `codecov_token` prompt empty; prefer the GitHub secret described below
+## Template options 🧰
 
-## Updating a generated project
+During `copier copy`, you’ll be prompted for:
+
+- 🏷️ **Project identity**: `project_name`, `project_slug`, `package_name`, description, author, GitHub org/user
+- 🐍 **Python baseline**: minimum version (3.11 / 3.12 / 3.13)
+- ➕ **Add-ons**:
+  - 📚 MkDocs (`include_docs`)
+  - 📊 NumPy (`include_numpy`)
+  - 🐼 pandas (`include_pandas_support`)
+
+> [!TIP]
+> For Codecov, prefer configuring the GitHub **repository secret** `CODECOV_TOKEN` rather than providing a token at generation time.
+
+## Updating a generated project 🔁
 
 Generated projects store answers in `.copier-answers.yml`. To update a project to the latest template:
 
@@ -62,11 +80,11 @@ Generated projects store answers in `.copier-answers.yml`. To update a project t
 copier update --trust --defaults
 ```
 
-This template is intentionally conservative about overwriting user-edited files (see `copier.yml`’s `_skip_if_exists`).
+This template is intentionally conservative about overwriting user-edited files (see `copier.yml` → `_skip_if_exists`).
 
-## Developing this template
+## Developing this template 🧪
 
-Install dev dependencies for the template repo (uses the committed lockfile):
+Install dev dependencies for this template repo (uses the committed lockfile):
 
 ```bash
 just sync
@@ -80,12 +98,13 @@ just ci
 
 Other useful commands:
 
-- **`just fmt`**: format
-- **`just lint`**: lint
-- **`just type`**: type check
-- **`just test`**: run template integration tests (renders the template and asserts output)
+- 🧹 **`just fix`**: auto-fix lint issues
+- ✨ **`just fmt`**: format
+- 🔍 **`just lint`**: lint
+- 🧠 **`just type`**: type check
+- 🧪 **`just test`**: run template integration tests (renders the template and asserts output)
 
-## FAQ
+## FAQ ❓
 
 ### Why is this “uv-first”?
 
@@ -93,8 +112,8 @@ Both this template repo and generated projects expect a committed `uv.lock`. In 
 
 ### How does Codecov work in generated projects?
 
-If you enable coverage upload in your CI setup, configure a **repository secret** named `CODECOV_TOKEN` in GitHub. You typically do not need to provide a token as a Copier answer.
+If you enable coverage upload in your CI setup, configure a GitHub **repository secret** named `CODECOV_TOKEN`. You typically do not need to provide a token as a Copier answer.
 
-## References
+## References 🔗
 
 - Copier docs: `https://github.com/copier-org/copier`
