@@ -367,7 +367,9 @@ def test_generate_numpy_only(tmp_path: Path) -> None:
         },
     )
     pyproject = load_pyproject(test_dir)
-    deps: list[str] = pyproject["project"]["dependencies"]
+    project = require_mapping(pyproject.get("project"), name="pyproject.project")
+    deps_seq = require_sequence(project["dependencies"], name="pyproject.project.dependencies")
+    deps = [cast(str, d) for d in deps_seq]
     assert any("numpy" in d for d in deps), "numpy should be in dependencies"
     assert not any("pandas" in d for d in deps), "pandas should NOT be in dependencies"
     # Verify the generated test file doesn't reference pandas
@@ -389,7 +391,9 @@ def test_generate_pandas_only(tmp_path: Path) -> None:
         },
     )
     pyproject = load_pyproject(test_dir)
-    deps: list[str] = pyproject["project"]["dependencies"]
+    project = require_mapping(pyproject.get("project"), name="pyproject.project")
+    deps_seq = require_sequence(project["dependencies"], name="pyproject.project.dependencies")
+    deps = [cast(str, d) for d in deps_seq]
     assert any("pandas" in d for d in deps), "pandas should be in dependencies"
     assert not any("numpy" in d for d in deps), "numpy should NOT be in dependencies"
     test_core = (test_dir / "tests" / "pandas_only" / "test_core.py").read_text(encoding="utf-8")
@@ -418,7 +422,8 @@ def test_license_rendering(tmp_path: Path, license_choice: str) -> None:
     assert len(content.strip()) > 10, f"LICENSE file is too short for {license_choice}"
 
     pyproject = load_pyproject(test_dir)
-    assert pyproject["project"]["license"] == {"text": license_choice}
+    project = require_mapping(pyproject.get("project"), name="pyproject.project")
+    assert project["license"] == {"text": license_choice}
 
 
 @pytest.mark.skip(reason="Environment issue: basedpyright not available in post-gen tasks")
