@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, ParamSpec, TypeVar
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-from {{ package_name }}._support.logging_manager import get_logger, log_message
+from {{ package_name }}.common.logging_manager import get_logger, log_message
 
 P = ParamSpec("P")
 R = TypeVar("R")
