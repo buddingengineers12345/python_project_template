@@ -143,10 +143,53 @@ github_actions_python_versions:
 # -------------------------------------------------------------------------
 # Post-generation tasks
 # -------------------------------------------------------------------------
-# Commands run after template rendering. Keep tasks idempotent and
-# safe; failing tasks should not leave the repository in a broken state.
+# Commands run after template rendering.
+#
+# Notes / rationale:
+# - Generated projects are "uv-first" (lock-file-first workflow). These tasks should succeed even
+#   when the host Python lacks `ensurepip`/`pip` (common on minimal distro Pythons).
+# - To avoid template generation failing on machines without `uv`, we bootstrap `uv` first.
+#   We try `pip` if available; otherwise we fall back to Astral's installer script.
+# - Keep tasks idempotent. It's okay if `uv self update` fails (offline / restricted envs).
 _tasks:
   - ["git", "init"]
+  - command: >-
+      sh -c '
+      # Bootstrap `uv` if missing.
+      #
+      # Copier executes tasks via /bin/sh, so this must be POSIX-sh compatible.
+      # We try (in order):
+      # - existing `uv` on PATH
+      # - `python -m pip install uv` (if pip is available)
+      # - Astral install script via curl/wget
+      if command -v uv >/dev/null 2>&1; then
+        exit 0
+      fi
+
+      if command -v python >/dev/null 2>&1 && python -m pip --version >/dev/null 2>&1; then
+        python -m pip install --upgrade uv && exit 0
+      fi
+
+      if command -v python3 >/dev/null 2>&1 && python3 -m pip --version >/dev/null 2>&1; then
+        python3 -m pip install --upgrade uv && exit 0
+      fi
+
+      if command -v curl >/dev/null 2>&1; then
+        curl -LsSf https://astral.sh/uv/install.sh | sh || exit 1
+      elif command -v wget >/dev/null 2>&1; then
+        wget -qO- https://astral.sh/uv/install.sh | sh || exit 1
+      else
+        echo "uv is required but was not found, and neither curl nor wget is available to install it." >&2
+        exit 1
+      fi
+
+      # Astral installer typically drops an env file that prepends ~/.local/bin to PATH.
+      if [ -f "$HOME/.local/bin/env" ]; then
+        . "$HOME/.local/bin/env"
+      fi
+
+      command -v uv >/dev/null 2>&1
+      '
   - command: uv self update || true
   - command: uv lock
   - command: >-
