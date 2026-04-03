@@ -14,6 +14,8 @@ dev = [
   "jinja2-time>=0.2.0",
   "pytest>=8.0.0",
   "pytest-xdist>=3.5.0",
+  "pytest-cov>=6.0.0",
+  "coverage[toml]>=7.6.0",
   "ruff>=0.8.0",
   "basedpyright>=1.21.0",
   "pre-commit>=4.0.0",
@@ -25,13 +27,53 @@ line-length = 100
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
-ignore = ["E501"]
+select = [
+  "E",    # pycodestyle errors
+  "F",    # pyflakes
+  "I",    # isort
+  "UP",   # pyupgrade
+  "B",    # flake8-bugbear
+  "SIM",  # flake8-simplify
+  "C4",   # flake8-comprehensions
+  "RUF",  # ruff-specific rules
+  "D",    # pydocstyle — enforce Google-style docstrings
+  "C90",  # McCabe complexity
+  "PERF", # perflint — catch performance anti-patterns
+]
+ignore = [
+  "E501",  # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**"   = ["D"]  # test functions don't require docstrings
+"scripts/**" = ["D"]  # utility scripts don't require docstrings
 
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
 addopts = ["-q"]
 
+# ==========================================================================
+# Coverage Configuration (for template-repo test suite)
+# ==========================================================================
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+
 [tool.basedpyright]
+typeCheckingMode = "standard"
 reportImplicitOverride = false
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
