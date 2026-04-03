@@ -112,3 +112,96 @@ The `.claude/` directory holds Claude Code slash-command prompts and PostToolUse
 - Docstring convention: **Google style** (enforced by ruff `D` rules + `pydocstyle.convention = "google"`).
 - McCabe complexity: max 10 per function.
 - Type annotations required on all public functions and methods (basedpyright strict mode).
+
+## Structured logging (structlog)
+
+This project uses **structlog** for all logging. Standard `logging.getLogger()` is never used in
+application code.
+
+### Setup (call once from entry point)
+
+```python
+from {{ package_name }}.common.logging_manager import configure_logging
+configure_logging()   # auto-detects HUMAN vs LLM mode
+```
+
+### Usage in every module
+
+```python
+import structlog
+log = structlog.get_logger()
+
+log.debug("cache_miss", key="user:42")                              # human only
+log.info("order_created", order_id=123, status="pending")           # human only
+log.warning("retry_attempted", attempt=2, reason="timeout", llm=True)  # human + LLM
+log.error("payment_failed", order_id=123, reason="insufficient_funds", llm=True)
+```
+
+### Execution modes
+
+| Mode | Activated by | Log level | Output | Events shown |
+|------|-------------|-----------|--------|--------------|
+| **HUMAN** | default | `DEBUG` | coloured console | all events |
+| **LLM** | `EXECUTION_CONTEXT=llm` | `WARNING` | compact JSON | `llm=True` only |
+
+```bash
+# Human development (default)
+python -m {{ package_name }}
+
+# LLM agent execution
+EXECUTION_CONTEXT=llm python -m {{ package_name }}
+```
+
+### Rules — non-negotiable
+
+| ✅ DO | ❌ DO NOT |
+|-------|----------|
+| `log.info("order_created", order_id=123)` | `log.info(f"Order {id} was created")` |
+| snake_case event names | Natural language sentences as events |
+| Pass IDs, counts, hashes | Log full payloads or raw objects |
+| Flat key-value schema | Nest dicts more than one level |
+| `llm=True` for LLM-visible events | Configure structlog outside `configure_logging()` |
+| `bind_context(request_id=...)` at request start | Repeat context keys in every log call |
+
+### Context binding
+
+```python
+from {{ package_name }}.common.logging_manager import bind_context, clear_context
+
+# At the start of a request/task — all logs in this context get these fields
+bind_context(request_id="req-abc", user_id=42)
+
+# At the end — prevents context bleeding to the next task
+clear_context()
+```
+
+### Preferred event schema
+
+```json
+{ "event": "...", "status": "...", "id": "...", "reason": "...", "count": 0 }
+```
+
+- Use consistent key names across modules
+- Prefer enums / short codes over long text values
+- Never log secrets, PII, or full stack traces in LLM mode
+
+### LLM-visible log tagging
+
+Only tag events with `llm=True` when the information is needed for LLM reasoning:
+
+```python
+# ✅ Tag: LLM needs to know a payment failed to reason about retry strategy
+log.error("payment_failed", order_id=123, reason="timeout", llm=True)
+
+# ❌ Don't tag: internal cache miss — irrelevant to LLM reasoning
+log.debug("cache_miss", key="session:abc")
+```
+
+### Level guidance
+
+| Level | When to use | LLM-visible? |
+|-------|-------------|--------------|
+| `DEBUG` | Internal state, never for LLM | Never |
+| `INFO` | Normal application events | Only with `llm=True` |
+| `WARNING` | Recoverable anomalies worth attention | Only with `llm=True` |
+| `ERROR` | Always tag `llm=True` for error events | Yes (with `llm=True`) |

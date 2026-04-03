@@ -3,13 +3,33 @@
 from __future__ import annotations
 
 import json
+import logging
+import os
+from io import StringIO
 from pathlib import Path
+from typing import Any
+
+import pytest
+import structlog
 
 from {{ package_name }}.common.file_manager import load_json, load_markdown
 from {{ package_name }}.common.logging_manager import (
-    list_to_numbered_string,
-    wrap_text,
+    IS_LLM,
+    EXECUTION_CONTEXT,
+    bind_context,
+    clear_context,
+    configure_logging,
+    get_logger,
+    _drop_debug_events,
+    _filter_llm_events,
+    _flatten_nested_dicts,
+    _truncate_long_values,
 )
+
+
+# ---------------------------------------------------------------------------
+# File manager tests
+# ---------------------------------------------------------------------------
 
 
 def test_load_json(tmp_path: Path) -> None:
@@ -30,24 +50,188 @@ def test_load_markdown(tmp_path: Path) -> None:
     assert result == content
 
 
-def test_list_to_numbered_string_empty() -> None:
-    """Empty list returns empty string."""
-    assert list_to_numbered_string([]) == ""
+# ---------------------------------------------------------------------------
+# Context-detection tests
+# ---------------------------------------------------------------------------
 
 
-def test_list_to_numbered_string() -> None:
-    """Items are numbered starting at 1."""
-    result = list_to_numbered_string(["a", "b", "c"])
-    assert "1. a" in result
-    assert "2. b" in result
-    assert "3. c" in result
+def test_execution_context_is_valid_string() -> None:
+    """EXECUTION_CONTEXT must be either 'human' or 'llm'."""
+    assert EXECUTION_CONTEXT in ("human", "llm")
 
 
-def test_wrap_text_empty() -> None:
-    """Falsey input returns empty string."""
-    assert wrap_text("") == ""
+def test_is_llm_matches_execution_context() -> None:
+    """IS_LLM must be consistent with EXECUTION_CONTEXT."""
+    assert IS_LLM == (EXECUTION_CONTEXT == "llm")
 
 
-def test_wrap_text_short() -> None:
-    """Short text passes through unchanged."""
-    assert wrap_text("hello world", width=80) == "hello world"
+def test_context_forced_to_llm(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Setting EXECUTION_CONTEXT=llm returns 'llm'."""
+    from {{ package_name }}.common import logging_manager
+
+    monkeypatch.setenv("EXECUTION_CONTEXT", "llm")
+    assert logging_manager._detect_context() == "llm"
+
+
+def test_context_forced_to_human(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Setting EXECUTION_CONTEXT=human returns 'human'."""
+    from {{ package_name }}.common import logging_manager
+
+    monkeypatch.setenv("EXECUTION_CONTEXT", "human")
+    assert logging_manager._detect_context() == "human"
+
+
+def test_context_defaults_to_human(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Without any env vars, default context is 'human'."""
+    from {{ package_name }}.common import logging_manager
+
+    monkeypatch.delenv("EXECUTION_CONTEXT", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("HUMAN_DEV", raising=False)
+    assert logging_manager._detect_context() == "human"
+
+
+# ---------------------------------------------------------------------------
+# Custom processor tests
+# ---------------------------------------------------------------------------
+
+# Shared no-op logger / method for processor calls
+_NOOP_LOGGER: Any = None
+_NOOP_METHOD = "info"
+
+
+def test_filter_llm_events_passes_tagged_event() -> None:
+    """Events with llm=True pass through and the key is removed."""
+    event_dict: dict[str, Any] = {"event": "order_created", "order_id": 1, "llm": True}
+    result = _filter_llm_events(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    assert "llm" not in result
+    assert result["event"] == "order_created"
+
+
+def test_filter_llm_events_drops_untagged_event() -> None:
+    """Events without llm=True raise DropEvent."""
+    event_dict: dict[str, Any] = {"event": "order_created", "order_id": 1}
+    with pytest.raises(structlog.DropEvent):
+        _filter_llm_events(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+
+
+def test_filter_llm_events_drops_false_tag() -> None:
+    """Events with llm=False raise DropEvent."""
+    event_dict: dict[str, Any] = {"event": "debug_detail", "llm": False}
+    with pytest.raises(structlog.DropEvent):
+        _filter_llm_events(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+
+
+def test_drop_debug_events_suppresses_debug() -> None:
+    """Debug method raises DropEvent."""
+    with pytest.raises(structlog.DropEvent):
+        _drop_debug_events(_NOOP_LOGGER, "debug", {"event": "internal"})
+
+
+def test_drop_debug_events_suppresses_trace() -> None:
+    """Trace method raises DropEvent."""
+    with pytest.raises(structlog.DropEvent):
+        _drop_debug_events(_NOOP_LOGGER, "trace", {"event": "internal"})
+
+
+def test_drop_debug_events_passes_warning() -> None:
+    """Warning method passes through unchanged."""
+    event_dict: dict[str, Any] = {"event": "anomaly_detected"}
+    result = _drop_debug_events(_NOOP_LOGGER, "warning", event_dict)
+    assert result is event_dict
+
+
+def test_truncate_long_values_shortens_strings() -> None:
+    """Strings exceeding max_len are truncated with length annotation."""
+    long_value = "x" * 300
+    event_dict: dict[str, Any] = {"event": "data_received", "payload": long_value}
+    result = _truncate_long_values(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    assert len(result["payload"]) < 300
+    assert "[len=300]" in result["payload"]
+
+
+def test_truncate_long_values_skips_event_key() -> None:
+    """The 'event' key is never truncated regardless of length."""
+    long_event = "e" * 300
+    event_dict: dict[str, Any] = {"event": long_event}
+    result = _truncate_long_values(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    assert result["event"] == long_event
+
+
+def test_truncate_long_values_passes_short_strings() -> None:
+    """Short strings pass through unchanged."""
+    event_dict: dict[str, Any] = {"event": "ok", "msg": "short"}
+    result = _truncate_long_values(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    assert result["msg"] == "short"
+
+
+def test_flatten_nested_dicts_inlines_one_level() -> None:
+    """Nested dict values are inlined with dot-notation keys."""
+    event_dict: dict[str, Any] = {
+        "event": "request_handled",
+        "meta": {"region": "eu-west", "zone": "a"},
+    }
+    result = _flatten_nested_dicts(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    assert "meta" not in result
+    assert result["meta.region"] == "eu-west"
+    assert result["meta.zone"] == "a"
+
+
+def test_flatten_nested_dicts_skips_exception_key() -> None:
+    """The 'exception' key is never flattened."""
+    exc_data = {"type": "ValueError", "msg": "bad input"}
+    event_dict: dict[str, Any] = {"event": "error", "exception": exc_data}
+    result = _flatten_nested_dicts(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    assert result["exception"] is exc_data
+
+
+# ---------------------------------------------------------------------------
+# configure_logging + get_logger integration tests
+# ---------------------------------------------------------------------------
+
+
+def test_configure_logging_human_mode_does_not_raise() -> None:
+    """configure_logging in human mode must not raise."""
+    configure_logging(context="human", level="WARNING")
+
+
+def test_configure_logging_llm_mode_does_not_raise() -> None:
+    """configure_logging in LLM mode must not raise."""
+    configure_logging(context="llm", level="WARNING")
+
+
+def test_get_logger_returns_bound_logger() -> None:
+    """get_logger must return an object with .info, .warning, .error."""
+    bound = get_logger(__name__)
+    assert hasattr(bound, "info")
+    assert hasattr(bound, "warning")
+    assert hasattr(bound, "error")
+
+
+def test_get_logger_binds_name() -> None:
+    """Logger returned by get_logger carries the bound name."""
+    bound = get_logger("my.module")
+    assert bound._context.get("logger") == "my.module"
+
+
+def test_get_logger_binds_initial_values() -> None:
+    """Extra kwargs passed to get_logger are bound to every event."""
+    bound = get_logger(__name__, service="payments")
+    assert bound._context.get("service") == "payments"
+
+
+# ---------------------------------------------------------------------------
+# Context variable helpers
+# ---------------------------------------------------------------------------
+
+
+def test_bind_and_clear_context() -> None:
+    """bind_context attaches values; clear_context removes them."""
+    configure_logging(context="human", level="WARNING")
+    bind_context(request_id="req-abc", user_id=99)
+    ctx = structlog.contextvars.get_contextvars()
+    assert ctx.get("request_id") == "req-abc"
+    assert ctx.get("user_id") == 99
+
+    clear_context()
+    assert structlog.contextvars.get_contextvars() == {}
