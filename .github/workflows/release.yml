@@ -1,6 +1,9 @@
 name: Release
 
 on:
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
     inputs:
       bump:
@@ -54,9 +57,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Bump version
+      - name: Determine version
         id: bump
         run: |
+          # If this workflow was triggered by pushing a tag (vX.Y.Z), use that version.
+          if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+            ref="${GITHUB_REF_NAME}"
+            if echo "${ref}" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "version=${ref#v}" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+            echo "Unexpected tag ref: ${ref}" >&2
+            exit 1
+          fi
+
           if [ -n "${{ inputs.version }}" ]; then
             NEW_VERSION="$(uv run --active python scripts/bump_version.py --new-version "${{ inputs.version }}")"
           else
@@ -65,15 +79,18 @@ jobs:
           echo "version=${NEW_VERSION}" >> "${GITHUB_OUTPUT}"
 
       - name: Commit version bump
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           git add pyproject.toml
           git commit -m "chore(release): v${{ steps.bump.outputs.version }}"
 
       - name: Create tag
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           git tag "v${{ steps.bump.outputs.version }}"
 
       - name: Push commit and tag
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           git push origin HEAD
           git push origin "v${{ steps.bump.outputs.version }}"
@@ -84,5 +101,5 @@ jobs:
         run: |
           gh release create "v${{ steps.bump.outputs.version }}" \
             --title "v${{ steps.bump.outputs.version }}" \
-            --generate-notes \
+            --notes-file CHANGELOG.md \
             ${{ inputs.prerelease && '--prerelease' || '' }}

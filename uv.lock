@@ -534,7 +534,7 @@ wheels = [
 
 [[package]]
 name = "python-project-template"
-version = "0.0.0"
+version = "0.0.1"
 source = { virtual = "." }
 
 [package.optional-dependencies]
