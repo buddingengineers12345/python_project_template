@@ -166,3 +166,31 @@ file, add a corresponding test.
 ```bash
 just clean   # removes build/, dist/, .pytest_cache, .ruff_cache, __pycache__, *.pyc
 ```
+
+## Recent improvements (April 2026)
+
+### Package structure
+- Renamed `_support` package to `common` for clearer semantics
+- Refactored support utilities into dedicated modules: `file_manager`, `logging_manager`, `decorators`, `utils`
+- Enhanced logging manager with level-aware log functions for all severity levels
+
+### Testing enhancements
+- Added comprehensive test coverage for `common` utilities (`test_support.py`)
+- Improved test organization with new `tests/` directory structure in generated projects
+- Added parametrized tests for license rendering and feature combinations
+
+### CI/CD improvements
+- Updated GitHub Actions workflow versions for better compatibility
+- Added `--frozen` flag to `uv sync/update` recipes for reproducible builds
+- Added pre-commit hook to reject Copier rejection files (`*.rej`)
+- Enhanced test matrix to include Python 3.13 testing
+
+### Documentation scaffolding
+- Added `docs/` directory template with MkDocs structure
+- Added `index.md.jinja` documentation template
+- Added `.claude/` commands for template-specific automation
+
+### Release automation
+- Added `release.yml` GitHub Actions workflow for automated version bumping and releases
+- Integrated `scripts/bump_version.py` for PEP 440 version management
+- Template now supports manual release triggering with configurable bump strategy

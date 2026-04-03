@@ -17,12 +17,13 @@ Badges: keep this row tight (5–8 max) and only include what is accurate for TH
 
 ## Highlights ✨
 
-- 🚀 **uv-first + lockfile-first**: reproducible installs with `uv.lock` and `uv sync --frozen`
-- 🧹 **Quality gates**: ruff (format + lint), basedpyright (type checking), pytest
-- 🛠️ **One-command workflows**: `just ci` mirrors what CI enforces
-- 📚 **Optional docs**: MkDocs (toggle during generation)
-- 📊 **Optional data stack**: NumPy and/or pandas (toggle during generation)
+- 🚀 **uv-first + lockfile-first**: reproducible installs with `uv lock --frozen` and `uv sync --frozen`
+- 🧹 **Quality gates**: ruff (format + lint), basedpyright (type check), pytest with coverage
+- 🛠️ **One-command workflows**: `just ci` mirrors GitHub Actions exactly
+- 📚 **Optional docs**: MkDocs scaffolding (toggle during generation)
+- 📊 **Optional data stack**: NumPy and/or pandas support (toggle during generation)
 - 🔁 **Update-friendly**: conservative `copier update` behavior via `_skip_if_exists`
+- 🤖 **Automated releases**: GitHub Actions workflow for versioning and releases
 
 ## Table of contents 🧭
 
@@ -134,10 +135,21 @@ just ci
 Other useful commands:
 
 - 🧹 **`just fix`**: auto-fix lint issues
-- ✨ **`just fmt`**: format
-- 🔍 **`just lint`**: lint
-- 🧠 **`just type`**: type check
+- ✨ **`just fmt`**: format code
+- 🔍 **`just lint`**: lint check
+- 🧠 **`just type`**: type check (strict mode)
 - 🧪 **`just test`**: run template integration tests (renders the template and asserts output)
+- 📊 **`just coverage`**: run tests with coverage report
+- ⚡ **`just test-parallel`**: run tests in parallel (faster)
+
+### Testing this template
+
+The test suite (`tests/test_template.py`) uses pytest to:
+- Render the template with various configurations
+- Validate generated project structure
+- Check that generated projects have valid Python syntax
+- Verify CI/CD workflow files are valid YAML
+- Test all combinations of optional features (docs, NumPy, pandas)
 
 ## Releasing this template 🏷️
 
