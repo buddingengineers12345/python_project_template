@@ -1,10 +1,21 @@
 """Core public API for **{{ project_name }}**.
 
-This module holds small example functions that illustrate typing, optional NumPy/pandas
-integration, and docstring style. Replace them with your library's real behavior.
+This module holds small example functions that illustrate typing, optional
+NumPy/pandas integration, docstring style, and structlog usage.  Replace them
+with your library's real behaviour.
+
+Logging conventions used here:
+* Events are snake_case identifiers, never sentences.
+* All context is passed as keyword arguments — no f-strings.
+* Events visible to LLM agents are tagged with ``llm=True``.
+* DEBUG logs carry internal detail; WARNING/ERROR logs carry decision points.
 """
 
+from __future__ import annotations
+
 from typing import TypeVar
+
+import structlog
 
 {% if include_numpy %}
 import numpy as np
@@ -14,14 +25,17 @@ import numpy.typing as npt
 import pandas as pd
 {% endif %}
 
+log = structlog.get_logger()
+
 T = TypeVar("T")
 
 
 def example_function(value: T) -> T:
     """Return ``value`` unchanged (identity placeholder).
 
-    Use this pattern as a starting point for typed helpers: document parameters,
-    return type, and edge cases your real implementation will handle.
+    Use this pattern as a starting point for typed helpers: document
+    parameters, return type, and edge cases your real implementation will
+    handle.
 
     Args:
         value: Arbitrary input; returned as-is.
@@ -35,6 +49,7 @@ def example_function(value: T) -> T:
         >>> example_function("hello")
         'hello'
     """
+    log.debug("example_function_called", value_type=type(value).__name__)
     return value
 
 
@@ -53,7 +68,10 @@ def example_array_function(arr: npt.NDArray[np.float64]) -> npt.NDArray[np.float
         >>> example_array_function(np.array([1.0, 2.0, 3.0]))
         array([1., 4., 9.])
     """
-    return arr**2
+    log.debug("array_function_called", shape=arr.shape, dtype=str(arr.dtype))
+    result: npt.NDArray[np.float64] = arr**2
+    log.info("array_function_complete", input_shape=arr.shape, output_shape=result.shape, llm=True)
+    return result
 {% endif %}
 
 
@@ -74,5 +92,17 @@ def example_dataframe_function(df: pd.DataFrame) -> pd.DataFrame:
         >>> out.equals(df)
         True
     """
-    return df.copy()
+    log.debug(
+        "dataframe_copy_started",
+        row_count=len(df),
+        col_count=len(df.columns),
+    )
+    result = df.copy()
+    log.info(
+        "dataframe_copy_complete",
+        row_count=len(result),
+        col_count=len(result.columns),
+        llm=True,
+    )
+    return result
 {% endif %}
