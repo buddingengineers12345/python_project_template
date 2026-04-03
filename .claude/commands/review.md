@@ -1,0 +1,49 @@
+Perform a thorough pre-merge code review of all recently modified Python files.
+
+## Steps
+
+1. **Auto-fix and static analysis** — run `just review` which executes:
+   - `just fix` — auto-apply safe ruff fixes
+   - `just lint` — ruff lint check; report all violations with file + line + rule code
+   - `just type` — basedpyright type check; report all errors with file + line
+   - `just docs-check` — ruff `--select D` docstring check
+
+2. **Manual symbol scan** — for every `.py` file that was added or modified (use `git diff --name-only`):
+   - Read the file
+   - List every public function, class, and method (names not prefixed with `_`)
+   - For each public symbol verify:
+     - Has a docstring (summary line + Args/Returns/Raises sections where applicable, Google style)
+     - Has complete type annotations on all parameters and the return type
+     - No `TODO` or `FIXME` comments left uncommitted
+     - No bare `type: ignore` without an explanatory inline comment
+
+3. **Test coverage sanity** — for each new function or class added, check that a corresponding
+   test exists in `tests/`. If any new public symbol lacks a test, list it explicitly.
+
+4. **Copier template integrity** (if any `.jinja` files changed) — verify that the Jinja2 hook
+   did not surface syntax errors. If it did, list the affected templates.
+
+## Output format
+
+Produce a concise report:
+
+```
+## Code Review Report
+
+### Static Analysis      ✓ PASS  |  ✗ FAIL
+[list errors if any]
+
+### Docstring Compliance  ✓ PASS  |  ✗ FAIL
+[list missing/malformed docstrings if any]
+
+### Type Annotations      ✓ PASS  |  ✗ FAIL
+[list unannotated symbols if any]
+
+### Test Coverage         ✓ PASS  |  ✗ FAIL
+[list untested public symbols if any]
+
+### Action Items
+1. [must-fix items before merge]
+```
+
+If everything passes, output: **✓ Review passed — ready to merge.**

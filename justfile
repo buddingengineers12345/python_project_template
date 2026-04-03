@@ -33,6 +33,21 @@ lint:
 fix:
     @uv run --active ruff check --fix .
 
+# Check docstring coverage on all non-test Python files
+docs-check:
+    @echo "=== Docstring coverage check ==="
+    @uv run --active ruff check --select D .
+    @echo "✓ Docstring check complete"
+
+# Run all static analysis + docstring checks (pre-merge review)
+review:
+    @echo "=== Code Review ==="
+    @just fix
+    @just lint
+    @just type
+    @just docs-check
+    @echo "=== Review passed ==="
+
 
 
 # -------------------------------------------------------------------------
@@ -121,6 +136,7 @@ static_check:
     @just fmt
     @just lint
     @just type
+    @just docs-check
 
 ci:
     @just static_check
