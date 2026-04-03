@@ -40,13 +40,17 @@ Prerequisites: Python 3.11+, `uv`, `just`, `git`.
 |---|---|
 | Run all tests | `just test` |
 | Run tests in parallel | `just test-parallel` |
+| Coverage report | `just coverage` |
 | Lint | `just lint` |
 | Format | `just fmt` |
 | Auto-fix lint issues | `just fix` |
 | Type check | `just type` |
+| Docstring check | `just docs-check` |
+| Pre-merge review | `just review` |
 | Full CI locally | `just ci` |
 | Sync deps after lockfile change | `just sync` |
 | Upgrade all deps | `just update` |
+| Diagnose environment | `just doctor` |
 
 **Always use `just` recipes.** Do not call `uv run ruff`, `pytest`, etc. directly —
 the justfile handles the correct flags and order.
@@ -57,7 +61,7 @@ the justfile handles the correct flags and order.
 just ci
 ```
 
-This runs in order: `fix` → `fmt` → `lint` → `type` → `test` → `precommit`.
+This runs in order: `fix` → `fmt` → `lint` → `type` → `docs-check` → `test` → `precommit`.
 All steps must pass before a PR is mergeable.
 
 ## Generating a test project from the template
@@ -153,8 +157,59 @@ file, add a corresponding test.
 
 - Line length: 100 characters (set in pyproject.toml under `[tool.ruff]`).
 - Target Python version: 3.11.
-- Active ruff rules: E, F, I, UP, B, SIM, C4, RUF. Rule E501 (line too long) is ignored.
-- Type annotations are required (basedpyright in strict mode via pre-commit).
+- Active ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `D`, `C90`, `PERF`.
+  Rule `E501` (line too long) is ignored (handled by the formatter).
+- Docstring convention: **Google style** (`pydocstyle` via ruff `D` rules).
+  Test files and scripts are exempt from docstring requirements.
+- McCabe complexity: max 10 per function (`C90`).
+- Type annotations are required on all public functions and methods (basedpyright `standard` mode).
+- BasedPyright is lenient with external packages (`reportMissingTypeStubs = false`).
+
+## Standards enforcement
+
+Standards are enforced at four layers — during development, at commit, in review, and in CI.
+
+### Tooling layer (always active)
+
+| What | Tool | When |
+|---|---|---|
+| Lint + style | ruff | `just lint` / pre-commit / CI |
+| Docstrings | ruff `D` rules (Google) | `just docs-check` / CI |
+| Complexity | ruff `C90` (max 10) | `just lint` |
+| Performance | ruff `PERF` | `just lint` |
+| Types | basedpyright `standard` | `just type` / pre-commit / CI |
+| Test coverage | pytest-cov (reported) | `just coverage` |
+
+### Claude layer (automatic feedback during development)
+
+Two **PostToolUse hooks** fire automatically when Claude edits a file:
+
+- **`post-edit-python.sh`** — after any `.py` edit: runs ruff + basedpyright and surfaces
+  violations back to Claude so it can self-correct in the same turn.
+- **`post-edit-jinja.sh`** — after any `.jinja` edit: validates Jinja2 syntax using the same
+  extensions Copier uses, catching template errors before `copier copy` time.
+
+### Claude commands (on-demand workflows)
+
+| Slash command | Purpose |
+|---|---|
+| `/review` | Full pre-merge checklist: lint + types + docstrings + test coverage + symbol scan |
+| `/coverage` | Run coverage, identify gaps, write missing tests |
+| `/docs-check` | Audit and repair Google-style docstrings across all source files |
+| `/standards` | Consolidated pass/fail report across all checks — the "ready to merge?" gate |
+| `/update-claude-md` | Sync CLAUDE.md against pyproject.toml + justfile to prevent drift |
+
+### Definition of done
+
+A feature or fix is **done** when all of the following are true:
+
+1. `just ci` passes with zero errors.
+2. Every new public function/class/method has a Google-style docstring.
+3. Every new function/method has complete type annotations (parameters + return type).
+4. At least one test case covers each new public symbol.
+5. `just coverage` does not show a new module below its previous coverage level.
+6. No `TODO` or `FIXME` comments are left in modified files (unless tracked as issues).
+7. CLAUDE.md is up to date (`/update-claude-md` shows no drift).
 
 ## Files you should never modify directly
 
@@ -168,6 +223,18 @@ just clean   # removes build/, dist/, .pytest_cache, .ruff_cache, __pycache__, *
 ```
 
 ## Recent improvements (April 2026)
+
+### Standards enforcement (this PR)
+- Added `D` (pydocstyle, Google convention), `C90` (McCabe complexity), `PERF` (perflint) to ruff rules
+- Added `per-file-ignores` so test files and scripts are exempt from docstring requirements
+- Added `[tool.ruff.lint.mccabe]` max-complexity = 10
+- Enhanced basedpyright config: `standard` mode, lenient with external stubs
+- Added `pytest-cov` + `coverage[toml]` to dev dependencies
+- Added `just docs-check` and `just review` recipes; `just ci` now includes docs-check
+- Added `.claude/hooks/post-edit-python.sh` and `post-edit-jinja.sh` (PostToolUse hooks)
+- Added five new Claude commands: `/review`, `/coverage`, `/docs-check`, `/standards`, `/update-claude-md`
+- Added Standards Enforcement section to CLAUDE.md (definition of done, tooling table, command table)
+- Propagated all of the above into `template/` so generated projects inherit the same enforcement
 
 ### Package structure
 - Renamed `_support` package to `common` for clearer semantics

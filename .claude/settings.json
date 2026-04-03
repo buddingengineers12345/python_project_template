@@ -7,11 +7,41 @@
       "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
-      "Bash(rm -rf /tmp/test-output*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git branch:*)",
+      "Bash(rm -rf /tmp/test-output*)",
+      "Bash(python3:*)",
+      "Bash(bash .claude/hooks/*)"
     ],
     "deny": [
       "Bash(git push:*)",
-      "Bash(uv publish:*)"
+      "Bash(uv publish:*)",
+      "Bash(git commit --no-verify:*)",
+      "Bash(git push --force:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-python.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-jinja.sh"
+          }
+        ]
+      }
     ]
   }
 }

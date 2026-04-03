@@ -16,11 +16,16 @@ just precommit-install
 | Task | Command |
 |---|---|
 | Run tests | `just test` |
+| Test coverage | `just coverage` |
 | Lint | `just lint` |
 | Format | `just fmt` |
+| Auto-fix lint | `just fix` |
 | Type check | `just type` |
+| Docstring check | `just docs-check` |
+| Pre-merge review | `just review` |
 | Full CI | `just ci` |
-{% if include_docs %}| Serve docs | `just docs` |{% endif %}
+{% if include_docs %}| Serve docs | `just docs` |
+{% endif %}
 
 ## Copy vs update (important)
 
@@ -51,15 +56,59 @@ Do not manually change the answers file (`.copier-answers.yml`, controlled by `_
 Pre-commit here covers both cases. Prefer SSH or credential-free template URLs so secrets do not land in
 `.copier-answers.yml`.
 
+## Standards enforcement
+
+Standards are enforced at three layers — during development via Claude hooks, at commit via pre-commit, and in CI via GitHub Actions.
+
+### Tooling layer (always active)
+
+| What | Tool | When |
+|---|---|---|
+| Lint + style | ruff | `just lint` / pre-commit / CI |
+| Docstrings | ruff `D` rules (Google) | `just docs-check` / CI |
+| Complexity | ruff `C90` (max 10) | `just lint` |
+| Performance | ruff `PERF` | `just lint` |
+| Types | basedpyright strict | `just type` / pre-commit / CI |
+| Test coverage | pytest-cov (≥ 85 %) | `just coverage` / CI |
+
+### Claude commands (on-demand workflows)
+
+| Slash command | Purpose |
+|---|---|
+| `/review` | Full pre-merge checklist: lint + types + docstrings + test coverage + symbol scan |
+| `/coverage` | Run coverage, identify gaps below 85 %, write missing tests |
+| `/docs-check` | Audit and repair Google-style docstrings across all source files |
+| `/standards` | Consolidated pass/fail report — the "ready to merge?" gate |
+
+### Claude hooks (automatic feedback)
+
+A **PostToolUse hook** fires after every Python file edit during a Claude session:
+- Runs ruff check + basedpyright on the edited file
+- Surfaces violations back to Claude so it can self-correct in the same turn
+
+### Definition of done
+
+A feature or fix is **done** when all of the following are true:
+
+1. `just ci` passes with zero errors (lint → types → docstrings → tests → pre-commit).
+2. Every new public function/class/method has a Google-style docstring (Args/Returns/Raises where applicable).
+3. Every new function/method has complete type annotations (parameters + return type).
+4. At least one test case covers each new public symbol.
+5. `just coverage` reports no module below 85 %.
+6. No `TODO` or `FIXME` comments are left in modified files (unless tracked as issues).
+
 ## Package structure
 
 Source code lives under `src/{{ package_name }}/`.
 Tests live under `tests/`.
-The `.claude/` directory holds optional Claude Code slash-command prompts for local workflows (tests, CI, template updates).
+The `.claude/` directory holds Claude Code slash-command prompts and PostToolUse hooks for local standards enforcement.
 
 ## Code style
 
 - Line length: 100 characters
 - Python {{ python_min_version }}+
-- Ruff: rule set in `[tool.ruff.lint]` in `pyproject.toml` (E, F, I, UP, B, SIM, C4, RUF, TCH, PGH, PT, ARG; tests use per-file ignores)
-- Type annotations required (basedpyright)
+- Ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `TCH`, `PGH`, `PT`, `ARG`, `D`, `C90`, `PERF`.
+  Rule `E501` is ignored (handled by the formatter). Test files are exempt from `D` and `ARG`.
+- Docstring convention: **Google style** (enforced by ruff `D` rules + `pydocstyle.convention = "google"`).
+- McCabe complexity: max 10 per function.
+- Type annotations required on all public functions and methods (basedpyright strict mode).

@@ -30,6 +30,9 @@ jobs:
       - name: Ruff lint
         run: uv run ruff check .
 
+      - name: Ruff docstrings (Google convention)
+        run: uv run ruff check --select D .
+
       - name: BasedPyright
         run: uv run basedpyright
 
