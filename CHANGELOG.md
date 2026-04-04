@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.0] - 2026-04-04
+
+### Added
+
+- **Generated projects:** `structlog`-based logging with human-readable and LLM-oriented output modes (replacing stdlib logging defaults where applicable).
+- **Claude automation:** commands for release, dependency, and update workflows alongside existing review and standards tooling.
+- **Standards enforcement:** Claude-side guidance and hooks to align generated projects with coding, testing, and documentation expectations.
+
 ## [0.0.2] - 2026-04-03
 
 ### Fixed
@@ -25,5 +33,6 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - GitHub Actions workflows for linting, testing, and a manual release workflow.
 - Template scaffolding for a modern `uv`-first Python project (optional docs, strict typing, and tests).
 
+[0.1.0]: https://github.com/buddingengineers12345/python_project_template/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/buddingengineers12345/python_project_template/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/buddingengineers12345/python_project_template/releases/tag/v0.0.1
