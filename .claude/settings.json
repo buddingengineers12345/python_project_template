@@ -41,6 +41,15 @@
             "command": "bash .claude/hooks/post-edit-jinja.sh"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-markdown.sh"
+          }
+        ]
       }
     ]
   }

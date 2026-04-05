@@ -32,6 +32,7 @@ _skip_if_exists:
   - docs/
   - .github/CONTRIBUTING.md
   - .github/CODE_OF_CONDUCT.md
+  - scripts/bump_version.py
 
 # -------------------------------------------------------------------------
 # Questions / Prompts
@@ -112,6 +113,22 @@ include_numpy:
   type: bool
   help: Include NumPy in dependencies?
   default: false
+
+include_release_workflow:
+  type: bool
+  help: Add a GitHub Actions release workflow (automated versioning and GitHub Releases)?
+  default: true
+
+include_pypi_publish:
+  type: bool
+  help: "Publish to PyPI on release? (Uses Trusted Publisher / OIDC \u2014 no API token needed)"
+  default: false
+  when: "{{ include_release_workflow }}"
+
+include_security_scanning:
+  type: bool
+  help: Add CodeQL security scanning and dependency audit workflow?
+  default: true
 
 codecov_token:
   type: str

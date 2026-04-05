@@ -31,6 +31,15 @@
             "command": "bash .claude/hooks/post-edit-python.sh"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-markdown.sh"
+          }
+        ]
       }
     ]
   }

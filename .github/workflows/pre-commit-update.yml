@@ -1,0 +1,54 @@
+# Pre-commit autoupdate workflow — runs `pre-commit autoupdate` weekly and opens a PR
+# with the updated hook revisions so they are reviewed before merging.
+#
+# References:
+#   pre-commit autoupdate:         https://pre-commit.com/#pre-commit-autoupdate
+#   peter-evans/create-pull-request: https://github.com/peter-evans/create-pull-request
+#   Security hardening:              https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions
+#   Workflow permissions:            https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+name: Pre-commit Autoupdate
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"  # Every Monday at 04:00 UTC
+  workflow_dispatch:
+
+# contents:write to commit updated hooks; pull-requests:write to open the PR.
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  autoupdate:
+    name: Update pre-commit hooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Run pre-commit autoupdate
+        run: uv run pre-commit autoupdate
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: pre-commit autoupdate"
+          branch: automated/pre-commit-update
+          delete-branch: true
+          title: "chore: pre-commit autoupdate"
+          body: |
+            Automated pre-commit hook updates via `pre-commit autoupdate`.
+
+            Review the changes and merge if all CI checks pass.
+          labels: dependencies

@@ -1,3 +1,12 @@
+# Release workflow — bumps the version in pyproject.toml, commits, creates a tag,
+# pushes, and publishes a GitHub Release. Triggered manually via workflow_dispatch
+# or automatically on a tag push (e.g. from an external CI step).
+#
+# References:
+#   GitHub Releases:            https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository
+#   Security hardening:         https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions
+#   Concurrency best practices: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/using-concurrency
+#   Workflow permissions:       https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
 name: Release
 
 on:
@@ -25,9 +34,11 @@ on:
         required: false
         default: false
 
+# contents:write is required to commit the version bump, push the tag, and create a release.
 permissions:
   contents: write
 
+# Serialise releases: never cancel an in-progress release run.
 concurrency:
   group: release
   cancel-in-progress: false
@@ -114,5 +125,5 @@ jobs:
           fi
           gh release create "${TAG}" \
             --title "${TAG}" \
-            --notes-file CHANGELOG.md \
+            --generate-notes \
             ${PRERELEASE_FLAG}

@@ -101,8 +101,26 @@ def copy_with_data(
     *,
     skip_tasks: bool = True,
 ) -> None:
-    """Run ``copier copy`` with explicit ``--data`` pairs (non-interactive)."""
-    cmd: list[str] = ["copier", "copy", ".", str(dest), "--trust", "--defaults"]
+    """Run ``copier copy`` with explicit ``--data`` pairs (non-interactive).
+
+    Uses ``--vcs-ref HEAD`` so the current working tree is rendered rather than
+    the latest PEP 440 git tag, ensuring tests always exercise the latest template.
+
+    Args:
+        dest: Destination directory for the rendered project.
+        data: Mapping of Copier variable names to values to pass via ``--data``.
+        skip_tasks: If ``True``, skip post-generation tasks (default).
+    """
+    cmd: list[str] = [
+        "copier",
+        "copy",
+        "--vcs-ref",
+        "HEAD",
+        ".",
+        str(dest),
+        "--trust",
+        "--defaults",
+    ]
     if skip_tasks:
         cmd.append("--skip-tasks")
     for key, value in data.items():
@@ -608,3 +626,200 @@ def test_pyproject_and_tree_match_explicit_copy_data(tmp_path: Path) -> None:
     urls = require_mapping(proj["urls"], name="pyproject.project.urls")
     assert urls["Homepage"] == "https://github.com/harbor-lab/ocean-buoy"
     assert urls["Repository"] == "https://github.com/harbor-lab/ocean-buoy"
+
+
+# ---------------------------------------------------------------------------
+# Workflow tests
+# ---------------------------------------------------------------------------
+
+
+def test_release_workflow_generated_by_default(tmp_path: Path) -> None:
+    """release.yml must be generated when include_release_workflow=true (the default)."""
+    test_dir = tmp_path / "release_default"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Release Default",
+            "include_release_workflow": True,
+            "include_docs": False,
+        },
+    )
+    release_yml = test_dir / ".github" / "workflows" / "release.yml"
+    assert release_yml.is_file(), "release.yml must exist when include_release_workflow=true"
+    content = release_yml.read_text(encoding="utf-8")
+    assert "${{ true }}" in content, "release job must be enabled"
+    assert "bump_version.py" in content, "release.yml must reference bump_version.py"
+    assert "--generate-notes" in content, "release must use gh --generate-notes (no CHANGELOG.md required)"
+    assert "--notes-file" not in content, "release must not depend on a checked-in CHANGELOG.md"
+
+
+def test_release_workflow_disabled(tmp_path: Path) -> None:
+    """release.yml job must be gated off when include_release_workflow=false."""
+    test_dir = tmp_path / "release_disabled"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Release Disabled",
+            "include_release_workflow": False,
+            "include_docs": False,
+        },
+    )
+    release_yml = test_dir / ".github" / "workflows" / "release.yml"
+    assert release_yml.is_file(), "release.yml is always generated (job is conditionally gated)"
+    content = release_yml.read_text(encoding="utf-8")
+    assert "${{ false }}" in content, (
+        "release job must be disabled when include_release_workflow=false"
+    )
+
+
+def test_pypi_publish_adds_oidc_permissions(tmp_path: Path) -> None:
+    """include_pypi_publish=true must add id-token:write and uv publish to release.yml."""
+    test_dir = tmp_path / "pypi_publish"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "PyPI Publish",
+            "include_release_workflow": True,
+            "include_pypi_publish": True,
+            "include_docs": False,
+        },
+    )
+    release_yml = test_dir / ".github" / "workflows" / "release.yml"
+    assert release_yml.is_file(), "release.yml must exist"
+    content = release_yml.read_text(encoding="utf-8")
+    assert "id-token: write" in content, "OIDC permission required for PyPI Trusted Publisher"
+    assert "uv publish" in content, "uv publish step must appear when include_pypi_publish=true"
+
+
+def test_pypi_publish_absent_by_default(tmp_path: Path) -> None:
+    """uv publish must NOT appear in release.yml when include_pypi_publish=false (default)."""
+    test_dir = tmp_path / "no_pypi"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "No PyPI",
+            "include_release_workflow": True,
+            "include_pypi_publish": False,
+            "include_docs": False,
+        },
+    )
+    content = (test_dir / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+    assert "uv publish" not in content, "uv publish must not appear when include_pypi_publish=false"
+    assert "id-token: write" not in content, "OIDC permission must not appear by default"
+
+
+def test_security_workflow_generated_by_default(tmp_path: Path) -> None:
+    """security.yml must be generated with jobs enabled when include_security_scanning=true."""
+    test_dir = tmp_path / "security_default"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Security Default",
+            "include_security_scanning": True,
+            "include_docs": False,
+        },
+    )
+    security_yml = test_dir / ".github" / "workflows" / "security.yml"
+    assert security_yml.is_file(), "security.yml must exist when include_security_scanning=true"
+    content = security_yml.read_text(encoding="utf-8")
+    assert "${{ true }}" in content, "security jobs must be enabled"
+    assert "codeql-action" in content, "security.yml must reference CodeQL action"
+    assert "pip-audit" in content, "security.yml must include dependency audit step"
+    assert "uv sync --frozen --extra dev" in content, (
+        "security audit must install and resolve dev extras (parity with template repo)"
+    )
+    assert "uv export --frozen --format requirements-txt --extra dev" in content, (
+        "pip-audit stdin must include dev dependencies from the lockfile"
+    )
+
+
+def test_security_workflow_disabled(tmp_path: Path) -> None:
+    """security.yml jobs must be gated off when include_security_scanning=false."""
+    test_dir = tmp_path / "security_disabled"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Security Disabled",
+            "include_security_scanning": False,
+            "include_docs": False,
+        },
+    )
+    security_yml = test_dir / ".github" / "workflows" / "security.yml"
+    assert security_yml.is_file(), "security.yml is always generated (jobs are conditionally gated)"
+    content = security_yml.read_text(encoding="utf-8")
+    assert "${{ false }}" in content, (
+        "security jobs must be disabled when include_security_scanning=false"
+    )
+
+
+def test_dependency_review_always_generated(tmp_path: Path) -> None:
+    """dependency-review.yml must always be present regardless of feature flags."""
+    test_dir = tmp_path / "dep_review"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Dep Review",
+            "include_release_workflow": False,
+            "include_security_scanning": False,
+            "include_docs": False,
+        },
+    )
+    dep_review = test_dir / ".github" / "workflows" / "dependency-review.yml"
+    assert dep_review.is_file(), "dependency-review.yml must always be generated"
+    content = dep_review.read_text(encoding="utf-8")
+    assert "dependency-review-action" in content
+    assert "branches: [main, master]" in content, (
+        "dependency-review must run on PRs targeting main and master (parity with other workflows)"
+    )
+
+
+def test_pre_commit_update_workflow_generated(tmp_path: Path) -> None:
+    """pre-commit-update.yml must always be present in a generated project."""
+    test_dir = tmp_path / "precommit_update"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Precommit Update",
+            "include_docs": False,
+        },
+    )
+    workflow = test_dir / ".github" / "workflows" / "pre-commit-update.yml"
+    assert workflow.is_file(), "pre-commit-update.yml must be generated"
+    content = workflow.read_text(encoding="utf-8")
+    assert "pre-commit autoupdate" in content
+    assert "create-pull-request" in content
+
+
+def test_scripts_bump_version_generated(tmp_path: Path) -> None:
+    """scripts/bump_version.py must exist in the generated project."""
+    test_dir = tmp_path / "bump_version"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Bump Version",
+            "include_release_workflow": True,
+            "include_docs": False,
+        },
+    )
+    bump_script = test_dir / "scripts" / "bump_version.py"
+    assert bump_script.is_file(), "scripts/bump_version.py must exist in generated projects"
+    content = bump_script.read_text(encoding="utf-8")
+    assert "BumpKind" in content, "bump_version.py must contain BumpKind type alias"
+    assert "[project]" in content, "bump_version.py must look for [project] section"
+
+
+def test_new_variables_recorded_in_answers_file(tmp_path: Path) -> None:
+    """New boolean variables must appear in .copier-answers.yml when prompted."""
+    test_dir = tmp_path / "new_vars_answers"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Answers Check",
+            "include_release_workflow": True,
+            "include_security_scanning": False,
+            "include_docs": False,
+        },
+    )
+    answers = load_copier_answers(test_dir)
+    assert answers.get("include_release_workflow") is True
+    assert answers.get("include_security_scanning") is False

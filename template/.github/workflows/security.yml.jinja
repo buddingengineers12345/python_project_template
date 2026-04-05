@@ -1,0 +1,85 @@
+# Security scanning workflow — CodeQL static analysis + pip-audit dependency audit.
+#
+# References:
+#   CodeQL advanced setup:       https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/configuring-advanced-setup-for-code-scanning
+#   CodeQL build modes (Python):  https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
+#   Security hardening:           https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions
+#   pip-audit:                    https://github.com/pypa/pip-audit
+#   Concurrency best practices:   https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/using-concurrency
+#   Workflow permissions:         https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * 0"  # Every Sunday at 03:00 UTC
+  workflow_dispatch:
+
+# Least-privilege permissions; security-events:write is required to upload SARIF results.
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+# Cancel in-progress runs on new pushes/PRs, but never cancel scheduled security scans.
+concurrency:
+  group: security-{% raw %}${{ github.workflow }}-${{ github.ref }}{% endraw %}
+  cancel-in-progress: {% raw %}${{ github.event_name != 'schedule' }}{% endraw %}
+
+jobs:
+  codeql:
+    name: CodeQL Analysis
+    if: >-
+      {% if include_security_scanning -%}
+      {% raw %}${{ true }}{% endraw %}
+      {%- else -%}
+      {% raw %}${{ false }}{% endraw %}
+      {%- endif %}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          # Python is an interpreted language — no compilation step is needed.
+          # build-mode: none skips autobuild and is the recommended mode for Python.
+          # See: https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
+          build-mode: none
+          # Cache extracted CodeQL databases across runs for faster analysis.
+          dependency-caching: true
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:python
+
+  audit:
+    name: Dependency Audit
+    if: >-
+      {% if include_security_scanning -%}
+      {% raw %}${{ true }}{% endraw %}
+      {%- else -%}
+      {% raw %}${{ false }}{% endraw %}
+      {%- endif %}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install {{ python_min_version }}
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Run pip-audit
+        run: uv export --frozen --format requirements-txt --extra dev | uvx pip-audit --stdin

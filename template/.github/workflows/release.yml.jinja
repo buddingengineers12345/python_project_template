@@ -1,0 +1,162 @@
+# Release workflow — bumps the version in pyproject.toml, commits, creates a tag,
+# pushes, and publishes a GitHub Release. If include_pypi_publish is enabled,
+# also builds and publishes to PyPI via Trusted Publisher (OIDC — no token needed).
+#
+# References:
+#   GitHub Releases:            https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository
+#   PyPI Trusted Publisher:     https://docs.pypi.org/trusted-publishers/
+#   PyPI publish action:        https://github.com/pypa/gh-action-pypi-publish
+#   Security hardening:         https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions
+#   Concurrency best practices: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/using-concurrency
+#   Workflow permissions:       https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Which semver part to bump (ignored if version is set)"
+        type: choice
+        required: false
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+      version:
+        description: "Explicit version to set (X.Y.Z). If set, overrides bump."
+        type: string
+        required: false
+      prerelease:
+        description: "Mark the GitHub Release as a pre-release"
+        type: boolean
+        required: false
+        default: false
+
+# contents:write is required to commit the version bump, push the tag, and create a release.
+permissions:
+  contents: write
+{% if include_pypi_publish %}  id-token: write  # Required for PyPI Trusted Publisher (OIDC) — no PYPI_TOKEN secret needed.
+{% endif %}
+# Serialise releases: never cancel an in-progress release run.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: >-
+      {% if include_release_workflow -%}
+      {% raw %}${{ true }}{% endraw %}
+      {%- else -%}
+      {% raw %}${{ false }}{% endraw %}
+      {%- endif %}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install {{ python_min_version }}
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Configure git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version
+        id: bump
+        run: |
+          # If triggered by a tag push (vX.Y.Z), use that version.
+          if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+            ref="${GITHUB_REF_NAME}"
+            if echo "${ref}" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "version=${ref#v}" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+            echo "Unexpected tag ref: ${ref}" >&2
+            exit 1
+          fi
+
+          if [ -n "{% raw %}${{ inputs.version }}{% endraw %}" ]; then
+            NEW_VERSION="$(uv run python scripts/bump_version.py --new-version "{% raw %}${{ inputs.version }}{% endraw %}")"
+          else
+            NEW_VERSION="$(uv run python scripts/bump_version.py --bump "{% raw %}${{ inputs.bump }}{% endraw %}")"
+          fi
+          echo "version=${NEW_VERSION}" >> "${GITHUB_OUTPUT}"
+
+      - name: Commit version bump
+        if: {% raw %}${{ github.event_name == 'workflow_dispatch' }}{% endraw %}
+        run: |
+          git add pyproject.toml
+          git commit -m "chore(release): v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}"
+
+      - name: Create tag
+        if: {% raw %}${{ github.event_name == 'workflow_dispatch' }}{% endraw %}
+        run: |
+          git tag "v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}"
+
+      - name: Push commit and tag
+        if: {% raw %}${{ github.event_name == 'workflow_dispatch' }}{% endraw %}
+        run: |
+          git push origin HEAD
+          git push origin "v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}"
+
+      # workflow_dispatch pushes a tag, which starts a second run of this workflow. That run
+      # must not call `gh release create` again — skip when the tag push sees an existing release.
+      - name: Check for existing release
+        id: check_release
+        if: {% raw %}${{ github.event_name == 'push' }}{% endraw %}
+        env:
+          GH_TOKEN: {% raw %}${{ github.token }}{% endraw %}
+        run: |
+          if gh release view "v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}" >/dev/null 2>&1; then
+            echo "exists=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "exists=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Create GitHub Release
+        if: >-
+          {% raw %}${{ github.event_name == 'workflow_dispatch' ||
+             (github.event_name == 'push' && steps.check_release.outputs.exists == 'false') }}{% endraw %}
+        env:
+          GH_TOKEN: {% raw %}${{ github.token }}{% endraw %}
+        run: |
+          PRERELEASE_FLAG=""
+          if [ "{% raw %}${{ inputs.prerelease }}{% endraw %}" = "true" ]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+          gh release create "v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}" \
+            --title "v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}" \
+            --generate-notes \
+            ${PRERELEASE_FLAG}
+{% if include_pypi_publish %}
+      - name: Build distribution packages
+        if: >-
+          {% raw %}${{ github.event_name == 'workflow_dispatch' ||
+             (github.event_name == 'push' && steps.check_release.outputs.exists == 'false') }}{% endraw %}
+        run: uv build
+
+      - name: Publish to PyPI
+        if: >-
+          {% raw %}${{ github.event_name == 'workflow_dispatch' ||
+             (github.event_name == 'push' && steps.check_release.outputs.exists == 'false') }}{% endraw %}
+        run: uv publish
+        # Uses PyPI Trusted Publisher (OIDC) — no PYPI_TOKEN secret needed.
+        # One-time setup required: https://docs.pypi.org/trusted-publishers/adding-a-publisher/
+        # Add this repository as a Trusted Publisher in your PyPI project settings.
+{% endif %}
