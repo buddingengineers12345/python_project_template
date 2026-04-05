@@ -5,6 +5,14 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -31,4 +39,17 @@ jobs:
         run: uv sync --frozen --extra dev
 
       - name: Run tests
-        run: uv run pytest -q
+        run: |
+          if [ "${{ matrix.python-version }}" = "3.11" ]; then
+            uv run pytest -q --cov --cov-report=xml --cov-report=term-missing
+          else
+            uv run pytest -q
+          fi
+
+      - name: Upload coverage XML
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          if-no-files-found: error
