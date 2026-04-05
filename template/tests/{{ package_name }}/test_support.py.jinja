@@ -13,7 +13,7 @@ import pytest
 import structlog
 
 from {{ package_name }}.common.file_manager import load_json, load_markdown
-from {{ package_name }}.common.logging_manager import (
+from {{ package_name }}.common.logging_manager import (  # pyright: ignore[reportPrivateUsage]
     IS_LLM,
     EXECUTION_CONTEXT,
     bind_context,
@@ -70,7 +70,7 @@ def test_context_forced_to_llm(monkeypatch: pytest.MonkeyPatch) -> None:
     from {{ package_name }}.common import logging_manager
 
     monkeypatch.setenv("EXECUTION_CONTEXT", "llm")
-    assert logging_manager._detect_context() == "llm"
+    assert logging_manager._detect_context() == "llm"  # pyright: ignore[reportPrivateUsage]
 
 
 def test_context_forced_to_human(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -78,7 +78,7 @@ def test_context_forced_to_human(monkeypatch: pytest.MonkeyPatch) -> None:
     from {{ package_name }}.common import logging_manager
 
     monkeypatch.setenv("EXECUTION_CONTEXT", "human")
-    assert logging_manager._detect_context() == "human"
+    assert logging_manager._detect_context() == "human"  # pyright: ignore[reportPrivateUsage]
 
 
 def test_context_defaults_to_human(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -88,7 +88,7 @@ def test_context_defaults_to_human(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("EXECUTION_CONTEXT", raising=False)
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.delenv("HUMAN_DEV", raising=False)
-    assert logging_manager._detect_context() == "human"
+    assert logging_manager._detect_context() == "human"  # pyright: ignore[reportPrivateUsage]
 
 
 # ---------------------------------------------------------------------------
@@ -103,7 +103,7 @@ _NOOP_METHOD = "info"
 def test_filter_llm_events_passes_tagged_event() -> None:
     """Events with llm=True pass through and the key is removed."""
     event_dict: dict[str, Any] = {"event": "order_created", "order_id": 1, "llm": True}
-    result = _filter_llm_events(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    result = _filter_llm_events(_NOOP_LOGGER, _NOOP_METHOD, event_dict)  # pyright: ignore[reportPrivateUsage]
     assert "llm" not in result
     assert result["event"] == "order_created"
 
@@ -112,32 +112,32 @@ def test_filter_llm_events_drops_untagged_event() -> None:
     """Events without llm=True raise DropEvent."""
     event_dict: dict[str, Any] = {"event": "order_created", "order_id": 1}
     with pytest.raises(structlog.DropEvent):
-        _filter_llm_events(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+        _filter_llm_events(_NOOP_LOGGER, _NOOP_METHOD, event_dict)  # pyright: ignore[reportPrivateUsage]
 
 
 def test_filter_llm_events_drops_false_tag() -> None:
     """Events with llm=False raise DropEvent."""
     event_dict: dict[str, Any] = {"event": "debug_detail", "llm": False}
     with pytest.raises(structlog.DropEvent):
-        _filter_llm_events(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+        _filter_llm_events(_NOOP_LOGGER, _NOOP_METHOD, event_dict)  # pyright: ignore[reportPrivateUsage]
 
 
 def test_drop_debug_events_suppresses_debug() -> None:
     """Debug method raises DropEvent."""
     with pytest.raises(structlog.DropEvent):
-        _drop_debug_events(_NOOP_LOGGER, "debug", {"event": "internal"})
+        _drop_debug_events(_NOOP_LOGGER, "debug", {"event": "internal"})  # pyright: ignore[reportPrivateUsage]
 
 
 def test_drop_debug_events_suppresses_trace() -> None:
     """Trace method raises DropEvent."""
     with pytest.raises(structlog.DropEvent):
-        _drop_debug_events(_NOOP_LOGGER, "trace", {"event": "internal"})
+        _drop_debug_events(_NOOP_LOGGER, "trace", {"event": "internal"})  # pyright: ignore[reportPrivateUsage]
 
 
 def test_drop_debug_events_passes_warning() -> None:
     """Warning method passes through unchanged."""
     event_dict: dict[str, Any] = {"event": "anomaly_detected"}
-    result = _drop_debug_events(_NOOP_LOGGER, "warning", event_dict)
+    result = _drop_debug_events(_NOOP_LOGGER, "warning", event_dict)  # pyright: ignore[reportPrivateUsage]
     assert result is event_dict
 
 
@@ -145,7 +145,7 @@ def test_truncate_long_values_shortens_strings() -> None:
     """Strings exceeding max_len are truncated with length annotation."""
     long_value = "x" * 300
     event_dict: dict[str, Any] = {"event": "data_received", "payload": long_value}
-    result = _truncate_long_values(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    result = _truncate_long_values(_NOOP_LOGGER, _NOOP_METHOD, event_dict)  # pyright: ignore[reportPrivateUsage]
     assert len(result["payload"]) < 300
     assert "[len=300]" in result["payload"]
 
@@ -154,14 +154,14 @@ def test_truncate_long_values_skips_event_key() -> None:
     """The 'event' key is never truncated regardless of length."""
     long_event = "e" * 300
     event_dict: dict[str, Any] = {"event": long_event}
-    result = _truncate_long_values(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    result = _truncate_long_values(_NOOP_LOGGER, _NOOP_METHOD, event_dict)  # pyright: ignore[reportPrivateUsage]
     assert result["event"] == long_event
 
 
 def test_truncate_long_values_passes_short_strings() -> None:
     """Short strings pass through unchanged."""
     event_dict: dict[str, Any] = {"event": "ok", "msg": "short"}
-    result = _truncate_long_values(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    result = _truncate_long_values(_NOOP_LOGGER, _NOOP_METHOD, event_dict)  # pyright: ignore[reportPrivateUsage]
     assert result["msg"] == "short"
 
 
@@ -171,7 +171,7 @@ def test_flatten_nested_dicts_inlines_one_level() -> None:
         "event": "request_handled",
         "meta": {"region": "eu-west", "zone": "a"},
     }
-    result = _flatten_nested_dicts(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    result = _flatten_nested_dicts(_NOOP_LOGGER, _NOOP_METHOD, event_dict)  # pyright: ignore[reportPrivateUsage]
     assert "meta" not in result
     assert result["meta.region"] == "eu-west"
     assert result["meta.zone"] == "a"
@@ -181,7 +181,7 @@ def test_flatten_nested_dicts_skips_exception_key() -> None:
     """The 'exception' key is never flattened."""
     exc_data = {"type": "ValueError", "msg": "bad input"}
     event_dict: dict[str, Any] = {"event": "error", "exception": exc_data}
-    result = _flatten_nested_dicts(_NOOP_LOGGER, _NOOP_METHOD, event_dict)
+    result = _flatten_nested_dicts(_NOOP_LOGGER, _NOOP_METHOD, event_dict)  # pyright: ignore[reportPrivateUsage]
     assert result["exception"] is exc_data
 
 

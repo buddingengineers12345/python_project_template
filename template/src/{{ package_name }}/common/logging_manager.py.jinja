@@ -86,8 +86,8 @@ IS_LLM: bool = EXECUTION_CONTEXT == "llm"
 
 
 def _filter_llm_events(
-    logger: WrappedLogger,
-    method: str,
+    logger: WrappedLogger,  # noqa: ARG001
+    method: str,  # noqa: ARG001
     event_dict: EventDict,
 ) -> EventDict:
     """Drop events that are not tagged ``llm=True`` in LLM mode.
@@ -112,7 +112,7 @@ def _filter_llm_events(
 
 
 def _drop_debug_events(
-    logger: WrappedLogger,
+    logger: WrappedLogger,  # noqa: ARG001
     method: str,
     event_dict: EventDict,
 ) -> EventDict:
@@ -135,8 +135,8 @@ def _drop_debug_events(
 
 
 def _truncate_long_values(
-    logger: WrappedLogger,
-    method: str,
+    logger: WrappedLogger,  # noqa: ARG001
+    method: str,  # noqa: ARG001
     event_dict: EventDict,
     *,
     max_len: int = 200,
@@ -166,8 +166,8 @@ def _truncate_long_values(
 
 
 def _flatten_nested_dicts(
-    logger: WrappedLogger,
-    method: str,
+    logger: WrappedLogger,  # noqa: ARG001
+    method: str,  # noqa: ARG001
     event_dict: EventDict,
 ) -> EventDict:
     """Inline one level of nested dict values using dot-separated keys.
@@ -326,6 +326,19 @@ def get_logger(name: str | None = None, **initial_values: Any) -> Any:
     if initial_values:
         bound = bound.bind(**initial_values)
     return bound
+
+
+def log_message(message: str) -> None:
+    """Emit a human-readable diagnostic line at INFO level.
+
+    Prefer structured events via :func:`get_logger` and keyword arguments for
+    application logging. This helper supports decorators and startup utilities
+    that need a simple string record.
+
+    Args:
+        message: Plain-text message to log.
+    """
+    structlog.get_logger().info("diagnostic", message=message)
 
 
 def bind_context(**kwargs: Any) -> None:
