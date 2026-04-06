@@ -56,6 +56,20 @@ Do not manually change the answers file (`.copier-answers.yml`, controlled by `_
 Pre-commit here covers both cases. Prefer SSH or credential-free template URLs so secrets do not land in
 `.copier-answers.yml`.
 
+## AI rules
+
+Detailed coding standards are documented as plain Markdown files under `.claude/rules/`
+and are readable by any AI assistant (Claude Code, Cursor, or any LLM):
+
+```
+.claude/rules/
+├── README.md            ← how to read and write rules
+├── common/              ← language-agnostic: coding-style, git-workflow, testing, security, …
+├── python/              ← Python: coding-style, testing, patterns, security, hooks
+├── bash/                ← Bash: coding-style, security
+└── markdown/            ← placement rules, authoring conventions
+```
+
 ## Standards enforcement
 
 Standards are enforced at three layers — during development via Claude hooks, at commit via pre-commit, and in CI via GitHub Actions.

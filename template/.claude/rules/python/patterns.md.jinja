@@ -1,0 +1,89 @@
+# Python Patterns
+
+# applies-to: **/*.py, **/*.pyi
+
+> This file extends [common/patterns.md](../common/patterns.md) with Python-specific content.
+
+## Dataclasses as DTOs
+
+```python
+from dataclasses import dataclass, field
+
+@dataclass
+class CreateOrderRequest:
+    user_id: int
+    items: list[str] = field(default_factory=list)
+    notes: str | None = None
+
+@dataclass(frozen=True)
+class Money:
+    amount: float
+    currency: str = "USD"
+```
+
+## Protocol for duck typing
+
+```python
+from typing import Protocol
+
+class Repository(Protocol):
+    def find_by_id(self, id: int) -> dict | None: ...
+    def save(self, entity: dict) -> dict: ...
+```
+
+## Context managers
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def managed_connection(url: str):
+    conn = connect(url)
+    try:
+        yield conn
+    finally:
+        conn.close()
+```
+
+## Dependency injection
+
+Pass dependencies as constructor arguments; avoid module-level singletons:
+
+```python
+class OrderService:
+    def __init__(self, repo: Repository) -> None:
+        self._repo = repo
+```
+
+## Configuration objects
+
+```python
+@dataclass(frozen=True)
+class AppConfig:
+    database_url: str
+    log_level: str = "INFO"
+
+    @classmethod
+    def from_env(cls) -> "AppConfig":
+        return cls(database_url=os.environ["DATABASE_URL"])
+```
+
+## Exception hierarchy
+
+```python
+class {{ package_name | title | replace("_", "") }}Error(Exception):
+    """Base class for all application errors."""
+
+class ConfigError({{ package_name | title | replace("_", "") }}Error):
+    """Raised when configuration is missing or invalid."""
+```
+
+## structlog context binding
+
+```python
+from {{ package_name }}.common.logging_manager import bind_context, clear_context
+
+bind_context(request_id="req-abc", user_id=42)
+# ... all logs in this scope carry these fields
+clear_context()
+```
