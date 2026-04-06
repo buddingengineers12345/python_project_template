@@ -22,6 +22,58 @@
     ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-block-no-verify.sh"
+          }
+        ],
+        "description": "Block --no-verify flag in git commands to protect pre-commit quality gates"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-git-push-reminder.sh"
+          }
+        ],
+        "description": "Warn before git push: run just review + just test first"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-commit-quality.sh"
+          }
+        ],
+        "description": "Pre-commit: scan staged .py files for secrets/debug markers before git commit"
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-config-protection.sh"
+          }
+        ],
+        "description": "Block weakening edits to ruff/basedpyright config in pyproject.toml"
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-protect-uv-lock.sh"
+          }
+        ],
+        "description": "Block direct edits to uv.lock — must be regenerated via uv lock or just update"
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
@@ -30,16 +82,18 @@
             "type": "command",
             "command": "bash .claude/hooks/post-edit-python.sh"
           }
-        ]
+        ],
+        "description": "Run ruff check + basedpyright after every .py edit for immediate feedback"
       },
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit",
         "hooks": [
           {
             "type": "command",
             "command": "bash .claude/hooks/post-edit-markdown.sh"
           }
-        ]
+        ],
+        "description": "Post-edit fallback: warn if an existing .md file is edited outside docs/"
       }
     ]
   }

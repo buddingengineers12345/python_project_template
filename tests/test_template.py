@@ -649,7 +649,9 @@ def test_release_workflow_generated_by_default(tmp_path: Path) -> None:
     content = release_yml.read_text(encoding="utf-8")
     assert "${{ true }}" in content, "release job must be enabled"
     assert "bump_version.py" in content, "release.yml must reference bump_version.py"
-    assert "--generate-notes" in content, "release must use gh --generate-notes (no CHANGELOG.md required)"
+    assert "--generate-notes" in content, (
+        "release must use gh --generate-notes (no CHANGELOG.md required)"
+    )
     assert "--notes-file" not in content, "release must not depend on a checked-in CHANGELOG.md"
 
 

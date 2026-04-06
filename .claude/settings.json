@@ -23,6 +23,100 @@
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-start-bootstrap.sh"
+          }
+        ],
+        "description": "Display project status, toolchain versions, and previous session snapshot on startup"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-block-no-verify.sh"
+          }
+        ],
+        "description": "Block --no-verify flag in git commands to protect pre-commit quality gates"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-git-push-reminder.sh"
+          }
+        ],
+        "description": "Warn before git push: run just review + just test first"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-commit-quality.sh"
+          }
+        ],
+        "description": "Pre-commit: scan staged .py files for secrets/debug markers before git commit"
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-config-protection.sh"
+          }
+        ],
+        "description": "Block weakening edits to ruff/basedpyright config in pyproject.toml and .pre-commit-config.yaml"
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-protect-uv-lock.sh"
+          }
+        ],
+        "description": "Block direct edits to uv.lock — must be regenerated via uv lock or just update"
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-write-doc-file-warning.sh"
+          }
+        ],
+        "description": "Block writing .md files outside docs/ (pre-flight — prevents the wrong location)"
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-write-jinja-syntax.sh"
+          }
+        ],
+        "description": "Validate Jinja2 syntax before writing new/overwritten .jinja template files"
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-suggest-compact.sh"
+          }
+        ],
+        "description": "Suggest /compact every ~50 edit/write operations to prevent context degradation"
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
@@ -31,7 +125,8 @@
             "type": "command",
             "command": "bash .claude/hooks/post-edit-python.sh"
           }
-        ]
+        ],
+        "description": "Run ruff check + basedpyright after every .py edit for immediate feedback"
       },
       {
         "matcher": "Edit|Write",
@@ -40,16 +135,110 @@
             "type": "command",
             "command": "bash .claude/hooks/post-edit-jinja.sh"
           }
-        ]
+        ],
+        "description": "Validate Jinja2 syntax after every .jinja template edit (post-edit secondary layer)"
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-markdown.sh"
+          }
+        ],
+        "description": "Post-edit fallback: warn if an existing .md file is edited outside docs/"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-bash-pr-created.sh"
+          }
+        ],
+        "description": "Log PR URL and suggest gh review commands after gh pr create succeeds"
       },
       {
         "matcher": "Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/post-edit-markdown.sh"
+            "command": "bash .claude/hooks/post-edit-copier-migration.sh"
           }
-        ]
+        ],
+        "description": "Remind about _migrations, _skip_if_exists, and tests after copier.yml edits"
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-template-mirror.sh"
+          }
+        ],
+        "description": "Remind to mirror template/.claude/ changes to root .claude/ (and vice versa)"
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-compact-save-state.sh"
+          }
+        ],
+        "description": "Snapshot git status and modified files before context compaction"
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-session-end.sh",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Persist session state (branch, session_id, transcript_path) after each response"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-desktop-notify.sh",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Send macOS desktop notification with task summary when Claude finishes responding"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-cost-tracker.sh",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Append a lightweight token/cost metrics entry to ~/.claude/cost-log/ after each turn"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-evaluate-session.sh",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Extract reusable patterns (hot files, block events) into ~/.claude/patterns/"
       }
     ]
   }

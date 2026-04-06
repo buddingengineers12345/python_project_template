@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
-# Claude PostToolUse hook — runs after any Edit or Write tool call.
+# Claude PostToolUse hook — Edit|Write
+# Validate Jinja2 syntax after every .jinja template edit (post-edit layer).
 #
 # If the edited file is a Jinja2 (.jinja) template, this hook verifies
 # that the template parses without syntax errors using the same Jinja2
 # extensions that Copier enables (jinja2_time, do, loopcontrols).
 #
+# This is the post-Edit secondary layer. For Write (new file creation),
+# pre-write-jinja-syntax.sh provides a pre-flight blocking check.
+#
 # Output is surfaced to Claude so syntax errors are caught immediately,
 # not at `copier copy` time. Always exits 0 (non-blocking feedback).
+#
+# Reference : Custom — project-specific hook, not derived from ECC.
+# Exits     : 0 always (PostToolUse hooks cannot block)
 
 set -euo pipefail
 

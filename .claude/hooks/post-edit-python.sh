@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
-# Claude PostToolUse hook — runs after any Edit or Write tool call.
+# Claude PostToolUse hook — Edit|Write
+# Run ruff check and basedpyright on every edited Python file for immediate feedback.
 #
 # If the edited file is a Python (.py) file, this hook:
 #   1. Runs ruff check (lint + docstring rules) on that file
-#   2. Runs basedpyright on that file
+#   2. Runs basedpyright (type checking) on that file
 #
 # Output is surfaced back to Claude so it can self-correct in the same turn.
 # The hook always exits 0 so it never blocks the tool response.
+#
+# Reference : Custom — project-specific hook, not derived from ECC.
+# Exits     : 0 always (PostToolUse hooks cannot block)
 
 set -euo pipefail
 
