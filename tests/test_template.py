@@ -731,7 +731,10 @@ def test_security_workflow_generated_by_default(tmp_path: Path) -> None:
         "security audit must install and resolve dev extras (parity with template repo)"
     )
     assert "uv export --frozen --format requirements-txt --extra dev" in content, (
-        "pip-audit stdin must include dev dependencies from the lockfile"
+        "pip-audit must audit dev dependencies exported from the lockfile"
+    )
+    assert "--requirement /dev/stdin" in content, (
+        "pip-audit must read exported requirements via --requirement /dev/stdin (not removed --stdin)"
     )
 
 
