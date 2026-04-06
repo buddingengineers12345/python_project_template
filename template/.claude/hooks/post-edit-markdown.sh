@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
-# Claude PostToolUse hook — runs after any Edit or Write tool call.
+# Claude PostToolUse hook — Edit
+# Post-edit fallback: warn if an existing .md file was edited outside docs/.
 #
-# If the written file is a Markdown (.md) file that is NOT:
+# This hook is the post-Edit secondary layer for Markdown placement.
+# For Write (new file creation), pre-write-doc-file-warning.sh provides a
+# pre-flight blocking check (exit 2) instead.
+#
+# If the edited file is a Markdown (.md) file that is NOT:
 #   - README.md  (allowed anywhere)
 #   - CLAUDE.md  (allowed anywhere)
 #   - inside docs/ (allowed anywhere under any docs/ subtree)
 #
-# …this hook surfaces a violation message so Claude can self-correct
-# by moving the file to docs/ before finalising the turn.
-#
+# …this hook surfaces a violation message so Claude can self-correct.
 # The hook always exits 0 so it never hard-blocks the tool response.
+#
+# Reference : Custom — project-specific hook, not derived from ECC.
+# Exits     : 0 always (PostToolUse hooks cannot block)
 
 set -euo pipefail
 
