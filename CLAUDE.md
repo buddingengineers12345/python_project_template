@@ -165,6 +165,26 @@ file, add a corresponding test.
 - Type annotations are required on all public functions and methods (basedpyright `standard` mode).
 - BasedPyright is lenient with external packages (`reportMissingTypeStubs = false`).
 
+## AI rules
+
+Detailed coding standards are documented as plain Markdown files under `.claude/rules/`
+and are readable by any AI assistant (Claude Code, Cursor, or any LLM):
+
+```
+.claude/rules/
+├── README.md            ← how to read and write rules
+├── common/              ← language-agnostic: coding-style, git-workflow, testing, security, …
+├── python/              ← Python: coding-style, testing, patterns, security, hooks
+├── jinja/               ← Jinja2: coding-style, testing
+├── bash/                ← Bash: coding-style, security
+├── markdown/            ← placement rules, authoring conventions
+├── yaml/                ← YAML formatting for copier.yml and workflows
+└── copier/              ← Copier template conventions (this repo only)
+```
+
+The `template/.claude/rules/` tree mirrors this structure for generated projects
+(common, python, bash, markdown — no Jinja or Copier-specific rules).
+
 ## Standards enforcement
 
 Standards are enforced at four layers — during development, at commit, in review, and in CI.
