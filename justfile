@@ -85,7 +85,7 @@ precommit:
 # Dependency management
 # -------------------------------------------------------------------------
 
-sync:
+sync: _set_env
     @uv sync --frozen --extra dev
 
 update:
@@ -95,7 +95,11 @@ update:
 # -------------------------------------------------------------------------
 # Docs (optional)
 # -------------------------------------------------------------------------
+# This repository is the Copier template source; there is no MkDocs site here.
+# Generated projects (include_docs=true) define docs-serve / docs-build in their justfile.
 
+docs-help:
+    @echo "MkDocs recipes live in generated projects (see template/justfile.jinja)."
 
 # -------------------------------------------------------------------------
 # Build & Publish
@@ -114,8 +118,8 @@ publish:
 install:
     @python -m pip install --upgrade pip
     @python -m pip install --upgrade uv
-    just sync
-    just precommit-install
+    @just sync
+    @just precommit-install
 
 # -------------------------------------------------------------------------
 # Cleaning

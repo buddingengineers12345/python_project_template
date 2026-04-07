@@ -33,7 +33,10 @@ git checkout -b feature/short-description
 
 ### 3. Set Up the Development Environment
 
-Follow the setup instructions in the repository `README.md`.
+```bash
+uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}{% if include_git_cliff %} --group changelog{% endif %}
+just precommit-install
+```
 
 ---
 
@@ -43,7 +46,7 @@ All changes must be tested.
 
 - Run the full test suite locally:
   ```bash
-  uv run pytest
+  just test
   ```
 
 - Add or update tests for:

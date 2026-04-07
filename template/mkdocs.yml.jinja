@@ -1,3 +1,4 @@
+{% if include_docs %}
 site_name: "{{ project_name }}"
 site_description: "{{ project_description }}"
 repo_url: "https://github.com/{{ github_username }}/{{ project_slug }}"
@@ -8,6 +9,7 @@ theme:
 
 nav:
   - Home: index.md
+  - CI and Codecov: ci.md
 
 plugins:
   - search
@@ -16,3 +18,4 @@ plugins:
         python:
           options:
             docstring_style: google
+{% endif %}

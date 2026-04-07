@@ -8,7 +8,7 @@
 - **Quality gates**: ruff (format + lint), basedpyright (type checking), pytest
 - **One-command workflows** via `just` (mirrors local/CI checks)
 {% if include_docs -%}
-- **Docs**: MkDocs site in `docs/` (served via `just docs`)
+- **Docs**: MkDocs site in `docs/` (`just docs-serve`, `just docs-build`)
 {%- endif %}
 
 ## Prerequisites
@@ -30,6 +30,13 @@ Run the full local CI mirror:
 just ci
 ```
 
+## Continuous integration
+
+GitHub Actions workflows live in `.github/workflows/`. If you use Codecov, configure the **`CODECOV_TOKEN`** repository secret under **Settings → Secrets and variables → Actions** — never paste tokens into Copier answers or commit them to the repo.
+{% if include_docs -%}
+See [docs/ci.md](docs/ci.md) for more detail.
+{%- endif %}
+
 ## Common commands
 
 - `just test`
@@ -38,7 +45,10 @@ just ci
 - `just type`
 - `just ci`
 {% if include_docs -%}
-- `just docs`
+- `just docs-serve` / `just docs-build`
+{%- endif %}
+{% if include_cli -%}
+- `just run -- --help` (Typer CLI)
 {%- endif %}
 
 ## Copier usage (generated-project docs)

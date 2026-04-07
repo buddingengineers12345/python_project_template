@@ -5,5 +5,13 @@
 The version string is exposed as :data:`__version__` for use in packaging and runtime checks.
 """
 
-__version__ = "0.1.0"
+from __future__ import annotations
+
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    __version__ = version("{{ package_name }}")
+except PackageNotFoundError:
+    __version__ = "unknown"
+
 __all__ = ["__version__"]

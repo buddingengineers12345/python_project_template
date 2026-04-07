@@ -1,0 +1,23 @@
+# actions/labeler@v4 — minimatch globs per label
+# https://github.com/actions/labeler
+template:
+  - template/**/*
+
+tests:
+  - tests/**/*
+
+ci:
+  - .github/**/*
+
+copier:
+  - copier.yml
+
+dependencies:
+  - pyproject.toml
+  - uv.lock
+
+documentation:
+  - "**/*.md"
+
+scripts:
+  - scripts/**/*
