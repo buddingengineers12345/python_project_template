@@ -95,6 +95,36 @@ def git_commit_all(project_dir: Path, message: str) -> None:
     )
 
 
+def _prune_docs_when_disabled(dest: Path, data: dict[str, str | bool]) -> None:
+    """Remove MkDocs output when ``include_docs`` is false (mirrors post-gen tasks)."""
+    if data.get("include_docs", True):
+        return
+    mk = dest / "mkdocs.yml"
+    if mk.is_file():
+        mk.unlink()
+    docs_dir = dest / "docs"
+    if docs_dir.is_dir():
+        shutil.rmtree(docs_dir)
+
+
+def _remove_empty_optional_artifacts(dest: Path, data: dict[str, str | bool]) -> None:
+    """Delete zero-byte optional files left when ``--skip-tasks`` skips post-gen ``rm`` tasks."""
+    pkg = data.get("package_name")
+    if not isinstance(pkg, str):
+        return
+    pairs: list[tuple[bool, Path]] = [
+        (not bool(data.get("include_cli", False)), dest / "src" / pkg / "cli.py"),
+        (
+            not bool(data.get("include_logging_setup", False)),
+            dest / "src" / pkg / "logging_config.py",
+        ),
+        (not bool(data.get("include_git_cliff", False)), dest / "cliff.toml"),
+    ]
+    for should_drop, path in pairs:
+        if should_drop and path.is_file() and path.stat().st_size == 0:
+            path.unlink()
+
+
 def copy_with_data(
     dest: Path,
     data: dict[str, str | bool],
@@ -127,6 +157,9 @@ def copy_with_data(
         rendered = ("true" if value else "false") if isinstance(value, bool) else str(value)
         cmd.extend(["--data", f"{key}={rendered}"])
     _ = run_command(cmd)
+    if skip_tasks:
+        _remove_empty_optional_artifacts(dest, data)
+        _prune_docs_when_disabled(dest, data)
 
 
 def load_pyproject(project_dir: Path) -> dict[str, object]:
@@ -161,8 +194,12 @@ def test_skip_if_exists_preserves_readme_on_update() -> None:
     copier_yaml = Path(__file__).resolve().parent.parent / "copier.yml"
     text = copier_yaml.read_text(encoding="utf-8")
     assert "README.md" in text
+    assert "CONTRIBUTING.md" in text
+    assert "SECURITY.md" in text
     assert "CLAUDE.md" in text
     assert "_skip_if_exists:" in text
+    assert '"*.md"' not in text
+    assert "codecov_token:" not in text
 
 
 @pytest.fixture
@@ -229,6 +266,15 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
     """
     test_dir = tmp_path / "defaults_only"
     _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+    _remove_empty_optional_artifacts(
+        test_dir,
+        {
+            "package_name": "my_library",
+            "include_cli": False,
+            "include_logging_setup": False,
+            "include_git_cliff": False,
+        },
+    )
 
     assert (test_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
     answers = load_copier_answers(test_dir)
@@ -240,31 +286,48 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
     assert project["name"] == "my_library"
 
 
-def test_codecov_token_not_stored_in_answers_file(tmp_path: Path) -> None:
-    """Secret answers must not be written to ``.copier-answers.yml``."""
-    test_dir = tmp_path / "secret_codecov"
-    token = "fake-codecov-token-not-for-production"
-    _ = run_command(
+def test_copier_yaml_has_no_codecov_token_prompt() -> None:
+    """Codecov must be documented for CI secrets only — no Copier prompt for tokens."""
+    copier_yaml = Path(__file__).resolve().parent.parent / "copier.yml"
+    text = copier_yaml.read_text(encoding="utf-8")
+    assert "codecov_token:" not in text
+
+
+def test_package_name_validator_rejects_leading_digit(tmp_path: Path) -> None:
+    """Digit-leading ``package_name`` values must fail Copier validation."""
+    test_dir = tmp_path / "bad_pkg"
+    proc = run_command(
         [
             "copier",
             "copy",
+            "--vcs-ref",
+            "HEAD",
             ".",
             str(test_dir),
             "--trust",
             "--defaults",
             "--skip-tasks",
             "--data",
-            f"codecov_token={token}",
-        ]
+            "package_name=1bad",
+        ],
+        check=False,
     )
-    answers_text = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
-    assert token not in answers_text, "Secret codecov_token must not appear in answers file"
+    assert proc.returncode != 0, "copier should reject package_name starting with a digit"
 
 
 def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
     """Questions with ``when: false`` must not be stored in the answers file."""
     test_dir = tmp_path / "computed_answers"
     _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+    _remove_empty_optional_artifacts(
+        test_dir,
+        {
+            "package_name": "my_library",
+            "include_cli": False,
+            "include_logging_setup": False,
+            "include_git_cliff": False,
+        },
+    )
     answers_text = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
     assert "current_year:" not in answers_text
     assert "github_actions_python_versions:" not in answers_text
@@ -274,6 +337,15 @@ def test_answers_file_warns_never_edit_manually(tmp_path: Path) -> None:
     """Generated answers file should match Copier docs banner text."""
     test_dir = tmp_path / "answers_banner"
     _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+    _remove_empty_optional_artifacts(
+        test_dir,
+        {
+            "package_name": "my_library",
+            "include_cli": False,
+            "include_logging_setup": False,
+            "include_git_cliff": False,
+        },
+    )
     first_line = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8").splitlines()[0]
     assert "NEVER EDIT MANUALLY" in first_line
 
@@ -289,6 +361,15 @@ def test_generate_programmatic_run_copy_local(tmp_path: Path) -> None:
         skip_tasks=True,
     )
     assert (test_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
+    _remove_empty_optional_artifacts(
+        test_dir,
+        {
+            "package_name": "my_library",
+            "include_cli": False,
+            "include_logging_setup": False,
+            "include_git_cliff": False,
+        },
+    )
 
 
 def test_generate_from_vcs_git_file_url(tmp_path: Path) -> None:
@@ -316,6 +397,15 @@ def test_generate_from_vcs_git_file_url(tmp_path: Path) -> None:
     vcs_src = f"git+file://{template_repo}"
     _ = run_command(
         ["copier", "copy", vcs_src, str(dest_dir), "--trust", "--defaults", "--skip-tasks"],
+    )
+    _remove_empty_optional_artifacts(
+        dest_dir,
+        {
+            "package_name": "my_library",
+            "include_cli": False,
+            "include_logging_setup": False,
+            "include_git_cliff": False,
+        },
     )
     assert (dest_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
 
@@ -355,18 +445,16 @@ def test_generate_full_featured_project(tmp_path: Path) -> None:
             "include_docs=true",
             "--data",
             "include_numpy=true",
-            "--data",
-            "codecov_token=",
         ]
     )
 
     assert (test_dir / "mkdocs.yml").exists(), "Missing mkdocs.yml for docs"
 
     justfile_content = (test_dir / "justfile").read_text(encoding="utf-8")
-    assert "docs:" in justfile_content, "just docs recipe expected when include_docs"
+    assert "docs-serve:" in justfile_content, "just docs-serve expected when include_docs"
     claude_full = (test_dir / "CLAUDE.md").read_text(encoding="utf-8")
     assert "--extra docs" in claude_full, "CLAUDE.md should include docs extra when docs enabled"
-    assert "just docs" in claude_full, "CLAUDE.md should reference just docs when docs enabled"
+    assert "docs-serve" in claude_full, "CLAUDE.md should reference docs-serve when docs enabled"
 
     pyproject_content = (test_dir / "pyproject.toml").read_text(encoding="utf-8")
     assert "pandas" in pyproject_content, "pandas not in dependencies"
@@ -545,6 +633,19 @@ def test_copier_update_exits_zero_after_copy_and_commit(tmp_path: Path) -> None:
             "include_docs=false",
         ]
     )
+    _remove_empty_optional_artifacts(
+        test_dir,
+        {
+            "package_name": "update_smoke_test",
+            "include_cli": False,
+            "include_logging_setup": False,
+            "include_git_cliff": False,
+        },
+    )
+    _prune_docs_when_disabled(
+        test_dir,
+        {"include_docs": False},
+    )
 
     _ = run_command(["git", "init"], cwd=test_dir)
     git_commit_all(test_dir, "chore: initial generated project")
@@ -573,6 +674,9 @@ def test_answers_file_matches_explicit_copy_data(tmp_path: Path) -> None:
         "include_docs": False,
         "include_pandas_support": True,
         "include_numpy": True,
+        "include_cli": False,
+        "include_logging_setup": False,
+        "include_git_cliff": False,
     }
     copy_with_data(test_dir, expected)
 
@@ -626,6 +730,160 @@ def test_pyproject_and_tree_match_explicit_copy_data(tmp_path: Path) -> None:
     urls = require_mapping(proj["urls"], name="pyproject.project.urls")
     assert urls["Homepage"] == "https://github.com/harbor-lab/ocean-buoy"
     assert urls["Repository"] == "https://github.com/harbor-lab/ocean-buoy"
+
+
+def test_include_cli_adds_console_script(tmp_path: Path) -> None:
+    """``include_cli=true`` must add Typer CLI module and ``[project.scripts]`` entry."""
+    test_dir = tmp_path / "with_cli"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "CLI Project",
+            "package_name": "cli_project",
+            "include_docs": False,
+            "include_cli": True,
+        },
+    )
+    cli_py = test_dir / "src" / "cli_project" / "cli.py"
+    assert cli_py.is_file()
+    assert "typer" in cli_py.read_text(encoding="utf-8")
+    pyproject = load_pyproject(test_dir)
+    proj = require_mapping(pyproject.get("project"), name="pyproject.project")
+    st = proj.get("scripts")
+    assert isinstance(st, dict), "project.scripts missing"
+    assert "cli_project" in st
+
+
+def test_include_git_cliff_adds_dependency_group(tmp_path: Path) -> None:
+    """``include_git_cliff=true`` must add a changelog dependency group and cliff.toml."""
+    test_dir = tmp_path / "with_cliff"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Cliff Project",
+            "package_name": "cliff_project",
+            "include_docs": False,
+            "include_git_cliff": True,
+        },
+    )
+    cliff = test_dir / "cliff.toml"
+    assert cliff.is_file()
+    assert "[changelog]" in cliff.read_text(encoding="utf-8")
+    raw = (test_dir / "pyproject.toml").read_text(encoding="utf-8")
+    assert "dependency-groups" in raw
+    assert "git-cliff" in raw
+
+
+def test_include_logging_setup_adds_module(tmp_path: Path) -> None:
+    """``include_logging_setup=true`` must ship ``logging_config.py`` with configure_logging."""
+    test_dir = tmp_path / "with_logging"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Log Project",
+            "package_name": "log_project",
+            "include_docs": False,
+            "include_logging_setup": True,
+        },
+    )
+    mod = test_dir / "src" / "log_project" / "logging_config.py"
+    assert mod.is_file()
+    text = mod.read_text(encoding="utf-8")
+    assert "configure_logging" in text
+    assert "structlog" in text
+
+
+def test_root_contributing_and_security_rendered(tmp_path: Path) -> None:
+    """Repository root should include ``CONTRIBUTING.md`` and ``SECURITY.md``."""
+    test_dir = tmp_path / "contrib_sec"
+    copy_with_data(
+        test_dir,
+        {"project_name": "Open Project", "include_docs": False},
+    )
+    contributing = test_dir / "CONTRIBUTING.md"
+    security = test_dir / "SECURITY.md"
+    assert contributing.is_file()
+    assert security.is_file()
+    assert "Submitting a Pull Request" in contributing.read_text(encoding="utf-8")
+    assert "Reporting a Vulnerability" in security.read_text(encoding="utf-8")
+
+
+def test_docs_ci_page_when_docs_enabled(tmp_path: Path) -> None:
+    """MkDocs nav should include the CI / Codecov documentation page."""
+    test_dir = tmp_path / "docs_ci"
+    copy_with_data(
+        test_dir,
+        {"project_name": "Docs CI", "include_docs": True},
+    )
+    ci_doc = test_dir / "docs" / "ci.md"
+    assert ci_doc.is_file()
+    assert "CODECOV_TOKEN" in ci_doc.read_text(encoding="utf-8")
+    mkdocs = (test_dir / "mkdocs.yml").read_text(encoding="utf-8")
+    assert "ci.md" in mkdocs
+
+
+def test_generated_pyproject_basedpyright_standard_mode(tmp_path: Path) -> None:
+    """Generated projects should configure basedpyright in standard mode (per template contract)."""
+    test_dir = tmp_path / "bp_std"
+    copy_with_data(test_dir, {"project_name": "BP Test", "include_docs": False})
+    raw = (test_dir / "pyproject.toml").read_text(encoding="utf-8")
+    assert 'typeCheckingMode = "standard"' in raw
+    assert "reportMissingImports = true" in raw
+
+
+def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
+    """Pre-commit config in generated projects should run detect-secrets with a baseline."""
+    test_dir = tmp_path / "secrets_hook"
+    copy_with_data(test_dir, {"project_name": "Secrets Hook", "include_docs": False})
+    cfg = (test_dir / ".pre-commit-config.yaml").read_text(encoding="utf-8")
+    assert "detect-secrets" in cfg
+    assert ".secrets.baseline" in cfg
+    assert (test_dir / ".secrets.baseline").is_file()
+
+
+def test_generated_renovate_enables_pre_commit(tmp_path: Path) -> None:
+    """Renovate should manage pre-commit hook revisions in generated projects."""
+    test_dir = tmp_path / "renovate_pc"
+    copy_with_data(test_dir, {"project_name": "Renovate Test", "include_docs": False})
+    import json
+
+    data = json.loads((test_dir / ".github" / "renovate.json").read_text(encoding="utf-8"))
+    assert data.get("pre-commit", {}).get("enabled") is True
+
+
+@pytest.mark.parametrize(
+    "flags",
+    [
+        {
+            "include_docs": True,
+            "include_numpy": True,
+            "include_pandas_support": False,
+            "include_cli": True,
+            "include_logging_setup": True,
+            "include_git_cliff": True,
+        },
+        {
+            "include_docs": False,
+            "include_numpy": False,
+            "include_pandas_support": True,
+            "include_cli": False,
+            "include_logging_setup": False,
+            "include_git_cliff": False,
+        },
+    ],
+)
+def test_boolean_feature_combinations_render(tmp_path: Path, flags: dict[str, bool]) -> None:
+    """Spot-check two opposite feature bundles for a consistent tree."""
+    test_dir = tmp_path / f"combo_{hash(frozenset(flags.items())) % 10000}"
+    data: dict[str, str | bool] = {"project_name": "Combo Project", **flags}
+    copy_with_data(test_dir, data)
+    assert (test_dir / "pyproject.toml").is_file()
+    pkg = "combo_project"
+    assert (test_dir / "src" / pkg / "__init__.py").is_file()
+    if flags["include_docs"]:
+        assert (test_dir / "mkdocs.yml").is_file()
+    else:
+        assert not (test_dir / "mkdocs.yml").exists()
 
 
 # ---------------------------------------------------------------------------

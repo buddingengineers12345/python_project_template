@@ -1,0 +1,19 @@
+{% if include_cli %}
+"""Command-line interface for **{{ project_name }}**."""
+
+from __future__ import annotations
+
+import typer
+
+app = typer.Typer(help="{{ project_description }}")
+
+
+@app.command()
+def hello() -> None:
+    """Print a short greeting (example command)."""
+    typer.echo("Hello from {{ project_name }}!")
+
+
+if __name__ == "__main__":
+    app()
+{% endif %}

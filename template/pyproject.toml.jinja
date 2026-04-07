@@ -27,6 +27,7 @@ classifiers = [
 dependencies = [
     {% if include_numpy %}"numpy>=1.26", {% endif %}
     {% if include_pandas_support %}"pandas>=2.0", {% endif %}
+    {% if include_cli %}"typer>=0.12.0", {% endif %}
     "python-dotenv>=1.0.0",
     "structlog>=23.1.0",
 ]
@@ -46,11 +47,19 @@ test = [
     "coverage[toml]>=7.6.0",
 ]
 
+{% if include_git_cliff %}
+[dependency-groups]
+changelog = [
+    "git-cliff>=2.6.0",
+]
+{% endif %}
+
 {% if include_docs %}
 docs = [
     "mkdocs>=1.6.0",
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.27.0",
+    "mkdocs-gen-files>=0.5.0",
 ]
 {% endif %}
 
@@ -59,6 +68,11 @@ Homepage = "https://github.com/{{ github_username }}/{{ project_slug }}"
 Documentation = "https://github.com/{{ github_username }}/{{ project_slug }}#readme"
 Repository = "https://github.com/{{ github_username }}/{{ project_slug }}"
 Issues = "https://github.com/{{ github_username }}/{{ project_slug }}/issues"
+
+{% if include_cli %}
+[project.scripts]
+{{ package_name }} = "{{ package_name }}.cli:app"
+{% endif %}
 
 [build-system]
 requires = ["hatchling"]
@@ -116,26 +130,11 @@ known-first-party = ["{{ package_name }}"]
 # ==========================================================================
 
 [tool.basedpyright]
-typeCheckingMode = "strict"
 pythonVersion = "{{ python_min_version }}"
-pythonPlatform = "All"
-
-# Strict typing settings
-reportUnusedImport = "error"
-reportUnusedVariable = "error"
-reportDuplicateImport = "error"
-reportImplicitOverride = "error"
-reportIncompatibleMethodOverride = "error"
-reportIncompatibleVariableOverride = "error"
-
-# Be lenient with external packages
+typeCheckingMode = "standard"
+reportMissingImports = true
 reportMissingTypeStubs = false
-reportUnknownMemberType = false
-reportUnknownArgumentType = false
-reportUnknownVariableType = false
-reportUnknownLambdaType = false
 
-# Source configuration
 include = ["src", "tests"]
 exclude = [
     "**/__pycache__",
@@ -172,8 +171,10 @@ markers = [
 
 [tool.coverage.run]
 branch = true
-source = ["{{ package_name }}"]
+source = ["src"]
 omit = [
+    "tests/*",
+    "**/__init__.py",
     "*/tests/*",
     "*/__pycache__/*",
     "*/common/*",

@@ -58,18 +58,16 @@ current_year:
 They are not stored in `.copier-answers.yml` and not shown to users. Use them for
 derived values (year, Python version matrix) to keep templates DRY.
 
-## Secret variables
+## Secrets and third-party tokens
 
-Use `secret: true` for sensitive values to prevent them from being stored in
-`.copier-answers.yml`:
+Do **not** add Copier prompts for API tokens or upload keys (Codecov, PyPI, npm,
+and so on). Those belong in the CI provider’s **encrypted secrets** (for example
+GitHub Actions **Settings → Secrets**) and in maintainer documentation
+(`README.md`, `docs/ci.md`), not in `.copier-answers.yml`.
 
-```yaml
-codecov_token:
-  type: str
-  secret: true
-  default: ""
-  help: Leave empty; use GitHub secret CODECOV_TOKEN
-```
+If you must accept a rare secret interactively, use `secret: true` with a safe
+`default` so it is **not** written to the answers file — and still prefer
+documenting the secret-in-CI workflow instead of prompting.
 
 ## _skip_if_exists
 

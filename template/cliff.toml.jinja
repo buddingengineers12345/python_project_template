@@ -1,0 +1,17 @@
+{% if include_git_cliff %}
+# git-cliff — https://git-cliff.org/docs/configuration
+[changelog]
+header = "# Changelog\n\n"
+body = """
+{% raw %}
+{% if commit.id -%}
+- {{ commit.message | upper_first }}
+{% endif -%}
+{% endraw %}
+"""
+trim = true
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+{% endif %}

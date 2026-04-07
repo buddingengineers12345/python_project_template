@@ -20,6 +20,7 @@ dev = [
   "basedpyright>=1.21.0",
   "pre-commit>=4.0.0",
   "typing-extensions>=4.12.0",
+  "detect-secrets>=1.5.0",
 ]
 
 [tool.ruff]
@@ -65,13 +66,18 @@ addopts = ["-q"]
 
 [tool.coverage.run]
 branch = true
+source = ["tests"]
+omit = ["**/__init__.py"]
 
 [tool.coverage.report]
 precision = 2
 show_missing = true
+skip_covered = false
 
 [tool.basedpyright]
+pythonVersion = "3.11"
 typeCheckingMode = "standard"
+reportMissingImports = true
 reportImplicitOverride = false
 reportMissingTypeStubs = false
 reportUnknownMemberType = false

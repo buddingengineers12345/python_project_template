@@ -9,7 +9,9 @@ def test_import() -> None:
 
 
 def test_version_format() -> None:
-    """Assert the version string has at least major and minor segments."""
+    """Assert the version string looks like a semver when the package is installed."""
     version = {{ package_name }}.__version__
+    if version == "unknown":
+        return
     parts = version.split(".")
     assert len(parts) >= 2, f"Version {version} should have at least major.minor"

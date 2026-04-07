@@ -1,0 +1,43 @@
+# Weekly maintenance: align ``_skip_if_exists`` in copier.yml with template paths and
+# recent commit activity (see scripts/sync_skip_if_exists.py).
+name: Sync Copier skip-if-exists list
+
+on:
+  schedule:
+    - cron: "15 6 * * 1" # Mondays 06:15 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Run sync script
+        run: python scripts/sync_skip_if_exists.py --write
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore(copier): sync _skip_if_exists list"
+          title: "chore(copier): sync _skip_if_exists list"
+          body: |
+            Automated update from `scripts/sync_skip_if_exists.py` (scheduled workflow).
+
+            Review the diff to ensure newly skipped paths match files users are expected to edit.
+          branch: automation/sync-skip-if-exists
+          delete-branch: true

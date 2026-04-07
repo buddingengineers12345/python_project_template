@@ -24,15 +24,19 @@ _answers_file: ".copier-answers.yml"
 # Files and directories listed here will be preserved on template
 # updates to avoid overwriting user edits in generated projects.
 _skip_if_exists:
+  - docs/
+  - .github/CODE_OF_CONDUCT.md
+  - .github/ISSUE_TEMPLATE/bug_report.md
+  - .github/ISSUE_TEMPLATE/feature_request.md
+  - .github/PULL_REQUEST_TEMPLATE.md
+  - CLAUDE.md
+  - CONTRIBUTING.md
+  - mkdocs.yml
   - pyproject.toml
   - README.md
-  - CLAUDE.md
-  - src/{{ package_name }}/__init__.py
-  - mkdocs.yml
-  - docs/
-  - .github/CONTRIBUTING.md
-  - .github/CODE_OF_CONDUCT.md
   - scripts/bump_version.py
+  - SECURITY.md
+  - src/{{ package_name }}/__init__.py
 
 # -------------------------------------------------------------------------
 # Questions / Prompts
@@ -55,8 +59,9 @@ package_name:
   default: "{{ project_name | lower | replace(' ', '_') | replace('-', '_') }}"
   help: Python package name (must be valid Python identifier)
   validator: >-
-    {% if not package_name.replace('_', '').isalnum() %}
-    Package name must be a valid Python identifier (alphanumeric and underscores only)
+    {% if not package_name.replace('_', '').isalnum()
+       or (package_name | length > 0 and package_name[0].isdigit()) %}
+    Package name must be a valid Python identifier (alphanumeric and underscores only; cannot start with a digit)
     {% endif %}
 
 project_description:
@@ -130,15 +135,20 @@ include_security_scanning:
   help: Add CodeQL security scanning and dependency audit workflow?
   default: true
 
-codecov_token:
-  type: str
-  secret: true
-  help: >-
-    Optional; rarely needed. CI uses the GitHub secret CODECOV_TOKEN, not this field.
-    Leave empty and add the secret under repo Settings → Secrets if you use Codecov.
-    (Secret answers are not written to .copier-answers.yml.)
-  default: ""
-  placeholder: "Leave empty; use GitHub secret CODECOV_TOKEN"
+include_cli:
+  type: bool
+  help: Generate a Typer-based CLI entry point and console script?
+  default: false
+
+include_logging_setup:
+  type: bool
+  help: Add a logging_config module with configure_logging() (stdlib logging + structlog)?
+  default: false
+
+include_git_cliff:
+  type: bool
+  help: Add git-cliff, cliff.toml, and a just changelog recipe for release notes?
+  default: false
 
 # -------------------------------------------------------------------------
 # Computed values
@@ -219,15 +229,23 @@ _tasks:
   - command: uv self update || true
   - command: uv lock
   - command: >-
-      {% if include_docs -%}
-      uv sync --frozen --extra dev --extra test --extra docs
-      {%- else -%}
       uv sync --frozen --extra dev --extra test
-      {%- endif %}
+      {%- if include_docs %} --extra docs{% endif -%}
+      {%- if include_git_cliff %} --group changelog{% endif %}
   - command: uv run pre-commit install
   - command: uv run pre-commit install --hook-type pre-push
   - command: uv run ruff check --fix --unsafe-fixes .
   - command: uv run basedpyright
+  - command: rm -f cliff.toml
+    when: "{{ not include_git_cliff }}"
+  - command: rm -f src/{{ package_name }}/logging_config.py
+    when: "{{ not include_logging_setup }}"
+  - command: rm -f src/{{ package_name }}/cli.py
+    when: "{{ not include_cli }}"
+  - command: rm -f mkdocs.yml
+    when: "{{ not include_docs }}"
+  - command: sh -c 'rm -f docs/index.md docs/ci.md 2>/dev/null; rmdir docs 2>/dev/null || true'
+    when: "{{ not include_docs }}"
   - command: echo "✅ Project {{ project_name }} created successfully!"
   - command: echo "📁 Location $(pwd)"
   - command: echo "🚀 Run 'just ci' to verify everything works"

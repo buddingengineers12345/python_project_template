@@ -79,6 +79,10 @@ instance/
 docs/_build/
 docs/
 
+# Copier template ships MkDocs sources under template/docs/ (must not match the rule above).
+!template/docs/
+!template/docs/**
+
 # PyBuilder
 target/
 

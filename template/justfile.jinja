@@ -60,13 +60,13 @@ type:
 # Testing
 # -------------------------------------------------------------------------
 
-test:
+test: _set_env
     @uv run --active pytest tests/ -v
 
-test-parallel:
+test-parallel: _set_env
     @uv run --active pytest tests/ -v -n auto
 
-coverage:
+coverage: _set_env
     @uv run --active pytest tests/ \
         --cov={{ package_name }} \
         --cov-report=term-missing \
@@ -88,20 +88,36 @@ precommit:
 # Dependency management
 # -------------------------------------------------------------------------
 
-sync:
-    @uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
+sync: _set_env
+    @uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}{% if include_git_cliff %} --group changelog{% endif %}
 
 update:
     @uv lock --upgrade
-    @uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
+    @just sync
 
 # -------------------------------------------------------------------------
 # Docs (optional)
 # -------------------------------------------------------------------------
 {% if include_docs %}
 
-docs:
+docs-serve:
     @uv run --active mkdocs serve
+
+docs-build:
+    @uv run --active mkdocs build
+
+docs-deploy:
+    @uv run --active mkdocs gh-deploy --force
+{% endif %}
+
+{% if include_git_cliff %}
+changelog:
+    @uv run --active git-cliff --unreleased
+{% endif %}
+
+{% if include_cli %}
+run *args:
+    @uv run --active {{ package_name }} {{ args }}
 {% endif %}
 
 # -------------------------------------------------------------------------
@@ -121,8 +137,8 @@ publish:
 install:
     @python -m pip install --upgrade pip
     @python -m pip install --upgrade uv
-    just sync
-    just precommit-install
+    @just sync
+    @just precommit-install
 
 # -------------------------------------------------------------------------
 # Cleaning

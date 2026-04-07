@@ -24,7 +24,13 @@ just precommit-install
 | Docstring check | `just docs-check` |
 | Pre-merge review | `just review` |
 | Full CI | `just ci` |
-{% if include_docs %}| Serve docs | `just docs` |
+{% if include_docs %}| Serve docs | `just docs-serve` |
+| Build docs | `just docs-build` |
+| Deploy docs (gh-pages) | `just docs-deploy` |
+{% endif %}
+{% if include_git_cliff %}| Unreleased changelog (git-cliff) | `just changelog` |
+{% endif %}
+{% if include_cli %}| Run CLI | `just run -- --help` |
 {% endif %}
 
 ## Copy vs update (important)

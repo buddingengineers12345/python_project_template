@@ -8,7 +8,7 @@
 - **Quality gates**: ruff (format + lint), basedpyright (type checking), pytest
 - **One-command workflows** via `just` (mirrors local/CI checks)
 {% if include_docs -%}
-- **Docs**: MkDocs site in `docs/` (served via `just docs`)
+- **Docs**: MkDocs site in `docs/` (`just docs-serve`, `just docs-build`)
 {%- endif %}
 
 ## Prerequisites
@@ -38,7 +38,10 @@ just ci
 - `just type`
 - `just ci`
 {% if include_docs -%}
-- `just docs`
+- `just docs-serve` / `just docs-build`
+{%- endif %}
+{% if include_cli -%}
+- `just run -- --help` (Typer CLI)
 {%- endif %}
 
 ## Copier usage (generated-project docs)
