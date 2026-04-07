@@ -7,6 +7,7 @@ tooling. They guard template variables, ``_skip_if_exists``, and post-generation
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import tomllib
@@ -884,6 +885,27 @@ def test_boolean_feature_combinations_render(tmp_path: Path, flags: dict[str, bo
         assert (test_dir / "mkdocs.yml").is_file()
     else:
         assert not (test_dir / "mkdocs.yml").exists()
+
+
+@pytest.mark.skipif(
+    os.environ.get("RUN_TEMPLATE_INTEGRATION") != "1",
+    reason="Set RUN_TEMPLATE_INTEGRATION=1 for uv lock+sync smoke (network, slower).",
+)
+def test_generated_project_uv_lock_and_sync_smoke(tmp_path: Path) -> None:
+    """After render, ``uv lock`` and ``uv sync --frozen`` must succeed (integration gate)."""
+    test_dir = tmp_path / "uv_sync_smoke"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "UV Sync Smoke",
+            "include_docs": False,
+        },
+    )
+    _ = run_command(["uv", "lock"], cwd=test_dir)
+    _ = run_command(
+        ["uv", "sync", "--frozen", "--extra", "dev", "--extra", "test"],
+        cwd=test_dir,
+    )
 
 
 # ---------------------------------------------------------------------------
