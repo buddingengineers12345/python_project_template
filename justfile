@@ -187,3 +187,11 @@ doctor:
     @echo "=== Project ==="
     @echo "Repo: python_project_template"
     @echo "Python: >= 3.11"
+
+# -------------------------------------------------------------------------
+# Repo automation
+# -------------------------------------------------------------------------
+
+# Generate repo freshness dashboard + JSON artifacts
+freshness:
+    @uv run --active python scripts/repo_file_freshness.py

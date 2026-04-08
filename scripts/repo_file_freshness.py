@@ -57,6 +57,21 @@ def _now_utc() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _now_utc_from_env() -> datetime:
+    """Return a deterministic 'now' when FRESHNESS_NOW_ISO is set (for tests)."""
+    raw = os.environ.get("FRESHNESS_NOW_ISO")
+    if not raw:
+        return _now_utc()
+    dt = _parse_git_iso_datetime(raw)
+    if dt is None:
+        print(
+            f"[freshness] Warning: invalid FRESHNESS_NOW_ISO (expected ISO-8601): {raw!r}",
+            file=sys.stderr,
+        )
+        return _now_utc()
+    return dt
+
+
 def _run_git(root: Path, args: list[str]) -> subprocess.CompletedProcess[str] | None:
     """Run a git command, returning the process or None if git is missing."""
     try:
@@ -328,7 +343,7 @@ def main() -> int:
 
     root = _resolve_repo_root(args.repo_root)
     ignore = load_ignore_config((root / args.ignore_config).resolve())
-    now = _now_utc()
+    now = _now_utc_from_env()
 
     files = _git_ls_files(root)
     items: list[dict[str, Any]] = []
