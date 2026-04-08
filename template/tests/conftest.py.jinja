@@ -1,0 +1,21 @@
+"""Pytest configuration and fixtures for all tests."""
+
+from collections.abc import Generator
+
+import pytest
+
+from {{ package_name }}.common.logging_manager import (  # pyright: ignore[reportPrivateUsage]
+    _reset_configuration,
+)
+
+
+@pytest.fixture(autouse=True)
+def _reset_logging_state() -> Generator[None, None, None]:
+    """Reset logging configuration before each test.
+
+    This allows tests to call configure_logging() with different settings
+    without conflicts due to the idempotent guard.
+    """
+    _reset_configuration()
+    yield
+    _reset_configuration()

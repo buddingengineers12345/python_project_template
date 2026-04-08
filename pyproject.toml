@@ -78,6 +78,7 @@ skip_covered = false
 pythonVersion = "3.11"
 typeCheckingMode = "standard"
 reportMissingImports = true
+include = ["tests", "scripts"]
 reportImplicitOverride = false
 reportMissingTypeStubs = false
 reportUnknownMemberType = false

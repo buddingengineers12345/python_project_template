@@ -34,9 +34,10 @@ _skip_if_exists:
   - mkdocs.yml
   - pyproject.toml
   - README.md
-  - src/{{ package_name }}/common/bump_version.py
   - SECURITY.md
   - src/{{ package_name }}/__init__.py
+  - src/{{ package_name }}/common/bump_version.py
+
 
 # -------------------------------------------------------------------------
 # Questions / Prompts
@@ -232,6 +233,8 @@ _tasks:
   - command: uv run basedpyright
   - command: sh -c 'rmdir docs 2>/dev/null || true'
     when: "{{ not include_docs }}"
+  - command: >-
+      sh -c 'find . -type f -empty ! -path "./.git/*" ! -path "./.venv/*" -delete'
   - command: echo "✅ Project {{ project_name }} created successfully!"
   - command: echo "📁 Location $(pwd)"
   - command: echo "🚀 Run 'just ci' to verify everything works"
