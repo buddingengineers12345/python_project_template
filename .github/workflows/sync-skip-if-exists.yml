@@ -31,7 +31,7 @@ jobs:
         run: python scripts/sync_skip_if_exists.py --write
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "chore(copier): sync _skip_if_exists list"
           title: "chore(copier): sync _skip_if_exists list"
