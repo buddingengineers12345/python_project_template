@@ -136,6 +136,8 @@ def copy_with_data(
         data: Mapping of Copier variable names to values to pass via ``--data``.
         skip_tasks: If ``True``, skip post-generation tasks (default).
     """
+    template_repo = Path(__file__).resolve().parent.parent
+    vcs_src = f"git+file://{template_repo}"
     cmd: list[str] = [
         "copier",
         "copy",
@@ -260,6 +262,8 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
     Pass explicit ``--data`` when you need a different distribution name.
     """
     test_dir = tmp_path / "defaults_only"
+    template_repo = Path(__file__).resolve().parent.parent
+    vcs_src = f"git+file://{template_repo}"
     _ = run_command(
         [
             "copier",
@@ -303,6 +307,8 @@ def test_copier_yaml_has_no_codecov_token_prompt() -> None:
 def test_package_name_validator_rejects_leading_digit(tmp_path: Path) -> None:
     """Digit-leading ``package_name`` values must fail Copier validation."""
     test_dir = tmp_path / "bad_pkg"
+    template_repo = Path(__file__).resolve().parent.parent
+    vcs_src = f"git+file://{template_repo}"
     proc = run_command(
         [
             "copier",
@@ -378,6 +384,9 @@ def test_answers_file_warns_never_edit_manually(tmp_path: Path) -> None:
 def test_generate_programmatic_run_copy_local(tmp_path: Path) -> None:
     """Render programmatically with :func:`copier.run_copy` from a local path."""
     test_dir = tmp_path / "programmatic_local"
+    # Use a VCS-style local source to avoid git hardlink issues that can occur with
+    # local clones in some container/filesystem setups.
+    vcs_src = f"git+file://{Path('.').resolve()}"
     _worker = run_copy(
         TEMPLATE_GIT_SRC,
         test_dir,
