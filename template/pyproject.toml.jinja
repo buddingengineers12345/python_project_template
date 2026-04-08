@@ -159,10 +159,19 @@ addopts = [
     "--cov={{ package_name }}",
     "--cov-report=term-missing",
     "--cov-report=xml",
+    "--tb=short",
+    "--log-level=WARNING",
+    "-m", "not slow",
+    "-p", "no:cacheprovider",
+    "-ra",
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
 ]
 
 # ==========================================================================
@@ -177,7 +186,6 @@ omit = [
     "**/__init__.py",
     "*/tests/*",
     "*/__pycache__/*",
-    "*/common/*",
 ]
 
 [tool.coverage.report]

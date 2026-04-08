@@ -27,7 +27,9 @@ TEMPLATE_PATH_TO_SKIP_ENTRY: dict[str, str] = {
     "template/.github/CODE_OF_CONDUCT.md.jinja": ".github/CODE_OF_CONDUCT.md",
     "template/.github/ISSUE_TEMPLATE/bug_report.md.jinja": ".github/ISSUE_TEMPLATE/bug_report.md",
     "template/.github/ISSUE_TEMPLATE/feature_request.md.jinja": ".github/ISSUE_TEMPLATE/feature_request.md",
-    "template/scripts/bump_version.py.jinja": "scripts/bump_version.py",
+    "template/src/{{ package_name }}/common/bump_version.py.jinja": (
+        "src/{{ package_name }}/common/bump_version.py"
+    ),
 }
 
 # Always include these (user customization hotspots even if not in the map above).
@@ -44,7 +46,7 @@ BASE_SKIP_ENTRIES: list[str] = [
     ".github/CODE_OF_CONDUCT.md",
     ".github/ISSUE_TEMPLATE/bug_report.md",
     ".github/ISSUE_TEMPLATE/feature_request.md",
-    "scripts/bump_version.py",
+    "src/{{ package_name }}/common/bump_version.py",
 ]
 
 # Paths touched at least this often in recent history are added to the skip list.

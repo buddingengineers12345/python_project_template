@@ -112,7 +112,7 @@ Tasks use `/bin/sh` (POSIX shell), not bash. Use POSIX-compatible syntax.
 - `copier update` uses these tags to select the appropriate template version.
 - Introduce `_migrations` in `copier.yml` when a new version renames or removes template
   files, to guide users through the update.
-- See `scripts/bump_version.py` and `.github/workflows/release.yml` for the release
+- See `src/{{ package_name }}/common/bump_version.py` and `.github/workflows/release.yml` for the release
   automation workflow.
 
 ## Dual-hierarchy maintenance

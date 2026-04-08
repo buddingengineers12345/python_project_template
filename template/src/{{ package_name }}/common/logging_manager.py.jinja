@@ -41,10 +41,14 @@ from __future__ import annotations
 import logging
 import os
 import sys
-from typing import Any
+import textwrap
+import threading
+from typing import TYPE_CHECKING, Any
 
 import structlog
-from structlog.types import EventDict, WrappedLogger
+
+if TYPE_CHECKING:
+    from structlog.types import EventDict, WrappedLogger
 
 # ---------------------------------------------------------------------------
 # Execution-context detection
@@ -79,6 +83,33 @@ EXECUTION_CONTEXT: str = _detect_context()
 #: ``True`` when running in LLM mode.  Use for cheap conditional checks.
 IS_LLM: bool = EXECUTION_CONTEXT == "llm"
 
+#: Column width used when wrapping or drawing separator lines in human mode.
+LOG_LINE_WIDTH: int = 50
+
+#: Key column width used to align ``:`` separators in :func:`log_fields`.
+PADDING_WIDTH: int = 15
+
+# ---------------------------------------------------------------------------
+# One-time configuration state (thread-safe)
+# ---------------------------------------------------------------------------
+
+_configured = False
+_config_signature: tuple[str, str] | None = None
+_config_lock = threading.Lock()
+
+
+def _reset_configuration() -> None:
+    """Reset configuration state for testing purposes.
+
+    This function is private and should only be used in test fixtures to
+    allow configure_logging() to be called with different settings in separate
+    tests without raising RuntimeError.
+    """
+    global _configured, _config_signature
+    with _config_lock:
+        _configured = False
+        _config_signature = None
+
 
 # ---------------------------------------------------------------------------
 # Custom processors
@@ -90,22 +121,6 @@ def _filter_llm_events(
     method: str,  # noqa: ARG001
     event_dict: EventDict,
 ) -> EventDict:
-    """Drop events that are not tagged ``llm=True`` in LLM mode.
-
-    Removes the ``llm`` sentinel key before the event reaches the renderer so
-    it does not appear in final output.
-
-    Args:
-        logger: Structlog-wrapped logger (unused).
-        method: Log method name (e.g. ``"info"``, ``"warning"``).
-        event_dict: Mutable event dictionary for this log call.
-
-    Returns:
-        ``event_dict`` with the ``llm`` key stripped, when the event passes.
-
-    Raises:
-        structlog.DropEvent: When ``llm`` is absent or falsy.
-    """
     if not event_dict.pop("llm", False):
         raise structlog.DropEvent()
     return event_dict
@@ -116,22 +131,38 @@ def _drop_debug_events(
     method: str,
     event_dict: EventDict,
 ) -> EventDict:
-    """Suppress DEBUG and TRACE events unconditionally in LLM mode.
-
-    Args:
-        logger: Structlog-wrapped logger (unused).
-        method: Log method name.
-        event_dict: Mutable event dictionary.
-
-    Returns:
-        ``event_dict`` unchanged for non-debug methods.
-
-    Raises:
-        structlog.DropEvent: For ``"debug"`` or ``"trace"`` log methods.
-    """
     if method in ("debug", "trace"):
         raise structlog.DropEvent()
     return event_dict
+
+
+_LEVEL_SYMBOLS: dict[str, str] = {
+    "debug": "·",
+    "info": ">",
+    "warning": "⚠",
+    "error": "✖",
+    "critical": "✖✖",
+}
+
+
+def _human_level_indicator(
+    logger: WrappedLogger,  # noqa: ARG001
+    method: str,
+    event_dict: EventDict,
+) -> EventDict:
+    symbol = _LEVEL_SYMBOLS.get(method, "?")
+    event_dict["event"] = f"{symbol} {event_dict.get('event', '')}"
+    return event_dict
+
+
+def _llm_promote_level(
+    logger: WrappedLogger,  # noqa: ARG001
+    method: str,
+    event_dict: EventDict,
+) -> EventDict:
+    level = event_dict.pop("level", method)
+    event = event_dict.pop("event", "")
+    return {"level": level, "event": event, **event_dict}
 
 
 def _truncate_long_values(
@@ -142,21 +173,6 @@ def _truncate_long_values(
     max_len: int = 200,
     truncate_to: int = 100,
 ) -> EventDict:
-    """Shorten string values that exceed *max_len* characters.
-
-    The replacement format is ``"<first N chars>…[len=<original>]"``.
-    The ``event`` key is never truncated to preserve the event name.
-
-    Args:
-        logger: Structlog-wrapped logger (unused).
-        method: Log method name (unused).
-        event_dict: Mutable event dictionary.
-        max_len: Threshold above which a string value is truncated.
-        truncate_to: Number of characters to retain from the start.
-
-    Returns:
-        ``event_dict`` with oversized string values shortened.
-    """
     for key, value in event_dict.items():
         if key == "event":
             continue
@@ -170,27 +186,12 @@ def _flatten_nested_dicts(
     method: str,  # noqa: ARG001
     event_dict: EventDict,
 ) -> EventDict:
-    """Inline one level of nested dict values using dot-separated keys.
-
-    Keeps the schema flat as required by the LLM logging conventions.
-    Only the first level of nesting is expanded; deeper nesting is left as-is.
-    The ``exception`` key is excluded from flattening.
-
-    Args:
-        logger: Structlog-wrapped logger (unused).
-        method: Log method name (unused).
-        event_dict: Mutable event dictionary.
-
-    Returns:
-        ``event_dict`` with one level of nested dicts inlined.
-    """
     to_expand = [
-        key
-        for key, value in event_dict.items()
+        key for key, value in event_dict.items()
         if isinstance(value, dict) and key != "exception"
     ]
     for key in to_expand:
-        nested: dict[str, Any] = event_dict.pop(key)  # type: ignore[assignment]
+        nested: dict[str, Any] = event_dict.pop(key)
         for nested_key, nested_value in nested.items():
             event_dict[f"{key}.{nested_key}"] = nested_value
     return event_dict
@@ -216,9 +217,14 @@ def configure_logging(
     ``EXECUTION_CONTEXT``
         Set to ``"llm"`` to activate LLM mode, ``"human"`` to force human mode.
     ``HUMAN_LOG_LEVEL``
-        Log level for human mode (default ``"DEBUG"``).
+        Log level for human mode (default ``"INFO"``).
     ``LLM_LOG_LEVEL``
         Log level for LLM mode (default ``"WARNING"``).
+        Accepted values: ``"DEBUG"``, ``"INFO"``, ``"WARNING"``.
+
+        * ``WARNING`` — only WARNING/ERROR events tagged ``llm=True`` (default, minimal tokens).
+        * ``INFO``    — adds INFO stage-summary events tagged ``llm=True`` (pipeline trace).
+        * ``DEBUG``   — adds DEBUG events tagged ``llm=True`` (full diagnostic trace).
 
     Args:
         level: Override the effective log level (e.g. ``"DEBUG"``, ``"WARNING"``).
@@ -230,6 +236,8 @@ def configure_logging(
         >>> configure_logging()                              # auto-detect
         >>> configure_logging(level="ERROR", context="llm") # explicit LLM
     """
+    global _configured, _config_signature
+
     resolved_context = context if context is not None else EXECUTION_CONTEXT
     is_llm = resolved_context == "llm"
 
@@ -239,7 +247,22 @@ def configure_logging(
     elif is_llm:
         level_str = os.getenv("LLM_LOG_LEVEL", "WARNING").upper()
     else:
-        level_str = os.getenv("HUMAN_LOG_LEVEL", "DEBUG").upper()
+        level_str = os.getenv("HUMAN_LOG_LEVEL", "INFO").upper()
+
+    signature = (resolved_context, level_str)
+
+    # Idempotent + thread-safe guard
+    with _config_lock:
+        if _configured:
+            if signature != _config_signature:
+                raise RuntimeError(
+                    "configure_logging() called multiple times with different settings: "
+                    f"first={_config_signature}, second={signature}"
+                )
+            return
+
+        _configured = True
+        _config_signature = signature
 
     numeric_level = getattr(logging, level_str, logging.INFO)
 
@@ -251,7 +274,6 @@ def configure_logging(
     # ---- Build processor chain --------------------------------------------
     _shared: list[Any] = [
         structlog.contextvars.merge_contextvars,
-        structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
         structlog.processors.TimeStamper(fmt="iso", utc=True),
         structlog.stdlib.PositionalArgumentsFormatter(),
@@ -260,19 +282,34 @@ def configure_logging(
 
     if is_llm:
         # LLM MODE: filter aggressively, emit compact JSON only.
+        # Key ordering: level → event → remaining fields so severity is
+        # immediately visible when scanning raw JSON output.
+        #
+        # _drop_debug_events is only inserted when the effective level is
+        # above DEBUG.  When LLM_LOG_LEVEL=DEBUG the stdlib level-filter on
+        # the bound logger already lets debug events through; the processor
+        # must not block them a second time, so that llm=True debug events
+        # are visible to the agent.
         processors: list[Any] = [
             *_shared,
-            _drop_debug_events,       # drop DEBUG/TRACE first (cheap)
-            _filter_llm_events,       # drop events without llm=True
-            _truncate_long_values,    # cap string lengths
-            _flatten_nested_dicts,    # enforce flat schema
+            *([_drop_debug_events] if numeric_level > logging.DEBUG else []),
+            _filter_llm_events,  # drop events without llm=True
+            _truncate_long_values,  # cap string lengths
+            _flatten_nested_dicts,  # enforce flat schema
+            _llm_promote_level,  # level → event → ... ordering
             structlog.processors.ExceptionRenderer(),
             structlog.processors.JSONRenderer(sort_keys=False),
         ]
     else:
         # HUMAN MODE: full verbosity with coloured console output.
+        # Each level gets a distinct symbol prefix in addition to colour:
+        #   ·  debug  (quiet, secondary)
+        #   >  info   (normal)
+        #   ⚠  warning (attention)
+        #   ✖  error/critical (failure)
         processors = [
             *_shared,
+            _human_level_indicator,  # symbol prefix before rendering
             structlog.processors.ExceptionRenderer(),
             structlog.dev.ConsoleRenderer(
                 colors=sys.stderr.isatty(),
@@ -284,7 +321,7 @@ def configure_logging(
         processors=processors,
         wrapper_class=structlog.make_filtering_bound_logger(numeric_level),
         context_class=dict,
-        logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
+        logger_factory=structlog.stdlib.LoggerFactory(),
         cache_logger_on_first_use=True,
     )
 
@@ -320,25 +357,14 @@ def get_logger(name: str | None = None, **initial_values: Any) -> Any:
         >>> log = get_logger(__name__, service="payment")
         >>> log.info("payment_started", order_id=123)
     """
+    configure_logging()
+
     bound = structlog.get_logger()
     if name:
         bound = bound.bind(logger=name)
     if initial_values:
         bound = bound.bind(**initial_values)
     return bound
-
-
-def log_message(message: str) -> None:
-    """Emit a human-readable diagnostic line at INFO level.
-
-    Prefer structured events via :func:`get_logger` and keyword arguments for
-    application logging. This helper supports decorators and startup utilities
-    that need a simple string record.
-
-    Args:
-        message: Plain-text message to log.
-    """
-    structlog.get_logger().info("diagnostic", message=message)
 
 
 def bind_context(**kwargs: Any) -> None:
@@ -369,3 +395,144 @@ def clear_context() -> None:
         >>> clear_context()
     """
     structlog.contextvars.clear_contextvars()
+
+
+# ---------------------------------------------------------------------------
+# Human-mode formatting helpers
+# ---------------------------------------------------------------------------
+
+
+def wrap_text(text: str, *, width: int = LOG_LINE_WIDTH) -> str:
+    """Wrap *text* to *width* columns, preserving existing newlines.
+
+    Args:
+        text: Input string to wrap.
+        width: Maximum column width (default :data:`LOG_LINE_WIDTH`).
+
+    Returns:
+        Wrapped string.
+    """
+    return textwrap.fill(text, width=width)
+
+
+def list_to_numbered_string(items: list[Any]) -> str:
+    r"""Convert a list to a newline-prefixed numbered string.
+
+    Args:
+        items: List of items to format.
+
+    Returns:
+        A string starting with ``\n`` followed by ``1. item`` lines.
+    """
+    if not items:
+        return ""
+    lines = "\n".join(f"{i + 1}. {item}" for i, item in enumerate(items))
+    return f"\n{lines}"
+
+
+# ---------------------------------------------------------------------------
+# Public logging helpers
+# ---------------------------------------------------------------------------
+
+
+def log_section(title: str, level: str = "info") -> None:
+    """Emit a prominent section header surrounded by ``=`` rule lines.
+
+    No-op in LLM mode to avoid decorative noise in machine-readable output.
+
+    Args:
+        title: Heading text.
+        level: ``"info"`` or ``"debug"``.
+    """
+    if IS_LLM:
+        return
+    log = structlog.get_logger()
+    separator = "=" * int(LOG_LINE_WIDTH * 1.1)
+    emit = getattr(log, level)
+    emit(separator)
+    emit(title)
+    emit(separator)
+
+
+def log_sub_section(title: str, level: str = "info") -> None:
+    """Emit a sub-section header using ``-`` rule lines.
+
+    No-op in LLM mode.
+
+    Args:
+        title: Sub-heading text.
+        level: ``"info"`` or ``"debug"``.
+    """
+    if IS_LLM:
+        return
+    log = structlog.get_logger()
+    separator = "-" * LOG_LINE_WIDTH
+    emit = getattr(log, level)
+    emit(separator)
+    emit(title)
+    emit(separator)
+
+
+def log_section_divider(level: str = "info") -> None:
+    """Emit a single ``-`` horizontal rule line.
+
+    No-op in LLM mode.
+
+    Args:
+        level: ``"info"`` or ``"debug"``.
+    """
+    if IS_LLM:
+        return
+    getattr(structlog.get_logger(), level)("-" * LOG_LINE_WIDTH)
+
+
+def log_fields(fields: dict[str, Any], level: str = "info") -> None:
+    """Log a mapping of key/value pairs.
+
+    Human mode: keys are padded for aligned ``:`` columns, strings are
+    wrapped via :func:`wrap_text`, and lists are rendered as numbered lines
+    via :func:`list_to_numbered_string`.
+
+    LLM mode: fields are emitted as a single structured event with no
+    decorative formatting, keeping output machine-readable.
+
+    Args:
+        fields: Mapping to log.
+        level: ``"info"`` or ``"debug"``.
+    """
+    log = structlog.get_logger()
+
+    if not fields:
+        getattr(log, level)("no_fields")
+        return
+
+    if IS_LLM:
+        getattr(log, level)("fields", **fields)
+        return
+
+    emit = getattr(log, level)
+    for key, value in fields.items():
+        formatted: Any = list_to_numbered_string(value) if isinstance(value, list) else value
+        if isinstance(formatted, str):
+            if formatted.startswith("\n"):
+                lines = formatted.split("\n")
+                wrapped = [lines[0]] + [wrap_text(ln, width=LOG_LINE_WIDTH) for ln in lines[1:]]
+                formatted = "\n" + "\n".join(wrapped[1:])
+            else:
+                formatted = wrap_text(formatted, width=LOG_LINE_WIDTH)
+        emit("  %-*s : %s", PADDING_WIDTH, key, formatted)
+
+
+def log_message(message: str, level: str = "info") -> None:
+    """Log a plain string message.
+
+    In human mode the message is wrapped to :data:`LOG_LINE_WIDTH` columns
+    via :func:`wrap_text`. In LLM mode it is passed through unchanged.
+
+    Args:
+        message: Free-form text to log.
+        level: Log level name (e.g. ``"info"``, ``"debug"``).
+    """
+    log = structlog.get_logger()
+    text = message if IS_LLM else wrap_text(message, width=LOG_LINE_WIDTH)
+    getattr(log, level)(text)
