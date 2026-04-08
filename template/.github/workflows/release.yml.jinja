@@ -92,9 +92,9 @@ jobs:
           fi
 
           if [ -n "{% raw %}${{ inputs.version }}{% endraw %}" ]; then
-            NEW_VERSION="$(uv run python scripts/bump_version.py --new-version "{% raw %}${{ inputs.version }}{% endraw %}")"
+            NEW_VERSION="$(uv run python src/{{ package_name }}/common/bump_version.py --new-version "{% raw %}${{ inputs.version }}{% endraw %}")"
           else
-            NEW_VERSION="$(uv run python scripts/bump_version.py --bump "{% raw %}${{ inputs.bump }}{% endraw %}")"
+            NEW_VERSION="$(uv run python src/{{ package_name }}/common/bump_version.py --bump "{% raw %}${{ inputs.bump }}{% endraw %}")"
           fi
           echo "version=${NEW_VERSION}" >> "${GITHUB_OUTPUT}"
 

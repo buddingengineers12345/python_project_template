@@ -34,7 +34,7 @@ _skip_if_exists:
   - mkdocs.yml
   - pyproject.toml
   - README.md
-  - scripts/bump_version.py
+  - src/{{ package_name }}/common/bump_version.py
   - SECURITY.md
   - src/{{ package_name }}/__init__.py
 
@@ -140,15 +140,10 @@ include_cli:
   help: Generate a Typer-based CLI entry point and console script?
   default: false
 
-include_logging_setup:
-  type: bool
-  help: Add a logging_config module with configure_logging() (stdlib logging + structlog)?
-  default: false
-
 include_git_cliff:
   type: bool
   help: Add git-cliff, cliff.toml, and a just changelog recipe for release notes?
-  default: false
+  default: true
 
 # -------------------------------------------------------------------------
 # Computed values
@@ -182,7 +177,7 @@ github_actions_python_versions:
 #   when the host Python lacks `ensurepip`/`pip` (common on minimal distro Pythons).
 # - To avoid template generation failing on machines without `uv`, we bootstrap `uv` first.
 #   We try `pip` if available; otherwise we fall back to Astral's installer script.
-# - Keep tasks idempotent. It's okay if `uv self update` fails (offline / restricted envs).
+# - Keep tasks idempotent.
 #
 # Copy vs update: these tasks run after both `copier copy` and `copier update` (not gated
 # with _copier_operation) so the lockfile and local env stay aligned with the template after
@@ -226,7 +221,6 @@ _tasks:
 
       command -v uv >/dev/null 2>&1
       '
-  - command: uv self update || true
   - command: uv lock
   - command: >-
       uv sync --frozen --extra dev --extra test
@@ -236,15 +230,7 @@ _tasks:
   - command: uv run pre-commit install --hook-type pre-push
   - command: uv run ruff check --fix --unsafe-fixes .
   - command: uv run basedpyright
-  - command: rm -f cliff.toml
-    when: "{{ not include_git_cliff }}"
-  - command: rm -f src/{{ package_name }}/logging_config.py
-    when: "{{ not include_logging_setup }}"
-  - command: rm -f src/{{ package_name }}/cli.py
-    when: "{{ not include_cli }}"
-  - command: rm -f mkdocs.yml
-    when: "{{ not include_docs }}"
-  - command: sh -c 'rm -f docs/index.md docs/ci.md 2>/dev/null; rmdir docs 2>/dev/null || true'
+  - command: sh -c 'rmdir docs 2>/dev/null || true'
     when: "{{ not include_docs }}"
   - command: echo "✅ Project {{ project_name }} created successfully!"
   - command: echo "📁 Location $(pwd)"
