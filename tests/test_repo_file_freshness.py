@@ -32,21 +32,34 @@ def git_commit(repo: Path, message: str, *, commit_date_iso: str) -> None:
     run_command(["git", "commit", "-m", message], cwd=repo, extra_env=env)
 
 
+def git_empty_commit(repo: Path, message: str, *, commit_date_iso: str) -> None:
+    env = {"GIT_AUTHOR_DATE": commit_date_iso, "GIT_COMMITTER_DATE": commit_date_iso}
+    run_command(["git", "commit", "--allow-empty", "-m", message], cwd=repo, extra_env=env)
+
+
 def write_ignore(repo: Path, data: object) -> None:
-    (repo / "freshness_ignore.json").write_text(json.dumps(data) + "\n", encoding="utf-8")
+    assets = repo / "assets"
+    assets.mkdir(parents=True, exist_ok=True)
+    (assets / "freshness_ignore.json").write_text(json.dumps(data) + "\n", encoding="utf-8")
 
 
-def run_script(repo: Path) -> None:
+def run_script(repo: Path, *extra_args: str) -> None:
     script = Path(__file__).resolve().parent.parent / "scripts" / "repo_file_freshness.py"
     run_command(
-        [sys.executable, str(script), "--repo-root", str(repo)],
+        [
+            sys.executable,
+            str(script),
+            "--repo-root",
+            str(repo),
+            *extra_args,
+        ],
         cwd=repo,
         extra_env={"FRESHNESS_NOW_ISO": "2026-04-08T00:00:00+00:00"},
     )
 
 
 def load_details(repo: Path) -> list[dict[str, object]]:
-    raw = json.loads((repo / "file_freshness.json").read_text(encoding="utf-8"))
+    raw = json.loads((repo / "assets" / "file_freshness.json").read_text(encoding="utf-8"))
     assert isinstance(raw, list)
     return raw
 
@@ -58,25 +71,60 @@ def by_file(items: list[dict[str, object]]) -> dict[str, dict[str, object]]:
     return out
 
 
-def test_classification_green_yellow_red(tmp_path: Path) -> None:
+def test_classification_green_yellow_red_days(tmp_path: Path) -> None:
+    """Days mode: green <=2d, yellow (2,4], red >4 (reference 2026-04-08)."""
     repo = tmp_path / "repo"
     repo.mkdir()
     git_init(repo)
+    (repo / "assets").mkdir(parents=True, exist_ok=True)
+    (repo / "assets" / "freshness_ignore.json").write_text(
+        json.dumps({"files": [], "directories": [], "extensions": [], "patterns": []}) + "\n",
+        encoding="utf-8",
+    )
 
     (repo / "recent.txt").write_text("recent\n", encoding="utf-8")
-    git_commit(repo, "add recent", commit_date_iso="2026-04-06T00:00:00+00:00")
+    git_commit(repo, "add recent", commit_date_iso="2026-04-07T00:00:00+00:00")
 
     (repo / "mid.txt").write_text("mid\n", encoding="utf-8")
-    git_commit(repo, "add mid", commit_date_iso="2026-03-20T00:00:00+00:00")
+    git_commit(repo, "add mid", commit_date_iso="2026-04-05T00:00:00+00:00")
 
     (repo / "old.txt").write_text("old\n", encoding="utf-8")
-    git_commit(repo, "add old", commit_date_iso="2025-12-01T00:00:00+00:00")
+    git_commit(repo, "add old", commit_date_iso="2026-04-02T00:00:00+00:00")
 
-    run_script(repo)
+    run_script(repo, "--metric", "days")
     items = by_file(load_details(repo))
     assert items["recent.txt"]["status"] == "green"
     assert items["mid.txt"]["status"] == "yellow"
     assert items["old.txt"]["status"] == "red"
+
+
+def test_classification_commits_since_last_change(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    git_init(repo)
+    (repo / "assets").mkdir(parents=True, exist_ok=True)
+    (repo / "assets" / "freshness_ignore.json").write_text(
+        json.dumps({"files": [], "directories": [], "extensions": [], "patterns": []}) + "\n",
+        encoding="utf-8",
+    )
+
+    (repo / "tracked.txt").write_text("v1\n", encoding="utf-8")
+    git_commit(repo, "touch file", commit_date_iso="2026-01-01T00:00:00+00:00")
+    git_empty_commit(repo, "empty 1", commit_date_iso="2026-01-02T00:00:00+00:00")
+    git_empty_commit(repo, "empty 2", commit_date_iso="2026-01-03T00:00:00+00:00")
+
+    run_script(
+        repo,
+        "--metric",
+        "commits",
+        "--green-max-commits",
+        "1",
+        "--yellow-max-commits",
+        "5",
+    )
+    items = by_file(load_details(repo))
+    assert items["tracked.txt"]["commits_since"] == 2
+    assert items["tracked.txt"]["status"] == "yellow"
 
 
 def test_ignore_priority_exact_then_dir_then_ext_then_pattern(tmp_path: Path) -> None:
@@ -103,7 +151,7 @@ def test_ignore_priority_exact_then_dir_then_ext_then_pattern(tmp_path: Path) ->
         },
     )
 
-    run_script(repo)
+    run_script(repo, "--metric", "days")
     items = by_file(load_details(repo))
     assert items["exact.txt"]["status"] == "blue"
     assert items["build/out.js"]["status"] == "blue"
@@ -118,8 +166,10 @@ def test_invalid_ignore_config_is_graceful(tmp_path: Path) -> None:
     (repo / "a.txt").write_text("a\n", encoding="utf-8")
     git_commit(repo, "add a", commit_date_iso="2025-01-01T00:00:00+00:00")
 
-    (repo / "freshness_ignore.json").write_text("{not-json}\n", encoding="utf-8")
-    run_script(repo)
+    assets = repo / "assets"
+    assets.mkdir(parents=True, exist_ok=True)
+    (assets / "freshness_ignore.json").write_text("{not-json}\n", encoding="utf-8")
+    run_script(repo, "--metric", "days")
 
     items = by_file(load_details(repo))
     assert items["a.txt"]["status"] in {"green", "yellow", "red", "blue"}
@@ -131,6 +181,6 @@ def test_empty_repo_generates_outputs(tmp_path: Path) -> None:
     git_init(repo)
 
     run_script(repo)
-    assert (repo / "file_freshness.json").is_file()
-    assert (repo / "freshness_summary.json").is_file()
+    assert (repo / "assets" / "file_freshness.json").is_file()
+    assert (repo / "assets" / "freshness_summary.json").is_file()
     assert (repo / "docs" / "repo_file_status_report.md").is_file()

@@ -3,16 +3,19 @@
 
 This script:
 - Lists only Git-tracked files (via ``git ls-files``).
-- Computes each file's last update timestamp (via ``git log -1``).
-- Classifies files into green/yellow/red/blue using age thresholds and an ignore config.
+- Computes each file's last update (via ``git log -1``) as ISO time and commit hash.
+- Classifies files into green/yellow/red/blue using either commit-count or calendar-age
+  thresholds, plus an ignore config (blue).
 - Writes:
   - ``docs/repo_file_status_report.md`` (dashboard)
-  - ``file_freshness.json`` (per-file details)
-  - ``freshness_summary.json`` (counts + optional badge metadata)
+  - ``assets/file_freshness.json`` (per-file details)
+  - ``assets/freshness_summary.json`` (counts + optional badge metadata)
 
 Design notes:
 - Git is the source of truth (no filesystem mtimes).
 - A single file failing Git history lookup must not fail the whole run.
+- ``--metric commits`` adds one ``git rev-list`` call per file; large monorepos may prefer
+  ``--metric days``.
 """
 
 from __future__ import annotations
@@ -29,6 +32,7 @@ from pathlib import Path
 from typing import Any, Literal, Protocol, cast
 
 Status = Literal["green", "yellow", "red", "blue"]
+Metric = Literal["commits", "days"]
 
 
 class _Args(Protocol):
@@ -37,11 +41,14 @@ class _Args(Protocol):
     output_markdown: str
     output_details_json: str
     output_summary_json: str
+    metric: Metric
+    green_max_commits: int
+    yellow_max_commits: int
 
 
 @dataclass(frozen=True)
 class IgnoreConfig:
-    """Ignore configuration loaded from ``freshness_ignore.json``."""
+    """Ignore configuration loaded from the ignore JSON (e.g. ``assets/freshness_ignore.json``)."""
 
     files: frozenset[str]
     directories: tuple[str, ...]
@@ -104,13 +111,34 @@ def _git_ls_files(root: Path) -> list[str]:
     return [p.replace("\\", "/") for p in paths]
 
 
-def _git_last_commit_iso(root: Path, rel_path: str) -> str | None:
-    """Return last commit timestamp for a file as an ISO-8601 string, or None."""
-    proc = _run_git(root, ["log", "-1", "--format=%cI", "--", rel_path])
+def _git_last_commit_hash_and_iso(root: Path, rel_path: str) -> tuple[str | None, str | None]:
+    """Return (commit_hash, committer ISO time) for the last commit touching the path."""
+    proc = _run_git(
+        root,
+        ["log", "-1", "--format=%H%x00%cI", "--", rel_path],
+    )
+    if proc is None or proc.returncode != 0:
+        return None, None
+    raw = proc.stdout.strip()
+    if not raw or "\x00" not in raw:
+        return None, None
+    h, iso = raw.split("\x00", 1)
+    h2, iso2 = h.strip(), iso.strip()
+    if not h2 or not iso2:
+        return None, None
+    return h2, iso2
+
+
+def _git_commits_since(root: Path, commit_sha: str) -> int | None:
+    """Count commits reachable from HEAD but not from ``commit_sha`` (exclusive of that commit)."""
+    spec = f"{commit_sha}..HEAD"
+    proc = _run_git(root, ["rev-list", "--count", spec])
     if proc is None or proc.returncode != 0:
         return None
-    value = proc.stdout.strip()
-    return value or None
+    text = proc.stdout.strip()
+    if not text.isdigit():
+        return None
+    return int(text)
 
 
 def _parse_git_iso_datetime(value: str) -> datetime | None:
@@ -214,16 +242,34 @@ def ignored_status(rel_path: str, ignore: IgnoreConfig) -> bool:
     return any(fnmatch(p, pat) for pat in ignore.patterns)
 
 
-def classify(age_days: int | None, *, is_ignored: bool) -> Status:
-    """Classify into one of the four statuses."""
+def classify_days(age_days: int | None, *, is_ignored: bool) -> Status:
+    """Classify using calendar age: green <=2d, yellow (2,4], red >4 or unknown."""
     if is_ignored:
         return "blue"
-    # Edge case: missing commit timestamp. Fold into red for the four-color contract.
     if age_days is None:
         return "red"
-    if age_days <= 7:
+    if age_days <= 2:
         return "green"
-    if age_days <= 30:
+    if age_days <= 4:
+        return "yellow"
+    return "red"
+
+
+def classify_commits(
+    commits_since: int | None,
+    *,
+    is_ignored: bool,
+    green_max: int,
+    yellow_max: int,
+) -> Status:
+    """Classify using commits after the last file change; unknown counts as red (non-blue)."""
+    if is_ignored:
+        return "blue"
+    if commits_since is None:
+        return "red"
+    if commits_since <= green_max:
+        return "green"
+    if commits_since <= yellow_max:
         return "yellow"
     return "red"
 
@@ -236,18 +282,34 @@ def _sort_key_age_desc(item: dict[str, Any]) -> tuple[int, str]:
     return (10**9, cast(str, item.get("file", "")))
 
 
+def _sort_key_commits_desc(item: dict[str, Any]) -> tuple[int, str]:
+    c = item.get("commits_since")
+    if isinstance(c, int):
+        return (-c, cast(str, item.get("file", "")))
+    return (10**9, cast(str, item.get("file", "")))
+
+
 def write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(data, indent=2, sort_keys=True) + "\n"
     _ = path.write_text(text, encoding="utf-8")
 
 
-def generate_markdown(now: datetime, summary: dict[str, int], items: list[dict[str, Any]]) -> str:
+def generate_markdown(
+    now: datetime,
+    summary: dict[str, int],
+    items: list[dict[str, Any]],
+    *,
+    metric: Metric,
+) -> str:
+    """Render the dashboard; green/yellow/red lines show days or commits based on ``metric``."""
     updated = now.strftime("%Y-%m-%d %H:%M:%S UTC")
     lines: list[str] = []
     lines.append("# Repository File Status Report")
     lines.append("")
     lines.append(f"Last updated: **{updated}**")
+    lines.append("")
+    lines.append(f"_Metric: **{metric}**._")
     lines.append("")
     lines.append("## Summary")
     lines.append("")
@@ -261,7 +323,7 @@ def generate_markdown(now: datetime, summary: dict[str, int], items: list[dict[s
     for it in items:
         groups[cast(Status, it["status"])].append(it)
 
-    def render_section(title: str, status: Status, *, show_age: bool) -> None:
+    def render_section(title: str, status: Status, *, show_metric: bool) -> None:
         lines.append(f"## {title}")
         lines.append("")
         if not groups[status]:
@@ -270,20 +332,27 @@ def generate_markdown(now: datetime, summary: dict[str, int], items: list[dict[s
             return
         for it in groups[status]:
             path = cast(str, it["file"])
-            age = it.get("age_days")
-            if show_age:
+            if not show_metric:
+                lines.append(f"- `{path}`")
+                continue
+            if metric == "days":
+                age = it.get("age_days")
                 if isinstance(age, int):
                     lines.append(f"- `{path}` — **{age}** days")
                 else:
                     lines.append(f"- `{path}` — _unknown age_")
             else:
-                lines.append(f"- `{path}`")
+                c = it.get("commits_since")
+                if isinstance(c, int):
+                    lines.append(f"- `{path}` — **{c}** commits since last change")
+                else:
+                    lines.append(f"- `{path}` — _unknown commit depth_")
         lines.append("")
 
-    render_section("🟢 Green (recent)", "green", show_age=True)
-    render_section("🟡 Yellow (moderate)", "yellow", show_age=True)
-    render_section("🔴 Red (stale)", "red", show_age=True)
-    render_section("🔵 Blue (ignored)", "blue", show_age=False)
+    render_section("🟢 Green (recent)", "green", show_metric=True)
+    render_section("🟡 Yellow (moderate)", "yellow", show_metric=True)
+    render_section("🔴 Red (stale)", "red", show_metric=True)
+    render_section("🔵 Blue (ignored)", "blue", show_metric=False)
 
     return "\n".join(lines) + "\n"
 
@@ -314,7 +383,7 @@ def main() -> int:
     )
     _ = parser.add_argument(
         "--ignore-config",
-        default="freshness_ignore.json",
+        default="assets/freshness_ignore.json",
         help=(
             "Path to ignore config JSON with keys: files, directories, extensions, patterns "
             "(all lists of strings)."
@@ -327,36 +396,83 @@ def main() -> int:
     )
     _ = parser.add_argument(
         "--output-details-json",
-        default="file_freshness.json",
+        default="assets/file_freshness.json",
         help="Path to write per-file JSON details.",
     )
     _ = parser.add_argument(
         "--output-summary-json",
-        default="freshness_summary.json",
+        default="assets/freshness_summary.json",
         help="Path to write summary JSON counts (plus optional badge fields).",
     )
+    _ = parser.add_argument(
+        "--metric",
+        choices=("commits", "days"),
+        default="commits",
+        help="Classify by commits since last file change (default) or by calendar age in days.",
+    )
+    _ = parser.add_argument(
+        "--green-max-commits",
+        type=int,
+        default=5,
+        metavar="N",
+        help="Commits mode: green if commits_since <= N (default: 5).",
+    )
+    _ = parser.add_argument(
+        "--yellow-max-commits",
+        type=int,
+        default=20,
+        metavar="N",
+        help="Commits mode: yellow if commits_since <= N and > green max (default: 20).",
+    )
     args = cast(_Args, cast(object, parser.parse_args()))
+
+    if args.green_max_commits < 0 or args.yellow_max_commits < 0:
+        print("[freshness] Error: commit thresholds must be non-negative.", file=sys.stderr)
+        return 2
+    if args.green_max_commits > args.yellow_max_commits:
+        print(
+            "[freshness] Error: --green-max-commits must be <= --yellow-max-commits.",
+            file=sys.stderr,
+        )
+        return 2
 
     root = _resolve_repo_root(args.repo_root)
     ignore = load_ignore_config((root / args.ignore_config).resolve())
     now = _now_utc_from_env()
+    metric = cast(Metric, args.metric)
 
     files = _git_ls_files(root)
     items: list[dict[str, Any]] = []
     counts: dict[Status, int] = {"green": 0, "yellow": 0, "red": 0, "blue": 0}
 
+    sort_key = _sort_key_commits_desc if metric == "commits" else _sort_key_age_desc
+
     for rel_path in files:
         try:
             is_ignored = ignored_status(rel_path, ignore)
-            commit_iso = _git_last_commit_iso(root, rel_path)
+            commit_sha, commit_iso = _git_last_commit_hash_and_iso(root, rel_path)
             age = _age_days(now, commit_iso)
-            status = classify(age, is_ignored=is_ignored)
+            commits_since: int | None = None
+            if metric == "commits" and commit_sha is not None:
+                commits_since = _git_commits_since(root, commit_sha)
+            if metric == "commits":
+                status = classify_commits(
+                    commits_since,
+                    is_ignored=is_ignored,
+                    green_max=args.green_max_commits,
+                    yellow_max=args.yellow_max_commits,
+                )
+            else:
+                status = classify_days(age, is_ignored=is_ignored)
+
             counts[status] += 1
             items.append(
                 {
                     "file": rel_path,
                     "last_commit": commit_iso,
+                    "last_commit_sha": commit_sha,
                     "age_days": age,
+                    "commits_since": commits_since,
                     "status": status,
                 }
             )
@@ -365,20 +481,22 @@ def main() -> int:
             status = "red"
             counts[status] += 1
             items.append(
-                {"file": rel_path, "last_commit": None, "age_days": None, "status": status}
+                {
+                    "file": rel_path,
+                    "last_commit": None,
+                    "last_commit_sha": None,
+                    "age_days": None,
+                    "commits_since": None,
+                    "status": status,
+                }
             )
 
-    # Sorting rules: green/yellow/red by age desc; blue alpha.
-    for s in ("green", "yellow", "red"):
-        items_s = [it for it in items if it["status"] == s]
-        items_s.sort(key=_sort_key_age_desc)
-        # Replace in-place order by concatenation later.
     blue_items = [it for it in items if it["status"] == "blue"]
     blue_items.sort(key=lambda d: cast(str, d.get("file", "")).lower())
     ordered = (
-        sorted((it for it in items if it["status"] == "green"), key=_sort_key_age_desc)
-        + sorted((it for it in items if it["status"] == "yellow"), key=_sort_key_age_desc)
-        + sorted((it for it in items if it["status"] == "red"), key=_sort_key_age_desc)
+        sorted((it for it in items if it["status"] == "green"), key=sort_key)
+        + sorted((it for it in items if it["status"] == "yellow"), key=sort_key)
+        + sorted((it for it in items if it["status"] == "red"), key=sort_key)
         + blue_items
     )
 
@@ -389,9 +507,10 @@ def main() -> int:
         "blue": counts["blue"],
     }
     summary_out: dict[str, Any] = dict(summary)
+    summary_out["metric"] = metric
     summary_out.update(build_badge_fields(summary))
 
-    md_text = generate_markdown(now, summary, ordered)
+    md_text = generate_markdown(now, summary, ordered, metric=metric)
 
     # Always generate outputs.
     write_json((root / args.output_details_json).resolve(), ordered)

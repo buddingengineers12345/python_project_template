@@ -61,6 +61,8 @@ def get_default_command_list(test_dir: Path) -> list[str]:
     return [
         "copier",
         "copy",
+        "--vcs-ref",
+        "HEAD",
         TEMPLATE_GIT_SRC,
         str(test_dir),
         "--data",
@@ -136,8 +138,6 @@ def copy_with_data(
         data: Mapping of Copier variable names to values to pass via ``--data``.
         skip_tasks: If ``True``, skip post-generation tasks (default).
     """
-    template_repo = Path(__file__).resolve().parent.parent
-    vcs_src = f"git+file://{template_repo}"
     cmd: list[str] = [
         "copier",
         "copy",
@@ -262,12 +262,12 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
     Pass explicit ``--data`` when you need a different distribution name.
     """
     test_dir = tmp_path / "defaults_only"
-    template_repo = Path(__file__).resolve().parent.parent
-    vcs_src = f"git+file://{template_repo}"
     _ = run_command(
         [
             "copier",
             "copy",
+            "--vcs-ref",
+            "HEAD",
             TEMPLATE_GIT_SRC,
             str(test_dir),
             "--trust",
@@ -307,8 +307,6 @@ def test_copier_yaml_has_no_codecov_token_prompt() -> None:
 def test_package_name_validator_rejects_leading_digit(tmp_path: Path) -> None:
     """Digit-leading ``package_name`` values must fail Copier validation."""
     test_dir = tmp_path / "bad_pkg"
-    template_repo = Path(__file__).resolve().parent.parent
-    vcs_src = f"git+file://{template_repo}"
     proc = run_command(
         [
             "copier",
@@ -335,6 +333,8 @@ def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
         [
             "copier",
             "copy",
+            "--vcs-ref",
+            "HEAD",
             TEMPLATE_GIT_SRC,
             str(test_dir),
             "--trust",
@@ -362,6 +362,8 @@ def test_answers_file_warns_never_edit_manually(tmp_path: Path) -> None:
         [
             "copier",
             "copy",
+            "--vcs-ref",
+            "HEAD",
             TEMPLATE_GIT_SRC,
             str(test_dir),
             "--trust",
@@ -386,7 +388,6 @@ def test_generate_programmatic_run_copy_local(tmp_path: Path) -> None:
     test_dir = tmp_path / "programmatic_local"
     # Use a VCS-style local source to avoid git hardlink issues that can occur with
     # local clones in some container/filesystem setups.
-    vcs_src = f"git+file://{Path('.').resolve()}"
     _worker = run_copy(
         TEMPLATE_GIT_SRC,
         test_dir,
@@ -416,7 +417,14 @@ def test_generate_from_vcs_git_file_url(tmp_path: Path) -> None:
         template_repo,
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns(
-            ".git", ".venv", "__pycache__", "*.pyc", ".ruff_cache", ".pytest_cache"
+            ".git",
+            ".venv",
+            "__pycache__",
+            "*.pyc",
+            ".ruff_cache",
+            ".pytest_cache",
+            "files.zip",
+            "temp",
         ),
     )
     _ = run_command(["git", "init"], cwd=template_repo)
@@ -429,7 +437,17 @@ def test_generate_from_vcs_git_file_url(tmp_path: Path) -> None:
 
     vcs_src = f"git+file://{template_repo}"
     _ = run_command(
-        ["copier", "copy", vcs_src, str(dest_dir), "--trust", "--defaults", "--skip-tasks"],
+        [
+            "copier",
+            "copy",
+            "--vcs-ref",
+            "HEAD",
+            vcs_src,
+            str(dest_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+        ],
     )
     _remove_empty_optional_artifacts(
         dest_dir,
@@ -663,7 +681,14 @@ def test_copier_update_exits_zero_after_copy_and_commit(tmp_path: Path) -> None:
         template_repo,
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns(
-            ".git", ".venv", "__pycache__", "*.pyc", ".ruff_cache", ".pytest_cache"
+            ".git",
+            ".venv",
+            "__pycache__",
+            "*.pyc",
+            ".ruff_cache",
+            ".pytest_cache",
+            "files.zip",
+            "temp",
         ),
     )
     _ = run_command(["git", "init"], cwd=template_repo)
@@ -680,6 +705,8 @@ def test_copier_update_exits_zero_after_copy_and_commit(tmp_path: Path) -> None:
         [
             "copier",
             "copy",
+            "--vcs-ref",
+            "HEAD",
             vcs_src,
             str(test_dir),
             "--trust",
