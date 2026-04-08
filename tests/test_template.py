@@ -19,6 +19,8 @@ import pytest
 import yaml
 from copier import run_copy
 
+TEMPLATE_GIT_SRC = f"git+{Path('.').resolve().as_uri()}"
+
 
 def run_command(
     cmd: list[str],
@@ -59,7 +61,7 @@ def get_default_command_list(test_dir: Path) -> list[str]:
     return [
         "copier",
         "copy",
-        ".",
+        TEMPLATE_GIT_SRC,
         str(test_dir),
         "--data",
         "project_name=Test Project",
@@ -113,13 +115,9 @@ def _remove_empty_optional_artifacts(dest: Path, data: dict[str, str | bool]) ->
     pkg = data.get("package_name")
     if not isinstance(pkg, str):
         return
-    pairs: list[tuple[bool, Path]] = [
-        (not bool(data.get("include_cli", False)), dest / "src" / pkg / "cli.py"),
-        (not bool(data.get("include_git_cliff", False)), dest / "cliff.toml"),
-    ]
-    for should_drop, path in pairs:
-        if should_drop and path.is_file() and path.stat().st_size == 0:
-            path.unlink()
+    # Optional artifacts are now conditionally named in the template, so Copier won't
+    # emit empty files for disabled features. Keep this hook as a no-op for now
+    # (it remains useful if we add any future optional whole-file templates).
 
 
 def copy_with_data(
@@ -143,7 +141,7 @@ def copy_with_data(
         "copy",
         "--vcs-ref",
         "HEAD",
-        ".",
+        TEMPLATE_GIT_SRC,
         str(dest),
         "--trust",
         "--defaults",
@@ -266,9 +264,7 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
         [
             "copier",
             "copy",
-            "--vcs-ref",
-            "HEAD",
-            ".",
+            TEMPLATE_GIT_SRC,
             str(test_dir),
             "--trust",
             "--defaults",
@@ -313,7 +309,7 @@ def test_package_name_validator_rejects_leading_digit(tmp_path: Path) -> None:
             "copy",
             "--vcs-ref",
             "HEAD",
-            ".",
+            TEMPLATE_GIT_SRC,
             str(test_dir),
             "--trust",
             "--defaults",
@@ -329,13 +325,23 @@ def test_package_name_validator_rejects_leading_digit(tmp_path: Path) -> None:
 def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
     """Questions with ``when: false`` must not be stored in the answers file."""
     test_dir = tmp_path / "computed_answers"
-    _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+    _ = run_command(
+        [
+            "copier",
+            "copy",
+            TEMPLATE_GIT_SRC,
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+        ]
+    )
     _remove_empty_optional_artifacts(
         test_dir,
         {
             "package_name": "my_library",
             "include_cli": False,
-            "include_git_cliff": True,
+            "include_git_cliff": False,
         },
     )
     answers_text = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
@@ -346,7 +352,17 @@ def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
 def test_answers_file_warns_never_edit_manually(tmp_path: Path) -> None:
     """Generated answers file should match Copier docs banner text."""
     test_dir = tmp_path / "answers_banner"
-    _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+    _ = run_command(
+        [
+            "copier",
+            "copy",
+            TEMPLATE_GIT_SRC,
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+        ]
+    )
     _remove_empty_optional_artifacts(
         test_dir,
         {
@@ -363,7 +379,7 @@ def test_generate_programmatic_run_copy_local(tmp_path: Path) -> None:
     """Render programmatically with :func:`copier.run_copy` from a local path."""
     test_dir = tmp_path / "programmatic_local"
     _worker = run_copy(
-        ".",
+        TEMPLATE_GIT_SRC,
         test_dir,
         defaults=True,
         unsafe=True,
@@ -375,7 +391,7 @@ def test_generate_programmatic_run_copy_local(tmp_path: Path) -> None:
         {
             "package_name": "my_library",
             "include_cli": False,
-            "include_git_cliff": True,
+            "include_git_cliff": False,
         },
     )
 
@@ -854,7 +870,10 @@ def test_docs_ci_page_when_docs_enabled(tmp_path: Path) -> None:
 def test_generated_pyproject_basedpyright_standard_mode(tmp_path: Path) -> None:
     """Generated projects should configure basedpyright in standard mode (per template contract)."""
     test_dir = tmp_path / "bp_std"
-    copy_with_data(test_dir, {"project_name": "BP Test", "include_docs": False})
+    copy_with_data(
+        test_dir,
+        {"project_name": "BP Test", "include_docs": False, "include_git_cliff": False},
+    )
     raw = (test_dir / "pyproject.toml").read_text(encoding="utf-8")
     assert 'typeCheckingMode = "standard"' in raw
     assert "reportMissingImports = true" in raw
@@ -863,7 +882,10 @@ def test_generated_pyproject_basedpyright_standard_mode(tmp_path: Path) -> None:
 def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
     """Pre-commit config in generated projects should run detect-secrets with a baseline."""
     test_dir = tmp_path / "secrets_hook"
-    copy_with_data(test_dir, {"project_name": "Secrets Hook", "include_docs": False})
+    copy_with_data(
+        test_dir,
+        {"project_name": "Secrets Hook", "include_docs": False, "include_git_cliff": False},
+    )
     cfg = (test_dir / ".pre-commit-config.yaml").read_text(encoding="utf-8")
     assert "detect-secrets" in cfg
     assert ".secrets.baseline" in cfg
@@ -873,7 +895,10 @@ def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
 def test_generated_renovate_enables_pre_commit(tmp_path: Path) -> None:
     """Renovate should manage pre-commit hook revisions in generated projects."""
     test_dir = tmp_path / "renovate_pc"
-    copy_with_data(test_dir, {"project_name": "Renovate Test", "include_docs": False})
+    copy_with_data(
+        test_dir,
+        {"project_name": "Renovate Test", "include_docs": False, "include_git_cliff": False},
+    )
     import json
 
     data = json.loads((test_dir / ".github" / "renovate.json").read_text(encoding="utf-8"))
@@ -954,7 +979,9 @@ def test_release_workflow_generated_by_default(tmp_path: Path) -> None:
     assert release_yml.is_file(), "release.yml must exist when include_release_workflow=true"
     content = release_yml.read_text(encoding="utf-8")
     assert "${{ true }}" in content, "release job must be enabled"
-    assert "common/bump_version.py" in content, "release.yml must reference common/bump_version.py"
+    assert "src/release_default/common/bump_version.py" in content, (
+        "release.yml must reference src/<package>/common/bump_version.py"
+    )
     assert "--generate-notes" in content, (
         "release must use gh --generate-notes (no CHANGELOG.md required)"
     )

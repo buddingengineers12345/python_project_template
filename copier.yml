@@ -231,13 +231,7 @@ _tasks:
   - command: uv run pre-commit install --hook-type pre-push
   - command: uv run ruff check --fix --unsafe-fixes .
   - command: uv run basedpyright
-  - command: rm -f cliff.toml
-    when: "{{ not include_git_cliff }}"
-  - command: rm -f src/{{ package_name }}/cli.py
-    when: "{{ not include_cli }}"
-  - command: rm -f mkdocs.yml
-    when: "{{ not include_docs }}"
-  - command: sh -c 'rm -f docs/index.md docs/ci.md 2>/dev/null; rmdir docs 2>/dev/null || true'
+  - command: sh -c 'rmdir docs 2>/dev/null || true'
     when: "{{ not include_docs }}"
   - command: >-
       sh -c 'find . -type f -empty ! -path "./.git/*" ! -path "./.venv/*" -delete'

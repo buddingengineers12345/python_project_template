@@ -91,7 +91,7 @@ precommit:
 
 # Dependency audit matching .github/workflows/security.yml (pip-audit)
 audit:
-    @uv export --frozen --format requirements-txt --extra dev | uvx pip-audit --requirement /dev/stdin
+    @uv export --frozen --format requirements-txt --extra dev | uv tool run pip-audit --requirement /dev/stdin
 
 # -------------------------------------------------------------------------
 # Dependency management
