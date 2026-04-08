@@ -141,7 +141,7 @@ def copy_with_data(
         "copy",
         "--vcs-ref",
         "HEAD",
-        ".",
+        TEMPLATE_GIT_SRC,
         str(dest),
         "--trust",
         "--defaults",
@@ -306,7 +306,7 @@ def test_package_name_validator_rejects_leading_digit(tmp_path: Path) -> None:
             "copy",
             "--vcs-ref",
             "HEAD",
-            ".",
+            TEMPLATE_GIT_SRC,
             str(test_dir),
             "--trust",
             "--defaults",
@@ -376,7 +376,7 @@ def test_generate_programmatic_run_copy_local(tmp_path: Path) -> None:
     """Render programmatically with :func:`copier.run_copy` from a local path."""
     test_dir = tmp_path / "programmatic_local"
     _worker = run_copy(
-        ".",
+        TEMPLATE_GIT_SRC,
         test_dir,
         defaults=True,
         unsafe=True,
