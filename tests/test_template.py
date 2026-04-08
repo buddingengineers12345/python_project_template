@@ -59,7 +59,7 @@ def get_default_command_list(test_dir: Path) -> list[str]:
     return [
         "copier",
         "copy",
-        ".",
+        "git+file://.",
         str(test_dir),
         "--data",
         "project_name=Test Project",
@@ -258,7 +258,9 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
     Pass explicit ``--data`` when you need a different distribution name.
     """
     test_dir = tmp_path / "defaults_only"
-    _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+    _ = run_command(
+        ["copier", "copy", "git+file://.", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
+    )
     _remove_empty_optional_artifacts(
         test_dir,
         {
@@ -310,7 +312,9 @@ def test_package_name_validator_rejects_leading_digit(tmp_path: Path) -> None:
 def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
     """Questions with ``when: false`` must not be stored in the answers file."""
     test_dir = tmp_path / "computed_answers"
-    _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+    _ = run_command(
+        ["copier", "copy", "git+file://.", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
+    )
     _remove_empty_optional_artifacts(
         test_dir,
         {
@@ -327,7 +331,9 @@ def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
 def test_answers_file_warns_never_edit_manually(tmp_path: Path) -> None:
     """Generated answers file should match Copier docs banner text."""
     test_dir = tmp_path / "answers_banner"
-    _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+    _ = run_command(
+        ["copier", "copy", "git+file://.", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
+    )
     _remove_empty_optional_artifacts(
         test_dir,
         {
@@ -927,9 +933,9 @@ def test_release_workflow_generated_by_default(tmp_path: Path) -> None:
     assert release_yml.is_file(), "release.yml must exist when include_release_workflow=true"
     content = release_yml.read_text(encoding="utf-8")
     assert "${{ true }}" in content, "release job must be enabled"
-    assert (
-        "src/release_default/common/bump_version.py" in content
-    ), "release.yml must reference src/<package>/common/bump_version.py"
+    assert "src/release_default/common/bump_version.py" in content, (
+        "release.yml must reference src/<package>/common/bump_version.py"
+    )
     assert "--generate-notes" in content, (
         "release must use gh --generate-notes (no CHANGELOG.md required)"
     )
