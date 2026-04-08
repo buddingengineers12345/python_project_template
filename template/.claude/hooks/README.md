@@ -215,6 +215,7 @@ exit 0
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Secret/debug scan before commit |
 | `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/pyright config |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
+| `pre-write-src-test-reminder.sh` | PreToolUse | Write\|Edit | Warn if `tests/<pkg>/test_<module>.py` missing for top-level `src/<pkg>/<module>.py` |
 
 ## Adding a new hook
 

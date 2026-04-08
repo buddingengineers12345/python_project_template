@@ -272,6 +272,7 @@ exit 0
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Secret/debug scan before `git commit` |
 | `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/pyright config edits |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
+| `pre-write-src-test-reminder.sh` | PreToolUse | Write\|Edit | Warn if `tests/<pkg>/test_<module>.py` missing for top-level `src/<pkg>/<module>.py` |
 | `pre-write-doc-file-warning.sh` | PreToolUse | Write | Block `.md` files outside `docs/` |
 | `pre-write-jinja-syntax.sh` | PreToolUse | Write | Validate Jinja2 syntax before writing |
 | `pre-suggest-compact.sh` | PreToolUse | Edit\|Write | Suggest `/compact` every 50 operations |
