@@ -19,6 +19,8 @@ import pytest
 import yaml
 from copier import run_copy
 
+TEMPLATE_GIT_SRC = f"git+{Path('.').resolve().as_uri()}"
+
 
 def run_command(
     cmd: list[str],
@@ -59,7 +61,7 @@ def get_default_command_list(test_dir: Path) -> list[str]:
     return [
         "copier",
         "copy",
-        "git+file://.",
+        TEMPLATE_GIT_SRC,
         str(test_dir),
         "--data",
         "project_name=Test Project",
@@ -259,7 +261,15 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
     """
     test_dir = tmp_path / "defaults_only"
     _ = run_command(
-        ["copier", "copy", "git+file://.", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
+        [
+            "copier",
+            "copy",
+            TEMPLATE_GIT_SRC,
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+        ]
     )
     _remove_empty_optional_artifacts(
         test_dir,
@@ -313,7 +323,15 @@ def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
     """Questions with ``when: false`` must not be stored in the answers file."""
     test_dir = tmp_path / "computed_answers"
     _ = run_command(
-        ["copier", "copy", "git+file://.", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
+        [
+            "copier",
+            "copy",
+            TEMPLATE_GIT_SRC,
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+        ]
     )
     _remove_empty_optional_artifacts(
         test_dir,
@@ -332,7 +350,15 @@ def test_answers_file_warns_never_edit_manually(tmp_path: Path) -> None:
     """Generated answers file should match Copier docs banner text."""
     test_dir = tmp_path / "answers_banner"
     _ = run_command(
-        ["copier", "copy", "git+file://.", str(test_dir), "--trust", "--defaults", "--skip-tasks"]
+        [
+            "copier",
+            "copy",
+            TEMPLATE_GIT_SRC,
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+        ]
     )
     _remove_empty_optional_artifacts(
         test_dir,
