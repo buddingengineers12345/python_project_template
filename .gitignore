@@ -198,6 +198,8 @@ artifacts/
 notes/
 temp_*/
 tmp_*/
+./temp/
+./tmp/
 monocle_trace_*.json
 temp_artifacts/
 outputs/

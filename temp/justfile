@@ -1,0 +1,221 @@
+# ==========================================================================
+# Justfile for My Library
+#
+# Usage:
+#   just            # list commands
+#   just ci         # run full CI locally
+#   just test       # run tests
+# ==========================================================================
+
+# Always show commands if no recipe is given
+default:
+    @just --list
+
+# -------------------------------------------------------------------------
+# Helpers (private)
+# -------------------------------------------------------------------------
+
+_set_env:
+    @echo "Using Python >= 3.11"
+    @uv --version > /dev/null
+
+# -------------------------------------------------------------------------
+# Formatting & Linting
+# -------------------------------------------------------------------------
+
+fmt:
+    @uv run --active ruff format src tests
+
+lint:
+    @uv run --active ruff check src tests
+
+fix:
+    @uv run --active ruff check --fix src tests
+
+# Check docstring coverage on all source Python files (Google style, D rules)
+docs-check:
+    @echo "=== Docstring coverage check ==="
+    @uv run --active ruff check --select D src
+    @echo "✓ Docstring check complete"
+
+# Run all static analysis + docstring checks (pre-merge review)
+review:
+    @echo "=== Code Review ==="
+    @just fix
+    @just lint
+    @just type
+    @just docs-check
+    @echo "=== Review passed ==="
+
+# -------------------------------------------------------------------------
+# Type checking
+# -------------------------------------------------------------------------
+
+type:
+    @uv run --active basedpyright
+
+# -------------------------------------------------------------------------
+# Testing
+#
+# Default: Minimal logging (quiet mode, dots only, warnings/errors only)
+# For verbose output with test names, use: just test-verbose
+# For full debug output, use: just test-debug
+# For failed tests only, use: just test-lf
+# -------------------------------------------------------------------------
+
+# Run tests with minimal output (default, fast, token-efficient)
+test:
+    @uv run --active pytest tests/
+
+# Run only slow tests
+slow:
+    @uv run --active pytest tests/ -m slow
+
+# Run tests in parallel with minimal output
+test-parallel:
+    @uv run --active pytest tests/ -n auto
+
+# Run tests with verbose output (shows test names, INFO logs)
+test-verbose:
+    @uv run --active pytest tests/ -v
+
+# Run tests with full debug output (shows all DEBUG logs)
+test-debug:
+    @uv run --active pytest tests/ -vv --show-debug
+
+# Re-run only the tests that failed in the last run
+test-lf:
+    @uv run --active pytest tests/ --lf
+
+# Stop on first test failure (fast feedback)
+test-first-fail:
+    @uv run --active pytest tests/ -x
+
+# Run tests with coverage report (full HTML/XML/term output)
+coverage:    
+    @uv run --active pytest tests/ \
+        --cov=my_library \
+        --cov-report=term-missing \
+        --cov-report=html \
+        --cov-report=xml
+
+# -------------------------------------------------------------------------
+# Pre-commit
+# -------------------------------------------------------------------------
+
+precommit-install:
+    @uv run --active pre-commit install
+    @uv run --active pre-commit install --hook-type pre-push
+
+precommit:
+    @uv run --active pre-commit run --all-files --verbose
+
+# -------------------------------------------------------------------------
+# Dependency management
+# -------------------------------------------------------------------------
+
+sync:
+    @uv sync --frozen --extra dev --extra test --extra docs
+
+update:
+    @uv lock --upgrade
+    @just sync
+    
+# -------------------------------------------------------------------------
+# Environment
+# -------------------------------------------------------------------------
+
+load-env:
+    @if [ ! -f .env ]; then \
+        cp env.example .env; \
+        echo "✓ Created .env from env.example"; \
+    else \
+        echo ".env already exists"; \
+    fi
+
+# -------------------------------------------------------------------------
+# Docs (optional)
+# -------------------------------------------------------------------------
+
+
+docs-serve:
+    @uv run --active mkdocs serve
+
+docs-build:
+    @uv run --active mkdocs build
+
+docs-deploy:
+    @uv run --active mkdocs gh-deploy --force
+
+
+# -------------------------------------------------------------------------
+# Build & Publish
+# -------------------------------------------------------------------------
+
+build:
+    @uv build
+
+publish:
+    @uv publish
+
+# -------------------------------------------------------------------------
+# Install all package dependencies
+# -------------------------------------------------------------------------
+
+install:
+    @python -m pip install --upgrade pip
+    @python -m pip install --upgrade uv
+    @just sync
+    @just precommit-install
+
+# -------------------------------------------------------------------------
+# Cleaning
+# -------------------------------------------------------------------------
+
+clean:
+    @rm -rf build/ dist/ *.egg-info
+    @rm -rf .pytest_cache .ruff_cache .coverage htmlcov
+    @find . -type d -name "__pycache__" -exec rm -rf {} +
+    @find . -type f -name "*.pyc" -delete
+
+# -------------------------------------------------------------------------
+# Static checks (lint + format + type)
+# -------------------------------------------------------------------------
+
+static_check:
+    @just fix
+    @just fmt
+    @just lint
+    @just type
+    @just docs-check
+
+# -------------------------------------------------------------------------
+# CI (local mirror of GitHub Actions)
+# -------------------------------------------------------------------------
+
+ci:
+    @just fix
+    @just fmt
+    @just lint
+    @just type
+    @just docs-check
+    @just test
+    @just precommit
+
+# -------------------------------------------------------------------------
+# Doctor / Diagnostics
+# -------------------------------------------------------------------------
+
+doctor:
+    @echo "=== Environment ==="
+    @python --version
+    @uv --version
+    @echo ""
+    @echo "=== Tools ==="
+    @uv run --active ruff --version
+    @uv run --active basedpyright --version || echo "basedpyright not installed"
+    @uv run --active pytest --version
+    @echo ""
+    @echo "=== Project ==="
+    @echo "Package: my_library"
+    @echo "Python: >= 3.11"

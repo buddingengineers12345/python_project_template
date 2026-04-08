@@ -1,0 +1,214 @@
+[project]
+name = "my_library"
+version = "0.1.0"
+description = "A Python library"
+authors = [
+    { name = "Your Name", email = "you@example.com" }
+]
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+keywords = ["python", "library"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.3",
+    "structlog>=23.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.8.0",
+    "basedpyright>=1.21.0",
+    "pre-commit>=4.0.0",
+    "hatchling>=1.26.0",
+]
+
+test = [
+    "pytest>=8.0.0",
+    "pytest-xdist>=3.5.0",
+    "pytest-cov>=6.0.0",
+    "coverage[toml]>=7.6.0",
+]
+
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.27.0",
+    "mkdocs-gen-files>=0.5.0",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/yourusername/my-library"
+Documentation = "https://github.com/yourusername/my-library#readme"
+Repository = "https://github.com/yourusername/my-library"
+Issues = "https://github.com/yourusername/my-library/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/my_library"]
+
+# ==========================================================================
+# Ruff Configuration
+# ==========================================================================
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "C4",   # flake8-comprehensions
+    "RUF",  # ruff-specific rules
+    "TCH",  # flake8-type-checking
+    "PGH",  # pygrep-hooks
+    "PT",   # flake8-pytest-style
+    "ARG",  # flake8-unused-arguments
+    "D",    # pydocstyle — enforce Google-style docstrings on public symbols
+    "C90",  # McCabe complexity — flag functions above max-complexity
+    "PERF", # perflint — catch performance anti-patterns
+]
+
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ARG", "D"]  # tests don't require docstrings
+
+[tool.ruff.lint.isort]
+known-first-party = ["my_library"]
+
+# ==========================================================================
+# BasedPyright Configuration
+# ==========================================================================
+[tool.basedpyright]
+typeCheckingMode = "strict"
+pythonVersion = "3.11"
+pythonPlatform = "All"
+
+# Strict typing settings
+reportUnusedImport = "error"
+reportUnusedVariable = "error"
+reportDuplicateImport = "error"
+reportImplicitOverride = "error"
+reportIncompatibleMethodOverride = "error"
+reportIncompatibleVariableOverride = "error"
+reportMissingImports = true
+
+# Be lenient with external packages
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
+reportUnknownLambdaType = false
+
+# Source configuration
+include = ["src", "tests"]
+exclude = [
+    "**/__pycache__",
+    "**/.*",
+    "build",
+    "dist",
+]
+
+# ==========================================================================
+# Pytest Configuration
+# ==========================================================================
+# Log level can be controlled by:
+# 1. PYTEST_LOG_LEVEL environment variable (DEBUG, INFO, WARNING, ERROR)
+# 2. -v / -vv command line flags
+# 3. Default: WARNING
+# Examples:
+#   PYTEST_LOG_LEVEL=DEBUG pytest
+#   pytest -vv
+#   pytest -v
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=my_library",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+    "--tb=short",                      # Short tracebacks (condensed output)
+    "--log-level=WARNING",             # Only show WARNING and ERROR from logging
+    "-m", "not slow",                  # Exclude slow tests by default
+    "-p", "no:cacheprovider",          # Disable cache to speed up test startup
+    "-ra",                             # Show summary of all test outcomes
+]
+
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+# Suppress non-critical warnings
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+# ==========================================================================
+# Coverage Configuration
+# ==========================================================================
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = [
+    "tests/*",
+    "**/__init__.py",
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+fail_under = 85
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+    "@overload",
+]
+
+[tool.coverage.xml]
+output = "coverage.xml"
