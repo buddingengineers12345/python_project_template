@@ -1,23 +1,37 @@
-# actions/labeler@v4 — minimatch globs per label
+# .github/labeler.yml
+# actions/labeler@v6
 # https://github.com/actions/labeler
+
 template:
-  - template/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'template/**/*'
 
 tests:
-  - tests/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'tests/**/*'
 
 ci:
-  - .github/**/*
+  - changed-files:
+    - any-glob-to-any-file: '.github/**/*'
 
 copier:
-  - copier.yml
+  - changed-files:
+    - any-glob-to-any-file: 'copier.yml'
 
 dependencies:
-  - pyproject.toml
-  - uv.lock
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'pyproject.toml'
+      - 'uv.lock'
 
 documentation:
-  - "**/*.md"
+  - changed-files:
+    - any-glob-to-any-file: '**/*.md'
 
 scripts:
-  - scripts/**/*
+  - changed-files:
+    - any-glob-to-any-file: 'scripts/**/*'
+
+build:
+  - changed-files:
+    - any-glob-to-any-file: 'justfile'

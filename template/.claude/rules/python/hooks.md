@@ -13,7 +13,7 @@
 ### What the hook checks
 
 1. **ruff check** — all active rule sets including `D` (docstrings), `C90` (complexity),
-   `PERF` (performance anti-patterns).
+   `PERF` (performance anti-patterns), `T20` / `T201` (no `print()` in app code).
 2. **basedpyright** — type correctness in strict mode.
 
 Example output:
@@ -42,9 +42,10 @@ Fix all violations before moving to the next file.
 
 The `pre-bash-block-no-verify.sh` hook prevents `git commit --no-verify`.
 
-## `print()` warning
+## `print()` enforcement
 
-`print()` in `src/` is a ruff violation (`T201`). Use structlog:
+Ruff includes **`T20`** (flake8-print) in `[tool.ruff.lint] select`. `print()` in
+application code is reported as **`T201`**. Use structlog:
 
 ```python
 # Wrong
@@ -55,7 +56,18 @@ log = structlog.get_logger()
 log.info("processing_order", order_id=order_id)
 ```
 
-`print()` is permitted in `scripts/` and test files.
+`print()` is permitted in `scripts/`, `tests/**`, and `src/**/bump_version.py` (per-file
+ignores in `pyproject.toml`).
+
+## Top-level module test reminder (PreToolUse)
+
+| Hook | Trigger | What it does |
+|------|---------|----------------|
+| `pre-write-src-test-reminder.sh` | `Write` or `Edit` on `src/<pkg>/<module>.py` | Warns if `tests/<pkg>/test_<module>.py` is missing |
+
+Only **top-level package modules** are checked (`src/<pkg>/<name>.py`, excluding
+`__init__.py`). Nested packages (for example `src/<pkg>/common/foo.py`) are skipped,
+since those modules are often covered by shared test modules such as `test_support.py`.
 
 ## Type-checking configuration
 
