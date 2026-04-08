@@ -533,6 +533,32 @@ def test_license_rendering(tmp_path: Path, license_choice: str) -> None:
     assert project["license"] == {"text": license_choice}
 
 
+def test_env_example_rendered(tmp_path: Path) -> None:
+    """Verify that env.example is rendered in the generated project.
+
+    The `env.example` file should be copied to projects so contributors
+    can see what environment variables are needed. It's named env.example
+    (not .env.example) because Copier excludes .env* files as a safety feature.
+    """
+    test_dir = tmp_path / "test_env_example"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "Env Example Test",
+            "include_docs": False,
+        },
+    )
+    env_example = test_dir / "env.example"
+    assert env_example.is_file(), "Missing env.example file"
+    content = env_example.read_text(encoding="utf-8")
+    # Verify file has meaningful content
+    assert len(content.strip()) > 0, "env.example file is empty"
+    # Verify it contains common sections/comments
+    assert "Application Configuration" in content or "LOG_LEVEL" in content, (
+        "env.example should contain example environment variable names or sections"
+    )
+
+
 @pytest.mark.skip(reason="Environment issue: basedpyright not available in post-gen tasks")
 def test_update_workflow(tmp_path: Path) -> None:
     """Confirm ``copier update`` keeps user edits to ``README.md`` when it is skipped."""
