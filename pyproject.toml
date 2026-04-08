@@ -1,6 +1,6 @@
 [project]
 name = "python_project_template"
-version = "0.1.0"
+version = "0.0.4"
 description = "Copier template repository for generating uv-first Python projects."
 readme = "README.md"
 requires-python = ">=3.11"
