@@ -87,6 +87,16 @@
         "description": "Block direct edits to uv.lock — must be regenerated via uv lock or just update"
       },
       {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-write-src-test-reminder.sh"
+          }
+        ],
+        "description": "Remind to add tests/<pkg>/test_<module>.py for top-level src/<pkg>/<module>.py"
+      },
+      {
         "matcher": "Write",
         "hooks": [
           {

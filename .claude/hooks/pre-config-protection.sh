@@ -8,7 +8,7 @@
 #
 # BLOCK conditions:
 #   - typeCheckingMode = "off" or "basic"  (downgrade from strict / standard)
-#   - Core ruff rule category added to ignore list: D, E, F, I, B
+#   - Core ruff rule category added to ignore list: D, E, F, I, B, T20, T201
 #
 # WARN conditions:
 #   - Any edit that touches [tool.ruff.lint] select/ignore in pyproject.toml
@@ -67,7 +67,7 @@ if re.search(r'typeCheckingMode\s*=\s*"(off|basic)"', new_content):
 ignore_match = re.search(r'ignore\s*=\s*\[([^\]]*)\]', new_content, re.DOTALL)
 if ignore_match:
     ignore_block = ignore_match.group(1)
-    for rule in ("D", "E", "F", "I", "B"):
+    for rule in ("D", "E", "F", "I", "B", "T20", "T201"):
         if re.search(rf'["\x27]{re.escape(rule)}["\x27]', ignore_block):
             print(f'BLOCK:Core ruff rule "{rule}" added to ignore list — fix code instead of suppressing rules')
             sys.exit(0)

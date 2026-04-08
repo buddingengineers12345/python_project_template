@@ -879,6 +879,21 @@ def test_generated_pyproject_basedpyright_standard_mode(tmp_path: Path) -> None:
     assert "reportMissingImports = true" in raw
 
 
+def test_generated_pyproject_ruff_includes_print_rules(tmp_path: Path) -> None:
+    """Generated projects should enable Ruff T20 (flake8-print) with sensible per-file ignores."""
+    test_dir = tmp_path / "ruff_t20"
+    copy_with_data(test_dir, {"project_name": "Ruff T20", "include_docs": False})
+    data = tomllib.loads((test_dir / "pyproject.toml").read_text(encoding="utf-8"))
+    ruff_lint = cast(Mapping[str, object], cast(Mapping[str, object], data["tool"])["ruff"])
+    lint = cast(Mapping[str, object], ruff_lint["lint"])
+    select = cast(list[str], lint["select"])
+    assert "T20" in select
+    per_file = cast(Mapping[str, list[str]], lint["per-file-ignores"])
+    assert "T20" in per_file["tests/**"]
+    assert "T20" in per_file["scripts/**"]
+    assert "T20" in per_file["src/**/bump_version.py"]
+
+
 def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
     """Pre-commit config in generated projects should run detect-secrets with a baseline."""
     test_dir = tmp_path / "secrets_hook"
