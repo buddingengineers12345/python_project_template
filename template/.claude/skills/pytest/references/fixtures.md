@@ -201,8 +201,8 @@ Use `monkeypatch` over `unittest.mock.patch` when you need to modify environment
 variables, dictionary entries, or object attributes and want automatic reversal:
 
 ```python
-def test_reads_api_key_from_env(monkeypatch):
-    monkeypatch.setenv("API_KEY", "test-key-123")
+def test_reads_setting_from_env(monkeypatch):
+    monkeypatch.setenv("MYAPP_SETTING", "fixture-value")
     config = load_config()
-    assert config.api_key == "test-key-123"
+    assert config.setting == "fixture-value"
 ```

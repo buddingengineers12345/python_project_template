@@ -89,9 +89,11 @@ precommit-install:
 precommit:
     @uv run --active pre-commit run --all-files --verbose
 
-# Dependency audit matching .github/workflows/security.yml (pip-audit)
+# Dependency audit matching .github/workflows/security.yml (pip-audit).
+# Uses ``uv run --with pip-audit`` so the tool runs with the project Python (``uv tool run``/``uvx``
+# can pick a different interpreter whose venv ``ensurepip`` fails on some hosts).
 audit:
-    @uv export --frozen --format requirements-txt --extra dev | uv tool run pip-audit --requirement /dev/stdin
+    @uv export --frozen --format requirements-txt --extra dev | uv run --with pip-audit pip-audit --requirement /dev/stdin
 
 # -------------------------------------------------------------------------
 # Dependency management

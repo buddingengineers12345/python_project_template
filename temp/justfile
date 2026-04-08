@@ -92,7 +92,7 @@ test-first-fail:
     @uv run --active pytest tests/ -x
 
 # Run tests with coverage report (full HTML/XML/term output)
-coverage:    
+coverage:
     @uv run --active pytest tests/ \
         --cov=my_library \
         --cov-report=term-missing \
@@ -120,7 +120,7 @@ sync:
 update:
     @uv lock --upgrade
     @just sync
-    
+
 # -------------------------------------------------------------------------
 # Environment
 # -------------------------------------------------------------------------
