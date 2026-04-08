@@ -23,7 +23,7 @@ import os
 import subprocess
 import sys
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any, Literal, Protocol, cast
@@ -50,11 +50,11 @@ class IgnoreConfig:
 
     @classmethod
     def empty(cls) -> IgnoreConfig:
-        return cls(files=frozenset(), directories=tuple(), extensions=frozenset(), patterns=tuple())
+        return cls(files=frozenset(), directories=(), extensions=frozenset(), patterns=())
 
 
 def _now_utc() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def _now_utc_from_env() -> datetime:
@@ -121,8 +121,8 @@ def _parse_git_iso_datetime(value: str) -> datetime | None:
         return None
     if dt.tzinfo is None:
         # Defensive: treat naive as UTC.
-        return dt.replace(tzinfo=timezone.utc)
-    return dt.astimezone(timezone.utc)
+        return dt.replace(tzinfo=UTC)
+    return dt.astimezone(UTC)
 
 
 def _age_days(now: datetime, commit_iso: str | None) -> int | None:
@@ -171,13 +171,13 @@ def load_ignore_config(path: Path) -> IgnoreConfig:
         v = raw.get(key, [])
         if isinstance(v, list) and all(isinstance(x, str) for x in v):
             return cast(list[str], v)
-        print(f"[freshness] Warning: ignore key {key!r} must be a list[str]: {path}", file=sys.stderr)
+        print(
+            f"[freshness] Warning: ignore key {key!r} must be a list[str]: {path}", file=sys.stderr
+        )
         return []
 
     files = frozenset(x.strip().replace("\\", "/") for x in get_list("files") if x.strip())
-    directories = tuple(
-        d for d in (_normalize_dir_prefix(x) for x in get_list("directories")) if d
-    )
+    directories = tuple(d for d in (_normalize_dir_prefix(x) for x in get_list("directories")) if d)
     extensions = frozenset(
         e for e in (_normalize_extension(x) for x in get_list("extensions")) if e
     )
@@ -211,11 +211,7 @@ def ignored_status(rel_path: str, ignore: IgnoreConfig) -> bool:
         return True
 
     # 4) Glob pattern match (relative paths)
-    for pat in ignore.patterns:
-        if fnmatch(p, pat):
-            return True
-
-    return False
+    return any(fnmatch(p, pat) for pat in ignore.patterns)
 
 
 def classify(age_days: int | None, *, is_ignored: bool) -> Status:
@@ -364,11 +360,13 @@ def main() -> int:
                     "status": status,
                 }
             )
-        except Exception as exc:  # noqa: BLE001 - reliability: never fail per-file.
+        except Exception as exc:  # reliability: never fail per-file.
             print(f"[freshness] Warning: failed processing {rel_path}: {exc}", file=sys.stderr)
             status = "red"
             counts[status] += 1
-            items.append({"file": rel_path, "last_commit": None, "age_days": None, "status": status})
+            items.append(
+                {"file": rel_path, "last_commit": None, "age_days": None, "status": status}
+            )
 
     # Sorting rules: green/yellow/red by age desc; blue alpha.
     for s in ("green", "yellow", "red"):

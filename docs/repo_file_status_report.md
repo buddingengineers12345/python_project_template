@@ -1,10 +1,10 @@
 # Repository File Status Report
 
-Last updated: **2026-04-08 17:42:57 UTC**
+Last updated: **2026-04-08 17:52:36 UTC**
 
 ## Summary
 
-- 🟢 Green: **165**
+- 🟢 Green: **170**
 - 🟡 Yellow: **0**
 - 🔴 Red: **0**
 - 🔵 Blue: **0**
@@ -137,7 +137,6 @@ Last updated: **2026-04-08 17:42:57 UTC**
 - `.github/renovate.json` — **1** days
 - `.pre-commit-config.yaml` — **1** days
 - `.secrets.baseline` — **1** days
-- `justfile` — **1** days
 - `template/.github/renovate.json.jinja` — **1** days
 - `template/.pre-commit-config.yaml.jinja` — **1** days
 - `template/.secrets.baseline` — **1** days
@@ -153,6 +152,7 @@ Last updated: **2026-04-08 17:42:57 UTC**
 - `template/src/{{ package_name }}/cli.py.jinja` — **1** days
 - `template/tests/test_imports.py.jinja` — **1** days
 - `.claude/rules/copier/template-conventions.md` — **0** days
+- `.github/workflows/file-freshness.yml` — **0** days
 - `.github/workflows/labeler.yml` — **0** days
 - `.github/workflows/pre-commit-update.yml` — **0** days
 - `.github/workflows/security.yml` — **0** days
@@ -160,8 +160,12 @@ Last updated: **2026-04-08 17:42:57 UTC**
 - `.github/workflows/tests.yml` — **0** days
 - `.gitignore` — **0** days
 - `copier.yml` — **0** days
+- `docs/repo_file_status_report.md` — **0** days
 - `env.example` — **0** days
+- `file_freshness.json` — **0** days
 - `freshness_ignore.json` — **0** days
+- `freshness_summary.json` — **0** days
+- `justfile` — **0** days
 - `pyproject.toml` — **0** days
 - `scripts/repo_file_freshness.py` — **0** days
 - `scripts/sync_skip_if_exists.py` — **0** days
@@ -174,6 +178,7 @@ Last updated: **2026-04-08 17:42:57 UTC**
 - `template/src/{{ package_name }}/common/logging_manager.py.jinja` — **0** days
 - `template/tests/conftest.py.jinja` — **0** days
 - `template/tests/{{ package_name }}/test_support.py.jinja` — **0** days
+- `tests/test_repo_file_freshness.py` — **0** days
 - `tests/test_template.py` — **0** days
 - `uv.lock` — **0** days
 

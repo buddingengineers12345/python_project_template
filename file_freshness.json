@@ -757,12 +757,6 @@
   },
   {
     "age_days": 1,
-    "file": "justfile",
-    "last_commit": "2026-04-07T13:06:28+00:00",
-    "status": "green"
-  },
-  {
-    "age_days": 1,
     "file": "template/.github/renovate.json.jinja",
     "last_commit": "2026-04-07T13:26:04+02:00",
     "status": "green"
@@ -853,6 +847,12 @@
   },
   {
     "age_days": 0,
+    "file": ".github/workflows/file-freshness.yml",
+    "last_commit": "2026-04-08T17:46:02+00:00",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
     "file": ".github/workflows/labeler.yml",
     "last_commit": "2026-04-08T10:27:54+00:00",
     "status": "green"
@@ -884,7 +884,7 @@
   {
     "age_days": 0,
     "file": ".gitignore",
-    "last_commit": "2026-04-08T08:22:29+02:00",
+    "last_commit": "2026-04-08T17:46:02+00:00",
     "status": "green"
   },
   {
@@ -895,14 +895,38 @@
   },
   {
     "age_days": 0,
+    "file": "docs/repo_file_status_report.md",
+    "last_commit": "2026-04-08T17:46:02+00:00",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
     "file": "env.example",
     "last_commit": "2026-04-08T08:22:29+02:00",
     "status": "green"
   },
   {
     "age_days": 0,
+    "file": "file_freshness.json",
+    "last_commit": "2026-04-08T17:46:02+00:00",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
     "file": "freshness_ignore.json",
     "last_commit": "2026-04-08T17:39:28+00:00",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "file": "freshness_summary.json",
+    "last_commit": "2026-04-08T17:46:02+00:00",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "file": "justfile",
+    "last_commit": "2026-04-08T17:46:02+00:00",
     "status": "green"
   },
   {
@@ -914,7 +938,7 @@
   {
     "age_days": 0,
     "file": "scripts/repo_file_freshness.py",
-    "last_commit": "2026-04-08T17:39:28+00:00",
+    "last_commit": "2026-04-08T17:46:02+00:00",
     "status": "green"
   },
   {
@@ -975,6 +999,12 @@
     "age_days": 0,
     "file": "template/tests/{{ package_name }}/test_support.py.jinja",
     "last_commit": "2026-04-08T18:35:21+02:00",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "file": "tests/test_repo_file_freshness.py",
+    "last_commit": "2026-04-08T17:46:02+00:00",
     "status": "green"
   },
   {
