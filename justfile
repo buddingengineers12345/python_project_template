@@ -33,6 +33,10 @@ lint:
 fix:
     @uv run --active ruff check --fix .
 
+# Format check (read-only) — matches GitHub Actions
+fmt-check:
+    @uv run ruff format --check .
+
 # Check docstring coverage on all non-test Python files
 docs-check:
     @echo "=== Docstring coverage check ==="
@@ -70,6 +74,10 @@ test-parallel:
 coverage:
     @uv run --active pytest --cov --cov-report=term-missing --cov-report=xml
 
+# Test command matching GitHub CI (3.11 path in .github/workflows/tests.yml)
+test-ci:
+    @uv run pytest -q --cov --cov-report=xml --cov-report=term-missing
+
 # -------------------------------------------------------------------------
 # Pre-commit
 # -------------------------------------------------------------------------
@@ -80,6 +88,10 @@ precommit-install:
 
 precommit:
     @uv run --active pre-commit run --all-files --verbose
+
+# Dependency audit matching .github/workflows/security.yml (pip-audit)
+audit:
+    @uv export --frozen --format requirements-txt --extra dev | uvx pip-audit --requirement /dev/stdin
 
 # -------------------------------------------------------------------------
 # Dependency management
@@ -142,10 +154,21 @@ static_check:
     @just type
     @just docs-check
 
+# Read-only mirror of GitHub Actions lint/test/security steps
+ci-check:
+    @uv sync --frozen --extra dev
+    @just fmt-check
+    @uv run ruff check .
+    @uv run basedpyright
+    @just docs-check
+    @just test-ci
+    @uv run pre-commit run --all-files --verbose
+    @just audit
+
 ci:
-    @just static_check
-    @just test
-    @just precommit
+    @just fix
+    @just fmt
+    @just ci-check
 
 # -------------------------------------------------------------------------
 # Doctor / Diagnostics
