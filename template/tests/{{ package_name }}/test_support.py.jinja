@@ -3,29 +3,27 @@
 from __future__ import annotations
 
 import json
-import logging
-import os
-from io import StringIO
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pytest
 import structlog
 
 from {{ package_name }}.common.file_manager import load_json, load_markdown
 from {{ package_name }}.common.logging_manager import (  # pyright: ignore[reportPrivateUsage]
-    IS_LLM,
     EXECUTION_CONTEXT,
-    bind_context,
-    clear_context,
-    configure_logging,
-    get_logger,
+    IS_LLM,
     _drop_debug_events,
     _filter_llm_events,
     _flatten_nested_dicts,
     _truncate_long_values,
+    bind_context,
+    clear_context,
+    configure_logging,
+    get_logger,
 )
 
+if TYPE_CHECKING:
+    from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # File manager tests
@@ -62,7 +60,7 @@ def test_execution_context_is_valid_string() -> None:
 
 def test_is_llm_matches_execution_context() -> None:
     """IS_LLM must be consistent with EXECUTION_CONTEXT."""
-    assert IS_LLM == (EXECUTION_CONTEXT == "llm")
+    assert (EXECUTION_CONTEXT == "llm") == IS_LLM
 
 
 def test_context_forced_to_llm(monkeypatch: pytest.MonkeyPatch) -> None:

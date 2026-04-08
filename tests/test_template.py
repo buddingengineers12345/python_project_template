@@ -115,10 +115,6 @@ def _remove_empty_optional_artifacts(dest: Path, data: dict[str, str | bool]) ->
         return
     pairs: list[tuple[bool, Path]] = [
         (not bool(data.get("include_cli", False)), dest / "src" / pkg / "cli.py"),
-        (
-            not bool(data.get("include_logging_setup", False)),
-            dest / "src" / pkg / "logging_config.py",
-        ),
         (not bool(data.get("include_git_cliff", False)), dest / "cliff.toml"),
     ]
     for should_drop, path in pairs:
@@ -266,18 +262,32 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
     Pass explicit ``--data`` when you need a different distribution name.
     """
     test_dir = tmp_path / "defaults_only"
-    _ = run_command(["copier", "copy", ".", str(test_dir), "--trust", "--defaults", "--skip-tasks"])
+    _ = run_command(
+        [
+            "copier",
+            "copy",
+            "--vcs-ref",
+            "HEAD",
+            ".",
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+        ]
+    )
     _remove_empty_optional_artifacts(
         test_dir,
         {
             "package_name": "my_library",
             "include_cli": False,
-            "include_logging_setup": False,
-            "include_git_cliff": False,
+            "include_git_cliff": True,
         },
     )
 
     assert (test_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
+    assert (test_dir / "cliff.toml").is_file(), (
+        "cliff.toml expected when include_git_cliff defaults to true"
+    )
     answers = load_copier_answers(test_dir)
     assert answers.get("project_name") == "My Library"
     assert answers.get("package_name") == "my_library"
@@ -325,8 +335,7 @@ def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
         {
             "package_name": "my_library",
             "include_cli": False,
-            "include_logging_setup": False,
-            "include_git_cliff": False,
+            "include_git_cliff": True,
         },
     )
     answers_text = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8")
@@ -343,8 +352,7 @@ def test_answers_file_warns_never_edit_manually(tmp_path: Path) -> None:
         {
             "package_name": "my_library",
             "include_cli": False,
-            "include_logging_setup": False,
-            "include_git_cliff": False,
+            "include_git_cliff": True,
         },
     )
     first_line = (test_dir / ".copier-answers.yml").read_text(encoding="utf-8").splitlines()[0]
@@ -367,8 +375,7 @@ def test_generate_programmatic_run_copy_local(tmp_path: Path) -> None:
         {
             "package_name": "my_library",
             "include_cli": False,
-            "include_logging_setup": False,
-            "include_git_cliff": False,
+            "include_git_cliff": True,
         },
     )
 
@@ -404,8 +411,7 @@ def test_generate_from_vcs_git_file_url(tmp_path: Path) -> None:
         {
             "package_name": "my_library",
             "include_cli": False,
-            "include_logging_setup": False,
-            "include_git_cliff": False,
+            "include_git_cliff": True,
         },
     )
     assert (dest_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
@@ -665,8 +671,7 @@ def test_copier_update_exits_zero_after_copy_and_commit(tmp_path: Path) -> None:
         {
             "package_name": "update_smoke_test",
             "include_cli": False,
-            "include_logging_setup": False,
-            "include_git_cliff": False,
+            "include_git_cliff": True,
         },
     )
     _prune_docs_when_disabled(
@@ -702,7 +707,6 @@ def test_answers_file_matches_explicit_copy_data(tmp_path: Path) -> None:
         "include_pandas_support": True,
         "include_numpy": True,
         "include_cli": False,
-        "include_logging_setup": False,
         "include_git_cliff": False,
     }
     copy_with_data(test_dir, expected)
@@ -801,23 +805,21 @@ def test_include_git_cliff_adds_dependency_group(tmp_path: Path) -> None:
     assert "git-cliff" in raw
 
 
-def test_include_logging_setup_adds_module(tmp_path: Path) -> None:
-    """``include_logging_setup=true`` must ship ``logging_config.py`` with configure_logging."""
-    test_dir = tmp_path / "with_logging"
+def test_no_logging_config_module_logging_in_common(tmp_path: Path) -> None:
+    """Logging setup lives only in ``common/logging_manager.py`` — no ``logging_config.py``."""
+    test_dir = tmp_path / "logging_single_source"
     copy_with_data(
         test_dir,
         {
             "project_name": "Log Project",
             "package_name": "log_project",
             "include_docs": False,
-            "include_logging_setup": True,
         },
     )
-    mod = test_dir / "src" / "log_project" / "logging_config.py"
-    assert mod.is_file()
-    text = mod.read_text(encoding="utf-8")
-    assert "configure_logging" in text
-    assert "structlog" in text
+    assert not (test_dir / "src" / "log_project" / "logging_config.py").exists()
+    lm = test_dir / "src" / "log_project" / "common" / "logging_manager.py"
+    assert lm.is_file()
+    assert "def configure_logging" in lm.read_text(encoding="utf-8")
 
 
 def test_root_contributing_and_security_rendered(tmp_path: Path) -> None:
@@ -886,7 +888,6 @@ def test_generated_renovate_enables_pre_commit(tmp_path: Path) -> None:
             "include_numpy": True,
             "include_pandas_support": False,
             "include_cli": True,
-            "include_logging_setup": True,
             "include_git_cliff": True,
         },
         {
@@ -894,7 +895,6 @@ def test_generated_renovate_enables_pre_commit(tmp_path: Path) -> None:
             "include_numpy": False,
             "include_pandas_support": True,
             "include_cli": False,
-            "include_logging_setup": False,
             "include_git_cliff": False,
         },
     ],
@@ -954,7 +954,7 @@ def test_release_workflow_generated_by_default(tmp_path: Path) -> None:
     assert release_yml.is_file(), "release.yml must exist when include_release_workflow=true"
     content = release_yml.read_text(encoding="utf-8")
     assert "${{ true }}" in content, "release job must be enabled"
-    assert "bump_version.py" in content, "release.yml must reference bump_version.py"
+    assert "common/bump_version.py" in content, "release.yml must reference common/bump_version.py"
     assert "--generate-notes" in content, (
         "release must use gh --generate-notes (no CHANGELOG.md required)"
     )
@@ -1101,19 +1101,20 @@ def test_pre_commit_update_workflow_generated(tmp_path: Path) -> None:
     assert "create-pull-request" in content
 
 
-def test_scripts_bump_version_generated(tmp_path: Path) -> None:
-    """scripts/bump_version.py must exist in the generated project."""
+def test_common_bump_version_generated(tmp_path: Path) -> None:
+    """``src/<package>/common/bump_version.py`` must exist in the generated project."""
     test_dir = tmp_path / "bump_version"
     copy_with_data(
         test_dir,
         {
             "project_name": "Bump Version",
+            "package_name": "bump_version_pkg",
             "include_release_workflow": True,
             "include_docs": False,
         },
     )
-    bump_script = test_dir / "scripts" / "bump_version.py"
-    assert bump_script.is_file(), "scripts/bump_version.py must exist in generated projects"
+    bump_script = test_dir / "src" / "bump_version_pkg" / "common" / "bump_version.py"
+    assert bump_script.is_file(), "common/bump_version.py must exist in generated projects"
     content = bump_script.read_text(encoding="utf-8")
     assert "BumpKind" in content, "bump_version.py must contain BumpKind type alias"
     assert "[project]" in content, "bump_version.py must look for [project] section"
