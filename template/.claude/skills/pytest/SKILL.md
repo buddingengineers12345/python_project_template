@@ -10,11 +10,11 @@ description: >-
   any request to add/improve/fix tests in a Python project.
 ---
 
-# Writing pytest tests
+# Pytest Skill
 
-This skill covers everything you need to write clear, maintainable, and thorough pytest
-test suites. It follows a progressive-disclosure structure: this file covers the
-essentials, and the `references/` directory has deep dives on each topic.
+A comprehensive skill for writing clear, maintainable, and thorough pytest test suites.
+This file covers the essentials, and the `references/` directory has deep dives on each
+topic.
 
 ## Quick reference: where to go deeper
 
@@ -28,6 +28,13 @@ essentials, and the `references/` directory has deep dives on each topic.
 | Project layout and naming      | [references/test-organization.md](references/test-organization.md) |
 | Anti-patterns and fixes        | [references/anti-patterns.md](references/anti-patterns.md)         |
 | CI, coverage, and plugins      | [references/ci-and-plugins.md](references/ci-and-plugins.md)       |
+
+**Bundled scripts** (in `scripts/` — run directly, no need to read them into context):
+
+| Script                 | What it does                                             |
+|------------------------|----------------------------------------------------------|
+| `find_slow_tests.py`   | Runs pytest, identifies tests exceeding a time threshold |
+| `mark_slow_tests.py`   | Adds `@pytest.mark.slow` to the identified slow tests   |
 
 Read the relevant reference file before working on a specific area. For a new test file,
 skim `test-organization.md` and `fixtures.md` first. For debugging flaky tests, start
@@ -243,6 +250,73 @@ pytest --durations=10        # show 10 slowest tests
 
 ---
 
+## Finding and marking slow tests
+
+Long-running tests slow down the feedback loop. The skill bundles two scripts that
+work together to find slow tests and add `@pytest.mark.slow` so they can be skipped
+during fast development iterations.
+
+### Step 1: Find slow tests
+
+Run the finder script from your project root. It executes pytest with `--durations=0`
+and reports every test whose call phase exceeds the threshold (default: 1 second).
+
+```bash
+python <skill-path>/scripts/find_slow_tests.py --threshold 1.0
+```
+
+Options:
+
+- `--threshold 0.5` — flag tests slower than 500ms.
+- `--top 10` — only show the 10 slowest.
+- `--test-path tests/integration/` — limit to a specific directory.
+- `--json-only` — machine-readable JSON on stdout only.
+
+The output is a JSON array on stdout (for piping) plus a human summary on stderr.
+
+### Step 2: Mark them
+
+Pipe the output directly into the marker script:
+
+```bash
+python <skill-path>/scripts/find_slow_tests.py --threshold 1.0 \
+  | python <skill-path>/scripts/mark_slow_tests.py
+```
+
+This adds `@pytest.mark.slow` above each slow test function and inserts
+`import pytest` if the file does not already have it. Tests that already carry
+the marker are skipped.
+
+Use `--dry-run` to preview changes without modifying files:
+
+```bash
+python <skill-path>/scripts/find_slow_tests.py --threshold 1.0 \
+  | python <skill-path>/scripts/mark_slow_tests.py --dry-run
+```
+
+### Step 3: Run fast tests only
+
+Once slow tests are marked, skip them during normal development:
+
+```bash
+pytest -m "not slow"
+```
+
+Run the full suite (including slow tests) before opening a PR or in CI.
+
+### When to use this
+
+- After adding integration or E2E tests that touch real databases, networks, or
+  large datasets.
+- When `pytest --durations=10` shows tests taking more than a second.
+- During CI optimisation — split fast and slow test runs into separate jobs.
+
+Read [references/parametrize-and-markers.md](references/parametrize-and-markers.md)
+for more on custom markers and [references/ci-and-plugins.md](references/ci-and-plugins.md)
+for CI integration patterns.
+
+---
+
 ## Checklist before committing tests
 
 - [ ] Each test has a clear, descriptive name.
@@ -251,5 +325,6 @@ pytest --durations=10        # show 10 slowest tests
 - [ ] Fixtures handle setup and teardown (no leftover state).
 - [ ] External I/O is mocked or uses `tmp_path`.
 - [ ] Parametrize is used where multiple inputs test the same logic.
+- [ ] Slow tests (>1s) are marked with `@pytest.mark.slow`.
 - [ ] Coverage threshold is met for new and modified modules.
 - [ ] `just test` passes locally.
