@@ -205,4 +205,3 @@ _Metric: **commits**._
 
 - `assets/file_freshness.json`
 - `assets/freshness_summary.json`
-

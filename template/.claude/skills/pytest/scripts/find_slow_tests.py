@@ -137,9 +137,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    logging.basicConfig(
-        level=logging.INFO, format="%(message)s", stream=sys.stderr, force=True
-    )
+    logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stderr, force=True)
 
     output = run_pytest_durations(args.test_path)
     slow_tests = parse_durations(output, args.threshold)

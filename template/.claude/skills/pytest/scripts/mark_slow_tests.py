@@ -211,9 +211,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    logging.basicConfig(
-        level=logging.INFO, format="%(message)s", stream=sys.stderr, force=True
-    )
+    logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stderr, force=True)
 
     raw = Path(args.input).read_text(encoding="utf-8") if args.input else sys.stdin.read()
 
