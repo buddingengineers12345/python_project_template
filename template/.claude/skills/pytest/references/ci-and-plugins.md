@@ -184,6 +184,45 @@ pytest -n 4             # use exactly 4 workers
 - **Use `pytest -k`** to run a subset matching a keyword.
 - **Profile with `--durations=10`** to find the slowest tests and fixtures.
 - **Use `monkeypatch` instead of real I/O** where possible.
+- **Mark and skip slow tests** during development — see below.
+
+### Automated slow-test detection
+
+The skill bundles scripts to automate slow-test management. Use them when
+`--durations` reveals tests that consistently take over a second.
+
+**Find slow tests:**
+
+```bash
+python <skill-path>/scripts/find_slow_tests.py --threshold 1.0
+```
+
+**Mark them automatically:**
+
+```bash
+python <skill-path>/scripts/find_slow_tests.py --threshold 1.0 \
+  | python <skill-path>/scripts/mark_slow_tests.py
+```
+
+This adds `@pytest.mark.slow` to each slow function and ensures `import pytest` is
+present. Use `--dry-run` on the marker script to preview changes first.
+
+**Split fast and slow runs in CI:**
+
+```yaml
+# GitHub Actions — two parallel jobs
+jobs:
+  fast-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pytest -m "not slow" -q
+  slow-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pytest -m "slow" -q
+```
+
+This keeps the fast feedback loop short while still running the full suite.
 
 ## Strict mode
 
