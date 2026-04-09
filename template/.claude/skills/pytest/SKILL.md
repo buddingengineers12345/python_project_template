@@ -273,6 +273,8 @@ Options:
 - `--json-only` — machine-readable JSON on stdout only.
 
 The output is a JSON array on stdout (for piping) plus a human summary on stderr.
+Both scripts use the standard library `logging` module (stderr for messages; a dedicated
+stdout logger for JSON) instead of `print` or raw `sys.stdout`/`sys.stderr` writes.
 
 ### Step 2: Mark them
 

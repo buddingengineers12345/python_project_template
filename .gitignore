@@ -239,3 +239,6 @@ data/
 
 # Stray root file (accidental)
 /1
+
+# Cursor Related files
+.cursor/ 

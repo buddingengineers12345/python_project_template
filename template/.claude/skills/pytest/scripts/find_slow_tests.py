@@ -16,10 +16,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import re
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
+
+_LOG = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -92,6 +95,18 @@ def parse_durations(output: str, threshold: float) -> list[SlowTest]:
     return slow
 
 
+def _stdout_payload_logger() -> logging.Logger:
+    """Logger that writes only the message to stdout (for pipeable JSON)."""
+    log = logging.getLogger(f"{__name__}.stdout_payload")
+    log.handlers.clear()
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    log.addHandler(handler)
+    log.setLevel(logging.INFO)
+    log.propagate = False
+    return log
+
+
 def main() -> None:
     """Entry point for find_slow_tests."""
     parser = argparse.ArgumentParser(
@@ -122,27 +137,32 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    logging.basicConfig(
+        level=logging.INFO, format="%(message)s", stream=sys.stderr, force=True
+    )
+
     output = run_pytest_durations(args.test_path)
     slow_tests = parse_durations(output, args.threshold)
 
     if args.top > 0:
         slow_tests = slow_tests[: args.top]
 
-    # JSON on stdout (avoid print — ruff T201 in repo template)
-    sys.stdout.write(json.dumps([asdict(t) for t in slow_tests], indent=2) + "\n")
+    payload = json.dumps([asdict(t) for t in slow_tests], indent=2)
+    _stdout_payload_logger().info(payload)
 
-    # Human summary on stderr
     if not args.json_only:
         if not slow_tests:
-            sys.stderr.write(f"\n  No tests exceeded {args.threshold}s threshold.\n")
+            _LOG.info("\n  No tests exceeded %ss threshold.", args.threshold)
         else:
-            sys.stderr.write(
-                f"\n  Found {len(slow_tests)} test(s) exceeding {args.threshold}s:\n\n"
+            _LOG.info(
+                "\n  Found %s test(s) exceeding %ss:\n\n",
+                len(slow_tests),
+                args.threshold,
             )
             for t in slow_tests:
                 marker = "  SLOW " if t.duration >= args.threshold * 2 else "  slow "
-                sys.stderr.write(f"{marker} {t.duration:6.2f}s  {t.nodeid}\n")
-            sys.stderr.write("\n")
+                _LOG.info("%s %6.2fs  %s", marker, t.duration, t.nodeid)
+            _LOG.info("")
 
 
 if __name__ == "__main__":

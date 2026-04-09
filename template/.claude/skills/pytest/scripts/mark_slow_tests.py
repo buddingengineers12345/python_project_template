@@ -20,10 +20,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+
+_LOG = logging.getLogger(__name__)
 
 
 @dataclass
@@ -208,16 +211,20 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    logging.basicConfig(
+        level=logging.INFO, format="%(message)s", stream=sys.stderr, force=True
+    )
+
     raw = Path(args.input).read_text(encoding="utf-8") if args.input else sys.stdin.read()
 
     try:
         slow_tests = json.loads(raw)
     except json.JSONDecodeError as e:
-        sys.stderr.write(f"Error: could not parse JSON input: {e}\n")
+        _LOG.error("Error: could not parse JSON input: %s", e)
         sys.exit(1)
 
     if not slow_tests:
-        sys.stderr.write("No slow tests to mark.\n")
+        _LOG.info("No slow tests to mark.")
         sys.exit(0)
 
     # Group by file
@@ -241,14 +248,14 @@ def main() -> None:
 
     # Report
     mode = "DRY RUN" if args.dry_run else "APPLIED"
-    sys.stderr.write(f"\n  [{mode}] @pytest.mark.slow changes:\n\n")
+    _LOG.info("\n  [%s] @pytest.mark.slow changes:\n\n", mode)
     for change in all_changes:
-        sys.stderr.write(f"{change}\n")
-    sys.stderr.write("\n")
+        _LOG.info("%s", change)
+    _LOG.info("")
 
     added = sum(1 for c in all_changes if c.startswith("  ADD  @pytest"))
     skipped = sum(1 for c in all_changes if c.startswith("  SKIP"))
-    sys.stderr.write(f"  Summary: {added} marker(s) added, {skipped} skipped\n")
+    _LOG.info("  Summary: %s marker(s) added, %s skipped", added, skipped)
 
 
 if __name__ == "__main__":
