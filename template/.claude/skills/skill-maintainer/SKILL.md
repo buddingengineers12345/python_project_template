@@ -239,72 +239,22 @@ every violation found.
 
 ### Step 3 — Fix frontmatter (dimension 1)
 
-If the description uses a quoted string or `>` instead of `>-`, replace it.
-
-**Before (quoted string):**
-```yaml
-description: "Audit and improve skills..."
-```
-
-**After:**
-```yaml
-description: >-
-  Audit and improve skills...
-```
-
-**Before (plain >):**
-```yaml
-description: >
-  Audit and improve skills...
-```
-
-**After (add the dash):**
-```yaml
-description: >-
-  Audit and improve skills...
-```
+If the description uses a quoted string or `>` instead of `>-`, replace it. See
+Dimension 1 above for CORRECT/WRONG examples.
 
 ### Step 4 — Fix title (dimension 2)
 
-If the H1 heading does not end with ` Skill`, fix it.
-
-**Before:**
-```markdown
-# Python Code Reviewer (Python 3.11+)
-```
-
-**After:**
-```markdown
-# Python Code Reviewer Skill
-```
-
-Remove version numbers, subtitles, and parenthetical notes from the title.
-Move that information into the intro paragraph below the title.
+If the H1 heading does not end with ` Skill`, fix it. Remove version numbers,
+subtitles, and parenthetical notes. Move that information into the intro paragraph.
+See Dimension 2 above for CORRECT/WRONG examples.
 
 ### Step 5 — Fix reference table (dimension 3)
 
-If the reference section uses a different header or format, replace it.
+Replace any non-standard reference section with the exact header
+`## Quick reference: where to go deeper` and a two-column pipe table
+(`Topic | Reference file`) using Markdown links. See Dimension 3 above.
 
-**Before (wrong header, wrong format):**
-```markdown
-## Reference Files (load on-demand)
-
-| File | When to load |
-|------|-------------|
-| `references/checklist.md` | Deep mode reviews |
-```
-
-**After (correct header, correct format):**
-```markdown
-## Quick reference: where to go deeper
-
-| Topic                              | Reference file                                         |
-|------------------------------------|--------------------------------------------------------|
-| Full 13-category review checklist  | [references/checklist.md](references/checklist.md)      |
-```
-
-If other sections use the word "Quick reference" (e.g., a dispatch table), rename
-those to avoid collision. Example: rename `## Quick Reference` to `## Scope dispatch`.
+If other sections use "Quick reference", rename them (e.g., `## Scope dispatch`).
 
 ### Step 6 — Fix reference file names (dimension 4)
 
