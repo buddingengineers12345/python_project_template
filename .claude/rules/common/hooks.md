@@ -9,4 +9,3 @@ Language-specific hook requirements live in their respective rule files (e.g. `p
 - **PreToolUse** hooks may block actions (exit code `2`) and should avoid long-running commands.
 - **PostToolUse** hooks must not block (exit code is ignored); use them for reminders and checks.
 - Prefer printing concise, actionable guidance on stderr for warnings and blocks.
-
