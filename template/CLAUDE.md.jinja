@@ -88,7 +88,7 @@ Standards are enforced at three layers — during development via Claude hooks, 
 | Docstrings | ruff `D` rules (Google) | `just docs-check` / CI |
 | Complexity | ruff `C90` (max 10) | `just lint` |
 | Performance | ruff `PERF` | `just lint` |
-| Types | basedpyright strict | `just type` / pre-commit / CI |
+| Types | basedpyright `standard` mode | `just type` / pre-commit / CI |
 | Test coverage | pytest-cov (≥ 85 %) | `just coverage` / CI |
 
 ### Claude commands (on-demand workflows)
@@ -99,6 +99,7 @@ Standards are enforced at three layers — during development via Claude hooks, 
 | `/coverage` | Run coverage, identify gaps below 85 %, write missing tests |
 | `/docs-check` | Audit and repair Google-style docstrings across all source files |
 | `/standards` | Consolidated pass/fail report — the "ready to merge?" gate |
+| `/release` | Orchestrate a new release: verify CI, bump version, tag, push |
 
 ### Claude hooks (automatic feedback)
 
@@ -131,7 +132,7 @@ The `.claude/` directory holds Claude Code slash-command prompts and PostToolUse
   Rule `E501` is ignored (handled by the formatter). Test files are exempt from `D` and `ARG`.
 - Docstring convention: **Google style** (enforced by ruff `D` rules + `pydocstyle.convention = "google"`).
 - McCabe complexity: max 10 per function.
-- Type annotations required on all public functions and methods (basedpyright strict mode).
+- Type annotations required on all public functions and methods (basedpyright `standard` mode).
 
 ## Structured logging (structlog)
 

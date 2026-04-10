@@ -14,15 +14,33 @@ destination folder.
 
 ```
 .
-├── template/          # Jinja2 source files that Copier renders (includes `.claude/` for generated projects)
-├── tests/             # pytest tests that render the template and assert output
-├── scripts/           # Helper shell scripts for CI or local tasks
-├── .github/           # GitHub Actions workflows
-├── copier.yml         # Template prompts, computed vars, and post-gen tasks
-├── justfile           # Task runner (use `just` not raw commands)
-├── pyproject.toml     # Dev deps for THIS repo (not for generated projects)
-├── .pre-commit-config.yaml
-└── uv.lock            # Committed lockfile — never delete
+├── template/                 # Jinja2 source files that Copier renders
+│   ├── src/{{ package_name }}/   # Generated package source (common/, core.py, cli.py…)
+│   ├── tests/                # Generated project test suite
+│   ├── .claude/              # Claude hooks/commands/rules/skills for generated projects
+│   ├── .github/workflows/    # Generated CI/CD workflows
+│   └── …                    # pyproject.toml.jinja, justfile.jinja, CLAUDE.md.jinja, …
+├── tests/                    # pytest tests that render the template and assert output
+│   ├── test_template.py      # Main integration suite — copier copy + assertions
+│   └── test_repo_file_freshness.py  # Unit tests for repo_file_freshness.py script
+├── scripts/                  # Automation scripts for CI or local tasks
+│   ├── repo_file_freshness.py    # Git-based freshness dashboard (→ docs/ + assets/)
+│   ├── bump_version.py           # PEP 440 version bumper (patch/minor/major)
+│   ├── sync_skip_if_exists.py    # Sync copier.yml _skip_if_exists with template paths
+│   └── update_files.sh           # Batch file update helper
+├── .claude/                  # Claude Code hooks, commands, and rules for THIS meta-repo
+│   ├── settings.json         # Hook registrations and permission allow/deny lists
+│   ├── hooks/                # Shell hook scripts (see hooks/README.md)
+│   ├── commands/             # Slash command prompts (/review, /generate, /release, …)
+│   └── rules/                # AI rules (common/, python/, jinja/, bash/, yaml/, copier/)
+├── docs/                     # Markdown output folder (repo_file_status_report.md, etc.)
+├── assets/                   # Freshness JSON artifacts (file_freshness.json, etc.)
+├── .github/                  # Meta-repo GitHub Actions workflows
+├── copier.yml                # Template prompts, computed vars, and post-gen tasks
+├── justfile                  # Task runner (use `just` not raw commands)
+├── pyproject.toml            # Dev deps for THIS repo (not for generated projects)
+├── .pre-commit-config.yaml   # Pre-commit hooks for meta-repo
+└── uv.lock                   # Committed lockfile — never delete
 ```
 
 ## How to set up the development environment
@@ -48,9 +66,17 @@ Prerequisites: Python 3.11+, `uv`, `just`, `git`.
 | Docstring check | `just docs-check` |
 | Pre-merge review | `just review` |
 | Full CI locally | `just ci` |
+| Read-only CI check (no auto-fix) | `just ci-check` |
+| Static checks only (fix+fmt+lint+type+docs) | `just static_check` |
 | Sync deps after lockfile change | `just sync` |
 | Upgrade all deps | `just update` |
+| Dependency security audit | `just audit` |
+| Install all deps + pre-commit | `just install` |
 | Diagnose environment | `just doctor` |
+| Generate freshness dashboard | `just freshness` |
+| Clean build artifacts | `just clean` |
+| Build distribution | `just build` |
+| Publish package | `just publish` |
 
 **Always use `just` recipes.** Do not call `uv run ruff`, `pytest`, etc. directly —
 the justfile handles the correct flags and order.
@@ -61,7 +87,11 @@ the justfile handles the correct flags and order.
 just ci
 ```
 
-This runs in order: `fix` → `fmt` → `lint` → `type` → `docs-check` → `test` → `precommit`.
+This runs: `fix` → `fmt` → `ci-check`.
+
+`ci-check` bundles: `uv sync --frozen`, `fmt-check`, `ruff check`, `basedpyright`,
+`docs-check`, `test-ci` (pytest + coverage XML), `pre-commit --all-files`, `audit` (pip-audit).
+
 All steps must pass before a PR is mergeable.
 
 ## Generating a test project from the template
@@ -155,15 +185,16 @@ file, add a corresponding test.
 
 ## Code style
 
-- Line length: 100 characters (set in pyproject.toml under `[tool.ruff]`).
+- Line length: 100 characters (set in `pyproject.toml` under `[tool.ruff]`).
 - Target Python version: 3.11.
-- Active ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `D`, `C90`, `PERF`.
+- Active ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `D`, `C90`, `PERF`, `T20`.
   Rule `E501` (line too long) is ignored (handled by the formatter).
 - Docstring convention: **Google style** (`pydocstyle` via ruff `D` rules).
-  Test files and scripts are exempt from docstring requirements.
+  Test files (`tests/**`) and scripts (`scripts/**`) are exempt from `D` and `T20`.
 - McCabe complexity: max 10 per function (`C90`).
 - Type annotations are required on all public functions and methods (basedpyright `standard` mode).
 - BasedPyright is lenient with external packages (`reportMissingTypeStubs = false`).
+- `T20` (flake8-print): `print()` is discouraged in non-test code; use structured logging instead.
 
 ## AI rules
 
@@ -172,18 +203,20 @@ and are readable by any AI assistant (Claude Code, Cursor, or any LLM):
 
 ```
 .claude/rules/
-├── README.md            ← how to read and write rules
-├── common/              ← language-agnostic: coding-style, git-workflow, testing, security, …
+├── README.md            ← how to read and write rules; dual-hierarchy explained
+├── common/              ← language-agnostic: coding-style, git-workflow, testing, security,
+│                           development-workflow, code-review
 ├── python/              ← Python: coding-style, testing, patterns, security, hooks
-├── jinja/               ← Jinja2: coding-style, testing
+├── jinja/               ← Jinja2: coding-style, testing  (meta-repo only)
 ├── bash/                ← Bash: coding-style, security
 ├── markdown/            ← placement rules, authoring conventions
-├── yaml/                ← YAML formatting for copier.yml and workflows
-└── copier/              ← Copier template conventions (this repo only)
+├── yaml/                ← YAML formatting for copier.yml and workflows  (meta-repo only)
+└── copier/              ← Copier template conventions (meta-repo only)
+    └── template-conventions.md
 ```
 
 The `template/.claude/rules/` tree mirrors this structure for generated projects
-(common, python, bash, markdown — no Jinja or Copier-specific rules).
+(common, python, bash, markdown — no Jinja, yaml, or Copier-specific rules).
 
 ## Standards enforcement
 
@@ -202,12 +235,33 @@ Standards are enforced at four layers — during development, at commit, in revi
 
 ### Claude layer (automatic feedback during development)
 
-Two **PostToolUse hooks** fire automatically when Claude edits a file:
+Hooks are registered in `.claude/settings.json` and fire at each lifecycle event:
 
-- **`post-edit-python.sh`** — after any `.py` edit: runs ruff + basedpyright and surfaces
-  violations back to Claude so it can self-correct in the same turn.
-- **`post-edit-jinja.sh`** — after any `.jinja` edit: validates Jinja2 syntax using the same
-  extensions Copier uses, catching template errors before `copier copy` time.
+| Hook script | Event | Matcher | Purpose |
+|---|---|---|---|
+| `session-start-bootstrap.sh` | SessionStart | * | Show toolchain status + previous session snapshot |
+| `pre-bash-block-no-verify.sh` | PreToolUse | Bash | Block `--no-verify` in git commands |
+| `pre-bash-git-push-reminder.sh` | PreToolUse | Bash | Warn to run `just review` before push |
+| `pre-bash-commit-quality.sh` | PreToolUse | Bash | Scan staged `.py` files for secrets/debug markers |
+| `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/basedpyright config edits |
+| `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
+| `pre-write-src-test-reminder.sh` | PreToolUse | Write\|Edit | Warn if `tests/<pkg>/test_<module>.py` missing |
+| `pre-write-doc-file-warning.sh` | PreToolUse | Write | Block `.md` files outside `docs/` |
+| `pre-write-jinja-syntax.sh` | PreToolUse | Write | Validate Jinja2 syntax before writing `.jinja` files |
+| `pre-suggest-compact.sh` | PreToolUse | Edit\|Write | Suggest `/compact` every ~50 operations |
+| `pre-compact-save-state.sh` | PreCompact | * | Snapshot git state before compaction |
+| `post-edit-python.sh` | PostToolUse | Edit\|Write | Run ruff + basedpyright after every `.py` edit |
+| `post-edit-jinja.sh` | PostToolUse | Edit\|Write | Validate Jinja2 syntax after every `.jinja` edit |
+| `post-edit-markdown.sh` | PostToolUse | Edit | Warn if existing `.md` edited outside `docs/` |
+| `post-edit-copier-migration.sh` | PostToolUse | Edit\|Write | Remind about `_migrations` after `copier.yml` edits |
+| `post-edit-template-mirror.sh` | PostToolUse | Edit\|Write | Remind to mirror `template/.claude/` ↔ root `.claude/` |
+| `post-bash-pr-created.sh` | PostToolUse | Bash | Log PR URL after `gh pr create` succeeds |
+| `stop-session-end.sh` | Stop | * | Persist session state JSON |
+| `stop-evaluate-session.sh` | Stop | * | Extract reusable patterns from transcript |
+| `stop-cost-tracker.sh` | Stop | * | Track and accumulate session token costs |
+| `stop-desktop-notify.sh` | Stop | * | macOS desktop notification on completion |
+
+See `.claude/hooks/README.md` for full details on exit codes, JSON input format, and adding hooks.
 
 ### Claude commands (on-demand workflows)
 
@@ -218,6 +272,12 @@ Two **PostToolUse hooks** fire automatically when Claude edits a file:
 | `/docs-check` | Audit and repair Google-style docstrings across all source files |
 | `/standards` | Consolidated pass/fail report across all checks — the "ready to merge?" gate |
 | `/update-claude-md` | Sync CLAUDE.md against pyproject.toml + justfile to prevent drift |
+| `/generate` | Generate a test project from the template into `/tmp/test-output` |
+| `/release` | Orchestrate a new release: verify CI, bump version, tag, push |
+| `/validate-release` | Verify release prerequisites (clean tree, passing CI, correct tag format) |
+| `/ci` | Run `just ci` and report results |
+| `/test` | Run `just test` and summarise failures |
+| `/dependency-check` | Validate `uv.lock` is committed, in sync, and not stale |
 
 ### Definition of done
 
@@ -295,3 +355,14 @@ just clean   # removes build/, dist/, .pytest_cache, .ruff_cache, __pycache__, *
 - Added `release.yml` GitHub Actions workflow for automated version bumping and releases
 - Integrated `scripts/bump_version.py` for PEP 440 version management
 - Template now supports manual release triggering with configurable bump strategy
+
+### Claude documentation update (April 2026)
+- Updated root `CLAUDE.md`: accurate `just ci` pipeline description, complete justfile recipe table,
+  added `T20` ruff rule, full hooks table, full slash-commands table, expanded directory structure
+- Fixed `template/CLAUDE.md.jinja`: corrected basedpyright mode from "strict" to "standard",
+  added `/release` slash command entry
+- Added `CLAUDE.md` in `template/` — explains Jinja2 source layout, Copier variables, dual `.claude/` hierarchy
+- Added `CLAUDE.md` in `tests/` — explains test patterns, helpers, categories, and how to add new tests
+- Added `CLAUDE.md` in `scripts/` — documents each script, CLI flags, outputs, and CI integration
+- Added `CLAUDE.md` in `.claude/` — orientation hub for hooks, commands, rules, and the dual-hierarchy
+- Added `CLAUDE.md` in `.github/` — documents all meta-repo workflows and design principles
