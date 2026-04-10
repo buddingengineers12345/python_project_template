@@ -270,9 +270,11 @@ exit 0
 | `pre-bash-block-no-verify.sh` | PreToolUse | Bash | Block `git --no-verify` |
 | `pre-bash-git-push-reminder.sh` | PreToolUse | Bash | Warn to run `just review` before push |
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Secret/debug scan before `git commit` |
+| `pre-bash-coverage-gate.sh` | PreToolUse | Bash | Warn before `git commit` if coverage below threshold |
 | `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/pyright config edits |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
-| `pre-write-src-test-reminder.sh` | PreToolUse | Write\|Edit | Warn if `tests/<pkg>/test_<module>.py` missing for top-level `src/<pkg>/<module>.py` |
+| `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block if `tests/<pkg>/test_<module>.py` missing for top-level `src/<pkg>/<module>.py` (strict TDD) |
+| `pre-write-src-test-reminder.sh` | (optional) | Write\|Edit | Non-blocking alternative to `pre-write-src-require-test.sh` — **do not register both** |
 | `pre-write-doc-file-warning.sh` | PreToolUse | Write | Block `.md` files outside `docs/` |
 | `pre-write-jinja-syntax.sh` | PreToolUse | Write | Validate Jinja2 syntax before writing |
 | `pre-suggest-compact.sh` | PreToolUse | Edit\|Write | Suggest `/compact` every 50 operations |
@@ -283,6 +285,7 @@ exit 0
 | `post-edit-copier-migration.sh` | PostToolUse | Edit\|Write | Migration checklist after `copier.yml` edits |
 | `post-edit-template-mirror.sh` | PostToolUse | Edit\|Write | Remind to mirror `template/.claude/` ↔ root |
 | `post-bash-pr-created.sh` | PostToolUse | Bash | Log PR URL and suggest review commands |
+| `post-edit-refactor-test-guard.sh` | PostToolUse | Edit\|Write | Remind to run tests after several `src/` or `scripts/` edits |
 | `stop-session-end.sh` | Stop | * | Persist session state JSON |
 | `stop-evaluate-session.sh` | Stop | * | Extract reusable patterns from transcript |
 | `stop-cost-tracker.sh` | Stop | * | Track and accumulate session costs |

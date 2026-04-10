@@ -1,248 +1,265 @@
 # Repository File Status Report
 
-Last updated: **2026-04-10 00:07:57 UTC**
+Last updated: **2026-04-10 02:22:41 UTC**
 
 _Metric: **commits**._
 
 ## Summary
 
-- 🟢 Green: **28**
-- 🟡 Yellow: **41**
-- 🔴 Red: **155**
+- 🟢 Green: **32**
+- 🟡 Yellow: **57**
+- 🔴 Red: **152**
 - 🔵 Blue: **2**
 
 ## 🟢 Green (recent)
 
-- `pyproject.toml` — **5** commits since last change
-- `.gitignore` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/SKILL.md` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/references/auditing.md` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/references/classes.md` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/references/examples.md` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/references/functions.md` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/references/generators.md` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/references/modules.md` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/references/overrides.md` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/references/properties.md` — **4** commits since last change
-- `template/.claude/skills/python-docstrings/references/sections.md` — **4** commits since last change
-- `template/.claude/skills/skill-maintainer/SKILL.md` — **4** commits since last change
-- `uv.lock` — **4** commits since last change
-- `template/.claude/skills/cron-scheduling/references/environments.md` — **3** commits since last change
-- `template/.claude/skills/cron-scheduling/references/managing-jobs.md` — **3** commits since last change
-- `template/.claude/skills/cron-scheduling/references/monitoring.md` — **3** commits since last change
-- `template/.claude/skills/cron-scheduling/references/syntax-reference.md` — **3** commits since last change
-- `.claude/CLAUDE.md` — **2** commits since last change
-- `.claude/commands/ci.md` — **2** commits since last change
-- `.github/CLAUDE.md` — **2** commits since last change
-- `CLAUDE.md` — **2** commits since last change
-- `scripts/CLAUDE.md` — **2** commits since last change
-- `template/CLAUDE.md` — **2** commits since last change
-- `template/CLAUDE.md.jinja` — **2** commits since last change
-- `tests/CLAUDE.md` — **2** commits since last change
-- `template/.vscode/settings.json.jinja` — **1** commits since last change
-- `template/.claude/skills/cron-scheduling/SKILL.md` — **0** commits since last change
+- `template/.claude/skills/cron-scheduling/SKILL.md` — **5** commits since last change
+- `docs/repo_file_status_report.md` — **3** commits since last change
+- `.github/CLAUDE.md` — **1** commits since last change
+- `.github/dependabot.yml` — **1** commits since last change
+- `.github/workflows/file-freshness.yml` — **1** commits since last change
+- `.github/workflows/release.yml` — **1** commits since last change
+- `.github/workflows/sync-skip-if-exists.yml` — **1** commits since last change
+- `.gitignore` — **1** commits since last change
+- `docs/git-history-maintenance.md` — **1** commits since last change
+- `template/.claude/commands/ci-fix.md` — **0** commits since last change
+- `template/.claude/commands/tdd-green.md` — **0** commits since last change
+- `template/.claude/commands/tdd-red.md` — **0** commits since last change
+- `template/.claude/hooks/README.md` — **0** commits since last change
+- `template/.claude/hooks/post-edit-refactor-test-guard.sh` — **0** commits since last change
+- `template/.claude/hooks/pre-bash-coverage-gate.sh` — **0** commits since last change
+- `template/.claude/hooks/pre-write-src-require-test.sh` — **0** commits since last change
+- `template/.claude/rules/common/git-workflow.md` — **0** commits since last change
+- `template/.claude/rules/common/testing.md` — **0** commits since last change
+- `template/.claude/rules/python/hooks.md` — **0** commits since last change
+- `template/.claude/rules/python/patterns.md.jinja` — **0** commits since last change
+- `template/.claude/settings.json` — **0** commits since last change
+- `template/.claude/skills/tdd-test-planner/SKILL.md` — **0** commits since last change
+- `template/.claude/skills/tdd-test-planner/references/pytest-patterns.md` — **0** commits since last change
+- `template/.claude/skills/tdd-test-planner/references/test-doubles.md` — **0** commits since last change
+- `template/.claude/skills/tdd-workflow/SKILL.md` — **0** commits since last change
+- `template/.claude/skills/tdd-workflow/references/ci-detection.md` — **0** commits since last change
+- `template/.claude/skills/tdd-workflow/references/skill-fallbacks.md` — **0** commits since last change
+- `template/.claude/skills/tdd-workflow/references/test-patterns.md` — **0** commits since last change
+- `template/.claude/skills/test-quality-reviewer/SKILL.md` — **0** commits since last change
+- `template/.claude/skills/test-quality-reviewer/references/advanced-patterns.md` — **0** commits since last change
+- `template/.claude/skills/test-quality-reviewer/references/examples.md` — **0** commits since last change
+- `template/CLAUDE.md.jinja` — **0** commits since last change
 
 ## 🟡 Yellow (moderate)
 
-- `template/.claude/skills/pytest/references/anti-patterns.md` — **20** commits since last change
-- `template/.claude/skills/pytest/references/assertions.md` — **20** commits since last change
-- `template/.claude/skills/pytest/references/mocking.md` — **20** commits since last change
-- `template/.claude/skills/pytest/references/parametrize-and-markers.md` — **20** commits since last change
-- `template/.claude/skills/pytest/references/test-organization.md` — **20** commits since last change
-- `template/.claude/skills/pytest/references/test-types.md` — **20** commits since last change
-- `.github/workflows/file-freshness.yml` — **12** commits since last change
-- `.pre-commit-config.yaml` — **12** commits since last change
-- `assets/freshness_ignore.json` — **12** commits since last change
-- `justfile` — **12** commits since last change
-- `scripts/repo_file_freshness.py` — **12** commits since last change
-- `template/.claude/skills/pytest/references/fixtures.md` — **12** commits since last change
-- `tests/test_repo_file_freshness.py` — **12** commits since last change
-- `tests/test_template.py` — **12** commits since last change
-- `template/.claude/skills/markdown/SKILL.md` — **10** commits since last change
-- `template/.claude/skills/markdown/references/anti-patterns-cheatsheet.md` — **10** commits since last change
-- `template/.claude/skills/markdown/references/code-and-links.md` — **10** commits since last change
-- `template/.claude/skills/markdown/references/document-structure.md` — **10** commits since last change
-- `template/.claude/skills/markdown/references/extended-syntax.md` — **10** commits since last change
-- `template/.claude/skills/markdown/references/file-management.md` — **10** commits since last change
-- `template/.claude/skills/markdown/references/formatting-syntax.md` — **10** commits since last change
-- `template/.claude/skills/markdown/references/tables-images-html.md` — **10** commits since last change
-- `template/.claude/skills/pytest/references/ci-and-plugins.md` — **10** commits since last change
-- `template/.claude/skills/python-code-quality/SKILL.md` — **10** commits since last change
-- `template/.claude/skills/python-code-quality/references/bandit.md` — **10** commits since last change
-- `template/.claude/skills/python-code-quality/references/basedpyright.md` — **10** commits since last change
-- `template/.claude/skills/python-code-quality/references/complete-configs.md` — **10** commits since last change
-- `template/.claude/skills/python-code-quality/references/pre-commit.md` — **10** commits since last change
-- `template/.claude/skills/python-code-quality/references/ruff.md` — **10** commits since last change
-- `template/.claude/skills/python-code-quality/references/semgrep.md` — **10** commits since last change
-- `template/.claude/skills/python-code-reviewer/SKILL.md` — **10** commits since last change
-- `template/.claude/skills/python-code-reviewer/references/checklist.md` — **10** commits since last change
-- `template/.claude/skills/python-code-reviewer/references/output-format.md` — **10** commits since last change
-- `template/.claude/skills/python-code-reviewer/references/python-patterns.md` — **10** commits since last change
-- `template/.claude/skills/skill-maintainer/references/audit-checklist.md` — **10** commits since last change
-- `template/.claude/skills/skill-maintainer/references/audit-examples.md` — **10** commits since last change
-- `template/.claude/skills/skill-maintainer/references/maintenance-log.md` — **10** commits since last change
-- `template/.claude/skills/pytest/SKILL.md` — **7** commits since last change
-- `docs/repo_file_status_report.md` — **6** commits since last change
-- `template/.claude/skills/pytest/scripts/find_slow_tests.py` — **6** commits since last change
-- `template/.claude/skills/pytest/scripts/mark_slow_tests.py` — **6** commits since last change
+- `.pre-commit-config.yaml` — **17** commits since last change
+- `assets/freshness_ignore.json` — **17** commits since last change
+- `justfile` — **17** commits since last change
+- `scripts/repo_file_freshness.py` — **17** commits since last change
+- `template/.claude/skills/pytest/references/fixtures.md` — **17** commits since last change
+- `tests/test_repo_file_freshness.py` — **17** commits since last change
+- `tests/test_template.py` — **17** commits since last change
+- `template/.claude/skills/markdown/SKILL.md` — **15** commits since last change
+- `template/.claude/skills/markdown/references/anti-patterns-cheatsheet.md` — **15** commits since last change
+- `template/.claude/skills/markdown/references/code-and-links.md` — **15** commits since last change
+- `template/.claude/skills/markdown/references/document-structure.md` — **15** commits since last change
+- `template/.claude/skills/markdown/references/extended-syntax.md` — **15** commits since last change
+- `template/.claude/skills/markdown/references/file-management.md` — **15** commits since last change
+- `template/.claude/skills/markdown/references/formatting-syntax.md` — **15** commits since last change
+- `template/.claude/skills/markdown/references/tables-images-html.md` — **15** commits since last change
+- `template/.claude/skills/pytest/references/ci-and-plugins.md` — **15** commits since last change
+- `template/.claude/skills/python-code-quality/SKILL.md` — **15** commits since last change
+- `template/.claude/skills/python-code-quality/references/bandit.md` — **15** commits since last change
+- `template/.claude/skills/python-code-quality/references/basedpyright.md` — **15** commits since last change
+- `template/.claude/skills/python-code-quality/references/complete-configs.md` — **15** commits since last change
+- `template/.claude/skills/python-code-quality/references/pre-commit.md` — **15** commits since last change
+- `template/.claude/skills/python-code-quality/references/ruff.md` — **15** commits since last change
+- `template/.claude/skills/python-code-quality/references/semgrep.md` — **15** commits since last change
+- `template/.claude/skills/python-code-reviewer/SKILL.md` — **15** commits since last change
+- `template/.claude/skills/python-code-reviewer/references/checklist.md` — **15** commits since last change
+- `template/.claude/skills/python-code-reviewer/references/output-format.md` — **15** commits since last change
+- `template/.claude/skills/python-code-reviewer/references/python-patterns.md` — **15** commits since last change
+- `template/.claude/skills/skill-maintainer/references/audit-checklist.md` — **15** commits since last change
+- `template/.claude/skills/skill-maintainer/references/audit-examples.md` — **15** commits since last change
+- `template/.claude/skills/skill-maintainer/references/maintenance-log.md` — **15** commits since last change
+- `template/.claude/skills/pytest/SKILL.md` — **12** commits since last change
+- `template/.claude/skills/pytest/scripts/find_slow_tests.py` — **11** commits since last change
+- `template/.claude/skills/pytest/scripts/mark_slow_tests.py` — **11** commits since last change
+- `pyproject.toml` — **10** commits since last change
+- `template/.claude/skills/python-docstrings/SKILL.md` — **9** commits since last change
+- `template/.claude/skills/python-docstrings/references/auditing.md` — **9** commits since last change
+- `template/.claude/skills/python-docstrings/references/classes.md` — **9** commits since last change
+- `template/.claude/skills/python-docstrings/references/examples.md` — **9** commits since last change
+- `template/.claude/skills/python-docstrings/references/functions.md` — **9** commits since last change
+- `template/.claude/skills/python-docstrings/references/generators.md` — **9** commits since last change
+- `template/.claude/skills/python-docstrings/references/modules.md` — **9** commits since last change
+- `template/.claude/skills/python-docstrings/references/overrides.md` — **9** commits since last change
+- `template/.claude/skills/python-docstrings/references/properties.md` — **9** commits since last change
+- `template/.claude/skills/python-docstrings/references/sections.md` — **9** commits since last change
+- `template/.claude/skills/skill-maintainer/SKILL.md` — **9** commits since last change
+- `uv.lock` — **9** commits since last change
+- `template/.claude/skills/cron-scheduling/references/environments.md` — **8** commits since last change
+- `template/.claude/skills/cron-scheduling/references/managing-jobs.md` — **8** commits since last change
+- `template/.claude/skills/cron-scheduling/references/monitoring.md` — **8** commits since last change
+- `template/.claude/skills/cron-scheduling/references/syntax-reference.md` — **8** commits since last change
+- `.claude/CLAUDE.md` — **7** commits since last change
+- `.claude/commands/ci.md` — **7** commits since last change
+- `CLAUDE.md` — **7** commits since last change
+- `scripts/CLAUDE.md` — **7** commits since last change
+- `template/CLAUDE.md` — **7** commits since last change
+- `tests/CLAUDE.md` — **7** commits since last change
+- `template/.vscode/settings.json.jinja` — **6** commits since last change
 
 ## 🔴 Red (stale)
 
-- `.vscode/extensions.json` — **116** commits since last change
-- `.vscode/launch.json` — **116** commits since last change
-- `.vscode/settings.json` — **116** commits since last change
-- `LICENSE` — **116** commits since last change
-- `template/.github/CODE_OF_CONDUCT.md.jinja` — **116** commits since last change
-- `template/.github/PULL_REQUEST_TEMPLATE.md.jinja` — **116** commits since last change
-- `template/.vscode/extensions.json.jinja` — **116** commits since last change
-- `template/.vscode/launch.json.jinja` — **116** commits since last change
-- `template/LICENSE.jinja` — **116** commits since last change
-- `template/.github/ISSUE_TEMPLATE/bug_report.md.jinja` — **114** commits since last change
-- `template/.github/ISSUE_TEMPLATE/config.yml.jinja` — **114** commits since last change
-- `template/.github/ISSUE_TEMPLATE/feature_request.md.jinja` — **114** commits since last change
-- `.claude/commands/generate.md` — **113** commits since last change
-- `.claude/commands/test.md` — **113** commits since last change
-- `template/tests/{{ package_name }}/test_core.py.jinja` — **112** commits since last change
-- `template/.claude/commands/ci.md` — **90** commits since last change
-- `template/.claude/commands/generate.md` — **90** commits since last change
-- `template/.claude/commands/test.md` — **90** commits since last change
-- `template/{{_copier_conf.answers_file}}.jinja` — **90** commits since last change
-- `scripts/update_files.sh` — **84** commits since last change
-- `template/.github/CODEOWNERS.jinja` — **84** commits since last change
-- `template/tests/__init__.py.jinja` — **84** commits since last change
-- `template/tests/{{ package_name }}/__init__.py.jinja` — **84** commits since last change
-- `scripts/bump_version.py` — **83** commits since last change
-- `template/src/{{ package_name }}/common/__init__.py.jinja` — **82** commits since last change
-- `template/src/{{ package_name }}/common/decorators.py.jinja` — **82** commits since last change
-- `template/src/{{ package_name }}/common/file_manager.py.jinja` — **82** commits since last change
-- `template/src/{{ package_name }}/common/utils.py.jinja` — **75** commits since last change
-- `README.md` — **67** commits since last change
-- `.claude/commands/coverage.md` — **65** commits since last change
-- `.claude/commands/docs-check.md` — **65** commits since last change
-- `.claude/commands/release.md` — **65** commits since last change
-- `.claude/commands/review.md` — **65** commits since last change
-- `.claude/commands/standards.md` — **65** commits since last change
-- `.claude/commands/update-claude-md.md` — **65** commits since last change
-- `template/.claude/commands/coverage.md.jinja` — **65** commits since last change
-- `template/.claude/commands/docs-check.md.jinja` — **65** commits since last change
-- `template/.claude/commands/release.md.jinja` — **65** commits since last change
-- `template/.claude/commands/review.md.jinja` — **65** commits since last change
-- `template/.claude/commands/standards.md.jinja` — **65** commits since last change
-- `.claude/commands/dependency-check.md` — **64** commits since last change
-- `.claude/commands/validate-release.md` — **64** commits since last change
-- `template/.claude/commands/guided-template-update.md.jinja` — **64** commits since last change
-- `template/src/{{ package_name }}/core.py.jinja` — **63** commits since last change
-- `.github/dependabot.yml` — **53** commits since last change
-- `.github/workflows/dependency-review.yml` — **52** commits since last change
-- `.github/workflows/lint.yml` — **52** commits since last change
-- `.github/workflows/release.yml` — **52** commits since last change
-- `.github/workflows/stale.yml` — **52** commits since last change
-- `template/.github/workflows/ci.yml.jinja` — **52** commits since last change
-- `template/.github/workflows/dependency-review.yml.jinja` — **52** commits since last change
-- `template/.github/workflows/docs.yml.jinja` — **52** commits since last change
-- `template/.github/workflows/lint.yml.jinja` — **52** commits since last change
-- `template/.github/workflows/pre-commit-update.yml.jinja` — **52** commits since last change
-- `.claude/hooks/post-bash-pr-created.sh` — **51** commits since last change
-- `.claude/hooks/post-edit-copier-migration.sh` — **51** commits since last change
-- `.claude/hooks/post-edit-jinja.sh` — **51** commits since last change
-- `.claude/hooks/post-edit-markdown.sh` — **51** commits since last change
-- `.claude/hooks/post-edit-python.sh` — **51** commits since last change
-- `.claude/hooks/post-edit-template-mirror.sh` — **51** commits since last change
-- `.claude/hooks/pre-bash-block-no-verify.sh` — **51** commits since last change
-- `.claude/hooks/pre-bash-commit-quality.sh` — **51** commits since last change
-- `.claude/hooks/pre-bash-git-push-reminder.sh` — **51** commits since last change
-- `.claude/hooks/pre-compact-save-state.sh` — **51** commits since last change
-- `.claude/hooks/pre-protect-uv-lock.sh` — **51** commits since last change
-- `.claude/hooks/pre-suggest-compact.sh` — **51** commits since last change
-- `.claude/hooks/pre-write-doc-file-warning.sh` — **51** commits since last change
-- `.claude/hooks/pre-write-jinja-syntax.sh` — **51** commits since last change
-- `.claude/hooks/session-start-bootstrap.sh` — **51** commits since last change
-- `.claude/hooks/stop-cost-tracker.sh` — **51** commits since last change
-- `.claude/hooks/stop-desktop-notify.sh` — **51** commits since last change
-- `.claude/hooks/stop-evaluate-session.sh` — **51** commits since last change
-- `.claude/hooks/stop-session-end.sh` — **51** commits since last change
-- `.claude/rules/README.md` — **51** commits since last change
-- `.claude/rules/bash/coding-style.md` — **51** commits since last change
-- `.claude/rules/bash/security.md` — **51** commits since last change
-- `.claude/rules/common/code-review.md` — **51** commits since last change
-- `.claude/rules/common/coding-style.md` — **51** commits since last change
-- `.claude/rules/common/development-workflow.md` — **51** commits since last change
-- `.claude/rules/common/git-workflow.md` — **51** commits since last change
-- `.claude/rules/common/security.md` — **51** commits since last change
-- `.claude/rules/common/testing.md` — **51** commits since last change
-- `.claude/rules/jinja/coding-style.md` — **51** commits since last change
-- `.claude/rules/jinja/testing.md` — **51** commits since last change
-- `.claude/rules/markdown/conventions.md` — **51** commits since last change
-- `.claude/rules/python/coding-style.md` — **51** commits since last change
-- `.claude/rules/python/hooks.md` — **51** commits since last change
-- `.claude/rules/python/patterns.md` — **51** commits since last change
-- `.claude/rules/python/security.md` — **51** commits since last change
-- `.claude/rules/python/testing.md` — **51** commits since last change
-- `.claude/rules/yaml/conventions.md` — **51** commits since last change
-- `template/.claude/hooks/post-edit-markdown.sh` — **51** commits since last change
-- `template/.claude/hooks/post-edit-python.sh` — **51** commits since last change
-- `template/.claude/hooks/pre-bash-block-no-verify.sh` — **51** commits since last change
-- `template/.claude/hooks/pre-bash-commit-quality.sh` — **51** commits since last change
-- `template/.claude/hooks/pre-bash-git-push-reminder.sh` — **51** commits since last change
-- `template/.claude/hooks/pre-protect-uv-lock.sh` — **51** commits since last change
-- `template/.claude/rules/README.md` — **51** commits since last change
-- `template/.claude/rules/bash/coding-style.md` — **51** commits since last change
-- `template/.claude/rules/bash/security.md` — **51** commits since last change
-- `template/.claude/rules/common/code-review.md` — **51** commits since last change
-- `template/.claude/rules/common/coding-style.md` — **51** commits since last change
-- `template/.claude/rules/common/development-workflow.md` — **51** commits since last change
-- `template/.claude/rules/common/git-workflow.md` — **51** commits since last change
-- `template/.claude/rules/common/security.md` — **51** commits since last change
-- `template/.claude/rules/common/testing.md` — **51** commits since last change
-- `template/.claude/rules/markdown/conventions.md` — **51** commits since last change
-- `template/.claude/rules/python/coding-style.md.jinja` — **51** commits since last change
-- `template/.claude/rules/python/patterns.md.jinja` — **51** commits since last change
-- `template/.claude/rules/python/security.md` — **51** commits since last change
-- `template/.claude/rules/python/testing.md` — **51** commits since last change
-- `template/.github/workflows/security.yml.jinja` — **45** commits since last change
-- `.github/renovate.json` — **44** commits since last change
-- `.secrets.baseline` — **44** commits since last change
-- `template/.github/renovate.json.jinja` — **44** commits since last change
-- `template/.pre-commit-config.yaml.jinja` — **44** commits since last change
-- `template/.secrets.baseline` — **44** commits since last change
-- `template/CONTRIBUTING.md.jinja` — **44** commits since last change
-- `template/SECURITY.md.jinja` — **44** commits since last change
-- `template/src/{{ package_name }}/__init__.py.jinja` — **44** commits since last change
-- `template/tests/test_imports.py.jinja` — **44** commits since last change
-- `template/README.md.jinja` — **42** commits since last change
-- `env.example` — **40** commits since last change
-- `template/.gitignore.jinja` — **40** commits since last change
-- `template/env.example.jinja` — **40** commits since last change
-- `.github/workflows/labeler.yml` — **39** commits since last change
-- `.github/workflows/pre-commit-update.yml` — **39** commits since last change
-- `.github/workflows/security.yml` — **39** commits since last change
-- `.github/workflows/sync-skip-if-exists.yml` — **39** commits since last change
-- `.github/workflows/tests.yml` — **39** commits since last change
-- `.claude/rules/copier/template-conventions.md` — **32** commits since last change
-- `scripts/sync_skip_if_exists.py` — **32** commits since last change
-- `template/.github/workflows/release.yml.jinja` — **32** commits since last change
-- `template/docs/{% if include_docs %}ci.md{% endif %}.jinja` — **32** commits since last change
-- `template/docs/{% if include_docs %}index.md{% endif %}.jinja` — **32** commits since last change
-- `template/justfile.jinja` — **32** commits since last change
-- `template/src/{{ package_name }}/common/bump_version.py.jinja` — **32** commits since last change
-- `template/src/{{ package_name }}/common/logging_manager.py.jinja` — **32** commits since last change
-- `template/src/{{ package_name }}/{% if include_cli %}cli.py{% endif %}.jinja` — **32** commits since last change
-- `template/tests/conftest.py.jinja` — **32** commits since last change
-- `template/tests/{{ package_name }}/test_support.py.jinja` — **32** commits since last change
-- `template/{% if include_docs %}mkdocs.yml{% endif %}.jinja` — **32** commits since last change
-- `template/{% if include_git_cliff %}cliff.toml{% endif %}.jinja` — **32** commits since last change
-- `copier.yml` — **25** commits since last change
-- `.github/labeler.yml` — **23** commits since last change
-- `.claude/hooks/README.md` — **22** commits since last change
-- `.claude/hooks/pre-config-protection.sh` — **22** commits since last change
-- `.claude/hooks/pre-write-src-test-reminder.sh` — **22** commits since last change
-- `.claude/settings.json` — **22** commits since last change
-- `template/.claude/hooks/README.md` — **22** commits since last change
-- `template/.claude/hooks/pre-config-protection.sh` — **22** commits since last change
-- `template/.claude/hooks/pre-write-src-test-reminder.sh` — **22** commits since last change
-- `template/.claude/rules/python/hooks.md` — **22** commits since last change
-- `template/.claude/settings.json` — **22** commits since last change
-- `template/pyproject.toml.jinja` — **22** commits since last change
+- `.vscode/extensions.json` — **121** commits since last change
+- `.vscode/launch.json` — **121** commits since last change
+- `.vscode/settings.json` — **121** commits since last change
+- `LICENSE` — **121** commits since last change
+- `template/.github/CODE_OF_CONDUCT.md.jinja` — **121** commits since last change
+- `template/.github/PULL_REQUEST_TEMPLATE.md.jinja` — **121** commits since last change
+- `template/.vscode/extensions.json.jinja` — **121** commits since last change
+- `template/.vscode/launch.json.jinja` — **121** commits since last change
+- `template/LICENSE.jinja` — **121** commits since last change
+- `template/.github/ISSUE_TEMPLATE/bug_report.md.jinja` — **119** commits since last change
+- `template/.github/ISSUE_TEMPLATE/config.yml.jinja` — **119** commits since last change
+- `template/.github/ISSUE_TEMPLATE/feature_request.md.jinja` — **119** commits since last change
+- `.claude/commands/generate.md` — **118** commits since last change
+- `.claude/commands/test.md` — **118** commits since last change
+- `template/tests/{{ package_name }}/test_core.py.jinja` — **117** commits since last change
+- `template/.claude/commands/ci.md` — **95** commits since last change
+- `template/.claude/commands/generate.md` — **95** commits since last change
+- `template/.claude/commands/test.md` — **95** commits since last change
+- `template/{{_copier_conf.answers_file}}.jinja` — **95** commits since last change
+- `scripts/update_files.sh` — **89** commits since last change
+- `template/.github/CODEOWNERS.jinja` — **89** commits since last change
+- `template/tests/__init__.py.jinja` — **89** commits since last change
+- `template/tests/{{ package_name }}/__init__.py.jinja` — **89** commits since last change
+- `scripts/bump_version.py` — **88** commits since last change
+- `template/src/{{ package_name }}/common/__init__.py.jinja` — **87** commits since last change
+- `template/src/{{ package_name }}/common/decorators.py.jinja` — **87** commits since last change
+- `template/src/{{ package_name }}/common/file_manager.py.jinja` — **87** commits since last change
+- `template/src/{{ package_name }}/common/utils.py.jinja` — **80** commits since last change
+- `README.md` — **72** commits since last change
+- `.claude/commands/coverage.md` — **70** commits since last change
+- `.claude/commands/docs-check.md` — **70** commits since last change
+- `.claude/commands/release.md` — **70** commits since last change
+- `.claude/commands/review.md` — **70** commits since last change
+- `.claude/commands/standards.md` — **70** commits since last change
+- `.claude/commands/update-claude-md.md` — **70** commits since last change
+- `template/.claude/commands/coverage.md.jinja` — **70** commits since last change
+- `template/.claude/commands/docs-check.md.jinja` — **70** commits since last change
+- `template/.claude/commands/release.md.jinja` — **70** commits since last change
+- `template/.claude/commands/review.md.jinja` — **70** commits since last change
+- `template/.claude/commands/standards.md.jinja` — **70** commits since last change
+- `.claude/commands/dependency-check.md` — **69** commits since last change
+- `.claude/commands/validate-release.md` — **69** commits since last change
+- `template/.claude/commands/guided-template-update.md.jinja` — **69** commits since last change
+- `template/src/{{ package_name }}/core.py.jinja` — **68** commits since last change
+- `.github/workflows/dependency-review.yml` — **57** commits since last change
+- `.github/workflows/lint.yml` — **57** commits since last change
+- `.github/workflows/stale.yml` — **57** commits since last change
+- `template/.github/workflows/ci.yml.jinja` — **57** commits since last change
+- `template/.github/workflows/dependency-review.yml.jinja` — **57** commits since last change
+- `template/.github/workflows/docs.yml.jinja` — **57** commits since last change
+- `template/.github/workflows/lint.yml.jinja` — **57** commits since last change
+- `template/.github/workflows/pre-commit-update.yml.jinja` — **57** commits since last change
+- `.claude/hooks/post-bash-pr-created.sh` — **56** commits since last change
+- `.claude/hooks/post-edit-copier-migration.sh` — **56** commits since last change
+- `.claude/hooks/post-edit-jinja.sh` — **56** commits since last change
+- `.claude/hooks/post-edit-markdown.sh` — **56** commits since last change
+- `.claude/hooks/post-edit-python.sh` — **56** commits since last change
+- `.claude/hooks/post-edit-template-mirror.sh` — **56** commits since last change
+- `.claude/hooks/pre-bash-block-no-verify.sh` — **56** commits since last change
+- `.claude/hooks/pre-bash-commit-quality.sh` — **56** commits since last change
+- `.claude/hooks/pre-bash-git-push-reminder.sh` — **56** commits since last change
+- `.claude/hooks/pre-compact-save-state.sh` — **56** commits since last change
+- `.claude/hooks/pre-protect-uv-lock.sh` — **56** commits since last change
+- `.claude/hooks/pre-suggest-compact.sh` — **56** commits since last change
+- `.claude/hooks/pre-write-doc-file-warning.sh` — **56** commits since last change
+- `.claude/hooks/pre-write-jinja-syntax.sh` — **56** commits since last change
+- `.claude/hooks/session-start-bootstrap.sh` — **56** commits since last change
+- `.claude/hooks/stop-cost-tracker.sh` — **56** commits since last change
+- `.claude/hooks/stop-desktop-notify.sh` — **56** commits since last change
+- `.claude/hooks/stop-evaluate-session.sh` — **56** commits since last change
+- `.claude/hooks/stop-session-end.sh` — **56** commits since last change
+- `.claude/rules/README.md` — **56** commits since last change
+- `.claude/rules/bash/coding-style.md` — **56** commits since last change
+- `.claude/rules/bash/security.md` — **56** commits since last change
+- `.claude/rules/common/code-review.md` — **56** commits since last change
+- `.claude/rules/common/coding-style.md` — **56** commits since last change
+- `.claude/rules/common/development-workflow.md` — **56** commits since last change
+- `.claude/rules/common/git-workflow.md` — **56** commits since last change
+- `.claude/rules/common/security.md` — **56** commits since last change
+- `.claude/rules/common/testing.md` — **56** commits since last change
+- `.claude/rules/jinja/coding-style.md` — **56** commits since last change
+- `.claude/rules/jinja/testing.md` — **56** commits since last change
+- `.claude/rules/markdown/conventions.md` — **56** commits since last change
+- `.claude/rules/python/coding-style.md` — **56** commits since last change
+- `.claude/rules/python/hooks.md` — **56** commits since last change
+- `.claude/rules/python/patterns.md` — **56** commits since last change
+- `.claude/rules/python/security.md` — **56** commits since last change
+- `.claude/rules/python/testing.md` — **56** commits since last change
+- `.claude/rules/yaml/conventions.md` — **56** commits since last change
+- `template/.claude/hooks/post-edit-markdown.sh` — **56** commits since last change
+- `template/.claude/hooks/post-edit-python.sh` — **56** commits since last change
+- `template/.claude/hooks/pre-bash-block-no-verify.sh` — **56** commits since last change
+- `template/.claude/hooks/pre-bash-commit-quality.sh` — **56** commits since last change
+- `template/.claude/hooks/pre-bash-git-push-reminder.sh` — **56** commits since last change
+- `template/.claude/hooks/pre-protect-uv-lock.sh` — **56** commits since last change
+- `template/.claude/rules/README.md` — **56** commits since last change
+- `template/.claude/rules/bash/coding-style.md` — **56** commits since last change
+- `template/.claude/rules/bash/security.md` — **56** commits since last change
+- `template/.claude/rules/common/code-review.md` — **56** commits since last change
+- `template/.claude/rules/common/coding-style.md` — **56** commits since last change
+- `template/.claude/rules/common/development-workflow.md` — **56** commits since last change
+- `template/.claude/rules/common/security.md` — **56** commits since last change
+- `template/.claude/rules/markdown/conventions.md` — **56** commits since last change
+- `template/.claude/rules/python/coding-style.md.jinja` — **56** commits since last change
+- `template/.claude/rules/python/security.md` — **56** commits since last change
+- `template/.claude/rules/python/testing.md` — **56** commits since last change
+- `template/.github/workflows/security.yml.jinja` — **50** commits since last change
+- `.github/renovate.json` — **49** commits since last change
+- `.secrets.baseline` — **49** commits since last change
+- `template/.github/renovate.json.jinja` — **49** commits since last change
+- `template/.pre-commit-config.yaml.jinja` — **49** commits since last change
+- `template/.secrets.baseline` — **49** commits since last change
+- `template/CONTRIBUTING.md.jinja` — **49** commits since last change
+- `template/SECURITY.md.jinja` — **49** commits since last change
+- `template/src/{{ package_name }}/__init__.py.jinja` — **49** commits since last change
+- `template/tests/test_imports.py.jinja` — **49** commits since last change
+- `template/README.md.jinja` — **47** commits since last change
+- `env.example` — **45** commits since last change
+- `template/.gitignore.jinja` — **45** commits since last change
+- `template/env.example.jinja` — **45** commits since last change
+- `.github/workflows/labeler.yml` — **44** commits since last change
+- `.github/workflows/pre-commit-update.yml` — **44** commits since last change
+- `.github/workflows/security.yml` — **44** commits since last change
+- `.github/workflows/tests.yml` — **44** commits since last change
+- `.claude/rules/copier/template-conventions.md` — **37** commits since last change
+- `scripts/sync_skip_if_exists.py` — **37** commits since last change
+- `template/.github/workflows/release.yml.jinja` — **37** commits since last change
+- `template/docs/{% if include_docs %}ci.md{% endif %}.jinja` — **37** commits since last change
+- `template/docs/{% if include_docs %}index.md{% endif %}.jinja` — **37** commits since last change
+- `template/justfile.jinja` — **37** commits since last change
+- `template/src/{{ package_name }}/common/bump_version.py.jinja` — **37** commits since last change
+- `template/src/{{ package_name }}/common/logging_manager.py.jinja` — **37** commits since last change
+- `template/src/{{ package_name }}/{% if include_cli %}cli.py{% endif %}.jinja` — **37** commits since last change
+- `template/tests/conftest.py.jinja` — **37** commits since last change
+- `template/tests/{{ package_name }}/test_support.py.jinja` — **37** commits since last change
+- `template/{% if include_docs %}mkdocs.yml{% endif %}.jinja` — **37** commits since last change
+- `template/{% if include_git_cliff %}cliff.toml{% endif %}.jinja` — **37** commits since last change
+- `copier.yml` — **30** commits since last change
+- `.github/labeler.yml` — **28** commits since last change
+- `.claude/hooks/README.md` — **27** commits since last change
+- `.claude/hooks/pre-config-protection.sh` — **27** commits since last change
+- `.claude/hooks/pre-write-src-test-reminder.sh` — **27** commits since last change
+- `.claude/settings.json` — **27** commits since last change
+- `template/.claude/hooks/pre-config-protection.sh` — **27** commits since last change
+- `template/.claude/hooks/pre-write-src-test-reminder.sh` — **27** commits since last change
+- `template/pyproject.toml.jinja` — **27** commits since last change
+- `template/.claude/skills/pytest/references/anti-patterns.md` — **25** commits since last change
+- `template/.claude/skills/pytest/references/assertions.md` — **25** commits since last change
+- `template/.claude/skills/pytest/references/mocking.md` — **25** commits since last change
+- `template/.claude/skills/pytest/references/parametrize-and-markers.md` — **25** commits since last change
+- `template/.claude/skills/pytest/references/test-organization.md` — **25** commits since last change
+- `template/.claude/skills/pytest/references/test-types.md` — **25** commits since last change
 
 ## 🔵 Blue (ignored)
 

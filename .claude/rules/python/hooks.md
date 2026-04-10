@@ -17,7 +17,8 @@ same turn, not at CI time.
 ### What the hook checks
 
 1. **ruff check** — all active rule sets: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`,
-   `D` (docstrings), `C90` (complexity), `PERF` (performance anti-patterns).
+   `D` (docstrings), `C90` (complexity), `PERF` (performance anti-patterns),
+   `T20` / `T201` (no `print()` in app code).
 2. **basedpyright** — type correctness in `standard` mode.
 
 If either tool reports violations, the hook prints a structured block:
@@ -63,6 +64,28 @@ log.info("processing_order", order_id=order_id)
 ```
 
 `print()` is allowed in `scripts/` and in test files.
+
+## TDD enforcement hooks (PreToolUse)
+
+Register **at most one** of the source/test hooks below for `Write|Edit`. They use
+the same scope; running both would warn and then block on the same condition.
+
+| Hook | Trigger | What it does |
+|------|---------|----------------|
+| `pre-write-src-require-test.sh` | `Write` or `Edit` on `src/<pkg>/<module>.py` | **Blocks** write if `tests/<pkg>/test_<module>.py` does not exist (strict TDD). **Registered by default** in `.claude/settings.json`. |
+| `pre-write-src-test-reminder.sh` | Same | Warns only (non-blocking). Swap into `settings.json` **instead of** `pre-write-src-require-test.sh` if you want reminders without blocking. |
+| `pre-bash-coverage-gate.sh` | `Bash` on `git commit` | Warns if test coverage is below 85% threshold |
+
+Both source/test hooks only check top-level package modules (`src/<pkg>/<name>.py`,
+excluding `__init__.py`). Nested packages are skipped.
+
+## Refactor test guard (PostToolUse)
+
+| Hook | Trigger | What it does |
+|------|---------|----------------|
+| `post-edit-refactor-test-guard.sh` | `Edit` or `Write` on `src/**/*.py` | Reminds to run tests after every 3 source edits |
+
+Tracks edit count since last test run. Helps maintain GREEN during the REFACTOR phase.
 
 ## Type-checking configuration
 

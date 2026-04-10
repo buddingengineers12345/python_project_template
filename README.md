@@ -116,6 +116,10 @@ Important:
 
 ### Maintainer notes (releases and migrations)
 
+- Generated projects include a `template/.claude/` configuration with TDD-oriented hooks and commands
+  (strict test-first enforcement, coverage warning gate, refactor test reminders). See `CLAUDE.md`
+  for the authoritative list of hooks and slash commands.
+
 - **Version tags**: Consumers get the best `copier update` experience when this template uses **PEP 440**-compatible Git tags (Copier compares tags to choose versions).
 - **`_migrations`**: When a template change is breaking (e.g. renaming paths or reshaping answers), consider adding **`_migrations`** in `copier.yml` with a **`version`** threshold so update-time scripts run in the right order. See Copier’s configuring and updating docs.
 - **Shallow clones** of the template repo can make Copier’s Git usage heavier; prefer full clones in CI if you see resource issues.

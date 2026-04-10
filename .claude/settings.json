@@ -67,6 +67,16 @@
         "description": "Pre-commit: scan staged .py files for secrets/debug markers before git commit"
       },
       {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-coverage-gate.sh"
+          }
+        ],
+        "description": "Coverage gate: warn before git commit if test coverage is below 85%"
+      },
+      {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
           {
@@ -91,10 +101,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/pre-write-src-test-reminder.sh"
+            "command": "bash .claude/hooks/pre-write-src-require-test.sh"
           }
         ],
-        "description": "Remind to add tests/<pkg>/test_<module>.py for top-level src/<pkg>/<module>.py"
+        "description": "TDD enforcement: block writing src/<pkg>/<module>.py if test file does not exist (use pre-write-src-test-reminder.sh instead for warn-only — do not register both)"
       },
       {
         "matcher": "Write",
@@ -143,6 +153,16 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash .claude/hooks/post-edit-refactor-test-guard.sh"
+          }
+        ],
+        "description": "TDD refactor guard: remind to run tests after multiple src/ or scripts/ edits"
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
             "command": "bash .claude/hooks/post-edit-jinja.sh"
           }
         ],
@@ -157,16 +177,6 @@
           }
         ],
         "description": "Post-edit fallback: warn if an existing .md file is edited outside docs/"
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/post-bash-pr-created.sh"
-          }
-        ],
-        "description": "Log PR URL and suggest gh review commands after gh pr create succeeds"
       },
       {
         "matcher": "Edit|Write",
@@ -187,6 +197,16 @@
           }
         ],
         "description": "Remind to mirror template/.claude/ changes to root .claude/ (and vice versa)"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-bash-pr-created.sh"
+          }
+        ],
+        "description": "Log PR URL and suggest gh review commands after gh pr create succeeds"
       }
     ],
     "PreCompact": [

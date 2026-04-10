@@ -117,7 +117,9 @@ template/.claude/   ← rendered into GENERATED projects
 
 The generated-project `.claude/` has fewer hooks (no SessionStart, no Jinja/Copier-specific
 hooks, no Stop hooks). It does have: Python post-edit hook, markdown guard, no-verify blocker,
-push reminder, commit quality scan, config/lock protection, src-test reminder.
+push reminder, commit quality scan, config/lock protection, strict TDD enforcement
+(`pre-write-src-require-test.sh`), a commit-time coverage gate warning
+(`pre-bash-coverage-gate.sh`), and a refactor test reminder (`post-edit-refactor-test-guard.sh`).
 
 ## Testing template changes
 

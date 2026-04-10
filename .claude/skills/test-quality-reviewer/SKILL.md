@@ -395,3 +395,4 @@ Start at 10. Deduct −2 per Critical (cap −6), −0.5 per Warning (cap −3),
 - **Large files (50+ tests):** focus on patterns and group identical issues with one representative example.
 - If the suite is genuinely good, say so — don't manufacture issues.
 - Always lead with Critical issues. Quick Wins must be concrete and specific.
+
