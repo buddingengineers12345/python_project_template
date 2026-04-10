@@ -20,12 +20,20 @@ or HTTP API.
 
 For new features and bug fixes, follow TDD:
 
-1. Write test — it must **fail** (RED).
-2. Write minimal implementation — test must **pass** (GREEN).
-3. Refactor for clarity and performance (IMPROVE).
-4. Verify coverage did not drop.
+1. Write test — it must **fail** (RED). Use `/tdd-red` to validate.
+2. Write minimal implementation — test must **pass** (GREEN). Use `/tdd-green` to validate.
+3. Refactor for clarity and performance (REFACTOR). Tests must stay green after every change.
+4. Validate full CI pipeline (`just ci`). Use `/ci-fix` if anything fails.
+5. Verify coverage did not drop.
 
 Skipping the RED step (writing code before a failing test) is not TDD.
+
+### GREEN means minimal
+
+In the GREEN phase, write only enough code to make the failing test pass. Do not add error handling
+for untested paths, optimisations, or features beyond what the test requires. Those belong in the
+next RED cycle or in REFACTOR. Over-engineering in GREEN violates the TDD contract and introduces
+untested code.
 
 ## AAA structure (Arrange-Act-Assert)
 

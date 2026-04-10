@@ -237,6 +237,7 @@ data/
 
 # Claude Code local state
 .claude/todos/
+.claude/.refactor-edit-count
 
 # Stray root file (accidental)
 /1

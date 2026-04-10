@@ -56,9 +56,11 @@ for the full developer guide.
 | `pre-bash-block-no-verify.sh` | PreToolUse | Bash | Block `--no-verify` in git commands |
 | `pre-bash-git-push-reminder.sh` | PreToolUse | Bash | Warn to run `just review` before push |
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Scan staged `.py` files for secrets/debug markers |
+| `pre-bash-coverage-gate.sh` | PreToolUse | Bash | Warn before `git commit` if coverage below threshold |
 | `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/pyright config edits |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
-| `pre-write-src-test-reminder.sh` | PreToolUse | Write\|Edit | Warn if test file missing for new source module |
+| `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block if the matching test file does not exist (strict TDD) |
+| `pre-write-src-test-reminder.sh` | PreToolUse | Write\|Edit | Warn if test file missing for new source module (optional alternative to strict TDD) |
 | `pre-write-doc-file-warning.sh` | PreToolUse | Write | Block `.md` files written outside `docs/` |
 | `pre-write-jinja-syntax.sh` | PreToolUse | Write | Validate Jinja2 syntax before writing `.jinja` files |
 | `pre-suggest-compact.sh` | PreToolUse | Edit\|Write | Suggest `/compact` every ~50 operations |
@@ -68,6 +70,7 @@ for the full developer guide.
 | `post-edit-markdown.sh` | PostToolUse | Edit | Warn if existing `.md` edited outside `docs/` |
 | `post-edit-copier-migration.sh` | PostToolUse | Edit\|Write | Migration checklist after `copier.yml` edits |
 | `post-edit-template-mirror.sh` | PostToolUse | Edit\|Write | Remind to mirror `template/.claude/` ↔ root |
+| `post-edit-refactor-test-guard.sh` | PostToolUse | Edit\|Write | Remind to run tests after several `src/` or `scripts/` edits |
 | `post-bash-pr-created.sh` | PostToolUse | Bash | Log PR URL after `gh pr create` |
 | `stop-session-end.sh` | Stop | * | Persist session state JSON |
 | `stop-evaluate-session.sh` | Stop | * | Extract reusable patterns from transcript |
@@ -106,6 +109,9 @@ One Markdown file per slash command. Claude Code reads these files when you invo
 | `/ci` | Run `just ci` and report results |
 | `/test` | Run `just test` and summarise failures |
 | `/dependency-check` | Validate `uv.lock` is committed, in sync, and not stale |
+| `/tdd-red` | Validate RED phase: confirm a test fails for the right reason |
+| `/tdd-green` | Validate GREEN phase: confirm the test passes with no regressions |
+| `/ci-fix` | Autonomous CI fixer: diagnose failures, apply fixes, re-run until green |
 
 ## rules/
 

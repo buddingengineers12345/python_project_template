@@ -245,7 +245,9 @@ Hooks are registered in `.claude/settings.json` and fire at each lifecycle event
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Scan staged `.py` files for secrets/debug markers |
 | `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/basedpyright config edits |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
-| `pre-write-src-test-reminder.sh` | PreToolUse | Write\|Edit | Warn if `tests/<pkg>/test_<module>.py` missing |
+| `pre-bash-coverage-gate.sh` | PreToolUse | Bash | Warn before `git commit` if coverage below 85% |
+| `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block writing `src/<pkg>/<module>.py` if matching test module is missing (strict TDD; register this **or** `pre-write-src-test-reminder.sh`) |
+| `pre-write-src-test-reminder.sh` | (optional) | Write\|Edit | Warn if `tests/<pkg>/test_<module>.py` missing (non-blocking alternative to strict TDD hook) |
 | `pre-write-doc-file-warning.sh` | PreToolUse | Write | Block `.md` files outside `docs/` |
 | `pre-write-jinja-syntax.sh` | PreToolUse | Write | Validate Jinja2 syntax before writing `.jinja` files |
 | `pre-suggest-compact.sh` | PreToolUse | Edit\|Write | Suggest `/compact` every ~50 operations |
@@ -253,6 +255,7 @@ Hooks are registered in `.claude/settings.json` and fire at each lifecycle event
 | `post-edit-python.sh` | PostToolUse | Edit\|Write | Run ruff + basedpyright after every `.py` edit |
 | `post-edit-jinja.sh` | PostToolUse | Edit\|Write | Validate Jinja2 syntax after every `.jinja` edit |
 | `post-edit-markdown.sh` | PostToolUse | Edit | Warn if existing `.md` edited outside `docs/` |
+| `post-edit-refactor-test-guard.sh` | PostToolUse | Edit\|Write | Remind to run tests after several `src/` or `scripts/` edits |
 | `post-edit-copier-migration.sh` | PostToolUse | Edit\|Write | Remind about `_migrations` after `copier.yml` edits |
 | `post-edit-template-mirror.sh` | PostToolUse | Edit\|Write | Remind to mirror `template/.claude/` ↔ root `.claude/` |
 | `post-bash-pr-created.sh` | PostToolUse | Bash | Log PR URL after `gh pr create` succeeds |
@@ -278,6 +281,9 @@ See `.claude/hooks/README.md` for full details on exit codes, JSON input format,
 | `/ci` | Run `just ci` and report results |
 | `/test` | Run `just test` and summarise failures |
 | `/dependency-check` | Validate `uv.lock` is committed, in sync, and not stale |
+| `/tdd-red` | Validate RED phase: confirm a test fails for the right reason |
+| `/tdd-green` | Validate GREEN phase: confirm the test passes with no regressions |
+| `/ci-fix` | Autonomous CI fixer: diagnose failures, apply fixes, re-run until green |
 
 ### Definition of done
 

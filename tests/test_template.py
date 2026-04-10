@@ -252,6 +252,29 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
     assert claude_ide.is_dir(), "Missing .claude directory from template"
     assert (claude_ide / "settings.json").is_file(), "Missing .claude/settings.json"
     assert (claude_ide / "commands" / "test.md").is_file(), "Missing .claude/commands/test.md"
+    assert (claude_ide / "commands" / "tdd-red.md").is_file(), "Missing .claude/commands/tdd-red.md"
+    assert (claude_ide / "commands" / "tdd-green.md").is_file(), (
+        "Missing .claude/commands/tdd-green.md"
+    )
+    assert (claude_ide / "commands" / "ci-fix.md").is_file(), "Missing .claude/commands/ci-fix.md"
+    assert (claude_ide / "hooks" / "pre-write-src-require-test.sh").is_file(), (
+        "Missing .claude/hooks/pre-write-src-require-test.sh"
+    )
+    assert (claude_ide / "hooks" / "pre-bash-coverage-gate.sh").is_file(), (
+        "Missing .claude/hooks/pre-bash-coverage-gate.sh"
+    )
+    assert (claude_ide / "hooks" / "post-edit-refactor-test-guard.sh").is_file(), (
+        "Missing .claude/hooks/post-edit-refactor-test-guard.sh"
+    )
+    assert (claude_ide / "skills" / "tdd-workflow" / "SKILL.md").is_file(), (
+        "Missing .claude/skills/tdd-workflow/SKILL.md"
+    )
+    assert (claude_ide / "skills" / "tdd-test-planner" / "SKILL.md").is_file(), (
+        "Missing .claude/skills/tdd-test-planner/SKILL.md"
+    )
+    assert (claude_ide / "skills" / "test-quality-reviewer" / "SKILL.md").is_file(), (
+        "Missing .claude/skills/test-quality-reviewer/SKILL.md"
+    )
 
 
 def test_generate_defaults_only_cli(tmp_path: Path) -> None:
