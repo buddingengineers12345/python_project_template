@@ -20,7 +20,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          # Align with scripts/sync_skip_if_exists.py GIT_LOG_LIMIT (3000 commits).
+          fetch-depth: 3000
 
       - name: Set up Python
         uses: actions/setup-python@v6

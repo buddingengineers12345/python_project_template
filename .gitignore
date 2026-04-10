@@ -82,6 +82,7 @@ docs/*
 # Allow the freshness dashboard report to be committed.
 !docs/
 !docs/repo_file_status_report.md
+!docs/git-history-maintenance.md
 
 # Copier template ships MkDocs sources under template/docs/ (must not match the rule above).
 !template/docs/

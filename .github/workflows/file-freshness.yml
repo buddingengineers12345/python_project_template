@@ -2,12 +2,12 @@
 #
 # This workflow intentionally triggers only on a schedule and manual dispatch.
 # It commits generated artifacts back to the repository, and we avoid `on: push`
-# to prevent feedback loops.
+# to prevent feedback loops. Weekly schedule limits commit volume on `main`.
 name: File Freshness
 
 on:
   schedule:
-    - cron: "30 3 * * *" # Daily at 03:30 UTC
+    - cron: "30 3 * * 1" # Mondays 03:30 UTC
   workflow_dispatch:
 
 permissions:

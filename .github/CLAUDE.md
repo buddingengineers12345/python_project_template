@@ -18,7 +18,7 @@ the template itself, not the projects generated from it.
 | `dependency-review.yml` | PR | Review dependency changes for security issues |
 | `release.yml` | tag push (`v*`), manual (`workflow_dispatch`) | Bump version, create tag, publish GitHub Release |
 | `pre-commit-update.yml` | weekly schedule, manual | Auto-update pre-commit hook versions via PR |
-| `file-freshness.yml` | push to main, weekly schedule, manual | Run `scripts/repo_file_freshness.py` and commit artifacts |
+| `file-freshness.yml` | weekly schedule (Mondays), manual | Run `scripts/repo_file_freshness.py` and commit artifacts |
 | `sync-skip-if-exists.yml` | push to main, manual | Sync `_skip_if_exists` list in `copier.yml` via `scripts/sync_skip_if_exists.py` |
 | `stale.yml` | daily schedule | Mark and close stale issues/PRs |
 | `labeler.yml` | PR | Auto-label PRs based on changed file paths |
