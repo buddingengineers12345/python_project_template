@@ -233,4 +233,3 @@ for u in $(cut -f1 -d: /etc/passwd); do
   [ -n "$jobs" ] && echo "=== $u ===" && echo "$jobs"
 done
 ```
-
