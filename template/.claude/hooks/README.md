@@ -215,7 +215,10 @@ exit 0
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Secret/debug scan before commit |
 | `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/pyright config |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
-| `pre-write-src-test-reminder.sh` | PreToolUse | Write\|Edit | Warn if `tests/<pkg>/test_<module>.py` missing for top-level `src/<pkg>/<module>.py` |
+| `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block if `tests/<pkg>/test_<module>.py` missing for top-level `src/<pkg>/<module>.py` (strict TDD) |
+| `pre-bash-coverage-gate.sh` | PreToolUse | Bash | Warn before `git commit` if coverage below threshold |
+| `pre-write-src-test-reminder.sh` | (optional) | Write\|Edit | Non-blocking alternative to `pre-write-src-require-test.sh` — **do not register both** |
+| `post-edit-refactor-test-guard.sh` | PostToolUse | Edit\|Write | Remind to run tests after several `src/` edits |
 
 ## Adding a new hook
 

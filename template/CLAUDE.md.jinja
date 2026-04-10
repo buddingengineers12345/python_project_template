@@ -100,12 +100,32 @@ Standards are enforced at three layers — during development via Claude hooks, 
 | `/docs-check` | Audit and repair Google-style docstrings across all source files |
 | `/standards` | Consolidated pass/fail report — the "ready to merge?" gate |
 | `/release` | Orchestrate a new release: verify CI, bump version, tag, push |
+| `/tdd-red` | Validate RED phase: confirm a test fails for the right reason |
+| `/tdd-green` | Validate GREEN phase: confirm the test passes with no regressions |
+| `/ci-fix` | Autonomous CI fixer: diagnose failures, apply fixes, re-run until green |
 
 ### Claude hooks (automatic feedback)
 
-A **PostToolUse hook** fires after every Python file edit during a Claude session:
-- Runs ruff check + basedpyright on the edited file
-- Surfaces violations back to Claude so it can self-correct in the same turn
+| Hook | Event | Purpose |
+|---|---|---|
+| `post-edit-python.sh` | PostToolUse | Runs ruff + basedpyright after every `.py` edit |
+| `post-edit-refactor-test-guard.sh` | PostToolUse | Reminds to run tests after multiple `src/` edits |
+| `pre-write-src-require-test.sh` | PreToolUse | Blocks writing to `src/` if the matching test file does not exist (strict TDD; optional `pre-write-src-test-reminder.sh` warns instead — register one, not both) |
+| `pre-bash-coverage-gate.sh` | PreToolUse | Warns before `git commit` if coverage below 85% |
+| `pre-bash-commit-quality.sh` | PreToolUse | Scans staged files for secrets and debug markers |
+| `pre-bash-block-no-verify.sh` | PreToolUse | Blocks `git commit --no-verify` |
+| `pre-config-protection.sh` | PreToolUse | Blocks weakening ruff/basedpyright config |
+| `pre-protect-uv-lock.sh` | PreToolUse | Blocks direct edits to `uv.lock` |
+
+### TDD skills (guided workflows)
+
+| Skill | Purpose |
+|---|---|
+| `tdd-workflow` | Master orchestrator: guides the full RED → GREEN → REFACTOR → VALIDATE cycle |
+| `tdd-test-planner` | Converts requirements into structured test plans with categorised test cases |
+| `test-quality-reviewer` | Reviews existing test files for anti-patterns and improvement opportunities |
+
+Load a skill by reading its `SKILL.md`: e.g. `.claude/skills/tdd-workflow/SKILL.md`.
 
 ### Definition of done
 

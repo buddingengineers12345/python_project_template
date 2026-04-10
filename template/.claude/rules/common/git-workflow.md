@@ -30,6 +30,28 @@ These commands are blocked by hooks and must not be run without explicit justifi
 - `git commit --no-verify` — bypasses quality gates.
 - `git push --force` — rewrites shared history.
 
+## TDD commit conventions
+
+When committing TDD work, structure commits to reflect the discipline:
+
+- Use `test:` type for RED commits (failing test added).
+- Use `feat:` or `fix:` type for GREEN commits (implementation that makes tests pass).
+- Use `refactor:` type for REFACTOR commits (no behaviour change).
+- Include test context in the commit body: which scenarios are covered, what edge
+  cases were tested, and why the implementation approach was chosen.
+
+Example:
+```
+feat: add discount calculation for premium users
+
+Implements tiered discount logic. TDD cycle covered:
+- Happy path: 10% discount for premium tier
+- Edge cases: zero-item cart, negative prices rejected
+- Boundary: exactly-at-threshold cart values
+
+Tests: test_calculate_discount_* in tests/test_pricing.py
+```
+
 ## Pull request workflow
 
 1. Run `just review` (lint + types + docstrings + tests) before opening a PR.

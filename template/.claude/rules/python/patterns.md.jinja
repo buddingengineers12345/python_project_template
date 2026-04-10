@@ -78,6 +78,23 @@ class ConfigError({{ package_name | title | replace("_", "") }}Error):
     """Raised when configuration is missing or invalid."""
 ```
 
+## Common refactoring patterns
+
+When refactoring during TDD's REFACTOR phase, apply these transformations:
+
+- **Extract function** — if a function body exceeds 20 lines or does more than one
+  thing, extract a named helper. The original function becomes a coordinator.
+- **Reduce nesting** — replace `if cond: ... else: ...` with early returns
+  (`if not cond: return`). Target max 3 levels of indentation.
+- **Eliminate duplication** — if the same 3+ line block appears twice, extract it.
+  For test code, consider `@pytest.mark.parametrize` instead.
+- **Replace magic values** — bare literals (`42`, `"pending"`, `0.85`) become named
+  constants at module level.
+- **Simplify conditionals** — use `dict` dispatch or `match` statements instead of
+  long `if/elif` chains.
+
+After every refactoring step, run `just test` to confirm tests still pass.
+
 ## structlog context binding
 
 ```python

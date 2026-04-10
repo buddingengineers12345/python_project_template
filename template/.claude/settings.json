@@ -78,10 +78,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/pre-write-src-test-reminder.sh"
+            "command": "bash .claude/hooks/pre-write-src-require-test.sh"
           }
         ],
-        "description": "Remind to add tests/<pkg>/test_<module>.py for top-level src/<pkg>/<module>.py"
+        "description": "TDD enforcement: block writing src/<pkg>/<module>.py if test file does not exist (use pre-write-src-test-reminder.sh instead for warn-only — do not register both)"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-coverage-gate.sh"
+          }
+        ],
+        "description": "Coverage gate: warn before git commit if test coverage is below 85%"
       }
     ],
     "PostToolUse": [
@@ -104,6 +114,16 @@
           }
         ],
         "description": "Post-edit fallback: warn if an existing .md file is edited outside docs/"
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-refactor-test-guard.sh"
+          }
+        ],
+        "description": "TDD refactor guard: remind to run tests after multiple src/ edits"
       }
     ]
   }
