@@ -77,6 +77,18 @@ the same scope; running both would warn and then block on the same condition.
 Both source/test hooks only check top-level package modules (`src/<pkg>/<name>.py`,
 excluding `__init__.py`). Nested packages are skipped.
 
+### How to swap to the warn-only reminder
+
+The default strict hook (`pre-write-src-require-test.sh`) blocks any write to
+`src/<pkg>/<module>.py` when the matching test file is missing. If you prefer a non-blocking
+reminder, swap the registration in `.claude/settings.json`:
+
+1. Locate the `PreToolUse` entry whose `command` is
+   `bash .claude/hooks/pre-write-src-require-test.sh`.
+2. Replace `pre-write-src-require-test.sh` with `pre-write-src-test-reminder.sh` in that
+   entry.
+3. Register only one at a time. Registering both produces duplicate output on every write.
+
 ## Refactor test guard (PostToolUse)
 
 | Hook | Trigger | What it does |
