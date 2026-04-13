@@ -117,8 +117,8 @@ def _reset_configuration() -> None:
 
 
 def _filter_llm_events(
-    logger: WrappedLogger,  # noqa: ARG001
-    method: str,  # noqa: ARG001
+    _logger: WrappedLogger,
+    _method: str,
     event_dict: EventDict,
 ) -> EventDict:
     if not event_dict.pop("llm", False):
@@ -127,7 +127,7 @@ def _filter_llm_events(
 
 
 def _drop_debug_events(
-    logger: WrappedLogger,  # noqa: ARG001
+    _logger: WrappedLogger,
     method: str,
     event_dict: EventDict,
 ) -> EventDict:
@@ -146,7 +146,7 @@ _LEVEL_SYMBOLS: dict[str, str] = {
 
 
 def _human_level_indicator(
-    logger: WrappedLogger,  # noqa: ARG001
+    _logger: WrappedLogger,
     method: str,
     event_dict: EventDict,
 ) -> EventDict:
@@ -156,7 +156,7 @@ def _human_level_indicator(
 
 
 def _llm_promote_level(
-    logger: WrappedLogger,  # noqa: ARG001
+    _logger: WrappedLogger,
     method: str,
     event_dict: EventDict,
 ) -> EventDict:
@@ -166,8 +166,8 @@ def _llm_promote_level(
 
 
 def _truncate_long_values(
-    logger: WrappedLogger,  # noqa: ARG001
-    method: str,  # noqa: ARG001
+    _logger: WrappedLogger,
+    _method: str,
     event_dict: EventDict,
     *,
     max_len: int = 200,
@@ -182,8 +182,8 @@ def _truncate_long_values(
 
 
 def _flatten_nested_dicts(
-    logger: WrappedLogger,  # noqa: ARG001
-    method: str,  # noqa: ARG001
+    _logger: WrappedLogger,
+    _method: str,
     event_dict: EventDict,
 ) -> EventDict:
     to_expand = [

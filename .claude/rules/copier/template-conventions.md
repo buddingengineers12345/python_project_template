@@ -115,6 +115,45 @@ Tasks use `/bin/sh` (POSIX shell), not bash. Use POSIX-compatible syntax.
 - See `src/{{ package_name }}/common/bump_version.py` and `.github/workflows/release.yml` for the release
   automation workflow.
 
+## Skill descriptions (if adding skills to template)
+
+Every skill SKILL.md frontmatter must include a `description:` field with these constraints:
+
+- **Max 1024 characters** (hard limit) — skill descriptions are used in Claude's command
+  suggestions and UI; longer descriptions are truncated and unusable.
+- Use `>-` for multi-line descriptions (block scalar without trailing newline).
+- Lead with the skill's **primary purpose** (what it does).
+- Include **trigger keywords** if applicable (e.g., "use this when the user says...").
+- Mention **what the skill outputs** (e.g., "produces test skeletons with AAA structure").
+
+**Template:**
+
+```yaml
+---
+name: skill-name
+description: >-
+  <Primary purpose in one sentence.>
+  
+  <When to use it / trigger keywords.>
+  
+  <What it produces or outputs.>
+---
+```
+
+**Example (tdd-test-planner):**
+
+```yaml
+description: >-
+  Convert a requirement into a structured pytest test plan.
+  Use when the user says: "plan my tests", "write tests first", "TDD approach".
+  Produces categorised test cases (happy path, errors, boundaries, edges, integration)
+  plus pytest skeletons with AAA structure and fixture guidance.
+```
+
+**Measurement:** Count characters in the `description:` value (not including frontmatter).
+
+---
+
 ## Dual-hierarchy maintenance
 
 This repo has two parallel `.claude/` trees:

@@ -159,6 +159,40 @@ def copy_with_data(
         _prune_docs_when_disabled(dest, data)
 
 
+def copy_with_data_from_worktree(
+    dest: Path,
+    data: dict[str, str | bool],
+    *,
+    skip_tasks: bool = True,
+) -> None:
+    """Run ``copier copy`` from the local worktree (includes uncommitted template edits).
+
+    This complements :func:`copy_with_data`, which intentionally renders from ``--vcs-ref HEAD``.
+    Use this helper for regression tests that should fail immediately during local development
+    before a commit is created.
+    """
+    template_root = Path(__file__).resolve().parent.parent
+    cmd: list[str] = [
+        "copier",
+        "copy",
+        "--vcs-ref",
+        "HEAD",
+        str(template_root),
+        str(dest),
+        "--trust",
+        "--defaults",
+    ]
+    if skip_tasks:
+        cmd.append("--skip-tasks")
+    for key, value in data.items():
+        rendered = ("true" if value else "false") if isinstance(value, bool) else str(value)
+        cmd.extend(["--data", f"{key}={rendered}"])
+    _ = run_command(cmd)
+    if skip_tasks:
+        _remove_empty_optional_artifacts(dest, data)
+        _prune_docs_when_disabled(dest, data)
+
+
 def load_pyproject(project_dir: Path) -> dict[str, object]:
     """Parse ``pyproject.toml`` from a generated project."""
     with (project_dir / "pyproject.toml").open("rb") as handle:
@@ -880,6 +914,53 @@ def test_include_git_cliff_adds_dependency_group(tmp_path: Path) -> None:
     assert "git-cliff" in raw
 
 
+def test_include_docs_and_git_cliff_keep_docs_extra_in_optional_dependencies(tmp_path: Path) -> None:
+    """Template order must keep ``docs`` in optional dependencies before ``[dependency-groups]``."""
+    _ = tmp_path  # keep fixture signature consistent with neighboring tests
+    template = (Path(__file__).resolve().parent.parent / "template" / "pyproject.toml.jinja").read_text(
+        encoding="utf-8"
+    )
+    docs_idx = template.index("docs = [")
+    dep_groups_idx = template.index("[dependency-groups]")
+    assert docs_idx < dep_groups_idx, (
+        "docs extra must be declared before [dependency-groups] so it stays under "
+        "[project.optional-dependencies]"
+    )
+
+
+def test_include_docs_and_git_cliff_render_docs_extra_in_generated_pyproject(tmp_path: Path) -> None:
+    """Rendered project must keep ``docs`` under ``project.optional-dependencies``."""
+    test_dir = tmp_path / "docs_and_cliff_rendered"
+    copy_with_data_from_worktree(
+        test_dir,
+        {
+            "project_name": "Docs and Cliff Rendered",
+            "package_name": "docs_and_cliff_rendered",
+            "include_docs": True,
+            "include_git_cliff": True,
+        },
+    )
+
+    pyproject = load_pyproject(test_dir)
+    project = require_mapping(pyproject.get("project"), name="pyproject.project")
+    optional_deps = require_mapping(
+        project.get("optional-dependencies"), name="pyproject.project.optional-dependencies"
+    )
+    docs_deps = require_sequence(
+        optional_deps.get("docs"), name="pyproject.project.optional-dependencies.docs"
+    )
+    docs_dep_strings = [cast(str, dep) for dep in docs_deps]
+    assert any(dep.startswith("mkdocs>=") for dep in docs_dep_strings)
+
+    dependency_groups = require_mapping(
+        pyproject.get("dependency-groups"), name="pyproject.dependency-groups"
+    )
+    changelog = require_sequence(
+        dependency_groups.get("changelog"), name="pyproject.dependency-groups.changelog"
+    )
+    assert any("git-cliff" in cast(str, dep) for dep in changelog)
+
+
 def test_no_logging_config_module_logging_in_common(tmp_path: Path) -> None:
     """Logging setup lives only in ``common/logging_manager.py`` — no ``logging_config.py``."""
     test_dir = tmp_path / "logging_single_source"
@@ -1029,6 +1110,40 @@ def test_generated_project_uv_lock_and_sync_smoke(tmp_path: Path) -> None:
     _ = run_command(["uv", "lock"], cwd=test_dir)
     _ = run_command(
         ["uv", "sync", "--frozen", "--extra", "dev", "--extra", "test"],
+        cwd=test_dir,
+    )
+
+
+@pytest.mark.skipif(
+    os.environ.get("RUN_TEMPLATE_INTEGRATION") != "1",
+    reason="Set RUN_TEMPLATE_INTEGRATION=1 for uv lock+sync smoke (network, slower).",
+)
+def test_generated_project_uv_sync_docs_with_git_cliff_smoke(tmp_path: Path) -> None:
+    """When docs and git-cliff are enabled, uv sync must accept docs extra + changelog group."""
+    test_dir = tmp_path / "uv_sync_docs_cliff_smoke"
+    copy_with_data(
+        test_dir,
+        {
+            "project_name": "UV Sync Docs Cliff Smoke",
+            "include_docs": True,
+            "include_git_cliff": True,
+        },
+    )
+    _ = run_command(["uv", "lock"], cwd=test_dir)
+    _ = run_command(
+        [
+            "uv",
+            "sync",
+            "--frozen",
+            "--extra",
+            "dev",
+            "--extra",
+            "test",
+            "--extra",
+            "docs",
+            "--group",
+            "changelog",
+        ],
         cwd=test_dir,
     )
 

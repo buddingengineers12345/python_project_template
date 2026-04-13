@@ -47,19 +47,19 @@ test = [
     "coverage[toml]>=7.6.0",
 ]
 
-{% if include_git_cliff %}
-[dependency-groups]
-changelog = [
-    "git-cliff>=2.6.0",
-]
-{% endif %}
-
 {% if include_docs %}
 docs = [
     "mkdocs>=1.6.0",
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.27.0",
     "mkdocs-gen-files>=0.5.0",
+]
+{% endif %}
+
+{% if include_git_cliff %}
+[dependency-groups]
+changelog = [
+    "git-cliff>=2.6.0",
 ]
 {% endif %}
 

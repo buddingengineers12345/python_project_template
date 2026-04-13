@@ -63,13 +63,40 @@ type:
 
 # -------------------------------------------------------------------------
 # Testing
+# 
+# Default: Minimal logging (quiet mode, dots only, warnings/errors only)
+# For verbose output with test names, use: just test-verbose
+# For full debug output, use: just test-debug
+# For failed tests only, use: just test-lf
 # -------------------------------------------------------------------------
 
+# Run tests with minimal output (default, fast, token-efficient)
 test:
-    @uv run --active pytest
+    @uv run --active pytest tests/
 
+# Run only slow tests
+slow:
+    @uv run --active pytest tests/ -m slow
+
+# Run tests in parallel with minimal output
 test-parallel:
-    @uv run --active pytest -n auto
+    @uv run --active pytest tests/ -n auto
+
+# Run tests with verbose output (shows test names, INFO logs)
+test-verbose:
+    @uv run --active pytest tests/ -v
+
+# Run tests with full debug output (shows all DEBUG logs)
+test-debug:
+    @uv run --active pytest tests/ -vv --show-debug
+
+# Re-run only the tests that failed in the last run
+test-lf:
+    @uv run --active pytest tests/ --lf
+
+# Stop on first test failure (fast feedback)
+test-first-fail:
+    @uv run --active pytest tests/ -x
 
 coverage:
     @uv run --active pytest --cov --cov-report=term-missing --cov-report=xml

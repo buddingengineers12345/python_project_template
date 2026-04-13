@@ -1,13 +1,12 @@
 ---
 name: skill-maintainer
 description: >-
-  Audit, standardize, and improve existing skills in template/.claude/skills/. Use this
-  skill when the user wants to: review or audit one or more skills, do a repo-wide health
-  check, standardize skills to a consistent format, fix outdated references, or improve
-  skill descriptions for better triggering. Triggers: 'audit this skill', 'review skill
-  quality', 'check skill health', 'standardize skills', 'skill repo maintenance', or any
-  request to systematically review or improve a SKILL.md file. Do NOT use for creating
-  brand-new skills from scratch — use the skill-creator skill instead.
+  Audit, standardize, and improve existing skills in template/.claude/skills/. Use for
+  'audit this skill', 'review skill quality', 'standardize skills', or any request to
+  systematically review or improve a SKILL.md file. Validates all six consistency
+  dimensions: frontmatter block scalars, title format, reference table headers, file
+  naming, H1 headings, and line count. Provides step-by-step fix instructions for each
+  violation. Do NOT use for creating new skills from scratch — use skill-creator instead.
 ---
 
 # Skill Maintainer Skill

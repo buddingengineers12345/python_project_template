@@ -1,23 +1,14 @@
 ---
 name: test-quality-reviewer
 description: >-
-  Review and audit pytest test files for quality, anti-patterns, and improvement
-  opportunities. Use this skill for ANY request to evaluate existing test code —
-  including "review my tests", "are my tests good?", "test quality check",
-  "find test anti-patterns", "test code review", "audit my test suite",
-  "what's wrong with these tests?", "how can I improve my tests?", "look at my
-  conftest", "are my fixtures set up right?", "are my async tests correct?",
-  "check my pytest markers", "is my test coverage good?", or any time the user
-  uploads or pastes test files and wants feedback. Even vague requests like
-  "look at my tests" or "any issues with these?" should trigger this skill.
-  Checks naming, AAA structure, assertion quality (including floating-point
-  pitfalls), test isolation, parametrization opportunities, fixture scope and
-  teardown, async correctness, marker hygiene, import patterns, test doubles
-  usage, and coverage alignment. Produces a structured review with a health
-  score, severity-ranked issues, Quick Wins, and actionable before/after fixes.
-  Complements pytest-writing skills by focusing on quality assessment of tests
-  that already exist — not just how to write tests, but whether existing tests
-  are actually trustworthy.
+  Review pytest test files for quality and trustworthiness. Use for "review my tests",
+  "are my tests good?", "test quality check", "audit my test suite", or any request to
+  evaluate existing test code. Checks naming, AAA structure, assertions, test isolation,
+  parametrization, fixtures, async correctness, markers, imports, test doubles, and
+  coverage alignment. Produces structured review with health score, severity-ranked issues,
+  Quick Wins, and before/after fixes. Complements pytest-writing skills by focusing on
+  quality assessment of existing tests — not just how to write tests, but whether they're
+  actually trustworthy.
 ---
 
 # Test Quality Reviewer Skill
