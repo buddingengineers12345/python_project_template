@@ -30,6 +30,10 @@ fmt:
 lint:
     @uv run ruff check .
 
+# Lint only changed (unstaged+staged) Python files — fast feedback loop
+lint-changed:
+    @uv run ruff check $(git diff --name-only -- '*.py')
+
 fix:
     @uv run ruff format .
     @uv run ruff check --fix .
@@ -99,6 +103,22 @@ test-lf:
 test-first-fail:
     @uv run pytest tests/ -x
 
+# Run tests for changed (unstaged+staged) Python files only — fast incremental feedback
+test-changed:
+    @uv run pytest $(git diff --name-only -- '*.py' | sed 's/src/tests/g')
+
+# Fast unit tests only — excludes slow and integration markers
+test-fast:
+    @uv run pytest tests/ -m "not slow and not integration"
+
+# Integration tests only
+test-integration:
+    @uv run pytest tests/ -m integration
+
+# Re-run last failed tests with maximum verbosity — fast debugging loop
+test-failed-verbose:
+    @uv run pytest --lf -vv
+
 coverage:
     @uv run pytest --cov --cov-report=term-missing --cov-report=xml
 
@@ -140,6 +160,14 @@ update:
     @uv lock --upgrade
     @uv sync --frozen --extra dev
 
+# Check for outdated dependencies
+deps-outdated:
+    @uv tree --outdated
+
+# Verify lockfile is consistent with pyproject.toml
+lock-check:
+    @uv lock --check
+
 # -------------------------------------------------------------------------
 # Docs (optional)
 # -------------------------------------------------------------------------
@@ -156,6 +184,10 @@ docs-help:
 build:
     @uv build
 
+# Validate the built distribution (catches README/metadata issues before PyPI upload)
+check-dist:
+    @uv run python -m twine check dist/*
+
 publish:
     @uv publish
 
@@ -169,12 +201,19 @@ install:
     @just sync
     @just precommit-install
 
+# One-command developer onboarding: sync deps, register hooks, run diagnostics
+bootstrap:
+    @just sync
+    @just precommit-install
+    @just doctor
+
 # -------------------------------------------------------------------------
 # Cleaning
 # -------------------------------------------------------------------------
 
 clean:
-    @rm -rf build/ dist/ *.egg-info
+    @test -f pyproject.toml || (echo "ERROR: Not in project root!" && exit 1)
+    @rm -rf build dist *.egg-info
     @rm -rf .pytest_cache .ruff_cache .coverage htmlcov
     @find . -type d -name "__pycache__" -exec rm -rf {} +
     @find . -type f -name "*.pyc" -delete
@@ -183,14 +222,8 @@ clean:
 # CI (local mirror of GitHub Actions)
 # -------------------------------------------------------------------------
 
-static_check:
-    @just fix
-    @just lint
-    @just type
-    @just docs-check
-
 # Read-only mirror of GitHub Actions lint/test/security steps
-ci-check:
+check:
     @uv sync --frozen --extra dev
     @just fmt-check
     @uv run ruff check .
@@ -203,7 +236,7 @@ ci-check:
 
 ci:
     @just fix
-    @just ci-check
+    @just check
 
 # -------------------------------------------------------------------------
 # Doctor / Diagnostics
