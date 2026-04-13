@@ -133,9 +133,9 @@ Every skill SKILL.md frontmatter must include a `description:` field with these 
 name: skill-name
 description: >-
   <Primary purpose in one sentence.>
-  
+
   <When to use it / trigger keywords.>
-  
+
   <What it produces or outputs.>
 ---
 ```

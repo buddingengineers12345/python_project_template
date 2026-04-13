@@ -13,8 +13,8 @@ the template itself, not the projects generated from it.
 | File | Trigger | Purpose |
 |---|---|---|
 | `tests.yml` | push/PR to main, manual | Full pytest suite across Python 3.11–3.13 matrix; uploads coverage |
-| `lint.yml` | push/PR to main | Ruff lint + format check + basedpyright type check |
-| `security.yml` | push/PR to main, weekly schedule | pip-audit dependency vulnerability scan |
+| `lint.yml` | push/PR to main | Ruff + basedpyright + root/template sync script + pre-commit (all files); docstrings via Ruff `D` in pyproject (same coverage as `just docs-check`) |
+| `security.yml` | push/PR to main, weekly schedule | CodeQL + pip-audit (same invocation as `just audit`: `uv run --with pip-audit pip-audit`) |
 | `dependency-review.yml` | PR | Review dependency changes for security issues |
 | `release.yml` | tag push (`v*`), manual (`workflow_dispatch`) | Bump version, create tag, publish GitHub Release |
 | `pre-commit-update.yml` | weekly schedule, manual | Auto-update pre-commit hook versions via PR |
@@ -55,8 +55,8 @@ before pushing a tag.
 
 | Meta-repo (here) | Generated projects (`template/.github/workflows/`) |
 |---|---|
-| `tests.yml` — tests the template rendering | `ci.yml` — tests the generated project's code |
-| `lint.yml` — lints meta-repo Python/tests | `lint.yml` — lints generated project code |
+| `tests.yml` — tests the template rendering | `ci.yml` — lint, typecheck, pre-commit, and pytest matrix for generated projects (aligns with `just ci`) |
+| `lint.yml` — lints meta-repo Python/tests | `lint.yml` — fast Ruff-only check; full gate is `ci.yml` (lint, types, pre-commit, tests) |
 | `security.yml` — audits meta-repo deps | `security.yml` — audits generated project deps (conditional) |
 | `release.yml` — releases the template | `release.yml` — releases the generated project (conditional) |
 | `file-freshness.yml` — tracks template file age | _(no equivalent)_ |

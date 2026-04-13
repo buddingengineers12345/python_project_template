@@ -131,7 +131,7 @@ Load a skill by reading its `SKILL.md`: e.g. `.claude/skills/tdd-workflow/SKILL.
 
 A feature or fix is **done** when all of the following are true:
 
-1. `just ci` passes with zero errors (lint → types → docstrings → tests → pre-commit).
+1. `just ci` passes with zero errors (lint → types → docstrings → `test-ci` → pre-commit; matches `.github/workflows/ci.yml`).
 2. Every new public function/class/method has a Google-style docstring (Args/Returns/Raises where applicable).
 3. Every new function/method has complete type annotations (parameters + return type).
 4. At least one test case covers each new public symbol.

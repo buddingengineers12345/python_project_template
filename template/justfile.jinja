@@ -102,6 +102,10 @@ coverage:
         --cov-report=html \
         --cov-report=xml
 
+# Test command matching GitHub CI (.github/workflows/ci.yml test job)
+test-ci:
+    @uv run pytest -n auto --cov --cov-report=xml --cov-report=term
+
 # -------------------------------------------------------------------------
 # Pre-commit
 # -------------------------------------------------------------------------
@@ -210,7 +214,7 @@ ci:
     @just lint
     @just type
     @just docs-check
-    @just test
+    @just test-ci
     @just precommit
 
 # -------------------------------------------------------------------------

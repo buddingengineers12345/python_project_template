@@ -64,7 +64,7 @@ type:
 
 # -------------------------------------------------------------------------
 # Testing
-# 
+#
 # Default: Minimal logging (quiet mode, dots only, warnings/errors only)
 # For verbose output with test names, use: just test-verbose
 # For full debug output, use: just test-debug

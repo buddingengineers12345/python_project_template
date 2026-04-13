@@ -1240,7 +1240,8 @@ def test_pypi_publish_absent_by_default(tmp_path: Path) -> None:
 def test_security_workflow_generated_by_default(tmp_path: Path) -> None:
     """security.yml must be generated with jobs enabled when include_security_scanning=true."""
     test_dir = tmp_path / "security_default"
-    copy_with_data(
+    # Worktree render: assert on template edits (e.g. pip-audit invocation) before they are committed.
+    copy_with_data_from_worktree(
         test_dir,
         {
             "project_name": "Security Default",
@@ -1262,6 +1263,9 @@ def test_security_workflow_generated_by_default(tmp_path: Path) -> None:
     )
     assert "--requirement /dev/stdin" in content, (
         "pip-audit must read exported requirements via --requirement /dev/stdin (not removed --stdin)"
+    )
+    assert "uv run --with pip-audit pip-audit" in content, (
+        "pip-audit must match `just audit` (project interpreter via uv run --with)"
     )
 
 
@@ -1320,6 +1324,38 @@ def test_pre_commit_update_workflow_generated(tmp_path: Path) -> None:
     content = workflow.read_text(encoding="utf-8")
     assert "pre-commit autoupdate" in content
     assert "create-pull-request" in content
+
+
+def test_ci_workflow_aligns_with_just_ci(tmp_path: Path) -> None:
+    """``ci.yml`` and ``just ci`` must stay aligned (pre-commit job, ruff paths, pytest flags)."""
+    test_dir = tmp_path / "ci_just_align"
+    # Worktree render: ``copy_with_data`` uses ``git+file`` at HEAD, which omits uncommitted template edits.
+    copy_with_data_from_worktree(
+        test_dir,
+        {
+            "project_name": "CI Just Align",
+            "include_docs": False,
+        },
+    )
+    ci_yml = test_dir / ".github" / "workflows" / "ci.yml"
+    assert ci_yml.is_file(), "ci.yml must be generated"
+    workflow = ci_yml.read_text(encoding="utf-8")
+    assert "needs: [lint, typecheck, precommit, test]" in workflow, (
+        "Aggregate check must gate on pre-commit alongside lint, typecheck, and tests"
+    )
+    assert "uv run pre-commit run --all-files --verbose" in workflow
+    assert "uv run ruff format --check src tests" in workflow
+    assert "uv run ruff check src tests" in workflow
+    assert "uv run pytest -n auto --cov --cov-report=xml --cov-report=term" in workflow
+
+    justfile = (test_dir / "justfile").read_text(encoding="utf-8")
+    assert "test-ci:" in justfile
+    assert "pytest -n auto --cov --cov-report=xml --cov-report=term" in justfile
+    assert "@just test-ci" in justfile
+
+    lint_yml = (test_dir / ".github" / "workflows" / "lint.yml").read_text(encoding="utf-8")
+    assert "uv run ruff format --check src tests" in lint_yml
+    assert "uv run ruff check src tests" in lint_yml
 
 
 def test_common_bump_version_generated(tmp_path: Path) -> None:

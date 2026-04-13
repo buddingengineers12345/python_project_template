@@ -87,12 +87,14 @@ the justfile handles the correct flags and order.
 just ci
 ```
 
-This runs: `fix` → `fmt` → `ci-check`.
+This runs: `fix` → `ci-check`.
 
 `ci-check` bundles: `uv sync --frozen`, `fmt-check`, `ruff check`, `basedpyright`,
-`docs-check`, `test-ci` (pytest + coverage XML), `pre-commit --all-files`, `audit` (pip-audit).
+`sync-check`, `docs-check` (D-only; redundant with `ruff check` for enforcement), `test-ci`
+(pytest + coverage XML), `pre-commit run --all-files --verbose`, `audit` (pip-audit).
 
-All steps must pass before a PR is mergeable.
+Together, `lint.yml` + `tests.yml` + `security.yml` mirror these checks on GitHub (CodeQL is
+GHA-only). All steps must pass before a PR is mergeable.
 
 ## Generating a test project from the template
 

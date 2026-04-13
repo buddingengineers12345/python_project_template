@@ -42,7 +42,7 @@ jobs:
         run: uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 
       - name: Ruff format (check)
-        run: uv run ruff format --check .
+        run: uv run ruff format --check src tests
 
       - name: Ruff lint
-        run: uv run ruff check .
+        run: uv run ruff check src tests

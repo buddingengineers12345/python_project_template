@@ -1,6 +1,10 @@
 # Lint workflow — runs ruff (format + lint), basedpyright (type checking), and pre-commit
 # hooks on every push and PR.
 #
+# Docstring rules (D) are enforced by `ruff check` via pyproject `select`. The separate
+# `just docs-check` recipe is the same D-only pass for clearer local output; no extra
+# GitHub step is required for docstrings beyond this workflow's Ruff step.
+#
 # References:
 #   Ruff documentation:         https://docs.astral.sh/ruff/
 #   BasedPyright:               https://docs.basedpyright.com/
