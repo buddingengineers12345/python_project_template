@@ -105,28 +105,6 @@ Actions pins, shared recipes, and other policy maps).
 
 ---
 
-### `generate_template_vs_obsidian_comparison.py`
-
-Writes [`docs/template_vs_obsidian_playwright_pipeline.md`](../docs/template_vs_obsidian_playwright_pipeline.md):
-per-template-file existence check against a reference generated repo plus a **Content match**
-column (UTF-8 text vs a fresh `copier copy` with that repo’s answers, newline-normalised).
-
-**Invocation:** `uv run python scripts/generate_template_vs_obsidian_comparison.py`
-
-**Requires:** `copier` on PATH; edit `OBS_ROOT` in the script to point at the reference project.
-
----
-
-### `generate_obsidian_porting_report.py`
-
-Writes [`docs/obsidian_playwright_porting_report.md`](../docs/obsidian_playwright_porting_report.md):
-per-file notes on what was ported from a reference generated project (paths and Copier
-answers are edited at the top of the script) versus what stays app-specific.
-
-**Invocation:** `uv run python scripts/generate_obsidian_porting_report.py`
-
----
-
 ### `sync_skip_if_exists.py`
 
 Synchronises the `_skip_if_exists` list in `copier.yml` with the actual template file paths
@@ -139,15 +117,6 @@ and their commit frequency.
 - For each path, checks the Git commit frequency to determine if it is user-customisable
   (high churn = likely user-edited → should be in `_skip_if_exists`).
 - Produces a suggested diff to `copier.yml`'s `_skip_if_exists` list.
-
----
-
-### `update_files.sh`
-
-Batch file update helper used during template development to propagate changes across
-multiple related files.
-
-**Invocation:** `bash scripts/update_files.sh`
 
 ---
 
