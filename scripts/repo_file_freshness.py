@@ -356,7 +356,8 @@ def generate_markdown(
     render_section("🔴 Red (stale)", "red", show_metric=True)
     render_section("🔵 Blue (ignored)", "blue", show_metric=False)
 
-    return "\n".join(lines) + "\n"
+    # Single trailing newline (pre-commit end-of-file-fixer); strip trailing blank lines.
+    return "\n".join(lines).rstrip() + "\n"
 
 
 def build_badge_fields(summary: dict[str, int]) -> dict[str, str]:

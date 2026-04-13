@@ -53,9 +53,7 @@ def test_validate_conventional_rejects_too_long() -> None:
 
 def test_validate_conventional_allows_merge_branch() -> None:
     """Git-style merge branch subjects bypass conventional rules."""
-    assert (
-        pcp.validate_conventional_subject_line("Merge branch 'main' into topic") is None
-    )
+    assert pcp.validate_conventional_subject_line("Merge branch 'main' into topic") is None
 
 
 def test_validate_conventional_allows_merge_pr() -> None:
@@ -70,9 +68,7 @@ def test_validate_conventional_allows_merge_pr() -> None:
 
 def test_validate_conventional_allows_revert() -> None:
     """Revert commits bypass conventional rules."""
-    assert (
-        pcp.validate_conventional_subject_line('Revert "feat: broken thing"') is None
-    )
+    assert pcp.validate_conventional_subject_line('Revert "feat: broken thing"') is None
 
 
 def test_validate_pr_body_requires_headings() -> None:

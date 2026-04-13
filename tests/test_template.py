@@ -1219,13 +1219,18 @@ def test_generated_pyproject_pytest_markers_and_asyncio(tmp_path: Path) -> None:
     optional = require_mapping(
         project.get("optional-dependencies"), name="pyproject.project.optional-dependencies"
     )
-    test_deps = cast(Sequence[str], require_sequence(optional.get("test"), name="optional-dependencies.test"))
+    test_deps = cast(
+        Sequence[str], require_sequence(optional.get("test"), name="optional-dependencies.test")
+    )
     assert any(dep.startswith("pytest-asyncio") for dep in test_deps)
 
     tool = require_mapping(data.get("tool"), name="pyproject.tool")
     pytest_ini = require_mapping(tool.get("pytest"), name="tool.pytest")
     ini_options = require_mapping(pytest_ini.get("ini_options"), name="pytest.ini_options")
-    markers = cast(Sequence[str], require_sequence(ini_options.get("markers"), name="pytest.ini_options.markers"))
+    markers = cast(
+        Sequence[str],
+        require_sequence(ini_options.get("markers"), name="pytest.ini_options.markers"),
+    )
     joined = "\n".join(markers)
     for marker in ("e2e:", "integration:", "regression:", "slow:", "smoke:", "unit:"):
         assert marker in joined
@@ -1572,7 +1577,9 @@ def test_common_bump_version_generated(tmp_path: Path) -> None:
     content = bump_script.read_text(encoding="utf-8")
     assert "BumpKind" in content, "bump_version.py must contain BumpKind type alias"
     assert "[project]" in content, "bump_version.py must look for [project] section"
-    assert "write_machine_stdout_line" in content, "bump_version must emit version via logging_manager"
+    assert "write_machine_stdout_line" in content, (
+        "bump_version must emit version via logging_manager"
+    )
     assert "print(" not in content, "bump_version must not use print(); use logging_manager instead"
 
 
