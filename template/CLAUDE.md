@@ -18,7 +18,7 @@ template/
 │   ├── {% if include_cli %}cli.py{% endif %}.jinja   # Typer CLI (optional)
 │   └── common/                      # Shared utilities (always included)
 │       ├── __init__.py.jinja
-│       ├── bump_version.py.jinja    # PEP 440 version bumper (_skip_if_exists)
+│       ├── bump_version.py.jinja    # PEP 440 version bumper (_skip_if_exists); ruff ignores D+T20 in pyproject
 │       ├── decorators.py.jinja      # Retry, timing, and other decorators
 │       ├── file_manager.py.jinja    # File I/O helpers
 │       ├── logging_manager.py.jinja # structlog setup (HUMAN / LLM modes)

@@ -66,6 +66,11 @@ Bumps the PEP 440 version string in `pyproject.toml`.
 **Output:** Prints the new version string to stdout (e.g. `0.0.6`), which callers capture
 via `$(python scripts/bump_version.py --bump patch)`.
 
+**Generated projects:** Copier renders `src/<package>/common/bump_version.py` from
+`template/.../bump_version.py.jinja`. The generated `pyproject.toml` includes
+`[tool.ruff.lint.per-file-ignores]` for `src/**/bump_version.py` with `D` and `T20`, matching the
+intent of this script: no Google docstrings required, and `print()` is allowed for the version line.
+
 ---
 
 ### `sync_skip_if_exists.py`

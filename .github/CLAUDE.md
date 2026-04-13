@@ -42,7 +42,8 @@ The release workflow can be triggered two ways:
 
 1. **Manually** via `workflow_dispatch` — choose a bump type (`patch`/`minor`/`major`) or
    supply an explicit `X.Y.Z` version. The workflow calls `scripts/bump_version.py`, commits
-   the version change, creates a tag, and publishes a GitHub Release.
+   the version change, creates a tag, and publishes a GitHub Release. (Generated projects use
+   `src/<package>/common/bump_version.py` instead; both print the new version on stdout.)
 
 2. **On tag push** (`v*`) — skips the bump step and publishes a release for the existing tag.
    Use this when you create a tag manually (e.g. via the `/release` Claude command).

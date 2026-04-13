@@ -148,8 +148,10 @@ The `.claude/` directory holds Claude Code slash-command prompts and PostToolUse
 
 - Line length: 100 characters
 - Python {{ python_min_version }}+
-- Ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `TCH`, `PGH`, `PT`, `ARG`, `D`, `C90`, `PERF`.
-  Rule `E501` is ignored (handled by the formatter). Test files are exempt from `D` and `ARG`.
+- Ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `TCH`, `PGH`, `PT`, `ARG`, `D`, `C90`, `PERF`, `T20`.
+  Rule `E501` is ignored (handled by the formatter).
+  `per-file-ignores`: `tests/**` → `ARG`, `D`, `T20`; `scripts/**` → `T20`;
+  `src/**/bump_version.py` → `D`, `T20` (PEP 440 release helper; prints the new version for CI).
 - Docstring convention: **Google style** (enforced by ruff `D` rules + `pydocstyle.convention = "google"`).
 - McCabe complexity: max 10 per function.
 - Type annotations required on all public functions and methods (basedpyright `standard` mode).
