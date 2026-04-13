@@ -8,7 +8,6 @@ optional features are gated properly.
 
 | Path | Purpose |
 |---|---|
-| `constants.py` | Shared `REPO_ROOT`, `TEMPLATE_ROOT`, and `COPIER_YAML` for imports from nested packages |
 | `conftest.py` | Top-level pytest fixtures shared across all test tiers |
 | `unit/` | Fast isolated tests for automation scripts in `scripts/` |
 | `unit/conftest.py` | Fixtures shared within the unit tier |
@@ -94,14 +93,29 @@ optional features are gated properly.
 
 ## Running tests
 
-`pyproject.toml` sets `pythonpath = ["."]` under `[tool.pytest.ini_options]` so nested test
-packages can import `tests.constants`.
+`pyproject.toml` sets `pythonpath = ["."]` under `[tool.pytest.ini_options]` so scripts
+under `scripts/` are importable in tests without package prefixes.
 ```bash
 just test               # run all tests (quiet)
 just test-parallel      # run all tests in parallel with pytest-xdist
 just coverage           # run with coverage report
 RUN_TEMPLATE_INTEGRATION=1 just test   # include slow integration tests
 ```
+
+## Path constants — no shared file
+
+Do **not** create a shared constants file (e.g. `constants.py`) for path values.
+Define path constants at the top of each test file that needs them:
+
+```python
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # adjust depth as needed
+TEMPLATE_ROOT = REPO_ROOT / "template"
+COPIER_YAML = REPO_ROOT / "copier.yml"
+```
+
+Constants are trivial one-liners; a shared module adds indirection with no benefit.
 
 ## Adding a new test
 

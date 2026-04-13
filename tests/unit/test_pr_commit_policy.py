@@ -9,11 +9,13 @@ import sys
 from pathlib import Path
 
 import pytest
-from constants import REPO_ROOT
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 SCRIPT = REPO_ROOT / "scripts" / "pr_commit_policy.py"
 _SPEC = importlib.util.spec_from_file_location("pr_commit_policy", SCRIPT)
-assert _SPEC and _SPEC.loader
+assert _SPEC is not None
+assert _SPEC.loader is not None
 _pcp = importlib.util.module_from_spec(_SPEC)
 _SPEC.loader.exec_module(_pcp)
 pcp = _pcp

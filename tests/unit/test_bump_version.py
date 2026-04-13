@@ -9,11 +9,13 @@ from pathlib import Path
 from typing import Literal, cast
 
 import pytest
-from constants import REPO_ROOT
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 _SCRIPT = REPO_ROOT / "scripts" / "bump_version.py"
 _SPEC = importlib.util.spec_from_file_location("bump_version", _SCRIPT)
-assert _SPEC and _SPEC.loader
+assert _SPEC is not None
+assert _SPEC.loader is not None
 _mod = importlib.util.module_from_spec(_SPEC)
 sys.modules["bump_version"] = _mod
 _SPEC.loader.exec_module(_mod)
@@ -23,14 +25,16 @@ bv = _mod
 def test_version_parse_accepts_simple_triplet() -> None:
     """Parse a standard ``X.Y.Z`` string into components."""
     v = bv.Version.parse("  2.10.3  ")
-    assert v.major == 2 and v.minor == 10 and v.patch == 3
+    assert v.major == 2
+    assert v.minor == 10
+    assert v.patch == 3
 
 
 def test_version_parse_rejects_invalid() -> None:
     """Non-numeric or wrong segment counts raise ``ValueError``."""
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"\d+\.\d+\.\d+"):
         bv.Version.parse("1.2")
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"\d+\.\d+\.\d+"):
         bv.Version.parse("a.b.c")
 
 
@@ -45,7 +49,7 @@ def test_version_parse_rejects_invalid() -> None:
 def test_version_bumped(kind: str, expected: tuple[int, int, int]) -> None:
     """``bumped`` applies patch, minor, or major semantics."""
     base = bv.Version(1, 2, 3)
-    out = base.bumped(cast(Literal["patch", "minor", "major"], kind))
+    out = base.bumped(cast("Literal['patch', 'minor', 'major']", kind))
     assert (out.major, out.minor, out.patch) == expected
 
 

@@ -5,8 +5,17 @@ description = "Copier template repository for generating uv-first Python project
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
+keywords = ["python", "template", "copier", "uv", "ruff"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Typing :: Typed",
+]
 
-dependencies = []
+dependencies = []  # Runtime dependencies go here
 
 [project.optional-dependencies]
 dev = [
@@ -27,6 +36,13 @@ dev = [
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+src = ["scripts", "tests"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = true
 
 [tool.ruff.lint]
 select = [
@@ -38,6 +54,10 @@ select = [
     "SIM",  # flake8-simplify
     "C4",   # flake8-comprehensions
     "RUF",  # ruff-specific rules
+    "TCH",  # flake8-type-checking
+    "PGH",  # pygrep-hooks
+    "PT",   # flake8-pytest-style
+    "ARG",  # flake8-unused-arguments
     "D",    # pydocstyle — enforce Google-style docstrings
     "C90",  # McCabe complexity
     "PERF", # perflint — catch performance anti-patterns
@@ -55,13 +75,13 @@ convention = "google"
 max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**"   = ["T20"]  # print() OK in tests; module/class/function docstrings enforced (D)
+"tests/**"   = ["ARG", "T20"]  # print() OK in tests; unused args OK (fixtures); D enforced
 "scripts/**" = ["T20"]  # CLI scripts may use print(); docstrings enforced (D)
 
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
-pythonpath = [".", "tests"]
+pythonpath = ["."]  # "." exposes scripts/
 addopts = ["-q", "--strict-markers", "--strict-config"]
 markers = [
     "e2e: End-to-end tests across the full stack or external systems",
@@ -78,19 +98,48 @@ markers = [
 
 [tool.coverage.run]
 branch = true
-source = ["tests"]
-omit = ["**/__init__.py"]
+source = ["scripts"]  # measure application code, not the test suite
+omit = [
+    "**/__init__.py",
+    "*/tests/*",
+    "*/__pycache__/*",
+]
 
 [tool.coverage.report]
 precision = 2
 show_missing = true
 skip_covered = false
+fail_under = 80
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+    "@overload",
+]
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.coverage.html]
+directory = "htmlcov"
 
 [tool.basedpyright]
 pythonVersion = "3.11"
 typeCheckingMode = "standard"
 reportMissingImports = true
-include = ["tests", "scripts"]
+include = ["scripts", "tests"]
+exclude = [
+    "**/__pycache__",
+    "**/.*",
+    "build",
+    "dist",
+]
+venvPath = "."
+venv = ".venv"
 reportImplicitOverride = false
 reportMissingTypeStubs = false
 reportUnknownMemberType = false
@@ -98,7 +147,8 @@ reportUnknownArgumentType = false
 reportUnknownVariableType = false
 
 # Commitizen: conventional commits (`cz commit`), commit-msg validation via pre-commit.
+# version_provider = "pep621" means commitizen reads/writes [project].version — no duplicate.
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.0.8"
+version_provider = "pep621"
 tag_format = "v$version"

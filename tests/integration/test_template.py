@@ -18,9 +18,11 @@ from typing import cast
 
 import pytest
 import yaml
-from constants import COPIER_YAML, REPO_ROOT, TEMPLATE_ROOT
 from copier import run_copy
 
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+TEMPLATE_ROOT = REPO_ROOT / "template"
+COPIER_YAML = REPO_ROOT / "copier.yml"
 TEMPLATE_GIT_SRC = f"git+{Path('.').resolve().as_uri()}"
 
 
@@ -78,7 +80,7 @@ def load_copier_answers(project_dir: Path) -> dict[str, object]:
     """Load ``.copier-answers.yml`` from a generated project."""
     answers_path = project_dir / ".copier-answers.yml"
     assert answers_path.is_file(), f"Missing {answers_path}"
-    raw = cast(object, yaml.safe_load(answers_path.read_text(encoding="utf-8")))
+    raw = cast("object", yaml.safe_load(answers_path.read_text(encoding="utf-8")))
     raw_map = require_mapping(raw, name="copier_answers")
     return dict(raw_map)
 
@@ -203,19 +205,19 @@ def copy_with_data_from_worktree(
 def load_pyproject(project_dir: Path) -> dict[str, object]:
     """Parse ``pyproject.toml`` from a generated project."""
     with (project_dir / "pyproject.toml").open("rb") as handle:
-        raw = cast(object, tomllib.load(handle))
+        raw = cast("object", tomllib.load(handle))
         assert isinstance(raw, dict)
-        return cast(dict[str, object], raw)
+        return cast("dict[str, object]", raw)
 
 
 def require_mapping(value: object, *, name: str) -> Mapping[str, object]:
     """Assert ``value`` is a mapping with string keys; return it typed for callers."""
     if not isinstance(value, Mapping):
         raise AssertionError(f"{name} must be a mapping, got {type(value).__name__}")
-    value_map = cast(Mapping[object, object], value)
+    value_map = cast("Mapping[object, object]", value)
     if not all(isinstance(key, str) for key in value_map):
         raise AssertionError(f"{name} must have string keys")
-    return cast(Mapping[str, object], value_map)
+    return cast("Mapping[str, object]", value_map)
 
 
 def require_sequence(value: object, *, name: str) -> Sequence[object]:
@@ -592,7 +594,7 @@ def test_generate_numpy_only(tmp_path: Path) -> None:
     pyproject = load_pyproject(test_dir)
     project = require_mapping(pyproject.get("project"), name="pyproject.project")
     deps_seq = require_sequence(project["dependencies"], name="pyproject.project.dependencies")
-    deps = [cast(str, d) for d in deps_seq]
+    deps = [cast("str", d) for d in deps_seq]
     assert any("numpy" in d for d in deps), "numpy should be in dependencies"
     assert not any("pandas" in d for d in deps), "pandas should NOT be in dependencies"
     # Verify the generated test file doesn't reference pandas
@@ -616,7 +618,7 @@ def test_generate_pandas_only(tmp_path: Path) -> None:
     pyproject = load_pyproject(test_dir)
     project = require_mapping(pyproject.get("project"), name="pyproject.project")
     deps_seq = require_sequence(project["dependencies"], name="pyproject.project.dependencies")
-    deps = [cast(str, d) for d in deps_seq]
+    deps = [cast("str", d) for d in deps_seq]
     assert any("pandas" in d for d in deps), "pandas should be in dependencies"
     assert not any("numpy" in d for d in deps), "numpy should NOT be in dependencies"
     test_core = (test_dir / "tests" / "unit" / "test_core.py").read_text(encoding="utf-8")
@@ -921,7 +923,8 @@ def test_copier_recopy_respects_skip_if_exists_for_user_edited_files(tmp_path: P
     assert "# USER_ENV_MARKER" in env_example.read_text(encoding="utf-8")
     core_text = core_py.read_text(encoding="utf-8")
     assert "# USER_CORE_MARKER" not in core_text
-    assert "<<<<<<<" not in core_text and ">>>>>>>" not in core_text
+    assert "<<<<<<<" not in core_text
+    assert ">>>>>>>" not in core_text
 
 
 def test_answers_file_matches_explicit_copy_data(tmp_path: Path) -> None:
@@ -982,7 +985,7 @@ def test_pyproject_and_tree_match_explicit_copy_data(tmp_path: Path) -> None:
     assert authors_seq[0] == {"name": "Harbor Lab", "email": "dev@harbor.lab"}
 
     deps_seq = require_sequence(proj["dependencies"], name="pyproject.project.dependencies")
-    deps = [cast(str, d) for d in deps_seq]
+    deps = [cast("str", d) for d in deps_seq]
     assert not any("pandas" in d for d in deps)
     assert not any("numpy" in d for d in deps)
 
@@ -1076,7 +1079,7 @@ def test_include_docs_and_git_cliff_render_docs_extra_in_generated_pyproject(
     docs_deps = require_sequence(
         optional_deps.get("docs"), name="pyproject.project.optional-dependencies.docs"
     )
-    docs_dep_strings = [cast(str, dep) for dep in docs_deps]
+    docs_dep_strings = [cast("str", dep) for dep in docs_deps]
     assert any(dep.startswith("mkdocs>=") for dep in docs_dep_strings)
 
     dependency_groups = require_mapping(
@@ -1085,7 +1088,7 @@ def test_include_docs_and_git_cliff_render_docs_extra_in_generated_pyproject(
     changelog = require_sequence(
         dependency_groups.get("changelog"), name="pyproject.dependency-groups.changelog"
     )
-    assert any("git-cliff" in cast(str, dep) for dep in changelog)
+    assert any("git-cliff" in cast("str", dep) for dep in changelog)
 
 
 def test_no_logging_config_module_logging_in_common(tmp_path: Path) -> None:
@@ -1193,11 +1196,11 @@ def test_generated_pyproject_ruff_includes_print_rules(tmp_path: Path) -> None:
     test_dir = tmp_path / "ruff_t20"
     copy_with_data_from_worktree(test_dir, {"project_name": "Ruff T20", "include_docs": False})
     data = tomllib.loads((test_dir / "pyproject.toml").read_text(encoding="utf-8"))
-    ruff_lint = cast(Mapping[str, object], cast(Mapping[str, object], data["tool"])["ruff"])
-    lint = cast(Mapping[str, object], ruff_lint["lint"])
-    select = cast(list[str], lint["select"])
+    ruff_lint = cast("Mapping[str, object]", cast("Mapping[str, object]", data["tool"])["ruff"])
+    lint = cast("Mapping[str, object]", ruff_lint["lint"])
+    select = cast("list[str]", lint["select"])
     assert "T20" in select
-    per_file = cast(Mapping[str, list[str]], lint["per-file-ignores"])
+    per_file = cast("Mapping[str, list[str]]", lint["per-file-ignores"])
     assert "T20" in per_file["tests/**"]
     assert "D" not in per_file["tests/**"]
     assert "T20" in per_file["scripts/**"]
@@ -1218,7 +1221,7 @@ def test_generated_pyproject_pytest_markers_and_asyncio(tmp_path: Path) -> None:
         project.get("optional-dependencies"), name="pyproject.project.optional-dependencies"
     )
     test_deps = cast(
-        Sequence[str], require_sequence(optional.get("test"), name="optional-dependencies.test")
+        "Sequence[str]", require_sequence(optional.get("test"), name="optional-dependencies.test")
     )
     assert any(dep.startswith("pytest-asyncio") for dep in test_deps)
 
@@ -1226,7 +1229,7 @@ def test_generated_pyproject_pytest_markers_and_asyncio(tmp_path: Path) -> None:
     pytest_ini = require_mapping(tool.get("pytest"), name="tool.pytest")
     ini_options = require_mapping(pytest_ini.get("ini_options"), name="pytest.ini_options")
     markers = cast(
-        Sequence[str],
+        "Sequence[str]",
         require_sequence(ini_options.get("markers"), name="pytest.ini_options.markers"),
     )
     joined = "\n".join(markers)
