@@ -20,6 +20,8 @@ import pytest
 import yaml
 from copier import run_copy
 
+from tests._paths import COPIER_YAML, REPO_ROOT, TEMPLATE_ROOT
+
 TEMPLATE_GIT_SRC = f"git+{Path('.').resolve().as_uri()}"
 
 
@@ -178,13 +180,12 @@ def copy_with_data_from_worktree(
     Use this helper for regression tests that should fail immediately during local development
     before a commit is created.
     """
-    template_root = Path(__file__).resolve().parent.parent
     cmd: list[str] = [
         "copier",
         "copy",
         "--vcs-ref",
         "HEAD",
-        str(template_root),
+        str(REPO_ROOT),
         str(dest),
         "--trust",
         "--defaults",
@@ -231,7 +232,7 @@ def test_skip_if_exists_preserves_readme_on_update() -> None:
     Copier must not overwrite user-edited files such as ``README.md`` or
     ``CLAUDE.md`` when the user runs ``copier update``.
     """
-    copier_yaml = Path(__file__).resolve().parent.parent / "copier.yml"
+    copier_yaml = COPIER_YAML
     text = copier_yaml.read_text(encoding="utf-8")
     assert "README.md" in text
     assert "CONTRIBUTING.md" in text
@@ -366,7 +367,7 @@ def test_generate_defaults_only_cli(tmp_path: Path) -> None:
 
 def test_copier_yaml_has_no_codecov_token_prompt() -> None:
     """Codecov must be documented for CI secrets only — no Copier prompt for tokens."""
-    copier_yaml = Path(__file__).resolve().parent.parent / "copier.yml"
+    copier_yaml = COPIER_YAML
     text = copier_yaml.read_text(encoding="utf-8")
     assert "codecov_token:" not in text
 
@@ -1044,9 +1045,7 @@ def test_include_docs_and_git_cliff_keep_docs_extra_in_optional_dependencies(
 ) -> None:
     """Template order must keep ``docs`` in optional dependencies before ``[dependency-groups]``."""
     _ = tmp_path  # keep fixture signature consistent with neighboring tests
-    template = (
-        Path(__file__).resolve().parent.parent / "template" / "pyproject.toml.jinja"
-    ).read_text(encoding="utf-8")
+    template = (TEMPLATE_ROOT / "pyproject.toml.jinja").read_text(encoding="utf-8")
     docs_idx = template.index("docs = [")
     dep_groups_idx = template.index("[dependency-groups]")
     assert docs_idx < dep_groups_idx, (

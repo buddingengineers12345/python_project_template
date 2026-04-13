@@ -20,14 +20,17 @@ destination folder.
 │   ├── .claude/              # Claude hooks/commands/rules/skills for generated projects
 │   ├── .github/workflows/    # Generated CI/CD workflows
 │   └── …                    # pyproject.toml.jinja, justfile.jinja, CLAUDE.md.jinja, …
-├── tests/                    # pytest tests that render the template and assert output
-│   ├── test_template.py      # Main integration suite — copier copy + assertions
-│   ├── test_root_template_sync.py   # Tests for check_root_template_sync.py
-│   ├── test_repo_file_freshness.py  # Unit tests for repo_file_freshness.py
-│   ├── test_pr_commit_policy.py     # PR body + conventional commit rules
-│   ├── test_bump_version.py         # Version bump + pyproject I/O
-│   ├── test_sync_skip_if_exists.py  # copier.yml _skip_if_exists helpers
-│   └── test_check_root_template_sync.py  # CLI smoke (see test_root_template_sync for scenarios)
+├── tests/                    # pytest suite for this meta-repo (see tests/CLAUDE.md)
+│   ├── _paths.py             # REPO_ROOT / TEMPLATE_ROOT / COPIER_YAML for nested test modules
+│   ├── integration/
+│   │   └── test_template.py    # Copier copy/update integration suite
+│   └── scripts/              # mirrors scripts/ — one test module per automation script
+│       ├── test_bump_version.py
+│       ├── test_check_root_template_sync.py  # CLI smoke; scenarios in test_root_template_sync
+│       ├── test_pr_commit_policy.py
+│       ├── test_repo_file_freshness.py
+│       ├── test_root_template_sync.py
+│       └── test_sync_skip_if_exists.py
 ├── scripts/                  # Automation scripts for CI or local tasks (see scripts/CLAUDE.md)
 │   ├── repo_file_freshness.py    # Git-based freshness dashboard (→ docs/ + assets/)
 │   ├── bump_version.py           # PEP 440 version bumper (patch/minor/major)

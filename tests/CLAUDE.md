@@ -4,19 +4,15 @@ This directory contains pytest tests for the **Copier template meta-repo**. Test
 that the template renders correctly, that generated files have the right content, and that
 optional features are gated properly.
 
-## Test files
+## Layout
 
-| File | Purpose |
+| Path | Purpose |
 |---|---|
-| `test_template.py` | Main integration suite: renders the template and asserts output |
-| `test_pr_commit_policy.py` | Unit tests for `scripts/pr_commit_policy.py` (PR body + commit subject rules) |
-| `test_root_template_sync.py` | Tests for `scripts/check_root_template_sync.py` |
-| `test_check_root_template_sync.py` | CLI `--help` smoke test for the sync checker |
-| `test_repo_file_freshness.py` | Unit tests for `scripts/repo_file_freshness.py` |
-| `test_bump_version.py` | Unit tests for `scripts/bump_version.py` |
-| `test_sync_skip_if_exists.py` | Unit tests for `scripts/sync_skip_if_exists.py` |
+| `_paths.py` | Shared `REPO_ROOT`, `TEMPLATE_ROOT`, and `COPIER_YAML` for imports from nested packages |
+| `integration/test_template.py` | Copier copy/update integration suite |
+| `scripts/test_*.py` | Tests mirroring `scripts/*.py` (automation scripts under test) |
 
-## How `test_template.py` works
+## How `integration/test_template.py` works
 
 1. Each test function calls `copier copy` (via `run_copy` or `run_command`) with
    `--vcs-ref HEAD` so it uses the current uncommitted tree.
@@ -27,7 +23,7 @@ optional features are gated properly.
 5. An optional `RUN_TEMPLATE_INTEGRATION=1` environment variable enables smoke tests
    that actually run `uv lock` and other post-generation tasks.
 
-## Key helpers in `test_template.py`
+## Key helpers in `integration/test_template.py`
 
 | Helper | Purpose |
 |---|---|
@@ -75,7 +71,7 @@ optional features are gated properly.
 
 ### Root/template sync
 - `check_root_template_sync.py` policies stay consistent with root and `template/` files
-  (workflow pins, justfile parity, etc.); covered by `test_root_template_sync.py`.
+  (workflow pins, justfile parity, etc.); covered by `scripts/test_root_template_sync.py`.
 
 ### Package structure
 - `src/<package_name>/__init__.py`, `core.py`, `common/` modules all exist.
@@ -92,6 +88,9 @@ optional features are gated properly.
   see `test_github_repository_settings_doc_in_generated_project`.
 
 ## Running tests
+
+`pyproject.toml` sets `pythonpath = ["."]` under `[tool.pytest.ini_options]` so nested test
+packages can import `tests._paths`.
 
 ```bash
 just test               # run all tests (quiet)

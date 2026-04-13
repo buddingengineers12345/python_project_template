@@ -10,8 +10,9 @@ from typing import Literal, cast
 
 import pytest
 
-_REPO_ROOT = Path(__file__).resolve().parent.parent
-_SCRIPT = _REPO_ROOT / "scripts" / "bump_version.py"
+from tests._paths import REPO_ROOT
+
+_SCRIPT = REPO_ROOT / "scripts" / "bump_version.py"
 _SPEC = importlib.util.spec_from_file_location("bump_version", _SCRIPT)
 assert _SPEC and _SPEC.loader
 _mod = importlib.util.module_from_spec(_SPEC)

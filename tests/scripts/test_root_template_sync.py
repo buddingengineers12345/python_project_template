@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from tests._paths import REPO_ROOT
+
 
 def write_file(path: Path, content: str) -> None:
     """Create parent directories and write ``content`` to ``path`` as UTF-8 text."""
@@ -18,7 +20,7 @@ def run_sync_check(
     repo_root: Path, map_rel: str = "docs/map.yaml"
 ) -> subprocess.CompletedProcess[str]:
     """Run the root/template sync checker subprocess and return its result."""
-    script = Path(__file__).resolve().parent.parent / "scripts" / "check_root_template_sync.py"
+    script = REPO_ROOT / "scripts" / "check_root_template_sync.py"
     return subprocess.run(
         [
             sys.executable,

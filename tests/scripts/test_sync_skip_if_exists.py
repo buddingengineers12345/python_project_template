@@ -6,8 +6,9 @@ import importlib.util
 import sys
 from pathlib import Path
 
-_REPO_ROOT = Path(__file__).resolve().parent.parent
-_SCRIPT = _REPO_ROOT / "scripts" / "sync_skip_if_exists.py"
+from tests._paths import REPO_ROOT
+
+_SCRIPT = REPO_ROOT / "scripts" / "sync_skip_if_exists.py"
 _SPEC = importlib.util.spec_from_file_location("sync_skip_if_exists", _SCRIPT)
 assert _SPEC and _SPEC.loader
 _mod = importlib.util.module_from_spec(_SPEC)
@@ -63,4 +64,4 @@ def test_compute_desired_entries_includes_base(tmp_path: Path) -> None:
 
 def test_repo_root_points_at_workspace_parent() -> None:
     """``repo_root`` resolves to the directory containing ``scripts/``."""
-    assert ssi.repo_root() == _REPO_ROOT
+    assert ssi.repo_root() == REPO_ROOT

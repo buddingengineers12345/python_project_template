@@ -10,8 +10,9 @@ from pathlib import Path
 
 import pytest
 
-_REPO_ROOT = Path(__file__).resolve().parent.parent
-SCRIPT = _REPO_ROOT / "scripts" / "pr_commit_policy.py"
+from tests._paths import REPO_ROOT
+
+SCRIPT = REPO_ROOT / "scripts" / "pr_commit_policy.py"
 _SPEC = importlib.util.spec_from_file_location("pr_commit_policy", SCRIPT)
 assert _SPEC and _SPEC.loader
 _pcp = importlib.util.module_from_spec(_SPEC)

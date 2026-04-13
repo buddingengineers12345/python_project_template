@@ -21,6 +21,23 @@ tests/
 └── test_imports.py      # smoke test: every public symbol is importable
 ```
 
+### Meta-repo (this template repository)
+
+Generated projects follow the layout above. **This Copier meta-repository** has no `src/` tree;
+Python under test lives in `scripts/`. Keep pytest modules organized as:
+
+```
+tests/
+├── _paths.py            # REPO_ROOT, TEMPLATE_ROOT, COPIER_YAML (import from nested tests)
+├── integration/
+│   └── test_template.py # Copier copy/update integration suite
+└── scripts/
+    └── test_<script>.py # mirrors scripts/<script>.py
+```
+
+Do not flatten new tests into the top level of `tests/` unless they truly have no script or
+integration home.
+
 Files must be named `test_<module>.py`. Test functions must start with `test_`.
 
 ## Running tests

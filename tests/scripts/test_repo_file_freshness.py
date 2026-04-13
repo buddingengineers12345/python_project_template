@@ -8,6 +8,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from tests._paths import REPO_ROOT
+
 
 def run_command(
     cmd: list[str],
@@ -52,7 +54,7 @@ def write_ignore(repo: Path, data: object) -> None:
 
 def run_script(repo: Path, *extra_args: str) -> None:
     """Run ``repo_file_freshness.py`` against ``repo`` with a fixed reference time."""
-    script = Path(__file__).resolve().parent.parent / "scripts" / "repo_file_freshness.py"
+    script = REPO_ROOT / "scripts" / "repo_file_freshness.py"
     run_command(
         [
             sys.executable,

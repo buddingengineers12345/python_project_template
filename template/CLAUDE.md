@@ -133,4 +133,4 @@ After any change to a `.jinja` file or `copier.yml`:
 3. Clean up: `rm -rf /tmp/test-output`
 
 Every new Copier variable or template file must have a corresponding test in
-`tests/test_template.py`.
+`tests/integration/test_template.py`.
