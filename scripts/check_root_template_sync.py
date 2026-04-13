@@ -72,7 +72,9 @@ def _check_workflow_action_versions(check: dict[str, Any], repo_root: Path) -> l
     return violations
 
 
-def _workflow_pair_violations(check_id: str, pair: dict[str, str], repo_root: Path) -> list[Violation]:
+def _workflow_pair_violations(
+    check_id: str, pair: dict[str, str], repo_root: Path
+) -> list[Violation]:
     root_path = repo_root / pair["root"]
     tpl_path = repo_root / pair["template"]
     if not root_path.is_file():
@@ -182,7 +184,9 @@ def _extract_assignment_keys(section_text: str) -> set[str]:
 
 
 def _extract_select_codes(section_text: str) -> set[str]:
-    select_match = re.search(r"^\s*select\s*=\s*\[(.*?)\]", section_text, flags=re.MULTILINE | re.DOTALL)
+    select_match = re.search(
+        r"^\s*select\s*=\s*\[(.*?)\]", section_text, flags=re.MULTILINE | re.DOTALL
+    )
     if not select_match:
         return set()
     body = select_match.group(1)
@@ -194,7 +198,11 @@ def _check_pyproject_sections(check: dict[str, Any], repo_root: Path) -> list[Vi
     root_rel = check.get("root")
     template_rel = check.get("template")
     sections = check.get("sections")
-    if not isinstance(root_rel, str) or not isinstance(template_rel, str) or not isinstance(sections, list):
+    if (
+        not isinstance(root_rel, str)
+        or not isinstance(template_rel, str)
+        or not isinstance(sections, list)
+    ):
         raise ValueError(f"{check_id}: root/template/sections are required")
 
     root_path = repo_root / root_rel
@@ -217,7 +225,9 @@ def _collect_pyproject_section_violations(
 ) -> list[Violation]:
     violations: list[Violation] = []
     for section_def in sections:
-        violations.extend(_pyproject_section_violations(check_id, section_def, root_text, template_text))
+        violations.extend(
+            _pyproject_section_violations(check_id, section_def, root_text, template_text)
+        )
     return violations
 
 
@@ -242,8 +252,16 @@ def _pyproject_section_violations(
         return [Violation(check_id, f"missing template section: [{section_name}]")]
 
     violations: list[Violation] = []
-    violations.extend(_required_key_violations(check_id, section_name, root_section, template_section, section_def))
-    violations.extend(_required_select_code_violations(check_id, section_name, root_section, template_section, section_def))
+    violations.extend(
+        _required_key_violations(
+            check_id, section_name, root_section, template_section, section_def
+        )
+    )
+    violations.extend(
+        _required_select_code_violations(
+            check_id, section_name, root_section, template_section, section_def
+        )
+    )
     return violations
 
 
@@ -265,9 +283,13 @@ def _required_key_violations(
         if not isinstance(key, str):
             continue
         if key not in root_keys:
-            violations.append(Violation(check_id, f"[{section_name}] missing key in root baseline: {key}"))
+            violations.append(
+                Violation(check_id, f"[{section_name}] missing key in root baseline: {key}")
+            )
         if key not in template_keys:
-            violations.append(Violation(check_id, f"[{section_name}] missing key in template: {key}"))
+            violations.append(
+                Violation(check_id, f"[{section_name}] missing key in template: {key}")
+            )
     return violations
 
 
@@ -289,9 +311,13 @@ def _required_select_code_violations(
         if not isinstance(code, str):
             continue
         if code not in root_codes:
-            violations.append(Violation(check_id, f"[{section_name}] root select list missing code: {code}"))
+            violations.append(
+                Violation(check_id, f"[{section_name}] root select list missing code: {code}")
+            )
         if code not in template_codes:
-            violations.append(Violation(check_id, f"[{section_name}] template select list missing code: {code}"))
+            violations.append(
+                Violation(check_id, f"[{section_name}] template select list missing code: {code}")
+            )
     return violations
 
 

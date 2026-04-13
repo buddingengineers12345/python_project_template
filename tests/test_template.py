@@ -914,12 +914,14 @@ def test_include_git_cliff_adds_dependency_group(tmp_path: Path) -> None:
     assert "git-cliff" in raw
 
 
-def test_include_docs_and_git_cliff_keep_docs_extra_in_optional_dependencies(tmp_path: Path) -> None:
+def test_include_docs_and_git_cliff_keep_docs_extra_in_optional_dependencies(
+    tmp_path: Path,
+) -> None:
     """Template order must keep ``docs`` in optional dependencies before ``[dependency-groups]``."""
     _ = tmp_path  # keep fixture signature consistent with neighboring tests
-    template = (Path(__file__).resolve().parent.parent / "template" / "pyproject.toml.jinja").read_text(
-        encoding="utf-8"
-    )
+    template = (
+        Path(__file__).resolve().parent.parent / "template" / "pyproject.toml.jinja"
+    ).read_text(encoding="utf-8")
     docs_idx = template.index("docs = [")
     dep_groups_idx = template.index("[dependency-groups]")
     assert docs_idx < dep_groups_idx, (
@@ -928,7 +930,9 @@ def test_include_docs_and_git_cliff_keep_docs_extra_in_optional_dependencies(tmp
     )
 
 
-def test_include_docs_and_git_cliff_render_docs_extra_in_generated_pyproject(tmp_path: Path) -> None:
+def test_include_docs_and_git_cliff_render_docs_extra_in_generated_pyproject(
+    tmp_path: Path,
+) -> None:
     """Rendered project must keep ``docs`` under ``project.optional-dependencies``."""
     test_dir = tmp_path / "docs_and_cliff_rendered"
     copy_with_data_from_worktree(

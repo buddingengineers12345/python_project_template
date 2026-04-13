@@ -25,13 +25,14 @@ _set_env:
 # -------------------------------------------------------------------------
 
 fmt:
-    @uv run --active ruff format .
+    @uv run ruff format .
 
 lint:
-    @uv run --active ruff check .
+    @uv run ruff check .
 
 fix:
-    @uv run --active ruff check --fix .
+    @uv run ruff format .
+    @uv run ruff check --fix .
 
 # Format check (read-only) — matches GitHub Actions
 fmt-check:
@@ -40,7 +41,7 @@ fmt-check:
 # Check docstring coverage on all non-test Python files
 docs-check:
     @echo "=== Docstring coverage check ==="
-    @uv run --active ruff check --select D .
+    @uv run ruff check --select D .
     @echo "✓ Docstring check complete"
 
 # Run all static analysis + docstring checks (pre-merge review)
@@ -59,7 +60,7 @@ review:
 # -------------------------------------------------------------------------
 
 type:
-    @uv run --active basedpyright
+    @uv run basedpyright
 
 # -------------------------------------------------------------------------
 # Testing
@@ -72,34 +73,34 @@ type:
 
 # Run tests with minimal output (default, fast, token-efficient)
 test:
-    @uv run --active pytest tests/
+    @uv run pytest tests/
 
 # Run only slow tests
 slow:
-    @uv run --active pytest tests/ -m slow
+    @uv run pytest tests/ -m slow
 
 # Run tests in parallel with minimal output
 test-parallel:
-    @uv run --active pytest tests/ -n auto
+    @uv run pytest tests/ -n auto
 
 # Run tests with verbose output (shows test names, INFO logs)
 test-verbose:
-    @uv run --active pytest tests/ -v
+    @uv run pytest tests/ -v
 
 # Run tests with full debug output (shows all DEBUG logs)
 test-debug:
-    @uv run --active pytest tests/ -vv --show-debug
+    @uv run pytest tests/ -vv --show-debug
 
 # Re-run only the tests that failed in the last run
 test-lf:
-    @uv run --active pytest tests/ --lf
+    @uv run pytest tests/ --lf
 
 # Stop on first test failure (fast feedback)
 test-first-fail:
-    @uv run --active pytest tests/ -x
+    @uv run pytest tests/ -x
 
 coverage:
-    @uv run --active pytest --cov --cov-report=term-missing --cov-report=xml
+    @uv run pytest --cov --cov-report=term-missing --cov-report=xml
 
 # Test command matching GitHub CI (3.11 path in .github/workflows/tests.yml)
 test-ci:
@@ -110,11 +111,11 @@ test-ci:
 # -------------------------------------------------------------------------
 
 precommit-install:
-    @uv run --active pre-commit install
-    @uv run --active pre-commit install --hook-type pre-push
+    @uv run pre-commit install
+    @uv run pre-commit install --hook-type pre-push
 
 precommit:
-    @uv run --active pre-commit run --all-files --verbose
+    @uv run pre-commit run --all-files --verbose
 
 # Dependency audit matching .github/workflows/security.yml (pip-audit).
 # Uses ``uv run --with pip-audit`` so the tool runs with the project Python (``uv tool run``/``uvx``
@@ -178,7 +179,6 @@ clean:
 
 static_check:
     @just fix
-    @just fmt
     @just lint
     @just type
     @just docs-check
@@ -197,7 +197,6 @@ ci-check:
 
 ci:
     @just fix
-    @just fmt
     @just ci-check
 
 # -------------------------------------------------------------------------
@@ -210,9 +209,9 @@ doctor:
     @uv --version
     @echo ""
     @echo "=== Tools ==="
-    @uv run --active ruff --version
-    @uv run --active basedpyright --version || echo "basedpyright not installed"
-    @uv run --active pytest --version
+    @uv run ruff --version
+    @uv run basedpyright --version || echo "basedpyright not installed"
+    @uv run pytest --version
     @echo ""
     @echo "=== Project ==="
     @echo "Repo: python_project_template"
@@ -224,8 +223,8 @@ doctor:
 
 # Generate repo freshness dashboard + JSON artifacts
 freshness:
-    @uv run --active python scripts/repo_file_freshness.py
+    @uv run python scripts/repo_file_freshness.py
 
 # Validate root/template sync map and parity checks
 sync-check:
-    @uv run --active python scripts/check_root_template_sync.py
+    @uv run python scripts/check_root_template_sync.py

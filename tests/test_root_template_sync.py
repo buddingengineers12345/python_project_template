@@ -11,7 +11,9 @@ def write_file(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
-def run_sync_check(repo_root: Path, map_rel: str = "docs/map.yaml") -> subprocess.CompletedProcess[str]:
+def run_sync_check(
+    repo_root: Path, map_rel: str = "docs/map.yaml"
+) -> subprocess.CompletedProcess[str]:
     script = Path(__file__).resolve().parent.parent / "scripts" / "check_root_template_sync.py"
     return subprocess.run(
         [
@@ -101,7 +103,7 @@ def test_sync_check_passes_for_matching_pairs_and_sections(tmp_path: Path) -> No
             "{% if true %}\n{% endif %}\n"
             "[tool.ruff]\n"
             "line-length = 100\n"
-            'target-version = "py{{ python_min_version | replace(\'.\', \'\') }}"\n\n'
+            "target-version = \"py{{ python_min_version | replace('.', '') }}\"\n\n"
             "[tool.ruff.lint]\n"
             'select = ["D", "T20", "UP"]\n'
             'ignore = ["E501"]\n'
@@ -162,7 +164,9 @@ def test_sync_check_fails_when_required_pyproject_key_missing(tmp_path: Path) ->
     }
     write_file(repo / "docs/map.yaml", json.dumps(map_data, indent=2))
     write_file(repo / "pyproject.toml", '[tool.basedpyright]\ntypeCheckingMode = "standard"\n')
-    write_file(repo / "template/pyproject.toml.jinja", "[tool.basedpyright]\npythonVersion = \"3.11\"\n")
+    write_file(
+        repo / "template/pyproject.toml.jinja", '[tool.basedpyright]\npythonVersion = "3.11"\n'
+    )
 
     result = run_sync_check(repo)
     assert result.returncode == 1
