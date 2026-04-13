@@ -31,12 +31,14 @@ _skip_if_exists:
   - .github/PULL_REQUEST_TEMPLATE.md
   - CLAUDE.md
   - CONTRIBUTING.md
+  - env.example
   - mkdocs.yml
   - pyproject.toml
   - README.md
   - SECURITY.md
   - src/{{ package_name }}/__init__.py
   - src/{{ package_name }}/common/bump_version.py
+
 
 
 # -------------------------------------------------------------------------

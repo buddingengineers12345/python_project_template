@@ -16,6 +16,7 @@ from pathlib import Path
 # Template-relative paths (POSIX) → destination path literals for ``_skip_if_exists`` (after render).
 # ``{{ package_name }}`` is preserved for Copier/Jinja output paths.
 TEMPLATE_PATH_TO_SKIP_ENTRY: dict[str, str] = {
+    "template/env.example.jinja": "env.example",
     "template/README.md.jinja": "README.md",
     "template/CONTRIBUTING.md.jinja": "CONTRIBUTING.md",
     "template/SECURITY.md.jinja": "SECURITY.md",
@@ -37,6 +38,7 @@ BASE_SKIP_ENTRIES: list[str] = [
     "CONTRIBUTING.md",
     "SECURITY.md",
     "CLAUDE.md",
+    "env.example",
     "src/{{ package_name }}/__init__.py",
     "mkdocs.yml",
     "docs/",

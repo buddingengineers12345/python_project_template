@@ -228,6 +228,7 @@ def test_skip_if_exists_preserves_readme_on_update() -> None:
     assert "CONTRIBUTING.md" in text
     assert "SECURITY.md" in text
     assert "CLAUDE.md" in text
+    assert "env.example" in text
     assert "_skip_if_exists:" in text
     assert '"*.md"' not in text
     assert "codecov_token:" not in text
@@ -645,9 +646,12 @@ def test_env_example_rendered(tmp_path: Path) -> None:
     The `env.example` file should be copied to projects so contributors
     can see what environment variables are needed. It's named env.example
     (not .env.example) because Copier excludes .env* files as a safety feature.
+
+    Uses :func:`copy_with_data_from_worktree` so the latest ``template/env.example.jinja``
+    is exercised (``copy_with_data`` renders from the last git commit only).
     """
     test_dir = tmp_path / "test_env_example"
-    copy_with_data(
+    copy_with_data_from_worktree(
         test_dir,
         {
             "project_name": "Env Example Test",
@@ -659,10 +663,12 @@ def test_env_example_rendered(tmp_path: Path) -> None:
     content = env_example.read_text(encoding="utf-8")
     # Verify file has meaningful content
     assert len(content.strip()) > 0, "env.example file is empty"
-    # Verify it contains common sections/comments
-    assert "Application Configuration" in content or "LOG_LEVEL" in content, (
-        "env.example should contain example environment variable names or sections"
-    )
+    # Logging manager contract (template/src/.../common/logging_manager.py.jinja)
+    assert "EXECUTION_CONTEXT" in content
+    assert "HUMAN_LOG_LEVEL" in content
+    assert "LLM_LOG_LEVEL" in content
+    assert "ANTHROPIC_API_KEY" in content
+    assert "HUMAN_DEV" in content
 
 
 @pytest.mark.skip(reason="Environment issue: basedpyright not available in post-gen tasks")
@@ -797,6 +803,116 @@ def test_copier_update_exits_zero_after_copy_and_commit(tmp_path: Path) -> None:
         check=False,
     )
     assert result.returncode == 0, f"stderr:\n{result.stderr}\nstdout:\n{result.stdout}"
+
+
+def test_copier_recopy_respects_skip_if_exists_for_user_edited_files(tmp_path: Path) -> None:
+    """Skipped paths survive ``copier recopy``; other rendered files come from the template.
+
+    ``copier update`` attempts to preserve git diffs and may emit inline merge conflicts on changed
+    files. ``copier recopy`` reapplies the template as on first copy (keeping answers) while still
+    honouring ``_skip_if_exists``, which matches the contract for README, ``env.example``, and
+    template-owned modules such as ``core.py``.
+    """
+    template_repo = tmp_path / "template_repo"
+    test_dir = tmp_path / "update_skip_contract"
+
+    _ = shutil.copytree(
+        Path("."),
+        template_repo,
+        dirs_exist_ok=True,
+        ignore=shutil.ignore_patterns(
+            ".git",
+            ".venv",
+            "__pycache__",
+            "*.pyc",
+            ".ruff_cache",
+            ".pytest_cache",
+            "files.zip",
+            "temp",
+        ),
+    )
+    _ = run_command(["git", "init"], cwd=template_repo)
+    _ = run_command(["git", "config", "user.email", "test@example.com"], cwd=template_repo)
+    _ = run_command(["git", "config", "user.name", "Template Test"], cwd=template_repo)
+    _ = run_command(["git", "add", "-A"], cwd=template_repo)
+    _ = run_command(
+        ["git", "commit", "--no-verify", "-m", "chore: init template repo"],
+        cwd=template_repo,
+    )
+
+    vcs_src = f"git+file://{template_repo}"
+    _ = run_command(
+        [
+            "copier",
+            "copy",
+            "--vcs-ref",
+            "HEAD",
+            vcs_src,
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+            "--data",
+            "project_name=Skip Contract",
+            "--data",
+            "include_docs=false",
+        ]
+    )
+    _remove_empty_optional_artifacts(
+        test_dir,
+        {
+            "package_name": "skip_contract",
+            "include_cli": False,
+            "include_git_cliff": True,
+        },
+    )
+    _prune_docs_when_disabled(test_dir, {"include_docs": False})
+
+    _ = run_command(["git", "init"], cwd=test_dir)
+    git_commit_all(test_dir, "chore: initial generated project")
+
+    readme = test_dir / "README.md"
+    env_example = test_dir / "env.example"
+    core_py = test_dir / "src" / "skip_contract" / "core.py"
+    assert core_py.is_file(), f"expected {core_py}"
+
+    for path, marker in (
+        (readme, "\n# USER_README_MARKER\n"),
+        (env_example, "\n# USER_ENV_MARKER\n"),
+        (core_py, "\n# USER_CORE_MARKER\n"),
+    ):
+        with path.open("a", encoding="utf-8") as handle:
+            _ = handle.write(marker)
+
+    git_commit_all(test_dir, "chore: user markers before recopy")
+
+    result = run_command(
+        [
+            "copier",
+            "recopy",
+            "--force",
+            "--trust",
+            "--skip-tasks",
+            "--vcs-ref",
+            "HEAD",
+        ],
+        cwd=test_dir,
+        check=False,
+    )
+    if result.returncode != 0 and (
+        "pathspec" in result.stderr or "did not match any file" in result.stderr
+    ):
+        pytest.skip(
+            "Copier could not check out the template commit in its temp clone; "
+            "skip-if-exists contract was not exercised."
+        )
+    assert result.returncode == 0, f"stderr:\n{result.stderr}\nstdout:\n{result.stdout}"
+
+    assert "# USER_README_MARKER" in readme.read_text(encoding="utf-8")
+    assert "# USER_ENV_MARKER" in env_example.read_text(encoding="utf-8")
+    core_text = core_py.read_text(encoding="utf-8")
+    assert "# USER_CORE_MARKER" not in core_text
+    assert "<<<<<<<" not in core_text and ">>>>>>>" not in core_text
 
 
 def test_answers_file_matches_explicit_copy_data(tmp_path: Path) -> None:
