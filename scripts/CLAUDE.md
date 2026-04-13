@@ -67,9 +67,9 @@ Bumps the PEP 440 version string in `pyproject.toml`.
 via `$(python scripts/bump_version.py --bump patch)`.
 
 **Generated projects:** Copier renders `src/<package>/common/bump_version.py` from
-`template/.../bump_version.py.jinja`. The generated `pyproject.toml` includes
-`[tool.ruff.lint.per-file-ignores]` for `src/**/bump_version.py` with `D` and `T20`, matching the
-intent of this script: no Google docstrings required, and `print()` is allowed for the version line.
+`template/.../bump_version.py.jinja`. That module uses Google-style docstrings like the rest of
+`src/`; the generated `pyproject.toml` does not exempt it from ruff `D`. The version line is emitted
+via `logging_manager.write_machine_stdout_line` (T20 still enforces no `print()` in that file).
 
 ---
 

@@ -2,7 +2,9 @@
 
 This directory is the **Copier template subdirectory** (`_subdirectory: template` in `copier.yml`).
 Everything here is rendered by Copier into the destination project. Files with a `.jinja` suffix are
-processed as Jinja2; files without it are copied verbatim.
+processed as Jinja2; files without it are copied verbatim. **`CLAUDE.md.jinja`** (rendered as
+`CLAUDE.md` in generated repos) enforces **logging only via `common.logging_manager` public APIs**
+and **preferring `src/<package>/common/`** over duplicating utilities in other package modules.
 
 > [!IMPORTANT]
 > Do **not** run Python or shell tools directly inside this directory — it is source material,
@@ -18,7 +20,7 @@ template/
 │   ├── {% if include_cli %}cli.py{% endif %}.jinja   # Typer CLI (optional)
 │   └── common/                      # Shared utilities (always included)
 │       ├── __init__.py.jinja
-│       ├── bump_version.py.jinja    # PEP 440 version bumper (_skip_if_exists); ruff ignores D+T20 in pyproject
+│       ├── bump_version.py.jinja    # PEP 440 version bumper (_skip_if_exists); Google docstrings (ruff D)
 │       ├── decorators.py.jinja      # Retry, timing, and other decorators
 │       ├── file_manager.py.jinja    # File I/O helpers
 │       ├── logging_manager.py.jinja # structlog setup (HUMAN / LLM modes)

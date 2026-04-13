@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+"""Bump the ``[project].version`` field in the meta-repo ``pyproject.toml``.
+
+Used by ``.github/workflows/release.yml`` and local release flows. Writes the updated file and
+prints the new PEP 440 version on stdout for shell substitution.
+"""
+
 import argparse
 import re
 from dataclasses import dataclass
@@ -19,18 +25,40 @@ class _Args(Protocol):
 
 @dataclass(frozen=True)
 class Version:
+    """Three-part numeric version (major.minor.patch) used for ``pyproject.toml``."""
+
     major: int
     minor: int
     patch: int
 
     @classmethod
     def parse(cls, s: str) -> Version:
+        """Parse a dotted version string.
+
+        Args:
+            s: Version string such as ``"1.2.3"``; surrounding whitespace is ignored.
+
+        Returns:
+            Parsed :class:`Version` instance.
+
+        Raises:
+            ValueError: If ``s`` is not exactly three dot-separated digit groups.
+        """
         parts = s.strip().split(".")
         if len(parts) != 3 or any(not p.isdigit() for p in parts):
             raise ValueError(f"Invalid version (expected X.Y.Z): {s!r}")
         return cls(int(parts[0]), int(parts[1]), int(parts[2]))
 
     def bumped(self, bump: BumpKind) -> Version:
+        """Return a new version after a semver-style bump.
+
+        Args:
+            bump: ``patch`` increments patch; ``minor`` increments minor and resets patch;
+                ``major`` increments major and resets minor and patch.
+
+        Returns:
+            New :class:`Version` (this dataclass is frozen).
+        """
         if bump == "patch":
             return Version(self.major, self.minor, self.patch + 1)
         if bump == "minor":
@@ -38,6 +66,7 @@ class Version:
         return Version(self.major + 1, 0, 0)
 
     def __str__(self) -> str:
+        """Return ``major.minor.patch`` as a dotted string."""
         return f"{self.major}.{self.minor}.{self.patch}"
 
 
@@ -85,6 +114,14 @@ def _write_project_version(pyproject_path: Path, new_version: Version) -> None:
 
 
 def main() -> int:
+    """Run the CLI: bump ``pyproject.toml`` and print the new version on stdout.
+
+    Returns:
+        ``0`` on success.
+
+    Raises:
+        SystemExit: If arguments are invalid, the version is unchanged, or I/O fails.
+    """
     parser = argparse.ArgumentParser(description="Bump [project].version in pyproject.toml")
     _ = parser.add_argument("--pyproject", default="pyproject.toml", help="Path to pyproject.toml")
     _ = parser.add_argument(

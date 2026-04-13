@@ -20,6 +20,7 @@ from {{ package_name }}.common.logging_manager import (  # pyright: ignore[repor
     clear_context,
     configure_logging,
     get_logger,
+    write_machine_stdout_line,
 )
 
 if TYPE_CHECKING:
@@ -233,3 +234,11 @@ def test_bind_and_clear_context() -> None:
 
     clear_context()
     assert structlog.contextvars.get_contextvars() == {}
+
+
+def test_write_machine_stdout_line_emits_raw_line(capsys: pytest.CaptureFixture[str]) -> None:
+    """write_machine_stdout_line writes exactly one newline-terminated line to stdout."""
+    write_machine_stdout_line("1.2.3")
+    captured = capsys.readouterr()
+    assert captured.out == "1.2.3\n"
+    assert captured.err == ""

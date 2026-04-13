@@ -195,9 +195,13 @@ file, add a corresponding test.
   Rule `E501` (line too long) is ignored (handled by the formatter).
 - Docstring convention: **Google style** (`pydocstyle` via ruff `D` rules).
   In this meta-repo, test files (`tests/**`) and scripts (`scripts/**`) are exempt from `D` and `T20`.
-  **Generated projects** (from `template/`) also list `src/**/bump_version.py` under
-  `[tool.ruff.lint.per-file-ignores]` with `D` and `T20` so the PEP 440 release helper (stdout for
-  workflows) is not held to library docstring rules or the no-`print()` policy.
+  **Generated projects** (from `template/`) treat `src/**/common/bump_version.py` like other library
+  code for ruff `D` (Google docstrings required); the release helper uses
+  `logging_manager` (`configure_logging`, structlog events, `write_machine_stdout_line` for the
+  version line consumed by release tooling). Rendered **`template/CLAUDE.md.jinja`** is the source
+  of truth for generated apps: **all logging must go through `common.logging_manager` public APIs**,
+  and code outside `common/` must **prefer** imports from that package's `common` subpackage (file
+  I/O, decorators, utils, logging) instead of duplicating those concerns.
 - McCabe complexity: max 10 per function (`C90`).
 - Type annotations are required on all public functions and methods (basedpyright `standard` mode).
 - BasedPyright is lenient with external packages (`reportMissingTypeStubs = false`).
@@ -334,7 +338,7 @@ just clean   # removes build/, dist/, .pytest_cache, .ruff_cache, __pycache__, *
 ### Standards enforcement (this PR)
 - Added `D` (pydocstyle, Google convention), `C90` (McCabe complexity), `PERF` (perflint) to ruff rules
 - Added `per-file-ignores` so test files and scripts are exempt from docstring requirements;
-  generated projects also exempt `src/**/bump_version.py` from `D` and `T20`
+  generated projects enforce Google docstrings on `src/**/common/bump_version.py` like the rest of `src/`
 - Added `[tool.ruff.lint.mccabe]` max-complexity = 10
 - Enhanced basedpyright config: `standard` mode, lenient with external stubs
 - Added `pytest-cov` + `coverage[toml]` to dev dependencies

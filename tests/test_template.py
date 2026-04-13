@@ -1152,6 +1152,8 @@ def test_github_repository_settings_doc_in_generated_project(tmp_path: Path) -> 
     assert "squash" in text.lower()
     assert "pull request" in text.lower()
     assert "only checklist" in text.lower()
+    assert "## 12. solo / personal maintainer" in text.lower()
+    assert "what adds value versus ceremony" in text.lower()
 
 
 def test_generated_pr_policy_and_templates(tmp_path: Path) -> None:
@@ -1190,7 +1192,7 @@ def test_generated_pyproject_basedpyright_standard_mode(tmp_path: Path) -> None:
 def test_generated_pyproject_ruff_includes_print_rules(tmp_path: Path) -> None:
     """Generated projects should enable Ruff T20 (flake8-print) with sensible per-file ignores."""
     test_dir = tmp_path / "ruff_t20"
-    copy_with_data(test_dir, {"project_name": "Ruff T20", "include_docs": False})
+    copy_with_data_from_worktree(test_dir, {"project_name": "Ruff T20", "include_docs": False})
     data = tomllib.loads((test_dir / "pyproject.toml").read_text(encoding="utf-8"))
     ruff_lint = cast(Mapping[str, object], cast(Mapping[str, object], data["tool"])["ruff"])
     lint = cast(Mapping[str, object], ruff_lint["lint"])
@@ -1199,8 +1201,31 @@ def test_generated_pyproject_ruff_includes_print_rules(tmp_path: Path) -> None:
     per_file = cast(Mapping[str, list[str]], lint["per-file-ignores"])
     assert "T20" in per_file["tests/**"]
     assert "T20" in per_file["scripts/**"]
-    assert "D" in per_file["src/**/bump_version.py"]
-    assert "T20" in per_file["src/**/bump_version.py"]
+    assert "src/**/bump_version.py" not in per_file
+
+
+def test_generated_pyproject_pytest_markers_and_asyncio(tmp_path: Path) -> None:
+    """Generated projects register layered-test markers and ship pytest-asyncio for async tests."""
+    test_dir = tmp_path / "pytest_markers_async"
+    copy_with_data_from_worktree(
+        test_dir,
+        {"project_name": "Pytest Markers", "include_docs": False},
+    )
+    data = tomllib.loads((test_dir / "pyproject.toml").read_text(encoding="utf-8"))
+    project = require_mapping(data.get("project"), name="pyproject.project")
+    optional = require_mapping(
+        project.get("optional-dependencies"), name="pyproject.project.optional-dependencies"
+    )
+    test_deps = require_sequence(optional.get("test"), name="optional-dependencies.test")
+    assert any(dep.startswith("pytest-asyncio") for dep in test_deps)
+
+    tool = require_mapping(data.get("tool"), name="pyproject.tool")
+    pytest_ini = require_mapping(tool.get("pytest"), name="tool.pytest")
+    ini_options = require_mapping(pytest_ini.get("ini_options"), name="pytest.ini_options")
+    markers = require_sequence(ini_options.get("markers"), name="pytest.ini_options.markers")
+    joined = "\n".join(markers)
+    for marker in ("e2e:", "integration:", "regression:", "slow:", "smoke:", "unit:"):
+        assert marker in joined
 
 
 def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
@@ -1215,6 +1240,9 @@ def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
     assert ".secrets.baseline" in cfg
     assert "conventional-pre-commit" in cfg
     assert "commit-msg" in cfg
+    assert "no-commit-to-branch" in cfg
+    assert "just-ci-check" in cfg
+    assert "just ci-check" in cfg
     assert (test_dir / ".secrets.baseline").is_file()
 
 
@@ -1527,7 +1555,7 @@ def test_ci_workflow_aligns_with_just_ci(tmp_path: Path) -> None:
 def test_common_bump_version_generated(tmp_path: Path) -> None:
     """``src/<package>/common/bump_version.py`` must exist in the generated project."""
     test_dir = tmp_path / "bump_version"
-    copy_with_data(
+    copy_with_data_from_worktree(
         test_dir,
         {
             "project_name": "Bump Version",
@@ -1541,6 +1569,8 @@ def test_common_bump_version_generated(tmp_path: Path) -> None:
     content = bump_script.read_text(encoding="utf-8")
     assert "BumpKind" in content, "bump_version.py must contain BumpKind type alias"
     assert "[project]" in content, "bump_version.py must look for [project] section"
+    assert "write_machine_stdout_line" in content, "bump_version must emit version via logging_manager"
+    assert "print(" not in content, "bump_version must not use print(); use logging_manager instead"
 
 
 def test_new_variables_recorded_in_answers_file(tmp_path: Path) -> None:

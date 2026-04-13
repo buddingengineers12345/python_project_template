@@ -94,16 +94,36 @@ except Exception:
 
 ## Logging
 
-Use **structlog** (configured via `{{ package_name }}.common.logging_manager`).
-Never use `print()` or `logging.getLogger()` in application code.
+**Mandatory:** use the public APIs in `{{ package_name }}.common.logging_manager` for all logging
+setup and shared log formatting — `configure_logging()`, `get_logger()`, `bind_context()`,
+`clear_context()`, `log_section` / `log_sub_section` / `log_section_divider`, `log_fields`,
+`log_message`, `wrap_text`, `list_to_numbered_string`, and `write_machine_stdout_line` (raw stdout
+for `$(...)` capture only). Call `configure_logging()` once at the app entry point before other
+package code logs.
+
+**Event logs:** after `configure_logging()`, use `structlog.get_logger()` and level methods with
+event names and keyword fields (no f-strings in the event string).
+
+**Never** in `src/{{ package_name }}/` (except inside `logging_manager` itself): `print()`,
+`logging.getLogger()`, `logging.basicConfig()`, or `structlog.configure()`.
 
 ```python
 import structlog
+
+from {{ package_name }}.common.logging_manager import configure_logging
+
+configure_logging()
 log = structlog.get_logger()
 
 log.info("user_created", user_id=user.id)
 log.error("payment_failed", order_id=order_id, reason=str(exc), llm=True)
 ```
+
+## Reuse `common/` in package code
+
+Outside `src/{{ package_name }}/common/`, prefer imports from `{{ package_name }}.common` (`file_manager`,
+`decorators`, `utils`, `logging_manager`) instead of duplicating the same behaviour in `core.py`,
+`cli.py`, or other modules.
 
 ## Imports
 

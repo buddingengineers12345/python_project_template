@@ -56,8 +56,12 @@ log = structlog.get_logger()
 log.info("processing_order", order_id=order_id)
 ```
 
-`print()` is permitted in `scripts/`, `tests/**`, and `src/**/bump_version.py` (per-file
-ignores in `pyproject.toml`).
+`print()` is permitted in `scripts/` and `tests/**` only. Package code under `src/<pkg>/` must use
+the public APIs in `common.logging_manager` (`configure_logging`, `get_logger`, context and `log_*`
+helpers, `write_machine_stdout_line` for raw stdout only) plus `structlog.get_logger()` for events —
+never `logging.getLogger()`, `logging.basicConfig()`, or `structlog.configure()` outside
+`logging_manager`. Prefer other `common/*` modules over duplicating utilities in `core`, `cli`, etc.;
+see `CLAUDE.md`.
 
 ## TDD enforcement hooks (PreToolUse)
 

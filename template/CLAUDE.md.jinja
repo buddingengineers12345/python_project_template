@@ -149,6 +149,10 @@ A feature or fix is **done** when all of the following are true:
 4. At least one test case covers each new public symbol.
 5. `just coverage` reports no module below 85 %.
 6. No `TODO` or `FIXME` comments are left in modified files (unless tracked as issues).
+7. Logging follows **Mandatory `logging_manager` usage** (below): no `print()`, no `logging.getLogger()`,
+   no `structlog.configure()` outside `common/logging_manager.py`.
+8. Code outside `common/` prefers imports from `{{ package_name }}.common` over duplicating the same
+   behaviour (see **Prefer `src/{{ package_name }}/common/`**).
 
 ## Package structure
 
@@ -156,14 +160,38 @@ Source code lives under `src/{{ package_name }}/`.
 Tests live under `tests/`.
 The `.claude/` directory holds Claude Code slash-command prompts and PostToolUse hooks for local standards enforcement.
 
+### Prefer `src/{{ package_name }}/common/`
+
+Modules under `src/{{ package_name }}/` **outside** `common/` (for example `core.py`, `cli.py`, and
+any future subpackages) must **import and reuse** shared code from `{{ package_name }}.common` whenever
+it already solves the problem:
+
+| Module | Use it for |
+|--------|------------|
+| `common.logging_manager` | All logging setup, context, formatted log output, and raw stdout lines for tooling (see **Structured logging**). |
+| `common.file_manager` | File / JSON / Markdown helpers instead of ad-hoc `Path` I/O. |
+| `common.decorators` | Retries, timing, and other cross-cutting decorators. |
+| `common.utils` | Shared small utilities (e.g. slugify) instead of copy-paste. |
+
+If a concern fits `common/` but no helper exists yet, **add it there** (with tests under
+`tests/{{ package_name }}/`) and call it from feature code — do not grow parallel utilities inside
+`core.py` / `cli.py` / other package paths. **`common/bump_version.py`** is the focused release helper;
+the same reuse rule applies to the rest of the tree.
+
 ## Code style
 
 - Line length: 100 characters
 - Python {{ python_min_version }}+
 - Ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `TCH`, `PGH`, `PT`, `ARG`, `D`, `C90`, `PERF`, `T20`.
   Rule `E501` is ignored (handled by the formatter).
-  `per-file-ignores`: `tests/**` → `ARG`, `D`, `T20`; `scripts/**` → `T20`;
-  `src/**/bump_version.py` → `D`, `T20` (PEP 440 release helper; prints the new version for CI).
+  `per-file-ignores`: `tests/**` → `ARG`, `D`, `T20`; `scripts/**` → `T20`.
+  `common/bump_version.py` follows the same Google docstring rules as the rest of `src/`.
+- **`src/{{ package_name }}/` — no `print()`** — use **structlog** (`structlog.get_logger()`) after
+  :func:`{{ package_name }}.common.logging_manager.configure_logging` at the app entry point.
+  For a **single raw stdout line** consumed by ``$(...)`` (e.g. `bump_version.py` for releases),
+  use :func:`{{ package_name }}.common.logging_manager.write_machine_stdout_line` — never `print()`.
+  Prefer helpers in `{{ package_name }}.common` (`logging_manager`, `file_manager`, `utils`, `decorators`)
+  instead of ad-hoc I/O.
 - Docstring convention: **Google style** (enforced by ruff `D` rules + `pydocstyle.convention = "google"`).
 - McCabe complexity: max 10 per function.
 - Type annotations required on all public functions and methods (basedpyright `standard` mode).
@@ -172,6 +200,30 @@ The `.claude/` directory holds Claude Code slash-command prompts and PostToolUse
 
 This project uses **structlog** for all logging. Standard `logging.getLogger()` is never used in
 application code.
+
+### Mandatory `logging_manager` usage
+
+All configuration and helpers for logging live in `{{ package_name }}.common.logging_manager`. **You must
+use these public APIs** (not reimplement them elsewhere):
+
+| API | When to use |
+|-----|-------------|
+| `configure_logging()` | **Once** at process entry (`__main__`, Typer callback, ASGI lifespan, etc.) before other package code emits logs. The **only** supported way to attach processors / HUMAN vs LLM mode. |
+| `get_logger(name=..., **bind)` | Optional: bound logger name or static fields; may call `configure_logging()` if the app forgot to (library-safe). |
+| `bind_context` / `clear_context` | Per-request or per-task fields that should appear on subsequent events. |
+| `log_section` / `log_sub_section` / `log_section_divider` | Human-mode section headings (no-op in LLM mode). |
+| `log_fields` / `log_message` | Structured or prose messages that respect HUMAN vs LLM formatting rules. |
+| `wrap_text` / `list_to_numbered_string` | Text shaping when building content that goes through the logging helpers above. |
+| `write_machine_stdout_line` | **Only** when a **single raw line** on stdout must be captured by shell or CI (`$(...)`) — e.g. `bump_version.py` emitting the new PEP 440 version. |
+
+**Event-style logs** (most call sites): after `configure_logging()`, use `structlog.get_logger()` and
+`log.info("event_name", key=value, …)` (and `debug` / `warning` / `error` as appropriate).
+
+**Forbidden under `src/{{ package_name }}/` (except inside `logging_manager` itself):**
+
+- `print()`
+- `logging.getLogger()`, `logging.basicConfig()`, or other stdlib logging setup
+- `structlog.configure(...)` — only `logging_manager.configure_logging()` may configure structlog for this project
 
 ### Setup (call once from entry point)
 
@@ -211,12 +263,14 @@ EXECUTION_CONTEXT=llm python -m {{ package_name }}
 
 | ✅ DO | ❌ DO NOT |
 |-------|----------|
+| `log.info("order_created", order_id=123)` | `print()` anywhere under `src/{{ package_name }}/` |
 | `log.info("order_created", order_id=123)` | `log.info(f"Order {id} was created")` |
 | snake_case event names | Natural language sentences as events |
 | Pass IDs, counts, hashes | Log full payloads or raw objects |
 | Flat key-value schema | Nest dicts more than one level |
-| `llm=True` for LLM-visible events | Configure structlog outside `configure_logging()` |
+| `llm=True` for events an LLM agent must see | LLM-relevant events without `llm=True` |
 | `bind_context(request_id=...)` at request start | Repeat context keys in every log call |
+| Only `logging_manager.configure_logging()` configures structlog / stdlib logging for the app | `structlog.configure()`, `logging.basicConfig()`, or `logging.getLogger()` in application code |
 
 ### Context binding
 

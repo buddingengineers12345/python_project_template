@@ -42,6 +42,7 @@ dev = [
 
 test = [
     "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
     "pytest-xdist>=3.5.0",
     "pytest-cov>=6.0.0",
     "coverage[toml]>=7.6.0",
@@ -123,7 +124,6 @@ max-complexity = 10
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["ARG", "D", "T20"]  # tests don't require docstrings; print() OK in tests
 "scripts/**" = ["T20"]  # CLI-style scripts may use print
-"src/**/bump_version.py" = ["D", "T20"]  # CLI script; emits version on stdout for tooling
 
 [tool.ruff.lint.isort]
 known-first-party = ["{{ package_name }}"]
@@ -169,8 +169,12 @@ addopts = [
     "-ra",
 ]
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
+    "e2e: End-to-end tests across the full stack or external systems",
+    "integration: Tests crossing module boundaries, real I/O, subprocesses, or services",
+    "regression: Guards a fixed bug or ticket-specific behaviour from returning",
+    "slow: Routinely exceeds ~1s; excluded from default runs (override with -m slow)",
+    "smoke: Minimal deploy or health checks on critical paths",
+    "unit: Fast isolated tests with boundaries mocked or in-process only",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",

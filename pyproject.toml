@@ -60,7 +60,15 @@ max-complexity = 10
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
-addopts = ["-q"]
+addopts = ["-q", "--strict-markers", "--strict-config"]
+markers = [
+    "e2e: End-to-end tests across the full stack or external systems",
+    "integration: Tests crossing module boundaries, real I/O, subprocesses, or services",
+    "regression: Guards a fixed bug or ticket-specific behaviour from returning",
+    "slow: Routinely exceeds ~1s; excluded from default runs (override with -m slow)",
+    "smoke: Minimal deploy or health checks on critical paths",
+    "unit: Fast isolated tests with boundaries mocked or in-process only",
+]
 
 # ==========================================================================
 # Coverage Configuration (for template-repo test suite)

@@ -397,6 +397,25 @@ def clear_context() -> None:
     structlog.contextvars.clear_contextvars()
 
 
+def write_machine_stdout_line(line: str) -> None:
+    """Write *line* and a trailing newline to stdout without structlog formatting.
+
+    Structlog is configured to render human- or JSON-formatted records (typically
+    on stderr).  Shell command substitution (``$(...)``) and other tooling
+    often require a **single raw line** on stdout — use this helper instead of
+    ``print()`` so :mod:`ruff` rule ``T20`` stays satisfied while preserving
+    machine-readable output.
+
+    Args:
+        line: Exact text to emit (no extra decoration).
+
+    Examples:
+        >>> write_machine_stdout_line("1.2.3")  # captured by release automation
+    """
+    sys.stdout.write(line)
+    sys.stdout.write("\n")
+
+
 # ---------------------------------------------------------------------------
 # Human-mode formatting helpers
 # ---------------------------------------------------------------------------

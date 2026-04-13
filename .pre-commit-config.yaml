@@ -41,6 +41,14 @@ repos:
         pass_filenames: false
         stages: [pre-commit]
 
+      - id: just-ci-check
+        name: just ci-check (read-only CI gate before push)
+        entry: just ci-check
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+
   # ---------------------------------------------------------------------------
   # Basic hygiene, YAML/TOML checks
   # ---------------------------------------------------------------------------
@@ -66,8 +74,8 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: mixed-line-ending
-      # - id: no-commit-to-branch
-      #   args: ["--branch", "main", "--branch", "master"]
+      - id: no-commit-to-branch
+        args: ["--branch", "main", "--branch", "master"]
 
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.4.0
