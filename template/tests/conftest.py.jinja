@@ -2,7 +2,7 @@
 
 from collections.abc import Generator
 
-import pytest
+import pytest  # pyright: ignore[reportMissingImports]
 
 from {{ package_name }}.common.logging_manager import (  # pyright: ignore[reportPrivateUsage]
     _reset_configuration,

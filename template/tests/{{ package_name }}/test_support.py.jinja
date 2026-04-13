@@ -26,6 +26,8 @@ from {{ package_name }}.common.logging_manager import (  # pyright: ignore[repor
 if TYPE_CHECKING:
     from pathlib import Path
 
+pytestmark = pytest.mark.unit
+
 # ---------------------------------------------------------------------------
 # File manager tests
 # ---------------------------------------------------------------------------

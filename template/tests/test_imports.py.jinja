@@ -1,17 +1,25 @@
 """Smoke tests ensuring the **{{ package_name }}** package imports cleanly."""
 
+import pytest
+
 import {{ package_name }}
+
+pytestmark = pytest.mark.unit
 
 
 def test_import() -> None:
-    """Import the package and assert :data:`{{ package_name }}.__version__` is set."""
-    assert {{ package_name }}.__version__ is not None
+    """Import should expose a non-empty version string."""
+    version = getattr({{ package_name }}, "__version__", "")
+    assert isinstance(version, str)
+    assert version
 
 
 def test_version_format() -> None:
     """Assert the version string looks like a semver when the package is installed."""
-    version = {{ package_name }}.__version__
+    version = getattr({{ package_name }}, "__version__", "")
     if version == "unknown":
-        return
+        pytest.skip("Package is not installed; metadata version is unavailable.")
+
     parts = version.split(".")
     assert len(parts) >= 2, f"Version {version} should have at least major.minor"
+    assert all(part.isdigit() for part in parts[:2])

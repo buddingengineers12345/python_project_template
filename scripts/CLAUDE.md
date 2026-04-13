@@ -105,6 +105,16 @@ Actions pins, shared recipes, and other policy maps).
 
 ---
 
+### `generate_obsidian_porting_report.py`
+
+Writes [`docs/obsidian_playwright_porting_report.md`](../docs/obsidian_playwright_porting_report.md):
+per-file notes on what was ported from a reference generated project (paths and Copier
+answers are edited at the top of the script) versus what stays app-specific.
+
+**Invocation:** `uv run python scripts/generate_obsidian_porting_report.py`
+
+---
+
 ### `sync_skip_if_exists.py`
 
 Synchronises the `_skip_if_exists` list in `copier.yml` with the actual template file paths

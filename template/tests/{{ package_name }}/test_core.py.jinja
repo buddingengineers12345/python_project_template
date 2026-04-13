@@ -21,6 +21,8 @@ from {{ package_name }}.core import example_array_function
 from {{ package_name }}.core import example_dataframe_function
 {% endif %}
 
+pytestmark = pytest.mark.unit
+
 
 @pytest.mark.parametrize("input_value", [42, "hello", [1, 2, 3]])
 def test_example_function_various_inputs(input_value: Any) -> None:
