@@ -6,7 +6,7 @@ import importlib.util
 import sys
 from pathlib import Path
 
-from tests._paths import REPO_ROOT
+from constants import REPO_ROOT
 
 _SCRIPT = REPO_ROOT / "scripts" / "sync_skip_if_exists.py"
 _SPEC = importlib.util.spec_from_file_location("sync_skip_if_exists", _SCRIPT)

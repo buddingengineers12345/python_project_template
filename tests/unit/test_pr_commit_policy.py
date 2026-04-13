@@ -9,8 +9,7 @@ import sys
 from pathlib import Path
 
 import pytest
-
-from tests._paths import REPO_ROOT
+from constants import REPO_ROOT
 
 SCRIPT = REPO_ROOT / "scripts" / "pr_commit_policy.py"
 _SPEC = importlib.util.spec_from_file_location("pr_commit_policy", SCRIPT)

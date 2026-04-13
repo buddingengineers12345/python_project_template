@@ -28,11 +28,20 @@ Python under test lives in `scripts/`. Keep pytest modules organized as:
 
 ```
 tests/
-├── _paths.py            # REPO_ROOT, TEMPLATE_ROOT, COPIER_YAML (import from nested tests)
+├── __init__.py
+├── constants.py         # REPO_ROOT, TEMPLATE_ROOT, COPIER_YAML (import from nested tests)
+├── conftest.py          # top-level shared fixtures
+├── unit/
+│   ├── __init__.py
+│   ├── conftest.py
+│   └── test_<script>.py # mirrors scripts/<script>.py
 ├── integration/
+│   ├── __init__.py
+│   ├── conftest.py
 │   └── test_template.py # Copier copy/update integration suite
-└── scripts/
-    └── test_<script>.py # mirrors scripts/<script>.py
+└── e2e/
+    ├── __init__.py
+    └── conftest.py      # placeholder for future e2e tests
 ```
 
 Do not flatten new tests into the top level of `tests/` unless they truly have no script or

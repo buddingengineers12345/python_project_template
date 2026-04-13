@@ -8,9 +8,14 @@ optional features are gated properly.
 
 | Path | Purpose |
 |---|---|
-| `_paths.py` | Shared `REPO_ROOT`, `TEMPLATE_ROOT`, and `COPIER_YAML` for imports from nested packages |
-| `integration/test_template.py` | Copier copy/update integration suite |
-| `scripts/test_*.py` | Tests mirroring `scripts/*.py` (automation scripts under test) |
+| `constants.py` | Shared `REPO_ROOT`, `TEMPLATE_ROOT`, and `COPIER_YAML` for imports from nested packages |
+| `conftest.py` | Top-level pytest fixtures shared across all test tiers |
+| `unit/` | Fast isolated tests for automation scripts in `scripts/` |
+| `unit/conftest.py` | Fixtures shared within the unit tier |
+| `integration/` | Tests exercising Copier copy/update across the full template |
+| `integration/conftest.py` | Fixtures shared within the integration tier |
+| `e2e/` | End-to-end tests (placeholder for external-facing scenarios) |
+| `e2e/conftest.py` | Fixtures shared within the e2e tier |
 
 ## How `integration/test_template.py` works
 
@@ -90,8 +95,7 @@ optional features are gated properly.
 ## Running tests
 
 `pyproject.toml` sets `pythonpath = ["."]` under `[tool.pytest.ini_options]` so nested test
-packages can import `tests._paths`.
-
+packages can import `tests.constants`.
 ```bash
 just test               # run all tests (quiet)
 just test-parallel      # run all tests in parallel with pytest-xdist

@@ -18,9 +18,8 @@ from typing import cast
 
 import pytest
 import yaml
+from constants import COPIER_YAML, REPO_ROOT, TEMPLATE_ROOT
 from copier import run_copy
-
-from tests._paths import COPIER_YAML, REPO_ROOT, TEMPLATE_ROOT
 
 TEMPLATE_GIT_SRC = f"git+{Path('.').resolve().as_uri()}"
 
@@ -597,7 +596,7 @@ def test_generate_numpy_only(tmp_path: Path) -> None:
     assert any("numpy" in d for d in deps), "numpy should be in dependencies"
     assert not any("pandas" in d for d in deps), "pandas should NOT be in dependencies"
     # Verify the generated test file doesn't reference pandas
-    test_core = (test_dir / "tests" / "numpy_only" / "test_core.py").read_text(encoding="utf-8")
+    test_core = (test_dir / "tests" / "unit" / "test_core.py").read_text(encoding="utf-8")
     assert "import pandas" not in test_core
     assert "import numpy" in test_core
 
@@ -620,7 +619,7 @@ def test_generate_pandas_only(tmp_path: Path) -> None:
     deps = [cast(str, d) for d in deps_seq]
     assert any("pandas" in d for d in deps), "pandas should be in dependencies"
     assert not any("numpy" in d for d in deps), "numpy should NOT be in dependencies"
-    test_core = (test_dir / "tests" / "pandas_only" / "test_core.py").read_text(encoding="utf-8")
+    test_core = (test_dir / "tests" / "unit" / "test_core.py").read_text(encoding="utf-8")
     assert "import pandas" in test_core
     assert "import numpy" not in test_core
 
@@ -989,7 +988,7 @@ def test_pyproject_and_tree_match_explicit_copy_data(tmp_path: Path) -> None:
 
     assert (test_dir / "mkdocs.yml").is_file()
     assert (test_dir / "src" / "ocean_buoy" / "__init__.py").is_file()
-    assert (test_dir / "tests" / "ocean_buoy" / "test_core.py").is_file()
+    assert (test_dir / "tests" / "unit" / "test_core.py").is_file()
 
     readme = (test_dir / "README.md").read_text(encoding="utf-8")
     assert "Ocean Buoy" in readme

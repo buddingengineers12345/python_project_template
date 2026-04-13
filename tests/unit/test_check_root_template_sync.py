@@ -8,7 +8,7 @@ from __future__ import annotations
 import subprocess
 import sys
 
-from tests._paths import REPO_ROOT
+from constants import REPO_ROOT
 
 _SCRIPT = REPO_ROOT / "scripts" / "check_root_template_sync.py"
 

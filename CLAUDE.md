@@ -21,16 +21,11 @@ destination folder.
 │   ├── .github/workflows/    # Generated CI/CD workflows
 │   └── …                    # pyproject.toml.jinja, justfile.jinja, CLAUDE.md.jinja, …
 ├── tests/                    # pytest suite for this meta-repo (see tests/CLAUDE.md)
-│   ├── _paths.py             # REPO_ROOT / TEMPLATE_ROOT / COPIER_YAML for nested test modules
-│   ├── integration/
-│   │   └── test_template.py    # Copier copy/update integration suite
-│   └── scripts/              # mirrors scripts/ — one test module per automation script
-│       ├── test_bump_version.py
-│       ├── test_check_root_template_sync.py  # CLI smoke; scenarios in test_root_template_sync
-│       ├── test_pr_commit_policy.py
-│       ├── test_repo_file_freshness.py
-│       ├── test_root_template_sync.py
-│       └── test_sync_skip_if_exists.py
+│   ├── constants.py          # REPO_ROOT / TEMPLATE_ROOT / COPIER_YAML for nested test modules
+│   ├── conftest.py           # top-level shared fixtures
+│   ├── unit/                 # fast isolated script tests
+│   ├── integration/          # Copier copy/update integration suite
+│   └── e2e/                  # end-to-end tests (placeholder)
 ├── scripts/                  # Automation scripts for CI or local tasks (see scripts/CLAUDE.md)
 │   ├── repo_file_freshness.py    # Git-based freshness dashboard (→ docs/ + assets/)
 │   ├── bump_version.py           # PEP 440 version bumper (patch/minor/major)

@@ -8,7 +8,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from tests._paths import REPO_ROOT
+from constants import REPO_ROOT
 
 
 def run_command(

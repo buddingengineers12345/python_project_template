@@ -61,7 +61,7 @@ max-complexity = 10
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = [".", "tests"]
 addopts = ["-q", "--strict-markers", "--strict-config"]
 markers = [
     "e2e: End-to-end tests across the full stack or external systems",

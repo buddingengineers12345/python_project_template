@@ -9,8 +9,7 @@ from pathlib import Path
 from typing import Literal, cast
 
 import pytest
-
-from tests._paths import REPO_ROOT
+from constants import REPO_ROOT
 
 _SCRIPT = REPO_ROOT / "scripts" / "bump_version.py"
 _SPEC = importlib.util.spec_from_file_location("bump_version", _SCRIPT)
