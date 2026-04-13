@@ -105,6 +105,18 @@ Actions pins, shared recipes, and other policy maps).
 
 ---
 
+### `generate_template_vs_obsidian_comparison.py`
+
+Writes [`docs/template_vs_obsidian_playwright_pipeline.md`](../docs/template_vs_obsidian_playwright_pipeline.md):
+per-template-file existence check against a reference generated repo plus a **Content match**
+column (UTF-8 text vs a fresh `copier copy` with that repo’s answers, newline-normalised).
+
+**Invocation:** `uv run python scripts/generate_template_vs_obsidian_comparison.py`
+
+**Requires:** `copier` on PATH; edit `OBS_ROOT` in the script to point at the reference project.
+
+---
+
 ### `generate_obsidian_porting_report.py`
 
 Writes [`docs/obsidian_playwright_porting_report.md`](../docs/obsidian_playwright_porting_report.md):

@@ -77,18 +77,8 @@ repos:
       - id: no-commit-to-branch
         args: ["--branch", "main", "--branch", "master"]
 
-  - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v4.4.0
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.13.10
     hooks:
-      - id: conventional-pre-commit
+      - id: commitizen
         stages: [commit-msg]
-        args:
-          - feat
-          - fix
-          - refactor
-          - docs
-          - test
-          - chore
-          - perf
-          - ci
-          - build

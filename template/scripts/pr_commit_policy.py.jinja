@@ -10,8 +10,8 @@ import subprocess
 import sys
 from typing import Final
 
-# Conventional commit types (aligned with .claude/rules/common/git-workflow.md and pre-commit hook).
-_TYPES: Final = "feat|fix|refactor|docs|test|chore|perf|ci|build"
+# Conventional commit types (aligned with Commitizen ``cz_conventional_commits`` / commit-msg hook).
+_TYPES: Final = "bump|build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"
 # First line: type, optional scope, optional !, colon, space, non-empty subject.
 _CONVENTIONAL_SUBJECT: Final[re.Pattern[str]] = re.compile(
     rf"^({_TYPES})(\([^)]+\))?(!)?: [^\s].*$",

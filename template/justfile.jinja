@@ -116,6 +116,10 @@ precommit-install:
     @uv run pre-commit install --hook-type commit-msg
     @git config commit.template "$(git rev-parse --show-toplevel)/.gitmessage"
 
+# Interactive conventional commit (Commitizen); alternative to `git commit`.
+cz-commit:
+    @uv run cz commit
+
 precommit:
     @uv run pre-commit run --all-files --verbose
 

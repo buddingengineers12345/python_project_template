@@ -1246,7 +1246,8 @@ def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
     cfg = (test_dir / ".pre-commit-config.yaml").read_text(encoding="utf-8")
     assert "detect-secrets" in cfg
     assert ".secrets.baseline" in cfg
-    assert "conventional-pre-commit" in cfg
+    assert "commitizen-tools/commitizen" in cfg
+    assert "id: commitizen" in cfg
     assert "commit-msg" in cfg
     assert "no-commit-to-branch" in cfg
     assert "just-ci-check" in cfg
