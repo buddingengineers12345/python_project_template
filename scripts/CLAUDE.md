@@ -73,6 +73,23 @@ intent of this script: no Google docstrings required, and `print()` is allowed f
 
 ---
 
+### `check_root_template_sync.py`
+
+Validates that root and `template/` stay aligned on configured paths (for example GitHub
+Actions pins, shared recipes, and other policy maps).
+
+**Invocation:** `just sync-check` → `uv run python scripts/check_root_template_sync.py`
+
+**What it does:**
+- Loads JSON policy maps under the repo (workflow action versions, justfile parity rules, etc.).
+- Compares root files to their `template/` counterparts and fails with a diff on drift.
+
+**Used by:** `.github/workflows/lint.yml` (meta-repo CI) and `just ci-check` / `just sync-check`.
+
+**Tested by:** `tests/test_root_template_sync.py`
+
+---
+
 ### `sync_skip_if_exists.py`
 
 Synchronises the `_skip_if_exists` list in `copier.yml` with the actual template file paths

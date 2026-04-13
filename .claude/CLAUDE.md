@@ -22,6 +22,7 @@ This directory contains all Claude Code configuration for **this Copier template
 │   └── *.sh           ← individual hook scripts
 ├── commands/          ← slash command prompt files
 │   └── *.md           ← one file per slash command
+├── skills/            ← Agent skills (TDD workflow, test planner, test quality reviewer, …)
 └── rules/             ← AI coding rules
     ├── README.md      ← rule developer guide (structure, priority, dual-hierarchy)
     ├── common/        ← language-agnostic rules
@@ -57,7 +58,7 @@ for the full developer guide.
 | `pre-bash-git-push-reminder.sh` | PreToolUse | Bash | Warn to run `just review` before push |
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Scan staged `.py` files for secrets/debug markers |
 | `pre-bash-coverage-gate.sh` | PreToolUse | Bash | Warn before `git commit` if coverage below threshold |
-| `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/pyright config edits |
+| `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/basedpyright config edits |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
 | `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block if the matching test file does not exist (strict TDD) |
 | `pre-write-src-test-reminder.sh` | PreToolUse | Write\|Edit | Warn if test file missing for new source module (optional alternative to strict TDD) |

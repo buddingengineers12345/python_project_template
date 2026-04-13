@@ -213,7 +213,7 @@ exit 0
 | `pre-bash-block-no-verify.sh` | PreToolUse | Bash | Block `git --no-verify` |
 | `pre-bash-git-push-reminder.sh` | PreToolUse | Bash | Warn to review before push |
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Secret/debug scan before commit |
-| `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/pyright config |
+| `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/basedpyright config |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
 | `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block if `tests/<pkg>/test_<module>.py` missing for top-level `src/<pkg>/<module>.py` (strict TDD) |
 | `pre-bash-coverage-gate.sh` | PreToolUse | Bash | Warn before `git commit` if coverage below threshold |

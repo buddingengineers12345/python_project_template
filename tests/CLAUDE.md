@@ -9,6 +9,7 @@ optional features are gated properly.
 | File | Purpose |
 |---|---|
 | `test_template.py` | Main integration suite: renders the template and asserts output |
+| `test_root_template_sync.py` | Tests for `scripts/check_root_template_sync.py` |
 | `test_repo_file_freshness.py` | Unit tests for `scripts/repo_file_freshness.py` |
 
 ## How `test_template.py` works
@@ -67,6 +68,10 @@ optional features are gated properly.
   (`D` / `T20` where applicable); see `test_generated_pyproject_ruff_includes_print_rules`.
 - `.pre-commit-config.yaml` contains basedpyright, ruff, detect-secrets hooks.
 - `renovate.json` is valid JSON.
+
+### Root/template sync
+- `check_root_template_sync.py` policies stay consistent with root and `template/` files
+  (workflow pins, justfile parity, etc.); covered by `test_root_template_sync.py`.
 
 ### Package structure
 - `src/<package_name>/__init__.py`, `core.py`, `common/` modules all exist.

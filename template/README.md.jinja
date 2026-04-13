@@ -5,7 +5,7 @@
 ## What this project includes
 
 - **uv-first workflow** with a committed lockfile (`uv.lock`)
-- **Quality gates**: ruff (format + lint), basedpyright (type checking), pytest
+- **Quality gates**: ruff (format + lint), basedpyright (type checking), pytest with coverage
 - **One-command workflows** via `just` (mirrors local/CI checks)
 {% if include_docs -%}
 - **Docs**: MkDocs site in `docs/` (`just docs-serve`, `just docs-build`)
@@ -15,6 +15,7 @@
 
 - Python {{ python_min_version }}+
 - `uv` (install from https://astral.sh/uv/)
+- `just` (task runner — https://github.com/casey/just)
 
 ## Quickstart
 
@@ -39,11 +40,13 @@ See [docs/ci.md](docs/ci.md) for more detail.
 
 ## Common commands
 
-- `just test`
-- `just fmt`
-- `just lint`
-- `just type`
-- `just ci`
+- `just test` / `just test-parallel` / `just coverage`
+- `just fmt` / `just lint` / `just fix`
+- `just type` / `just docs-check` / `just review`
+- `just static_check` (lint + types + docstrings, no tests)
+- `just ci` (full local mirror of the GitHub Actions CI workflow)
+- `just sync` / `just update` / `just precommit-install`
+- `just doctor` / `just clean` / `just build`
 {% if include_docs -%}
 - `just docs-serve` / `just docs-build`
 {%- endif %}

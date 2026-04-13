@@ -6,7 +6,7 @@ This is the "am I ready to merge?" command. It runs all checks and aggregates re
 
 1. **Static analysis** — `just lint` + `just type`
    - ruff: all configured rules (E, F, I, UP, B, SIM, C4, RUF, D, TCH, PGH, PT, ARG, C90, PERF)
-   - basedpyright: strict type checking
+   - basedpyright: `standard` mode type checking
 
 2. **Docstring coverage** — `just docs-check`
    - All public symbols in `src/{{ package_name }}/` have Google-style docstrings

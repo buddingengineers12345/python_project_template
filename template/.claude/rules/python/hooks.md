@@ -14,7 +14,7 @@
 
 1. **ruff check** — all active rule sets including `D` (docstrings), `C90` (complexity),
    `PERF` (performance anti-patterns), `T20` / `T201` (no `print()` in app code).
-2. **basedpyright** — type correctness in strict mode.
+2. **basedpyright** — type correctness in `standard` mode (`pyproject.toml` `[tool.basedpyright]`).
 
 Example output:
 

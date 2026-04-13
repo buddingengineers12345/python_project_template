@@ -16,6 +16,7 @@ just precommit-install
 | Task | Command |
 |---|---|
 | Run tests | `just test` |
+| Run tests in parallel | `just test-parallel` |
 | Test coverage | `just coverage` |
 | Lint | `just lint` |
 | Format | `just fmt` |
@@ -23,7 +24,18 @@ just precommit-install
 | Type check | `just type` |
 | Docstring check | `just docs-check` |
 | Pre-merge review | `just review` |
-| Full CI | `just ci` |
+| Static checks only (no tests) | `just static_check` |
+| Full CI (local mirror of `.github/workflows/ci.yml`) | `just ci` |
+| Pre-commit (all files) | `just precommit` |
+| Register git hooks | `just precommit-install` |
+| Sync deps from lockfile | `just sync` |
+| Upgrade lockfile + resync | `just update` |
+| Install pip/uv + sync + hooks | `just install` |
+| Environment diagnostics | `just doctor` |
+| Clean build/test caches | `just clean` |
+| Build sdist/wheel | `just build` |
+| Publish to PyPI | `just publish` |
+| Create `.env` from `env.example` | `just load-env` |
 {% if include_docs %}| Serve docs | `just docs-serve` |
 | Build docs | `just docs-build` |
 | Deploy docs (gh-pages) | `just docs-deploy` |
@@ -131,7 +143,7 @@ Load a skill by reading its `SKILL.md`: e.g. `.claude/skills/tdd-workflow/SKILL.
 
 A feature or fix is **done** when all of the following are true:
 
-1. `just ci` passes with zero errors (lint → types → docstrings → `test-ci` → pre-commit; matches `.github/workflows/ci.yml`).
+1. `just ci` passes with zero errors — runs `fix`, `lint`, `type`, `docs-check`, `test-ci`, and `precommit`, matching the aggregate checks enforced in `.github/workflows/ci.yml` (format/lint, typecheck, pre-commit, and test jobs).
 2. Every new public function/class/method has a Google-style docstring (Args/Returns/Raises where applicable).
 3. Every new function/method has complete type annotations (parameters + return type).
 4. At least one test case covers each new public symbol.

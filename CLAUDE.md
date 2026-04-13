@@ -22,10 +22,12 @@ destination folder.
 │   └── …                    # pyproject.toml.jinja, justfile.jinja, CLAUDE.md.jinja, …
 ├── tests/                    # pytest tests that render the template and assert output
 │   ├── test_template.py      # Main integration suite — copier copy + assertions
+│   ├── test_root_template_sync.py   # Tests for check_root_template_sync.py
 │   └── test_repo_file_freshness.py  # Unit tests for repo_file_freshness.py script
 ├── scripts/                  # Automation scripts for CI or local tasks
 │   ├── repo_file_freshness.py    # Git-based freshness dashboard (→ docs/ + assets/)
 │   ├── bump_version.py           # PEP 440 version bumper (patch/minor/major)
+│   ├── check_root_template_sync.py  # Root ↔ template parity (workflows, settings, recipes)
 │   ├── sync_skip_if_exists.py    # Sync copier.yml _skip_if_exists with template paths
 │   └── update_files.sh           # Batch file update helper
 ├── .claude/                  # Claude Code hooks, commands, and rules for THIS meta-repo

@@ -77,5 +77,5 @@ before pushing a tag.
 - Run `just ci` before pushing — CI must pass locally before merging.
 - After changing a workflow, check that the `sync-skip-if-exists.yml` does not need to be
   updated (it reads `copier.yml` `_skip_if_exists`).
-- When bumping GitHub Actions versions (e.g. `actions/checkout@v4`), also update the
+- When bumping GitHub Actions versions (e.g. `actions/checkout@v6`), also update the
   corresponding actions in `template/.github/workflows/` so generated projects stay current.

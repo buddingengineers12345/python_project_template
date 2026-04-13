@@ -40,6 +40,7 @@ Prerequisites:
 - 🐍 Python 3.11+
 - 🌱 Git
 - 🧩 `copier`
+- 🪝 `just` (task runner — used throughout this repo and generated projects)
 
 > [!WARNING]
 > Generate from **trusted templates**: when a template uses Copier `tasks`, they run with the
@@ -141,18 +142,26 @@ Other useful commands:
 - 🧹 **`just fix`**: auto-fix lint issues
 - ✨ **`just fmt`**: format code
 - 🔍 **`just lint`**: lint check
-- 🧠 **`just type`**: type check (strict mode)
+- 🧠 **`just type`**: type check (basedpyright **standard** mode)
+- 📜 **`just docs-check`**: Google-style docstrings (ruff `D` only)
+- ✅ **`just review`**: `fix` → `lint` → `type` → `docs-check`
 - 🧪 **`just test`**: run template integration tests (renders the template and asserts output)
 - 📊 **`just coverage`**: run tests with coverage report
 - ⚡ **`just test-parallel`**: run tests in parallel (faster)
+- 🔁 **`just precommit`**: run pre-commit on all files
+- 🩺 **`just doctor`**: print toolchain and project versions
+- 🔗 **`just sync-check`**: validate root/template sync policy (`scripts/check_root_template_sync.py`)
+- 🧱 **`just static_check`**: `fix` + `lint` + `type` + `docs-check` (no tests)
+- ✋ **`just ci-check`**: read-only full gate (matches GitHub Actions lint + tests + security steps)
 
 ### Testing this template
 
-The test suite (`tests/test_template.py`) uses pytest to:
+The test suite (`tests/test_template.py`, `tests/test_root_template_sync.py`, `tests/test_repo_file_freshness.py`) uses pytest to:
 - Render the template with various configurations
 - Validate generated project structure
 - Check that generated projects have valid Python syntax
 - Verify CI/CD workflow files are valid YAML
+- Enforce root/template sync policy (`check_root_template_sync.py`)
 - Test all combinations of optional features (docs, NumPy, pandas)
 
 ## Releasing this template 🏷️
