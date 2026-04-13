@@ -52,5 +52,8 @@ jobs:
       - name: BasedPyright
         run: uv run basedpyright
 
+      - name: Root/template sync policy check
+        run: uv run python scripts/check_root_template_sync.py
+
       - name: Pre-commit (all files)
         run: uv run pre-commit run --all-files --verbose

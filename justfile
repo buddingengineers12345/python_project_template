@@ -189,6 +189,7 @@ ci-check:
     @just fmt-check
     @uv run ruff check .
     @uv run basedpyright
+    @just sync-check
     @just docs-check
     @just test-ci
     @uv run pre-commit run --all-files --verbose
@@ -224,3 +225,7 @@ doctor:
 # Generate repo freshness dashboard + JSON artifacts
 freshness:
     @uv run --active python scripts/repo_file_freshness.py
+
+# Validate root/template sync map and parity checks
+sync-check:
+    @uv run --active python scripts/check_root_template_sync.py
