@@ -15,6 +15,7 @@
 # The hook always exits 0 so it never hard-blocks the tool response.
 #
 # Reference : Custom — project-specific hook, not derived from ECC.
+#             Pre-Write blocking handled by pre-write-doc-file-warning.sh.
 # Exits     : 0 always (PostToolUse hooks cannot block)
 
 set -euo pipefail

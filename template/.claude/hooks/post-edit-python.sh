@@ -14,8 +14,10 @@
 
 set -euo pipefail
 
+# Read the tool-call JSON from stdin
 INPUT=$(cat)
 
+# Extract file_path from tool_input (works for both Edit and Write tools)
 FILE_PATH=$(python3 - <<'PYEOF'
 import json, sys
 
@@ -24,6 +26,7 @@ print(data.get("tool_input", {}).get("file_path", ""))
 PYEOF
 <<<"$INPUT")
 
+# Only process .py files that actually exist
 if [[ "$FILE_PATH" != *.py ]] || [[ -z "$FILE_PATH" ]] || [[ ! -f "$FILE_PATH" ]]; then
     exit 0
 fi
@@ -32,12 +35,14 @@ echo "┌─ Standards check: $FILE_PATH"
 
 FAILED=0
 
+# --- Ruff: lint + docstrings ------------------------------------------------
 echo "│"
 echo "│  ruff check"
 if ! uv run --active ruff check "$FILE_PATH" --output-format concise 2>&1; then
     FAILED=1
 fi
 
+# --- BasedPyright: type checking --------------------------------------------
 echo "│"
 echo "│  basedpyright"
 if ! uv run --active basedpyright "$FILE_PATH" 2>&1; then
@@ -51,4 +56,5 @@ else
     echo "└─ ✗ Violations found — fix before committing"
 fi
 
+# Always exit 0: output is feedback to Claude, not a blocker
 exit 0
