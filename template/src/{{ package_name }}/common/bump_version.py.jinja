@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Bump the ``[project].version`` field in ``pyproject.toml`` for release automation.
 
 Reads and rewrites the ``version = "X.Y.Z"`` assignment inside the ``[project]`` table.
@@ -7,6 +5,8 @@ On success, logs the change and emits the new version as a single raw stdout lin
 :func:`{{ package_name }}.common.logging_manager.write_machine_stdout_line` for shell
 substitution in CI and release scripts.
 """
+
+from __future__ import annotations
 
 import argparse
 import re

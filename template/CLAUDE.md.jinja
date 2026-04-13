@@ -184,7 +184,7 @@ the same reuse rule applies to the rest of the tree.
 - Python {{ python_min_version }}+
 - Ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `TCH`, `PGH`, `PT`, `ARG`, `D`, `C90`, `PERF`, `T20`.
   Rule `E501` is ignored (handled by the formatter).
-  `per-file-ignores`: `tests/**` → `ARG`, `D`, `T20`; `scripts/**` → `T20`.
+  `per-file-ignores`: `tests/**` → `ARG`, `T20` (docstrings `D` enforced); `scripts/**` → `T20`.
   `common/bump_version.py` follows the same Google docstring rules as the rest of `src/`.
 - **`src/{{ package_name }}/` — no `print()`** — use **structlog** (`structlog.get_logger()`) after
   :func:`{{ package_name }}.common.logging_manager.configure_logging` at the app entry point.

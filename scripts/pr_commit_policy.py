@@ -141,6 +141,7 @@ def _cmd_commits(base: str, head: str) -> int:
 
 
 def main() -> int:
+    """CLI entry: dispatch ``pr`` or ``commits`` subcommands for CI and local use."""
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
 

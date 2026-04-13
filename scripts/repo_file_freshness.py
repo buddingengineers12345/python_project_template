@@ -57,6 +57,7 @@ class IgnoreConfig:
 
     @classmethod
     def empty(cls) -> IgnoreConfig:
+        """Return an ignore config that matches nothing (no paths ignored)."""
         return cls(files=frozenset(), directories=(), extensions=frozenset(), patterns=())
 
 
@@ -290,6 +291,7 @@ def _sort_key_commits_desc(item: dict[str, Any]) -> tuple[int, str]:
 
 
 def write_json(path: Path, data: Any) -> None:
+    """Serialize ``data`` as sorted, indented JSON and write it to ``path``."""
     path.parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(data, indent=2, sort_keys=True) + "\n"
     _ = path.write_text(text, encoding="utf-8")
@@ -375,6 +377,7 @@ def build_badge_fields(summary: dict[str, int]) -> dict[str, str]:
 
 
 def main() -> int:
+    """Run the freshness scanner CLI and write dashboard plus JSON artifacts."""
     parser = argparse.ArgumentParser(description="Generate repository file freshness reports.")
     _ = parser.add_argument(
         "--repo-root",

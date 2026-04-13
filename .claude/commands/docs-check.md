@@ -5,7 +5,7 @@ Audit and repair documentation across all Python source files.
 1. **Run ruff docstring check** — `uv run --active ruff check --select D .`
    Report every violation with file, line, and rule code.
 
-2. **Deep symbol scan** — for every `.py` file outside `tests/` and `scripts/`:
+2. **Deep symbol scan** — for every `.py` file (including `tests/` and `scripts/`; ruff `D` applies there too):
    - Read the file
    - Identify all public symbols: module-level functions, classes, methods not prefixed with `_`
    - For each symbol check:

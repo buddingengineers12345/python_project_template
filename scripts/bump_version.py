@@ -1,10 +1,10 @@
-from __future__ import annotations
-
 """Bump the ``[project].version`` field in the meta-repo ``pyproject.toml``.
 
 Used by ``.github/workflows/release.yml`` and local release flows. Writes the updated file and
 prints the new PEP 440 version on stdout for shell substitution.
 """
+
+from __future__ import annotations
 
 import argparse
 import re

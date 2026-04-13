@@ -65,8 +65,8 @@ optional features are gated properly.
 
 ### Tool configuration
 - `pyproject.toml` contains correct ruff rules, basedpyright mode, pytest settings.
-- Ruff `per-file-ignores` include `tests/**` and `scripts/**` (see
-  `test_generated_pyproject_ruff_includes_print_rules`).
+- Meta-repo and generated `pyproject.toml`: `per-file-ignores` for `tests/**` and `scripts/**` skip `T20`
+  only; ruff `D` applies to modules, classes, and functions (see `test_generated_pyproject_ruff_includes_print_rules`).
 - `.pre-commit-config.yaml` contains basedpyright, ruff, detect-secrets hooks.
 - `renovate.json` is valid JSON.
 

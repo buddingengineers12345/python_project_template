@@ -194,7 +194,7 @@ file, add a corresponding test.
 - Active ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `D`, `C90`, `PERF`, `T20`.
   Rule `E501` (line too long) is ignored (handled by the formatter).
 - Docstring convention: **Google style** (`pydocstyle` via ruff `D` rules).
-  In this meta-repo, test files (`tests/**`) and scripts (`scripts/**`) are exempt from `D` and `T20`.
+  In this meta-repo, `tests/**` and `scripts/**` enforce `D` like other Python; only `T20` (`print`) is ignored there.
   **Generated projects** (from `template/`) treat `src/**/common/bump_version.py` like other library
   code for ruff `D` (Google docstrings required); the release helper uses
   `logging_manager` (`configure_logging`, structlog events, `write_machine_stdout_line` for the
@@ -337,7 +337,7 @@ just clean   # removes build/, dist/, .pytest_cache, .ruff_cache, __pycache__, *
 
 ### Standards enforcement (this PR)
 - Added `D` (pydocstyle, Google convention), `C90` (McCabe complexity), `PERF` (perflint) to ruff rules
-- Added `per-file-ignores` so test files and scripts are exempt from docstring requirements;
+- Added `per-file-ignores` so `tests/**` and `scripts/**` ignore `T20` only (`print`); docstrings (`D`) apply;
   generated projects enforce Google docstrings on `src/**/common/bump_version.py` like the rest of `src/`
 - Added `[tool.ruff.lint.mccabe]` max-complexity = 10
 - Enhanced basedpyright config: `standard` mode, lenient with external stubs

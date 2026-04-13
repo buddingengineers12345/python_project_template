@@ -334,6 +334,7 @@ def _run_check(check: dict[str, Any], repo_root: Path) -> list[Violation]:
 
 
 def main() -> int:
+    """CLI entry: load the sync map, run checks, print PASS or violations."""
     parser = argparse.ArgumentParser(description="Check root/template sync policy mappings.")
     parser.add_argument(
         "--repo-root",

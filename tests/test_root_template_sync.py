@@ -1,3 +1,5 @@
+"""Tests for ``scripts/check_root_template_sync`` policy checks."""
+
 from __future__ import annotations
 
 import json
@@ -7,6 +9,7 @@ from pathlib import Path
 
 
 def write_file(path: Path, content: str) -> None:
+    """Create parent directories and write ``content`` to ``path`` as UTF-8 text."""
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
 
@@ -14,6 +17,7 @@ def write_file(path: Path, content: str) -> None:
 def run_sync_check(
     repo_root: Path, map_rel: str = "docs/map.yaml"
 ) -> subprocess.CompletedProcess[str]:
+    """Run the root/template sync checker subprocess and return its result."""
     script = Path(__file__).resolve().parent.parent / "scripts" / "check_root_template_sync.py"
     return subprocess.run(
         [
@@ -31,6 +35,7 @@ def run_sync_check(
 
 
 def test_sync_check_passes_for_matching_pairs_and_sections(tmp_path: Path) -> None:
+    """Matching workflow, hook, and pyproject sections yield exit code 0."""
     repo = tmp_path / "repo"
     map_data = {
         "version": 1,
@@ -116,6 +121,7 @@ def test_sync_check_passes_for_matching_pairs_and_sections(tmp_path: Path) -> No
 
 
 def test_sync_check_fails_on_workflow_action_version_drift(tmp_path: Path) -> None:
+    """Mismatched ``uses:`` versions between root and template fail the check."""
     repo = tmp_path / "repo"
     map_data = {
         "version": 1,
@@ -149,6 +155,7 @@ def test_sync_check_fails_on_workflow_action_version_drift(tmp_path: Path) -> No
 
 
 def test_sync_check_fails_when_required_pyproject_key_missing(tmp_path: Path) -> None:
+    """Missing required TOML keys in the template fail the pyproject section check."""
     repo = tmp_path / "repo"
     map_data = {
         "version": 1,

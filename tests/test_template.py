@@ -7,6 +7,7 @@ tooling. They guard template variables, ``_skip_if_exists``, and post-generation
 
 from __future__ import annotations
 
+import contextlib
 import os
 import shutil
 import subprocess
@@ -114,10 +115,8 @@ def _prune_docs_when_disabled(dest: Path, data: dict[str, str | bool]) -> None:
         path = docs_dir / name
         if path.is_file():
             path.unlink()
-    try:
+    with contextlib.suppress(OSError):
         docs_dir.rmdir()
-    except OSError:
-        pass
 
 
 def _remove_empty_optional_artifacts(dest: Path, data: dict[str, str | bool]) -> None:
@@ -210,6 +209,7 @@ def load_pyproject(project_dir: Path) -> dict[str, object]:
 
 
 def require_mapping(value: object, *, name: str) -> Mapping[str, object]:
+    """Assert ``value`` is a mapping with string keys; return it typed for callers."""
     if not isinstance(value, Mapping):
         raise AssertionError(f"{name} must be a mapping, got {type(value).__name__}")
     value_map = cast(Mapping[object, object], value)
@@ -219,6 +219,7 @@ def require_mapping(value: object, *, name: str) -> Mapping[str, object]:
 
 
 def require_sequence(value: object, *, name: str) -> Sequence[object]:
+    """Assert ``value`` is a non-string sequence; return it for further parsing."""
     if not isinstance(value, Sequence) or isinstance(value, (str, bytes, bytearray)):
         raise AssertionError(f"{name} must be a sequence, got {type(value).__name__}")
     return value
@@ -1200,7 +1201,9 @@ def test_generated_pyproject_ruff_includes_print_rules(tmp_path: Path) -> None:
     assert "T20" in select
     per_file = cast(Mapping[str, list[str]], lint["per-file-ignores"])
     assert "T20" in per_file["tests/**"]
+    assert "D" not in per_file["tests/**"]
     assert "T20" in per_file["scripts/**"]
+    assert "D" not in per_file["scripts/**"]
     assert "src/**/bump_version.py" not in per_file
 
 
@@ -1216,13 +1219,13 @@ def test_generated_pyproject_pytest_markers_and_asyncio(tmp_path: Path) -> None:
     optional = require_mapping(
         project.get("optional-dependencies"), name="pyproject.project.optional-dependencies"
     )
-    test_deps = require_sequence(optional.get("test"), name="optional-dependencies.test")
+    test_deps = cast(Sequence[str], require_sequence(optional.get("test"), name="optional-dependencies.test"))
     assert any(dep.startswith("pytest-asyncio") for dep in test_deps)
 
     tool = require_mapping(data.get("tool"), name="pyproject.tool")
     pytest_ini = require_mapping(tool.get("pytest"), name="tool.pytest")
     ini_options = require_mapping(pytest_ini.get("ini_options"), name="pytest.ini_options")
-    markers = require_sequence(ini_options.get("markers"), name="pytest.ini_options.markers")
+    markers = cast(Sequence[str], require_sequence(ini_options.get("markers"), name="pytest.ini_options.markers"))
     joined = "\n".join(markers)
     for marker in ("e2e:", "integration:", "regression:", "slow:", "smoke:", "unit:"):
         assert marker in joined
@@ -1415,7 +1418,7 @@ def test_pypi_publish_adds_oidc_permissions(tmp_path: Path) -> None:
 
 
 def test_pypi_publish_absent_by_default(tmp_path: Path) -> None:
-    """uv publish must NOT appear in release.yml when include_pypi_publish=false (default)."""
+    """The ``uv publish`` step must not appear when PyPI publish is disabled (default)."""
     test_dir = tmp_path / "no_pypi"
     copy_with_data(
         test_dir,

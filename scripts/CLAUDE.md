@@ -4,8 +4,8 @@ This directory contains Python and shell scripts for CI automation and local mai
 tasks. Scripts are invoked via `just` recipes or GitHub Actions workflows.
 
 > [!NOTE]
-> Scripts are **exempt from docstring (`D`) and print (`T20`) ruff rules** — they may use
-> `print()` freely and do not require Google-style docstrings.
+> Scripts follow the same **Google-style docstrings** as the rest of the repo (ruff `D`). Only **`T20`**
+> (`print`) is ignored under `scripts/**` so CLI output stays simple.
 
 ## Scripts
 

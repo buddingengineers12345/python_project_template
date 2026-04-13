@@ -1,3 +1,5 @@
+"""Tests for ``scripts/repo_file_freshness`` classification and outputs."""
+
 from __future__ import annotations
 
 import json
@@ -14,6 +16,7 @@ def run_command(
     check: bool = True,
     extra_env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
+    """Run a subprocess under ``cwd`` with optional extra environment variables."""
     env = dict(os.environ)
     if extra_env:
         env.update(extra_env)
@@ -21,29 +24,34 @@ def run_command(
 
 
 def git_init(repo: Path) -> None:
+    """Initialize a git repo with a fixed user identity for deterministic commits."""
     run_command(["git", "init"], cwd=repo)
     run_command(["git", "config", "user.name", "Test User"], cwd=repo)
     run_command(["git", "config", "user.email", "test@example.com"], cwd=repo)
 
 
 def git_commit(repo: Path, message: str, *, commit_date_iso: str) -> None:
+    """Create a commit touching tracked files with fixed author/committer dates."""
     env = {"GIT_AUTHOR_DATE": commit_date_iso, "GIT_COMMITTER_DATE": commit_date_iso}
     run_command(["git", "add", "-A"], cwd=repo, extra_env=env)
     run_command(["git", "commit", "-m", message], cwd=repo, extra_env=env)
 
 
 def git_empty_commit(repo: Path, message: str, *, commit_date_iso: str) -> None:
+    """Create an empty commit with fixed author/committer dates."""
     env = {"GIT_AUTHOR_DATE": commit_date_iso, "GIT_COMMITTER_DATE": commit_date_iso}
     run_command(["git", "commit", "--allow-empty", "-m", message], cwd=repo, extra_env=env)
 
 
 def write_ignore(repo: Path, data: object) -> None:
+    """Write ``assets/freshness_ignore.json`` for the freshness script."""
     assets = repo / "assets"
     assets.mkdir(parents=True, exist_ok=True)
     (assets / "freshness_ignore.json").write_text(json.dumps(data) + "\n", encoding="utf-8")
 
 
 def run_script(repo: Path, *extra_args: str) -> None:
+    """Run ``repo_file_freshness.py`` against ``repo`` with a fixed reference time."""
     script = Path(__file__).resolve().parent.parent / "scripts" / "repo_file_freshness.py"
     run_command(
         [
@@ -59,12 +67,14 @@ def run_script(repo: Path, *extra_args: str) -> None:
 
 
 def load_details(repo: Path) -> list[dict[str, object]]:
+    """Load ``assets/file_freshness.json`` as a list of per-file detail dicts."""
     raw = json.loads((repo / "assets" / "file_freshness.json").read_text(encoding="utf-8"))
     assert isinstance(raw, list)
     return raw
 
 
 def by_file(items: list[dict[str, object]]) -> dict[str, dict[str, object]]:
+    """Index freshness detail rows by file path."""
     out: dict[str, dict[str, object]] = {}
     for it in items:
         out[str(it["file"])] = it
@@ -99,6 +109,7 @@ def test_classification_green_yellow_red_days(tmp_path: Path) -> None:
 
 
 def test_classification_commits_since_last_change(tmp_path: Path) -> None:
+    """Commits metric counts commits since the last change to each file."""
     repo = tmp_path / "repo"
     repo.mkdir()
     git_init(repo)
@@ -128,6 +139,7 @@ def test_classification_commits_since_last_change(tmp_path: Path) -> None:
 
 
 def test_ignore_priority_exact_then_dir_then_ext_then_pattern(tmp_path: Path) -> None:
+    """Ignore rules apply in file, directory, extension, then glob order."""
     repo = tmp_path / "repo"
     repo.mkdir()
     git_init(repo)
@@ -160,6 +172,7 @@ def test_ignore_priority_exact_then_dir_then_ext_then_pattern(tmp_path: Path) ->
 
 
 def test_invalid_ignore_config_is_graceful(tmp_path: Path) -> None:
+    """Malformed ignore JSON does not crash the script; files still get a status."""
     repo = tmp_path / "repo"
     repo.mkdir()
     git_init(repo)
@@ -176,6 +189,7 @@ def test_invalid_ignore_config_is_graceful(tmp_path: Path) -> None:
 
 
 def test_empty_repo_generates_outputs(tmp_path: Path) -> None:
+    """An empty repo still produces JSON and Markdown outputs."""
     repo = tmp_path / "repo"
     repo.mkdir()
     git_init(repo)

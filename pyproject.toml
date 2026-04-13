@@ -54,8 +54,8 @@ convention = "google"
 max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**"   = ["D", "T20"]  # test functions don't require docstrings; print OK in tests
-"scripts/**" = ["D", "T20"]  # utility scripts may use print
+"tests/**"   = ["T20"]  # print() OK in tests; module/class/function docstrings enforced (D)
+"scripts/**" = ["T20"]  # CLI scripts may use print(); docstrings enforced (D)
 
 [tool.pytest.ini_options]
 minversion = "8.0"
