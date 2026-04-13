@@ -90,5 +90,14 @@
     }
   },
   "python.languageServer": "None",
-  "python.analysis.typeCheckingMode": "off"
+  "python.analysis.typeCheckingMode": "off",
+  // ============================================================
+  // macOS: silence uv "Ignoring `SSL_CERT_DIR`" when the variable
+  // points at a directory with no PEM certs (e.g. /etc/ssl/certs).
+  // Empty value lets uv use its default trust store. If you rely on
+  // a custom bundle, prefer SSL_CERT_FILE to a single PEM file instead.
+  // ============================================================
+  "terminal.integrated.env.osx": {
+    "SSL_CERT_DIR": ""
+  }
 }
