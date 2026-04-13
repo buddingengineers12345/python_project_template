@@ -1,6 +1,9 @@
-# Local ignores
+# --------------------------------------------------------------------------
+# Local developer ignores (not enforced in CI)
+# --------------------------------------------------------------------------
 runner.sh
 full_runner.sh
+
 # ==========================================================================
 # Python Core
 # ==========================================================================
@@ -241,9 +244,6 @@ data/
 # Claude Code local state
 .claude/todos/
 .claude/.refactor-edit-count
-
-# Stray root file (accidental)
-/1
 
 # Cursor Related files
 .cursor/
