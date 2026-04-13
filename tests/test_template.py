@@ -1031,6 +1031,7 @@ def test_generated_pyproject_ruff_includes_print_rules(tmp_path: Path) -> None:
     per_file = cast(Mapping[str, list[str]], lint["per-file-ignores"])
     assert "T20" in per_file["tests/**"]
     assert "T20" in per_file["scripts/**"]
+    assert "D" in per_file["src/**/bump_version.py"]
     assert "T20" in per_file["src/**/bump_version.py"]
 
 
