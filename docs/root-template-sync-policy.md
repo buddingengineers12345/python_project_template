@@ -41,6 +41,7 @@ Use these rules in order:
 | `.github/workflows/pre-commit-update.yml` | `template/.github/workflows/pre-commit-update.yml.jinja` | sync_structure_only | bidirectional versions |
 | `.github/workflows/release.yml` | `template/.github/workflows/release.yml.jinja` | sync_structure_only | bidirectional versions |
 | `.github/workflows/dependency-review.yml` | `template/.github/workflows/dependency-review.yml.jinja` | sync_structure_only | bidirectional versions |
+| `.github/workflows/labeler.yml` | `template/.github/workflows/labeler.yml.jinja` | sync_structure_only | bidirectional versions |
 
 ## Intentionally divergent areas
 

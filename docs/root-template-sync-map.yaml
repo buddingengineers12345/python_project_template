@@ -24,6 +24,10 @@
         {
           "root": ".github/workflows/dependency-review.yml",
           "template": "template/.github/workflows/dependency-review.yml.jinja"
+        },
+        {
+          "root": ".github/workflows/labeler.yml",
+          "template": "template/.github/workflows/labeler.yml.jinja"
         }
       ]
     },
