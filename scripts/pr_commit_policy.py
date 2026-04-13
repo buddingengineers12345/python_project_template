@@ -8,6 +8,7 @@ import os
 import re
 import subprocess
 import sys
+from pathlib import Path
 from typing import Final
 
 # Conventional commit types (aligned with Commitizen ``cz_conventional_commits`` / commit-msg hook).
@@ -69,6 +70,89 @@ def validate_pr_title(title: str) -> str | None:
     return validate_conventional_subject_line(title.split("\n", maxsplit=1)[0])
 
 
+def suggest_title_from_branch(branch: str) -> str | None:
+    """Derive a Conventional-Commits title from ``type/slug-slug`` branch names.
+
+    Args:
+        branch: Short branch name (no ``refs/heads/``) or full ref.
+
+    Returns:
+        A title such as ``chore: sync skip list``, or ``None`` if the branch does not
+        start with a known conventional type prefix.
+    """
+    b = branch.strip()
+    if b.startswith("refs/heads/"):
+        b = b[11:]
+    m = re.match(rf"^({_TYPES})/(.+)$", b)
+    if not m:
+        return None
+    typ, tail = m.group(1), m.group(2)
+    subject = tail.replace("/", " ")
+    subject = re.sub(r"[-_]+", " ", subject)
+    subject = re.sub(r"\s+", " ", subject).strip()
+    if not subject:
+        return None
+    line = f"{typ}: {subject}"
+    if len(line) > _MAX_SUBJECT_LEN:
+        line = line[: _MAX_SUBJECT_LEN].rstrip()
+    return line
+
+
+def suggest_title_from_git(repo_cwd: Path) -> str | None:
+    """Return the latest commit subject if it already satisfies conventional rules."""
+    result = subprocess.run(
+        ["git", "-C", str(repo_cwd), "log", "-1", "--format=%s"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return None
+    subject = result.stdout.strip()
+    if validate_conventional_subject_line(subject) is None:
+        return subject
+    return None
+
+
+def changes_introduced_markdown(repo_cwd: Path, base_ref: str, head_ref: str) -> str:
+    """Build bullet lines from ``git log`` for the PR template *Changes introduced* section."""
+    proc = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repo_cwd),
+            "log",
+            "--reverse",
+            "--format=- %s",
+            f"{base_ref}..{head_ref}",
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        return "- (could not list commits; describe changes here)"
+    lines = [ln.rstrip() for ln in proc.stdout.splitlines() if ln.strip()]
+    if not lines:
+        return "- (no commits ahead of base; describe changes here)"
+    return "\n".join(lines)
+
+
+def draft_pr_body(repo_root: Path, base_ref: str, head_ref: str) -> str:
+    """Return PR body text from the template with placeholders replaced."""
+    template_path = repo_root / ".github" / "PULL_REQUEST_TEMPLATE.md"
+    text = template_path.read_text(encoding="utf-8")
+    bullets = changes_introduced_markdown(repo_root, base_ref, head_ref)
+    block = (
+        "- Change 1\n"
+        "- Change 2\n"
+        "- Change 3 (if applicable)"
+    )
+    if block not in text:
+        return text
+    return text.replace(block, bullets, 1)
+
+
 def validate_pr_body(body: str | None) -> str | None:
     """Return an error message if the PR body does not follow the template; else None."""
     if body is None or not body.strip():
@@ -118,6 +202,81 @@ def validate_commit_range(base: str, head: str) -> str | None:
     return None
 
 
+def _git_toplevel() -> Path:
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError("not a git repository (git rev-parse --show-toplevel failed)")
+    return Path(result.stdout.strip())
+
+
+def _resolve_base_ref(repo: Path, explicit: str | None) -> str:
+    if explicit:
+        return explicit
+    for ref in ("origin/main", "main"):
+        chk = subprocess.run(
+            ["git", "-C", str(repo), "rev-parse", "--verify", ref],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if chk.returncode == 0:
+            return ref
+    raise RuntimeError(
+        "could not resolve base ref (try: git fetch origin main && "
+        "pr_commit_policy.py draft --base origin/main)",
+    )
+
+
+def _current_branch(repo: Path) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(repo), "rev-parse", "--abbrev-ref", "HEAD"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError("git rev-parse --abbrev-ref HEAD failed")
+    return result.stdout.strip()
+
+
+def _cmd_draft(
+    repo: Path,
+    base_ref: str | None,
+    head_ref: str | None,
+    title_only: bool,
+    body_only: bool,
+) -> int:
+    """Print a policy-compliant PR title and body for copy-paste or ``gh pr edit``."""
+    base = _resolve_base_ref(repo, base_ref)
+    head = head_ref or "HEAD"
+    branch = _current_branch(repo)
+    title = suggest_title_from_branch(branch) or suggest_title_from_git(repo)
+    if not title:
+        title = "chore: describe this pull request"
+    body = draft_pr_body(repo, base, head)
+    if title_only and body_only:
+        print(title)
+        print("\n---\n")
+        print(body)
+        return 0
+    if not title_only and not body_only:
+        print("Suggested PR title (GitHub UI or: gh pr edit --title '...'):\n")
+        print(title)
+        print("\n---\n\nSuggested PR body (paste in GitHub or: gh pr edit --body-file ...):\n")
+        print(body)
+        return 0
+    if title_only:
+        print(title)
+        return 0
+    print(body)
+    return 0
+
+
 def _cmd_pr() -> int:
     title = os.environ.get("PR_TITLE", "")
     body = os.environ.get("PR_BODY")
@@ -147,6 +306,37 @@ def main() -> int:
 
     sub.add_parser("pr", help="validate PR_TITLE and PR_BODY environment variables")
 
+    p_draft = sub.add_parser(
+        "draft",
+        help="print a conventional PR title and filled template body (local automation)",
+    )
+    p_draft.add_argument(
+        "--repo",
+        type=Path,
+        default=None,
+        help="repository root (default: git top-level of cwd)",
+    )
+    p_draft.add_argument(
+        "--base",
+        default=None,
+        help="base ref for git log (default: origin/main or main)",
+    )
+    p_draft.add_argument(
+        "--head",
+        default=None,
+        help="head ref (default: HEAD)",
+    )
+    p_draft.add_argument(
+        "--title-only",
+        action="store_true",
+        help="print only the suggested title line",
+    )
+    p_draft.add_argument(
+        "--body-only",
+        action="store_true",
+        help="print only the suggested body",
+    )
+
     p_commits = sub.add_parser("commits", help="validate git commits in a range")
     p_commits.add_argument(
         "--base",
@@ -162,6 +352,26 @@ def main() -> int:
     args = parser.parse_args()
     if args.command == "pr":
         return _cmd_pr()
+    if args.command == "draft":
+        try:
+            repo = args.repo.resolve() if args.repo else _git_toplevel()
+        except RuntimeError as exc:
+            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
+            return 1
+        try:
+            return _cmd_draft(
+                repo,
+                args.base,
+                args.head,
+                title_only=args.title_only,
+                body_only=args.body_only,
+            )
+        except RuntimeError as exc:
+            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
+            return 1
+        except OSError as exc:
+            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
+            return 1
     if args.command == "commits":
         if not args.base or not args.head:
             print(

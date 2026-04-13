@@ -275,3 +275,30 @@ def test_validate_commit_range_rejects_bad_subject(tmp_path: Path) -> None:
         os.chdir(cwd)
     assert err is not None
     assert "bad subject" in err
+
+
+@pytest.mark.parametrize(
+    ("branch", "expected"),
+    [
+        ("chore/repo-cleanup-standards-remediation", "chore: repo cleanup standards remediation"),
+        ("feat/add-widget", "feat: add widget"),
+        ("fix/api/handle-null", "fix: api handle null"),
+    ],
+)
+def test_suggest_title_from_branch(branch: str, expected: str) -> None:
+    """Branch names ``type/slug`` map to ``type: slug`` with hyphens as spaces."""
+    assert pcp.suggest_title_from_branch(branch) == expected
+
+
+def test_suggest_title_from_branch_unknown_prefix() -> None:
+    """Branches without a known type prefix yield None."""
+    assert pcp.suggest_title_from_branch("main") is None
+    assert pcp.suggest_title_from_branch("dependabot/pip/foo-1.0") is None
+
+
+def test_suggest_title_from_branch_strips_ref() -> None:
+    """``refs/heads/`` prefix is ignored."""
+    assert (
+        pcp.suggest_title_from_branch("refs/heads/docs/update-readme")
+        == "docs: update readme"
+    )

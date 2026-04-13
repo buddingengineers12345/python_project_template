@@ -78,9 +78,15 @@ via `logging_manager.write_machine_stdout_line` (T20 still enforces no `print()`
 Validates pull request titles and bodies (against `.github/PULL_REQUEST_TEMPLATE.md`) and
 conventional commit subjects over a `git rev-list` range.
 
-**Invocation:** `python3 scripts/pr_commit_policy.py pr` with `PR_TITLE` and `PR_BODY` set, or
-`python3 scripts/pr_commit_policy.py commits` with `PR_BASE_SHA` and `PR_HEAD_SHA` (or
-`--base` / `--head`).
+**Invocation:**
+
+- CI / check: `python3 scripts/pr_commit_policy.py pr` with `PR_TITLE` and `PR_BODY` set, or
+  `python3 scripts/pr_commit_policy.py commits` with `PR_BASE_SHA` and `PR_HEAD_SHA` (or
+  `--base` / `--head`).
+- Local automation: `just pr-draft` → `pr_commit_policy.py draft` prints a Conventional
+  Commits title (from `type/slug-branch` or the latest valid commit subject) and a PR body
+  from `.github/PULL_REQUEST_TEMPLATE.md` with *Changes introduced* bullets from
+  `git log <base>..HEAD` (default base: `origin/main` or `main`).
 
 **Used by:** `.github/workflows/pr-policy.yml` (and the generated-project copy from `template/`).
 

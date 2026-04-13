@@ -93,6 +93,7 @@ Prerequisites: Python 3.11+, `uv`, `just`, `git`.
 | Diagnose environment | `just doctor` |
 | Generate freshness dashboard | `just freshness` |
 | Root ↔ template sync validation | `just sync-check` |
+| Suggested PR title + body (PR policy) | `just pr-draft` |
 | Clean build artifacts | `just clean` |
 | Build distribution | `just build` |
 | Publish package | `just publish` |
