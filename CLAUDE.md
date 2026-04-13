@@ -23,13 +23,17 @@ destination folder.
 ├── tests/                    # pytest tests that render the template and assert output
 │   ├── test_template.py      # Main integration suite — copier copy + assertions
 │   ├── test_root_template_sync.py   # Tests for check_root_template_sync.py
-│   └── test_repo_file_freshness.py  # Unit tests for repo_file_freshness.py script
-├── scripts/                  # Automation scripts for CI or local tasks
+│   ├── test_repo_file_freshness.py  # Unit tests for repo_file_freshness.py
+│   ├── test_pr_commit_policy.py     # PR body + conventional commit rules
+│   ├── test_bump_version.py         # Version bump + pyproject I/O
+│   ├── test_sync_skip_if_exists.py  # copier.yml _skip_if_exists helpers
+│   └── test_check_root_template_sync.py  # CLI smoke (see test_root_template_sync for scenarios)
+├── scripts/                  # Automation scripts for CI or local tasks (see scripts/CLAUDE.md)
 │   ├── repo_file_freshness.py    # Git-based freshness dashboard (→ docs/ + assets/)
 │   ├── bump_version.py           # PEP 440 version bumper (patch/minor/major)
 │   ├── check_root_template_sync.py  # Root ↔ template parity (workflows, settings, recipes)
-│   ├── sync_skip_if_exists.py    # Sync copier.yml _skip_if_exists with template paths
-│   └── update_files.sh           # Batch file update helper
+│   ├── pr_commit_policy.py       # PR title/body + commit message policy (CI)
+│   └── sync_skip_if_exists.py    # Sync copier.yml _skip_if_exists with template paths
 ├── .claude/                  # Claude Code hooks, commands, and rules for THIS meta-repo
 │   ├── settings.json         # Hook registrations and permission allow/deny lists
 │   ├── hooks/                # Shell hook scripts (see hooks/README.md)
@@ -58,24 +62,37 @@ Prerequisites: Python 3.11+, `uv`, `just`, `git`.
 
 | Task | Command |
 |---|---|
+| List recipes (default) | `just` or `just default` |
 | Run all tests | `just test` |
 | Run tests in parallel | `just test-parallel` |
+| Run slow tests only | `just slow` |
+| Verbose tests | `just test-verbose` |
+| Full debug test output | `just test-debug` |
+| Re-run last failed tests | `just test-lf` |
+| Stop on first test failure | `just test-first-fail` |
+| CI-style tests + coverage XML | `just test-ci` |
 | Coverage report | `just coverage` |
 | Lint | `just lint` |
 | Format | `just fmt` |
+| Format check (read-only) | `just fmt-check` |
 | Auto-fix lint issues | `just fix` |
 | Type check | `just type` |
 | Docstring check | `just docs-check` |
+| MkDocs recipes (generated projects only) | `just docs-help` |
 | Pre-merge review | `just review` |
 | Full CI locally | `just ci` |
 | Read-only CI check (no auto-fix) | `just ci-check` |
 | Static checks only (fix+fmt+lint+type+docs) | `just static_check` |
+| Run pre-commit on all files | `just precommit` |
+| Register git hooks | `just precommit-install` |
+| Interactive conventional commit (Commitizen) | `just cz-commit` |
 | Sync deps after lockfile change | `just sync` |
 | Upgrade all deps | `just update` |
 | Dependency security audit | `just audit` |
 | Install all deps + pre-commit | `just install` |
 | Diagnose environment | `just doctor` |
 | Generate freshness dashboard | `just freshness` |
+| Root ↔ template sync validation | `just sync-check` |
 | Clean build artifacts | `just clean` |
 | Build distribution | `just build` |
 | Publish package | `just publish` |

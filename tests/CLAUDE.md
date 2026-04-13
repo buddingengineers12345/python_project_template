@@ -11,7 +11,10 @@ optional features are gated properly.
 | `test_template.py` | Main integration suite: renders the template and asserts output |
 | `test_pr_commit_policy.py` | Unit tests for `scripts/pr_commit_policy.py` (PR body + commit subject rules) |
 | `test_root_template_sync.py` | Tests for `scripts/check_root_template_sync.py` |
+| `test_check_root_template_sync.py` | CLI `--help` smoke test for the sync checker |
 | `test_repo_file_freshness.py` | Unit tests for `scripts/repo_file_freshness.py` |
+| `test_bump_version.py` | Unit tests for `scripts/bump_version.py` |
+| `test_sync_skip_if_exists.py` | Unit tests for `scripts/sync_skip_if_exists.py` |
 
 ## How `test_template.py` works
 
