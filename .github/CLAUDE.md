@@ -22,6 +22,7 @@ the template itself, not the projects generated from it.
 | `sync-skip-if-exists.yml` | push to main, manual | Sync `_skip_if_exists` list in `copier.yml` via `scripts/sync_skip_if_exists.py` |
 | `stale.yml` | daily schedule | Mark and close stale issues/PRs |
 | `labeler.yml` | PR | Auto-label PRs based on changed file paths |
+| `pr-policy.yml` | PR (opened/edited/synchronize/reopened) | Validates PR title, body (template), and commit subjects; add **`PR policy / pr-policy`** as a required check (see `github-branch-protection.md`) |
 
 ## Workflow design principles
 
@@ -62,15 +63,24 @@ before pushing a tag.
 | `file-freshness.yml` — tracks template file age | _(no equivalent)_ |
 | `sync-skip-if-exists.yml` — syncs copier.yml | _(no equivalent)_ |
 
+## Branch protection and merge policy
+
+Maintainers should configure GitHub so the default branch accepts changes only via pull
+requests and (for this template’s recommended workflow) **squash merges** only. See
+[`github-branch-protection.md`](github-branch-protection.md) for a step-by-step checklist.
+Generated projects receive the same file under `.github/` from the template.
+
 ## Other files
 
 | Path | Purpose |
 |---|---|
+| `github-branch-protection.md` | Maintainer checklist: PR-only `main`, squash merges, optional reviews/CI |
 | `dependabot.yml` | Dependabot config for GitHub Actions version updates |
 | `renovate.json` | Renovate bot config for dependency updates |
 | `labeler.yml` | Label mapping for `labeler.yml` workflow |
 | `ISSUE_TEMPLATE/` | Bug report and feature request templates |
-| `PULL_REQUEST_TEMPLATE.md` | Default PR description template |
+| `PULL_REQUEST_TEMPLATE.md` | Default PR description template (enforced in CI by `pr-policy.yml` when required) |
+| `workflows/pr-policy.yml` | PR title/body/commit validation via `scripts/pr_commit_policy.py` |
 
 ## Modifying workflows
 

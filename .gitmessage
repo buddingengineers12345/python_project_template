@@ -1,0 +1,12 @@
+# <type>: <short imperative description>  (subject ≤72 characters)
+#
+# Types: feat, fix, refactor, docs, test, chore, perf, ci, build
+#
+# Optional scope in parentheses, e.g. feat(api): add endpoint
+# Breaking change: add ! after type/scope, e.g. feat!: remove legacy API
+#
+# --- Body (wrap at ~80 columns): explain WHY, not what ---
+#
+#
+# --- Footer (optional) ---
+# Closes #123

@@ -73,6 +73,21 @@ intent of this script: no Google docstrings required, and `print()` is allowed f
 
 ---
 
+### `pr_commit_policy.py`
+
+Validates pull request titles and bodies (against `.github/PULL_REQUEST_TEMPLATE.md`) and
+conventional commit subjects over a `git rev-list` range.
+
+**Invocation:** `python3 scripts/pr_commit_policy.py pr` with `PR_TITLE` and `PR_BODY` set, or
+`python3 scripts/pr_commit_policy.py commits` with `PR_BASE_SHA` and `PR_HEAD_SHA` (or
+`--base` / `--head`).
+
+**Used by:** `.github/workflows/pr-policy.yml` (and the generated-project copy from `template/`).
+
+**Tested by:** `tests/test_pr_commit_policy.py`
+
+---
+
 ### `check_root_template_sync.py`
 
 Validates that root and `template/` stay aligned on configured paths (for example GitHub

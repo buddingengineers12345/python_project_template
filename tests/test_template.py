@@ -1127,6 +1127,45 @@ def test_docs_ci_page_when_docs_enabled(tmp_path: Path) -> None:
     assert "ci.md" in mkdocs
 
 
+def test_github_branch_protection_doc_in_generated_project(tmp_path: Path) -> None:
+    """Branch protection checklist ships under .github/ even when MkDocs docs/ is removed.
+
+    Uses :func:`copy_with_data_from_worktree` so ``template/.github/github-branch-protection.md.jinja``
+    is exercised before it appears in the last git commit (same pattern as ``test_env_example_rendered``).
+    """
+    test_dir = tmp_path / "branch_prot_doc"
+    copy_with_data_from_worktree(
+        test_dir,
+        {"project_name": "Branch Prot", "include_docs": False, "include_git_cliff": False},
+    )
+    doc = test_dir / ".github" / "github-branch-protection.md"
+    assert doc.is_file()
+    text = doc.read_text(encoding="utf-8")
+    assert "squash" in text.lower()
+    assert "pull request" in text.lower()
+
+
+def test_generated_pr_policy_and_templates(tmp_path: Path) -> None:
+    """Generated projects ship PR template, commit template, policy script, and workflow."""
+    test_dir = tmp_path / "pr_policy_ship"
+    copy_with_data_from_worktree(
+        test_dir,
+        {"project_name": "PR Pol", "include_docs": False, "include_git_cliff": False},
+    )
+    pr_tpl = test_dir / ".github" / "PULL_REQUEST_TEMPLATE.md"
+    assert pr_tpl.is_file()
+    assert "## Summary" in pr_tpl.read_text(encoding="utf-8")
+    assert (test_dir / ".gitmessage").is_file()
+    script = test_dir / "scripts" / "pr_commit_policy.py"
+    assert script.is_file()
+    assert "validate_pr_body" in script.read_text(encoding="utf-8")
+    wf = test_dir / ".github" / "workflows" / "pr-policy.yml"
+    assert wf.is_file()
+    wf_text = wf.read_text(encoding="utf-8")
+    assert "pr_commit_policy.py" in wf_text
+    assert "PR policy" in wf_text
+
+
 def test_generated_pyproject_basedpyright_standard_mode(tmp_path: Path) -> None:
     """Generated projects should configure basedpyright in standard mode (per template contract)."""
     test_dir = tmp_path / "bp_std"
@@ -1158,13 +1197,15 @@ def test_generated_pyproject_ruff_includes_print_rules(tmp_path: Path) -> None:
 def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
     """Pre-commit config in generated projects should run detect-secrets with a baseline."""
     test_dir = tmp_path / "secrets_hook"
-    copy_with_data(
+    copy_with_data_from_worktree(
         test_dir,
         {"project_name": "Secrets Hook", "include_docs": False, "include_git_cliff": False},
     )
     cfg = (test_dir / ".pre-commit-config.yaml").read_text(encoding="utf-8")
     assert "detect-secrets" in cfg
     assert ".secrets.baseline" in cfg
+    assert "conventional-pre-commit" in cfg
+    assert "commit-msg" in cfg
     assert (test_dir / ".secrets.baseline").is_file()
 
 

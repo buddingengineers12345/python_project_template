@@ -17,6 +17,19 @@ Before making any changes, please:
 
 ---
 
+## GitHub settings (maintainers)
+
+If you maintain this repository on GitHub, configure **branch protection** and **merge
+settings** on the default branch (usually `main`) so changes use pull requests and (as
+recommended here) **squash merge** only. See
+[`.github/github-branch-protection.md`](.github/github-branch-protection.md) for the full
+checklist.
+
+Contributors should always open pull requests against the default branch and avoid pushing
+directly to it.
+
+---
+
 ## Getting Started
 
 ### 1. Fork the Repository
@@ -37,6 +50,8 @@ git checkout -b feature/short-description
 uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}{% if include_git_cliff %} --group changelog{% endif %}
 just precommit-install
 ```
+
+`just precommit-install` registers pre-commit, pre-push, and **commit-msg** hooks (Conventional Commits), and points Git’s **commit template** at the repository `.gitmessage` file so your editor opens with a short scaffold. Pull request titles should use the same convention when you expect a **squash merge** (the title is often the default squash commit subject). CI validates PR title, body, and branch commits via the **PR policy** workflow when it is enabled as a required check.
 
 ---
 

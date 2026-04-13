@@ -9,6 +9,7 @@ optional features are gated properly.
 | File | Purpose |
 |---|---|
 | `test_template.py` | Main integration suite: renders the template and asserts output |
+| `test_pr_commit_policy.py` | Unit tests for `scripts/pr_commit_policy.py` (PR body + commit subject rules) |
 | `test_root_template_sync.py` | Tests for `scripts/check_root_template_sync.py` |
 | `test_repo_file_freshness.py` | Unit tests for `scripts/repo_file_freshness.py` |
 
@@ -84,6 +85,8 @@ optional features are gated properly.
 ### GitHub Actions
 - `ci.yml` references the correct Python version matrix for each `python_min_version` choice.
 - Optional workflows appear only when the corresponding feature flag is set.
+- `.github/github-branch-protection.md` is always rendered (even when `include_docs=false`);
+  see `test_github_branch_protection_doc_in_generated_project`.
 
 ## Running tests
 

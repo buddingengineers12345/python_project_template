@@ -113,6 +113,8 @@ test-ci:
 precommit-install:
     @uv run pre-commit install
     @uv run pre-commit install --hook-type pre-push
+    @uv run pre-commit install --hook-type commit-msg
+    @git config commit.template "$(git rev-parse --show-toplevel)/.gitmessage"
 
 precommit:
     @uv run pre-commit run --all-files --verbose

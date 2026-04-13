@@ -47,6 +47,7 @@ template/
 │   ├── ISSUE_TEMPLATE/              # Bug report + feature request templates
 │   ├── CODE_OF_CONDUCT.md.jinja
 │   ├── CODEOWNERS.jinja
+│   ├── github-branch-protection.md.jinja  # Maintainer checklist: PR-only main, squash merges
 │   ├── PULL_REQUEST_TEMPLATE.md.jinja
 │   └── renovate.json.jinja
 │

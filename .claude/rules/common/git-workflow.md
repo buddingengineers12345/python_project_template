@@ -43,6 +43,9 @@ justification:
 - `git push --force` — rewrites shared history.
 - `git push` directly to `main` — use pull requests.
 
+**Maintainers:** enforce PR-only `main` and squash merges in GitHub **Settings** / branch
+protection; see `.github/github-branch-protection.md` in this repository for a checklist.
+
 ## TDD commit conventions
 
 When committing TDD work, structure commits to reflect the discipline:

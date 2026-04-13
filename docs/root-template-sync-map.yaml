@@ -140,6 +140,16 @@
       ]
     },
     {
+      "id": "github_branch_protection_doc",
+      "type": "exact_file_pairs",
+      "pairs": [
+        {
+          "root": ".github/github-branch-protection.md",
+          "template": "template/.github/github-branch-protection.md.jinja"
+        }
+      ]
+    },
+    {
       "id": "shared_skill_parity",
       "type": "exact_file_pairs",
       "pairs": [

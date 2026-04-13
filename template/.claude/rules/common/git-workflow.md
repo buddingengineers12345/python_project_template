@@ -29,6 +29,10 @@ The `pre-bash-commit-quality.sh` hook scans staged files before every commit.
 These commands are blocked by hooks and must not be run without explicit justification:
 - `git commit --no-verify` — bypasses quality gates.
 - `git push --force` — rewrites shared history.
+- `git push` directly to the default branch (for example `main`) — use pull requests.
+
+**Maintainers:** configure branch protection and squash-only merges on GitHub; see
+`.github/github-branch-protection.md` in this repository for a checklist.
 
 ## TDD commit conventions
 
