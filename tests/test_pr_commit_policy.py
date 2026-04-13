@@ -298,7 +298,4 @@ def test_suggest_title_from_branch_unknown_prefix() -> None:
 
 def test_suggest_title_from_branch_strips_ref() -> None:
     """``refs/heads/`` prefix is ignored."""
-    assert (
-        pcp.suggest_title_from_branch("refs/heads/docs/update-readme")
-        == "docs: update readme"
-    )
+    assert pcp.suggest_title_from_branch("refs/heads/docs/update-readme") == "docs: update readme"

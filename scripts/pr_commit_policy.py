@@ -94,7 +94,7 @@ def suggest_title_from_branch(branch: str) -> str | None:
         return None
     line = f"{typ}: {subject}"
     if len(line) > _MAX_SUBJECT_LEN:
-        line = line[: _MAX_SUBJECT_LEN].rstrip()
+        line = line[:_MAX_SUBJECT_LEN].rstrip()
     return line
 
 
@@ -143,11 +143,7 @@ def draft_pr_body(repo_root: Path, base_ref: str, head_ref: str) -> str:
     template_path = repo_root / ".github" / "PULL_REQUEST_TEMPLATE.md"
     text = template_path.read_text(encoding="utf-8")
     bullets = changes_introduced_markdown(repo_root, base_ref, head_ref)
-    block = (
-        "- Change 1\n"
-        "- Change 2\n"
-        "- Change 3 (if applicable)"
-    )
+    block = "- Change 1\n- Change 2\n- Change 3 (if applicable)"
     if block not in text:
         return text
     return text.replace(block, bullets, 1)
