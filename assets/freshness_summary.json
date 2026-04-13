@@ -1,10 +1,10 @@
 {
   "blue": 2,
   "color": "red",
-  "green": 32,
+  "green": 50,
   "label": "freshness",
-  "message": "152 stale",
+  "message": "169 stale",
   "metric": "commits",
-  "red": 152,
-  "yellow": 57
+  "red": 169,
+  "yellow": 54
 }
