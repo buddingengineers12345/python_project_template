@@ -234,3 +234,7 @@ freshness:
 # Validate root/template sync map and parity checks
 sync-check:
     @uv run python scripts/check_root_template_sync.py
+
+# Print a conventional PR title + PR body (template + git log) for pr-policy compliance
+pr-draft:
+    @uv run python scripts/pr_commit_policy.py draft

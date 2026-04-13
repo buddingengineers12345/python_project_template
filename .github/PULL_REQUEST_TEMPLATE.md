@@ -2,6 +2,10 @@
 Thank you for opening a pull request!
 Please provide clear and complete information to help reviewers
 understand, review, and merge your changes efficiently.
+
+Tip: run `just pr-draft` from the repo root to print a Conventional-Commits title
+(e.g. chore/foo-bar → chore: foo bar) and a body with *Changes introduced* filled
+from `git log`. Use `gh pr edit` to apply, or copy into the GitHub UI.
 -->
 
 ## Summary

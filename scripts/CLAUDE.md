@@ -78,9 +78,15 @@ via `logging_manager.write_machine_stdout_line` (T20 still enforces no `print()`
 Validates pull request titles and bodies (against `.github/PULL_REQUEST_TEMPLATE.md`) and
 conventional commit subjects over a `git rev-list` range.
 
-**Invocation:** `python3 scripts/pr_commit_policy.py pr` with `PR_TITLE` and `PR_BODY` set, or
-`python3 scripts/pr_commit_policy.py commits` with `PR_BASE_SHA` and `PR_HEAD_SHA` (or
-`--base` / `--head`).
+**Invocation:**
+
+- CI / check: `python3 scripts/pr_commit_policy.py pr` with `PR_TITLE` and `PR_BODY` set, or
+  `python3 scripts/pr_commit_policy.py commits` with `PR_BASE_SHA` and `PR_HEAD_SHA` (or
+  `--base` / `--head`).
+- Local automation: `just pr-draft` → `pr_commit_policy.py draft` prints a Conventional
+  Commits title (from `type/slug-branch` or the latest valid commit subject) and a PR body
+  from `.github/PULL_REQUEST_TEMPLATE.md` with *Changes introduced* bullets from
+  `git log <base>..HEAD` (default base: `origin/main` or `main`).
 
 **Used by:** `.github/workflows/pr-policy.yml` (and the generated-project copy from `template/`).
 
@@ -105,28 +111,6 @@ Actions pins, shared recipes, and other policy maps).
 
 ---
 
-### `generate_template_vs_obsidian_comparison.py`
-
-Writes [`docs/template_vs_obsidian_playwright_pipeline.md`](../docs/template_vs_obsidian_playwright_pipeline.md):
-per-template-file existence check against a reference generated repo plus a **Content match**
-column (UTF-8 text vs a fresh `copier copy` with that repo’s answers, newline-normalised).
-
-**Invocation:** `uv run python scripts/generate_template_vs_obsidian_comparison.py`
-
-**Requires:** `copier` on PATH; edit `OBS_ROOT` in the script to point at the reference project.
-
----
-
-### `generate_obsidian_porting_report.py`
-
-Writes [`docs/obsidian_playwright_porting_report.md`](../docs/obsidian_playwright_porting_report.md):
-per-file notes on what was ported from a reference generated project (paths and Copier
-answers are edited at the top of the script) versus what stays app-specific.
-
-**Invocation:** `uv run python scripts/generate_obsidian_porting_report.py`
-
----
-
 ### `sync_skip_if_exists.py`
 
 Synchronises the `_skip_if_exists` list in `copier.yml` with the actual template file paths
@@ -139,15 +123,6 @@ and their commit frequency.
 - For each path, checks the Git commit frequency to determine if it is user-customisable
   (high churn = likely user-edited → should be in `_skip_if_exists`).
 - Produces a suggested diff to `copier.yml`'s `_skip_if_exists` list.
-
----
-
-### `update_files.sh`
-
-Batch file update helper used during template development to propagate changes across
-multiple related files.
-
-**Invocation:** `bash scripts/update_files.sh`
 
 ---
 
