@@ -31,7 +31,8 @@ template/
 │       ├── test_core.py.jinja
 │       └── test_support.py.jinja    # Tests for common/* utilities
 │
-├── docs/                            # MkDocs source (conditional on include_docs)
+├── docs/                            # MkDocs source (conditional) + GitHub Settings checklist (always)
+│   ├── github-repository-settings.md.jinja  # Maintainer checklist only (survives include_docs=false)
 │   ├── {% if include_docs %}index.md{% endif %}.jinja
 │   └── {% if include_docs %}ci.md{% endif %}.jinja
 │
@@ -47,7 +48,6 @@ template/
 │   ├── ISSUE_TEMPLATE/              # Bug report + feature request templates
 │   ├── CODE_OF_CONDUCT.md.jinja
 │   ├── CODEOWNERS.jinja
-│   ├── github-branch-protection.md.jinja  # Maintainer checklist: PR-only main, squash merges
 │   ├── PULL_REQUEST_TEMPLATE.md.jinja
 │   └── renovate.json.jinja
 │

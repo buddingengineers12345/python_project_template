@@ -22,7 +22,7 @@ the template itself, not the projects generated from it.
 | `sync-skip-if-exists.yml` | push to main, manual | Sync `_skip_if_exists` list in `copier.yml` via `scripts/sync_skip_if_exists.py` |
 | `stale.yml` | daily schedule | Mark and close stale issues/PRs |
 | `labeler.yml` | PR | Auto-label PRs based on changed file paths |
-| `pr-policy.yml` | PR (opened/edited/synchronize/reopened) | Validates PR title, body (template), and commit subjects; add **`PR policy / pr-policy`** as a required check (see `github-branch-protection.md`) |
+| `pr-policy.yml` | PR (opened/edited/synchronize/reopened) | Validates PR title, body (template), and commit subjects; required-check setup: [`docs/github-repository-settings.md`](../docs/github-repository-settings.md) |
 
 ## Workflow design principles
 
@@ -63,18 +63,16 @@ before pushing a tag.
 | `file-freshness.yml` — tracks template file age | _(no equivalent)_ |
 | `sync-skip-if-exists.yml` — syncs copier.yml | _(no equivalent)_ |
 
-## Branch protection and merge policy
+## GitHub.com settings (maintainers)
 
-Maintainers should configure GitHub so the default branch accepts changes only via pull
-requests and (for this template’s recommended workflow) **squash merges** only. See
-[`github-branch-protection.md`](github-branch-protection.md) for a step-by-step checklist.
-Generated projects receive the same file under `.github/` from the template.
+All steps for branch protection, merge options, and required checks are in one place:
+[`docs/github-repository-settings.md`](../docs/github-repository-settings.md). Generated
+projects receive the same document under `docs/` from the template.
 
 ## Other files
 
 | Path | Purpose |
 |---|---|
-| `github-branch-protection.md` | Maintainer checklist: PR-only `main`, squash merges, optional reviews/CI |
 | `dependabot.yml` | Dependabot config for GitHub Actions version updates |
 | `renovate.json` | Renovate bot config for dependency updates |
 | `labeler.yml` | Label mapping for `labeler.yml` workflow |

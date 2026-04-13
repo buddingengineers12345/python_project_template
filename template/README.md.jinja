@@ -33,9 +33,9 @@ just ci
 
 ## Continuous integration
 
-GitHub Actions workflows live in `.github/workflows/`. If you use Codecov, configure the **`CODECOV_TOKEN`** repository secret under **Settings → Secrets and variables → Actions** — never paste tokens into Copier answers or commit them to the repo.
+GitHub Actions workflows live in `.github/workflows/`. Repository secrets are configured in GitHub as described in [docs/github-repository-settings.md](docs/github-repository-settings.md) (section 11). If you use Codecov, add **`CODECOV_TOKEN`** there — never paste tokens into Copier answers or commit them to the repo.
 {% if include_docs -%}
-See [docs/ci.md](docs/ci.md) for more detail.
+See [docs/ci.md](docs/ci.md) for Codecov-specific steps.
 {%- endif %}
 
 ## Common commands

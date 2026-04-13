@@ -108,8 +108,16 @@ def _prune_docs_when_disabled(dest: Path, data: dict[str, str | bool]) -> None:
     if mk.is_file():
         mk.unlink()
     docs_dir = dest / "docs"
-    if docs_dir.is_dir():
-        shutil.rmtree(docs_dir)
+    if not docs_dir.is_dir():
+        return
+    for name in ("index.md", "ci.md"):
+        path = docs_dir / name
+        if path.is_file():
+            path.unlink()
+    try:
+        docs_dir.rmdir()
+    except OSError:
+        pass
 
 
 def _remove_empty_optional_artifacts(dest: Path, data: dict[str, str | bool]) -> None:
@@ -1127,10 +1135,10 @@ def test_docs_ci_page_when_docs_enabled(tmp_path: Path) -> None:
     assert "ci.md" in mkdocs
 
 
-def test_github_branch_protection_doc_in_generated_project(tmp_path: Path) -> None:
-    """Branch protection checklist ships under .github/ even when MkDocs docs/ is removed.
+def test_github_repository_settings_doc_in_generated_project(tmp_path: Path) -> None:
+    """GitHub Settings checklist ships under docs/ even when MkDocs pages are omitted.
 
-    Uses :func:`copy_with_data_from_worktree` so ``template/.github/github-branch-protection.md.jinja``
+    Uses :func:`copy_with_data_from_worktree` so ``template/docs/github-repository-settings.md.jinja``
     is exercised before it appears in the last git commit (same pattern as ``test_env_example_rendered``).
     """
     test_dir = tmp_path / "branch_prot_doc"
@@ -1138,11 +1146,12 @@ def test_github_branch_protection_doc_in_generated_project(tmp_path: Path) -> No
         test_dir,
         {"project_name": "Branch Prot", "include_docs": False, "include_git_cliff": False},
     )
-    doc = test_dir / ".github" / "github-branch-protection.md"
+    doc = test_dir / "docs" / "github-repository-settings.md"
     assert doc.is_file()
     text = doc.read_text(encoding="utf-8")
     assert "squash" in text.lower()
     assert "pull request" in text.lower()
+    assert "only checklist" in text.lower()
 
 
 def test_generated_pr_policy_and_templates(tmp_path: Path) -> None:

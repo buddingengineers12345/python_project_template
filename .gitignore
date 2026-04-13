@@ -216,6 +216,7 @@ outputs/
 output/
 
 # Temporary files
+TASK*.md
 temp_*.py
 temp_*.ipynb
 temp_*.md

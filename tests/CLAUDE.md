@@ -85,8 +85,8 @@ optional features are gated properly.
 ### GitHub Actions
 - `ci.yml` references the correct Python version matrix for each `python_min_version` choice.
 - Optional workflows appear only when the corresponding feature flag is set.
-- `.github/github-branch-protection.md` is always rendered (even when `include_docs=false`);
-  see `test_github_branch_protection_doc_in_generated_project`.
+- `docs/github-repository-settings.md` is always rendered (even when `include_docs=false`);
+  see `test_github_repository_settings_doc_in_generated_project`.
 
 ## Running tests
 

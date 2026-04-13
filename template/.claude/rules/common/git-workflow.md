@@ -32,7 +32,7 @@ These commands are blocked by hooks and must not be run without explicit justifi
 - `git push` directly to the default branch (for example `main`) — use pull requests.
 
 **Maintainers:** configure branch protection and squash-only merges on GitHub; see
-`.github/github-branch-protection.md` in this repository for a checklist.
+`docs/github-repository-settings.md` in this repository (single checklist).
 
 ## TDD commit conventions
 

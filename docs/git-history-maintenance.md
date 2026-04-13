@@ -45,7 +45,7 @@ The file freshness workflow commits generated reports and JSON under `docs/` and
 
 ## Pull requests and branches
 
-- **Squash merge:** In GitHub: **Settings → General → Pull requests**, prefer **Allow squash merging** (and optionally disable merge commits) so each PR becomes one commit on `main`.
+- **GitHub merge and branch settings:** Use the single maintainer checklist [`github-repository-settings.md`](github-repository-settings.md) (squash merges, branch protection, required checks—not repeated here).
 - **Prune stale local refs:** `git fetch --prune`
 - **List merged local branches:** `git branch --merged main` (review then `git branch -d <branch>`)
 - **Remote branches:** delete defunct branches on the host after merge (GitHub UI or `git push origin --delete <branch>`).

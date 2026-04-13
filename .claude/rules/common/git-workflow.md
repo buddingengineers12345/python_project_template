@@ -44,7 +44,7 @@ justification:
 - `git push` directly to `main` — use pull requests.
 
 **Maintainers:** enforce PR-only `main` and squash merges in GitHub **Settings** / branch
-protection; see `.github/github-branch-protection.md` in this repository for a checklist.
+protection; see `docs/github-repository-settings.md` in this repository (single checklist).
 
 ## TDD commit conventions
 

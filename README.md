@@ -80,7 +80,7 @@ During `copier copy`, you’ll be prompted for:
   - 🐼 pandas (`include_pandas_support`)
 
 > [!TIP]
-> For Codecov, prefer configuring the GitHub **repository secret** `CODECOV_TOKEN` rather than providing a token at generation time.
+> For Codecov, add the GitHub **repository secret** `CODECOV_TOKEN` (where to click in GitHub: [docs/github-repository-settings.md](docs/github-repository-settings.md) section 11) rather than providing a token at generation time.
 
 ## Updating a generated project 🔁
 
@@ -199,7 +199,7 @@ Both this template repo and generated projects expect a committed `uv.lock`. In 
 
 ### How does Codecov work in generated projects?
 
-If you enable coverage upload in your CI setup, configure a GitHub **repository secret** named `CODECOV_TOKEN`. You typically do not need to provide a token as a Copier answer.
+If you enable coverage upload in your CI setup, configure a GitHub **repository secret** named `CODECOV_TOKEN` ([docs/github-repository-settings.md](docs/github-repository-settings.md) section 11). You typically do not need to provide a token as a Copier answer.
 
 ## References 🔗
 
