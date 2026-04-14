@@ -11,9 +11,11 @@ import sys
 from pathlib import Path
 from typing import Final
 
-# Conventional commit types (aligned with Commitizen ``cz_conventional_commits`` / commit-msg hook).
+# ---------------------------------------------------------------------------
+# Policy constants (Conventional Commits + PR template)
+# ---------------------------------------------------------------------------
+
 _TYPES: Final = "bump|build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"
-# First line: type, optional scope, optional !, colon, space, non-empty subject.
 _CONVENTIONAL_SUBJECT: Final[re.Pattern[str]] = re.compile(
     rf"^({_TYPES})(\([^)]+\))?(!)?: [^\s].*$",
 )
@@ -39,6 +41,31 @@ _REQUIRED_PR_HEADINGS: Final[tuple[str, ...]] = (
 )
 
 _BOILERPLATE_CHANGE1: Final = "- Change 1"
+
+
+# ---------------------------------------------------------------------------
+# Git subprocess (monkeypatch ``_git_run`` in tests)
+# ---------------------------------------------------------------------------
+
+
+def _git_run(
+    argv: list[str],
+    *,
+    cwd: Path | str | None = None,
+) -> subprocess.CompletedProcess[str]:
+    """Run ``git`` with argument vector ``argv`` (everything after the ``git`` executable)."""
+    return subprocess.run(
+        ["git", *argv],
+        cwd=os.fspath(cwd) if cwd is not None else None,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Pure validators
+# ---------------------------------------------------------------------------
 
 
 def strip_html_comments(text: str) -> str:
@@ -100,14 +127,9 @@ def suggest_title_from_branch(branch: str) -> str | None:
 
 def suggest_title_from_git(repo_cwd: Path) -> str | None:
     """Return the latest commit subject if it already satisfies conventional rules."""
-    result = subprocess.run(
-        ["git", "-C", str(repo_cwd), "log", "-1", "--format=%s"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if result.returncode != 0:  # pragma: no cover
-        return None  # pragma: no cover
+    result = _git_run(["-C", str(repo_cwd), "log", "-1", "--format=%s"])
+    if result.returncode != 0:
+        return None
     subject = result.stdout.strip()
     if validate_conventional_subject_line(subject) is None:
         return subject
@@ -116,22 +138,11 @@ def suggest_title_from_git(repo_cwd: Path) -> str | None:
 
 def changes_introduced_markdown(repo_cwd: Path, base_ref: str, head_ref: str) -> str:
     """Build bullet lines from ``git log`` for the PR template *Changes introduced* section."""
-    proc = subprocess.run(
-        [
-            "git",
-            "-C",
-            str(repo_cwd),
-            "log",
-            "--reverse",
-            "--format=- %s",
-            f"{base_ref}..{head_ref}",
-        ],
-        capture_output=True,
-        text=True,
-        check=False,
+    proc = _git_run(
+        ["-C", str(repo_cwd), "log", "--reverse", "--format=- %s", f"{base_ref}..{head_ref}"],
     )
-    if proc.returncode != 0:  # pragma: no cover
-        return "- (could not list commits; describe changes here)"  # pragma: no cover
+    if proc.returncode != 0:
+        return "- (could not list commits; describe changes here)"
     lines = [ln.rstrip() for ln in proc.stdout.splitlines() if ln.strip()]
     if not lines:
         return "- (no commits ahead of base; describe changes here)"
@@ -144,8 +155,8 @@ def draft_pr_body(repo_root: Path, base_ref: str, head_ref: str) -> str:
     text = template_path.read_text(encoding="utf-8")
     bullets = changes_introduced_markdown(repo_root, base_ref, head_ref)
     block = "- Change 1\n- Change 2\n- Change 3 (if applicable)"
-    if block not in text:  # pragma: no cover
-        return text  # pragma: no cover
+    if block not in text:
+        return text
     return text.replace(block, bullets, 1)
 
 
@@ -162,13 +173,8 @@ def validate_pr_body(body: str | None) -> str | None:
     return None
 
 
-def _git_first_parent_subject(sha: str) -> str:  # pragma: no cover
-    result = subprocess.run(
-        ["git", "log", "-1", "--format=%s", sha],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+def _git_first_parent_subject(sha: str) -> str:
+    result = _git_run(["log", "-1", "--format=%s", sha])
     if result.returncode != 0:
         raise RuntimeError(f"git log failed for {sha}: {result.stderr.strip()}")
     return result.stdout.strip()
@@ -176,12 +182,7 @@ def _git_first_parent_subject(sha: str) -> str:  # pragma: no cover
 
 def validate_commit_range(base: str, head: str) -> str | None:
     """Return an error message if any commit in base..head fails validation; else None."""
-    rev_list = subprocess.run(
-        ["git", "rev-list", "--reverse", f"{base}..{head}"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    rev_list = _git_run(["rev-list", "--reverse", f"{base}..{head}"])
     if rev_list.returncode != 0:
         return f"git rev-list failed: {rev_list.stderr.strip()}"
     for sha in rev_list.stdout.splitlines():
@@ -198,28 +199,18 @@ def validate_commit_range(base: str, head: str) -> str | None:
     return None
 
 
-def _git_toplevel() -> Path:  # pragma: no cover
-    result = subprocess.run(
-        ["git", "rev-parse", "--show-toplevel"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+def _git_toplevel() -> Path:
+    result = _git_run(["rev-parse", "--show-toplevel"])
     if result.returncode != 0:
         raise RuntimeError("not a git repository (git rev-parse --show-toplevel failed)")
     return Path(result.stdout.strip())
 
 
-def _resolve_base_ref(repo: Path, explicit: str | None) -> str:  # pragma: no cover
+def _resolve_base_ref(repo: Path, explicit: str | None) -> str:
     if explicit:
         return explicit
     for ref in ("origin/main", "main"):
-        chk = subprocess.run(
-            ["git", "-C", str(repo), "rev-parse", "--verify", ref],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        chk = _git_run(["-C", str(repo), "rev-parse", "--verify", ref])
         if chk.returncode == 0:
             return ref
     raise RuntimeError(
@@ -228,19 +219,14 @@ def _resolve_base_ref(repo: Path, explicit: str | None) -> str:  # pragma: no co
     )
 
 
-def _current_branch(repo: Path) -> str:  # pragma: no cover
-    result = subprocess.run(
-        ["git", "-C", str(repo), "rev-parse", "--abbrev-ref", "HEAD"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+def _current_branch(repo: Path) -> str:
+    result = _git_run(["-C", str(repo), "rev-parse", "--abbrev-ref", "HEAD"])
     if result.returncode != 0:
         raise RuntimeError("git rev-parse --abbrev-ref HEAD failed")
     return result.stdout.strip()
 
 
-def _cmd_draft(  # pragma: no cover
+def _cmd_draft(
     repo: Path,
     base_ref: str | None,
     head_ref: str | None,
@@ -277,26 +263,26 @@ def _cmd_pr() -> int:
     title = os.environ.get("PR_TITLE", "")
     body = os.environ.get("PR_BODY")
     err = validate_pr_title(title)
-    if err:  # pragma: no cover
-        print(f"pr_commit_policy: invalid PR title: {err}", file=sys.stderr)  # pragma: no cover
-        return 1  # pragma: no cover
+    if err:
+        print(f"pr_commit_policy: invalid PR title: {err}", file=sys.stderr)
+        return 1
     err = validate_pr_body(body)
-    if err:  # pragma: no cover
-        print(f"pr_commit_policy: invalid PR body: {err}", file=sys.stderr)  # pragma: no cover
-        return 1  # pragma: no cover
+    if err:
+        print(f"pr_commit_policy: invalid PR body: {err}", file=sys.stderr)
+        return 1
     return 0
 
 
 def _cmd_commits(base: str, head: str) -> int:
     err = validate_commit_range(base, head)
-    if err:  # pragma: no cover
-        print(f"pr_commit_policy: {err}", file=sys.stderr)  # pragma: no cover
-        return 1  # pragma: no cover
+    if err:
+        print(f"pr_commit_policy: {err}", file=sys.stderr)
+        return 1
     return 0
 
 
-def main() -> int:
-    """CLI entry: dispatch ``pr`` or ``commits`` subcommands for CI and local use."""
+def main(argv: list[str] | None = None) -> int:
+    """CLI entry: dispatch ``pr``, ``commits``, or ``draft`` subcommands."""
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -345,29 +331,30 @@ def main() -> int:
         help="branch tip SHA (default: PR_HEAD_SHA env)",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+
     if args.command == "pr":
         return _cmd_pr()
-    if args.command == "draft":  # pragma: no cover
-        try:  # pragma: no cover
-            repo = args.repo.resolve() if args.repo else _git_toplevel()  # pragma: no cover
-        except RuntimeError as exc:  # pragma: no cover
-            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)  # pragma: no cover
-            return 1  # pragma: no cover
-        try:  # pragma: no cover
-            return _cmd_draft(  # pragma: no cover
-                repo,  # pragma: no cover
-                args.base,  # pragma: no cover
-                args.head,  # pragma: no cover
-                title_only=args.title_only,  # pragma: no cover
-                body_only=args.body_only,  # pragma: no cover
-            )  # pragma: no cover
-        except RuntimeError as exc:  # pragma: no cover
-            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)  # pragma: no cover
-            return 1  # pragma: no cover
-        except OSError as exc:  # pragma: no cover
-            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)  # pragma: no cover
-            return 1  # pragma: no cover
+    if args.command == "draft":
+        try:
+            repo = args.repo.resolve() if args.repo else _git_toplevel()
+        except RuntimeError as exc:
+            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
+            return 1
+        try:
+            return _cmd_draft(
+                repo,
+                args.base,
+                args.head,
+                title_only=args.title_only,
+                body_only=args.body_only,
+            )
+        except RuntimeError as exc:
+            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
+            return 1
+        except OSError as exc:
+            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
+            return 1
     if args.command == "commits":
         if not args.base or not args.head:
             print(
@@ -377,8 +364,8 @@ def main() -> int:
             )
             return 1
         return _cmd_commits(args.base, args.head)
-    return 1  # pragma: no cover
+    return 1  # pragma: no cover -- argparse required subcommand makes this unreachable
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     raise SystemExit(main())

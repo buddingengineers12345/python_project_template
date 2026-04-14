@@ -2,23 +2,15 @@
 
 from __future__ import annotations
 
-import importlib.util
 import sys
-from pathlib import Path
+from pathlib import Path  # noqa: TC003
 from typing import Literal, cast
 
 import pytest
-
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+from tests.script_imports import REPO_ROOT, load_script_module
 
 _SCRIPT = REPO_ROOT / "scripts" / "bump_version.py"
-_SPEC = importlib.util.spec_from_file_location("bump_version", _SCRIPT)
-assert _SPEC is not None
-assert _SPEC.loader is not None
-_mod = importlib.util.module_from_spec(_SPEC)
-sys.modules["bump_version"] = _mod
-_SPEC.loader.exec_module(_mod)
-bv = _mod
+bv = load_script_module("bump_version")
 
 
 def test_version_parse_accepts_simple_triplet() -> None:
@@ -62,6 +54,40 @@ def test_read_and_write_project_version_roundtrip(tmp_path: Path) -> None:
     assert bv._read_project_version(path) == bv.Version(0, 1, 0)
     bv._write_project_version(path, bv.Version(0, 1, 1))
     assert bv._read_project_version(path) == bv.Version(0, 1, 1)
+
+
+def test_read_project_version_missing_raises(tmp_path: Path) -> None:
+    """A pyproject without a ``[project]`` version line raises ``RuntimeError``."""
+    path = tmp_path / "pyproject.toml"
+    path.write_text('[project]\nname = "x"\n', encoding="utf-8")
+    with pytest.raises(RuntimeError, match=r"\[project\] version"):
+        bv._read_project_version(path)
+
+
+def test_cli_requires_bump_or_new_version(tmp_path: Path) -> None:
+    """Omitting both ``--bump`` and ``--new-version`` exits with a clear message."""
+    path = tmp_path / "pyproject.toml"
+    path.write_text('[project]\nname = "x"\nversion = "1.0.0"\n', encoding="utf-8")
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(_SCRIPT), "--pyproject", str(path)]
+        with pytest.raises(SystemExit, match="--bump"):
+            bv.main()
+    finally:
+        sys.argv = saved_argv
+
+
+def test_cli_rejects_unchanged_version(tmp_path: Path) -> None:
+    """``--new-version`` equal to current is rejected."""
+    path = tmp_path / "pyproject.toml"
+    path.write_text('[project]\nname = "x"\nversion = "1.0.0"\n', encoding="utf-8")
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(_SCRIPT), "--pyproject", str(path), "--new-version", "1.0.0"]
+        with pytest.raises(SystemExit, match="nothing to do"):
+            bv.main()
+    finally:
+        sys.argv = saved_argv
 
 
 def test_cli_new_version_prints_and_updates(tmp_path: Path) -> None:

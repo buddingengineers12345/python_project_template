@@ -11,10 +11,19 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+# ---------------------------------------------------------------------------
+# Regexes (workflows, TOML)
+# ---------------------------------------------------------------------------
+
 SECTION_HEADER_RE = re.compile(r"^\[([^\]]+)\]\s*$", flags=re.MULTILINE)
 USES_RE = re.compile(r"uses:\s*([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*)@([^\s]+)")
 ASSIGNMENT_RE = re.compile(r"^\s*([A-Za-z0-9_.-]+)\s*=", flags=re.MULTILINE)
 QUOTED_TOKEN_RE = re.compile(r'"([^"]+)"')
+
+
+# ---------------------------------------------------------------------------
+# Violation model
+# ---------------------------------------------------------------------------
 
 
 @dataclass(frozen=True)
@@ -25,23 +34,29 @@ class Violation:
     message: str
 
 
+# ---------------------------------------------------------------------------
+# Map loading and pair validation
+# ---------------------------------------------------------------------------
+
+
 def _read_text(path: Path) -> str:
+    """Read UTF-8 text with normalized newlines."""
     return path.read_text(encoding="utf-8").replace("\r\n", "\n")
 
 
 def _load_map(path: Path) -> dict[str, Any]:
+    """Parse the mapping file (JSON content; file may use ``.yaml`` extension)."""
     try:
         raw = json.loads(_read_text(path))
     except json.JSONDecodeError as exc:
-        raise ValueError(
-            f"invalid JSON/YAML mapping file {path}: {exc}"
-        ) from exc  # pragma: no cover
-    if not isinstance(raw, dict):  # pragma: no cover
-        raise ValueError("mapping root must be an object")  # pragma: no cover
+        raise ValueError(f"invalid JSON/YAML mapping file {path}: {exc}") from exc
+    if not isinstance(raw, dict):
+        raise ValueError("mapping root must be an object")
     return raw
 
 
 def _validate_pairs_object(check_id: str, obj: Any) -> list[dict[str, str]]:
+    """Return normalized root/template pairs; raise if none are valid."""
     if not isinstance(obj, list):
         return []
     valid: list[dict[str, str]] = []
@@ -52,11 +67,14 @@ def _validate_pairs_object(check_id: str, obj: Any) -> list[dict[str, str]]:
         tpl_path = item.get("template")
         if isinstance(root_path, str) and isinstance(tpl_path, str):
             valid.append({"root": root_path, "template": tpl_path})
-    if not valid:  # pragma: no cover
-        raise ValueError(
-            f"{check_id}: pairs must contain at least one root/template mapping"
-        )  # pragma: no cover
+    if not valid:
+        raise ValueError(f"{check_id}: pairs must contain at least one root/template mapping")
     return valid
+
+
+# ---------------------------------------------------------------------------
+# Workflow action pin checks
+# ---------------------------------------------------------------------------
 
 
 def _extract_workflow_actions(text: str) -> dict[str, set[str]]:
@@ -65,15 +83,6 @@ def _extract_workflow_actions(text: str) -> dict[str, set[str]]:
         versions = actions.setdefault(action, set())
         versions.add(version.strip())
     return actions
-
-
-def _check_workflow_action_versions(check: dict[str, Any], repo_root: Path) -> list[Violation]:
-    check_id = str(check.get("id", "workflow_action_versions"))
-    pairs = _validate_pairs_object(check_id, check.get("pairs"))
-    violations: list[Violation] = []
-    for pair in pairs:
-        violations.extend(_workflow_pair_violations(check_id, pair, repo_root))
-    return violations
 
 
 def _workflow_pair_violations(
@@ -111,6 +120,20 @@ def _workflow_pair_violations(
             )
         )
     return violations
+
+
+def _check_workflow_action_versions(check: dict[str, Any], repo_root: Path) -> list[Violation]:
+    check_id = str(check.get("id", "workflow_action_versions"))
+    pairs = _validate_pairs_object(check_id, check.get("pairs"))
+    violations: list[Violation] = []
+    for pair in pairs:
+        violations.extend(_workflow_pair_violations(check_id, pair, repo_root))
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# Exact file pair checks
+# ---------------------------------------------------------------------------
 
 
 def _normalize_for_exact_compare(text: str) -> str:
@@ -160,6 +183,11 @@ def _check_exact_file_pairs(check: dict[str, Any], repo_root: Path) -> list[Viol
     return violations
 
 
+# ---------------------------------------------------------------------------
+# pyproject.toml section parity
+# ---------------------------------------------------------------------------
+
+
 def _strip_jinja_lines(text: str) -> str:
     kept: list[str] = []
     for line in text.splitlines():
@@ -195,30 +223,6 @@ def _extract_select_codes(section_text: str) -> set[str]:
         return set()
     body = select_match.group(1)
     return {token.strip() for token in QUOTED_TOKEN_RE.findall(body)}
-
-
-def _check_pyproject_sections(check: dict[str, Any], repo_root: Path) -> list[Violation]:
-    check_id = str(check.get("id", "pyproject_sections"))
-    root_rel = check.get("root")
-    template_rel = check.get("template")
-    sections = check.get("sections")
-    if (
-        not isinstance(root_rel, str)
-        or not isinstance(template_rel, str)
-        or not isinstance(sections, list)
-    ):
-        raise ValueError(f"{check_id}: root/template/sections are required")
-
-    root_path = repo_root / root_rel
-    template_path = repo_root / template_rel
-    if not root_path.is_file():
-        return [Violation(check_id, f"missing file: {root_rel}")]
-    if not template_path.is_file():
-        return [Violation(check_id, f"missing file: {template_rel}")]
-
-    root_text = _read_text(root_path)
-    template_text = _strip_jinja_lines(_read_text(template_path))
-    return _collect_pyproject_section_violations(check_id, sections, root_text, template_text)
 
 
 def _collect_pyproject_section_violations(
@@ -325,6 +329,35 @@ def _required_select_code_violations(
     return violations
 
 
+def _check_pyproject_sections(check: dict[str, Any], repo_root: Path) -> list[Violation]:
+    check_id = str(check.get("id", "pyproject_sections"))
+    root_rel = check.get("root")
+    template_rel = check.get("template")
+    sections = check.get("sections")
+    if (
+        not isinstance(root_rel, str)
+        or not isinstance(template_rel, str)
+        or not isinstance(sections, list)
+    ):
+        raise ValueError(f"{check_id}: root/template/sections are required")
+
+    root_path = repo_root / root_rel
+    template_path = repo_root / template_rel
+    if not root_path.is_file():
+        return [Violation(check_id, f"missing file: {root_rel}")]
+    if not template_path.is_file():
+        return [Violation(check_id, f"missing file: {template_rel}")]
+
+    root_text = _read_text(root_path)
+    template_text = _strip_jinja_lines(_read_text(template_path))
+    return _collect_pyproject_section_violations(check_id, sections, root_text, template_text)
+
+
+# ---------------------------------------------------------------------------
+# Check dispatch
+# ---------------------------------------------------------------------------
+
+
 def _run_check(check: dict[str, Any], repo_root: Path) -> list[Violation]:
     check_type = check.get("type")
     if check_type == "workflow_action_versions":
@@ -337,8 +370,26 @@ def _run_check(check: dict[str, Any], repo_root: Path) -> list[Violation]:
     return [Violation(check_id, f"unsupported check type: {check_type!r}")]
 
 
-def main() -> int:
-    """CLI entry: load the sync map, run checks, print PASS or violations."""
+def run_all_checks(mapping: dict[str, Any], repo_root: Path) -> list[Violation]:
+    """Run every check in ``mapping['checks']`` and return all violations.
+
+    Precondition: ``mapping['checks']`` is a non-empty ``list`` (validated in :func:`main`).
+    """
+    checks = mapping["checks"]
+    violations: list[Violation] = []
+    for raw_check in checks:
+        if not isinstance(raw_check, dict):
+            violations.append(Violation("mapping", "each check entry must be an object"))
+            continue
+        try:
+            violations.extend(_run_check(raw_check, repo_root))
+        except ValueError as exc:
+            check_id = str(raw_check.get("id", "invalid-check"))
+            violations.append(Violation(check_id, str(exc)))
+    return violations
+
+
+def _parse_cli_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Check root/template sync policy mappings.")
     parser.add_argument(
         "--repo-root",
@@ -350,13 +401,19 @@ def main() -> int:
         default="docs/root-template-sync-map.yaml",
         help="Mapping file path (JSON content in YAML file supported).",
     )
-    args = parser.parse_args()
+    return parser.parse_args(argv)
 
-    repo_root = (
-        Path(args.repo_root).resolve()
-        if isinstance(args.repo_root, str) and args.repo_root
-        else Path(__file__).resolve().parent.parent
-    )
+
+def _resolve_repo_root(arg: str | None) -> Path:
+    if isinstance(arg, str) and arg:
+        return Path(arg).resolve()
+    return Path(__file__).resolve().parent.parent
+
+
+def main(argv: list[str] | None = None) -> int:
+    """CLI entry: load the sync map, run checks, print PASS or violations."""
+    args = _parse_cli_args(argv)
+    repo_root = _resolve_repo_root(args.repo_root)
     map_path = (repo_root / args.map).resolve()
     if not map_path.is_file():
         print(f"[sync-check] ERROR: mapping file not found: {map_path}")
@@ -373,16 +430,7 @@ def main() -> int:
         print("[sync-check] ERROR: mapping must define a non-empty checks list")
         return 2
 
-    violations: list[Violation] = []
-    for raw_check in checks:
-        if not isinstance(raw_check, dict):
-            violations.append(Violation("mapping", "each check entry must be an object"))
-            continue
-        try:
-            violations.extend(_run_check(raw_check, repo_root))
-        except ValueError as exc:
-            check_id = str(raw_check.get("id", "invalid-check"))
-            violations.append(Violation(check_id, str(exc)))
+    violations = run_all_checks(mapping, repo_root)
 
     if violations:
         print(f"[sync-check] FAIL: found {len(violations)} sync violation(s)")
@@ -394,5 +442,5 @@ def main() -> int:
     return 0
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     raise SystemExit(main())

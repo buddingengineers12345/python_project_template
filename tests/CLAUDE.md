@@ -10,6 +10,7 @@ optional features are gated properly.
 |---|---|
 | `conftest.py` | Top-level pytest fixtures shared across all test tiers |
 | `unit/` | Fast isolated tests for automation scripts in `scripts/` |
+| `script_imports.py` | `load_script_module()` helper for importing `scripts/*.py` in unit tests |
 | `unit/conftest.py` | Fixtures shared within the unit tier |
 | `integration/` | Tests exercising Copier copy/update across the full template |
 | `integration/conftest.py` | Fixtures shared within the integration tier |
@@ -75,7 +76,7 @@ optional features are gated properly.
 
 ### Root/template sync
 - `check_root_template_sync.py` policies stay consistent with root and `template/` files
-  (workflow pins, justfile parity, etc.); covered by `scripts/test_root_template_sync.py`.
+  (workflow pins, justfile parity, etc.); covered by `tests/unit/test_root_template_sync.py`.
 
 ### Package structure
 - `src/<package_name>/__init__.py`, `core.py`, `common/` modules all exist.

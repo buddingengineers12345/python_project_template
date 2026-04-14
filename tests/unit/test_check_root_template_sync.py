@@ -6,24 +6,13 @@ Detailed policy scenarios are in ``tests/unit/test_root_template_sync.py``.
 from __future__ import annotations
 
 import contextlib
-import importlib.util
 import io
 import sys
-from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+from tests.script_imports import REPO_ROOT, load_script_module
 
 _SCRIPT = REPO_ROOT / "scripts" / "check_root_template_sync.py"
-_SPEC = importlib.util.spec_from_file_location("check_root_template_sync", _SCRIPT)
-assert _SPEC is not None
-assert _SPEC.loader is not None
-_crs = sys.modules.get("check_root_template_sync")
-if _crs is None:
-    _crs = importlib.util.module_from_spec(_SPEC)
-    sys.modules["check_root_template_sync"] = _crs
-    assert _SPEC.loader is not None
-    _SPEC.loader.exec_module(_crs)
-crs = _crs
+crs = load_script_module("check_root_template_sync")
 
 
 def test_check_root_template_sync_help_exits_zero() -> None:

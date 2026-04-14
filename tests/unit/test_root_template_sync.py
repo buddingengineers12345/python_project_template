@@ -3,26 +3,17 @@
 from __future__ import annotations
 
 import contextlib
-import importlib.util
 import io
 import json
 import sys
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path  # noqa: TC003
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+import pytest
+from tests.script_imports import REPO_ROOT, load_script_module
 
 _SCRIPT = REPO_ROOT / "scripts" / "check_root_template_sync.py"
-_SPEC = importlib.util.spec_from_file_location("check_root_template_sync", _SCRIPT)
-assert _SPEC is not None
-assert _SPEC.loader is not None
-_crs_mod = sys.modules.get("check_root_template_sync")
-if _crs_mod is None:
-    _crs_mod = importlib.util.module_from_spec(_SPEC)
-    sys.modules["check_root_template_sync"] = _crs_mod
-    assert _SPEC.loader is not None
-    _SPEC.loader.exec_module(_crs_mod)
-crs = _crs_mod
+crs = load_script_module("check_root_template_sync")
 
 
 @dataclass
@@ -198,3 +189,71 @@ def test_sync_check_fails_when_required_pyproject_key_missing(tmp_path: Path) ->
     result = run_sync_check(repo)
     assert result.returncode == 1
     assert "missing key in template" in result.stdout
+
+
+def test_load_map_rejects_invalid_json(tmp_path: Path) -> None:
+    """``_load_map`` raises when the file is not valid JSON."""
+    bad = tmp_path / "bad.json"
+    bad.write_text("{not json", encoding="utf-8")
+    with pytest.raises(ValueError, match="invalid JSON"):
+        crs._load_map(bad)
+
+
+def test_load_map_rejects_non_object_root(tmp_path: Path) -> None:
+    """Top-level JSON must be an object."""
+    p = tmp_path / "list.json"
+    p.write_text("[1]", encoding="utf-8")
+    with pytest.raises(ValueError, match="object"):
+        crs._load_map(p)
+
+
+def test_main_empty_checks_returns_exit_code_2(tmp_path: Path) -> None:
+    """An empty ``checks`` array is a fatal mapping error (exit 2)."""
+    repo = tmp_path / "repo"
+    write_file(repo / "docs/map.yaml", json.dumps({"version": 1, "checks": []}, indent=2))
+    result = run_sync_check(repo)
+    assert result.returncode == 2
+    assert "non-empty checks" in result.stdout
+
+
+def test_main_malformed_map_json_returns_exit_code_2(tmp_path: Path) -> None:
+    """Invalid JSON in the map file yields exit code 2."""
+    repo = tmp_path / "repo"
+    write_file(repo / "docs/map.yaml", "{")
+    result = run_sync_check(repo)
+    assert result.returncode == 2
+    assert "invalid JSON" in result.stdout
+
+
+def test_unsupported_check_type_is_a_violation(tmp_path: Path) -> None:
+    """Unknown ``type`` values surface as a check violation (exit 1)."""
+    repo = tmp_path / "repo"
+    map_data = {
+        "version": 1,
+        "checks": [{"id": "weird", "type": "not_a_real_check_type"}],
+    }
+    write_file(repo / "docs/map.yaml", json.dumps(map_data, indent=2))
+    result = run_sync_check(repo)
+    assert result.returncode == 1
+    assert "weird" in result.stdout
+    assert "unsupported check type" in result.stdout
+
+
+def test_invalid_pairs_raises_as_check_violation(tmp_path: Path) -> None:
+    """Workflow check with no valid root/template pairs fails via that check's id."""
+    repo = tmp_path / "repo"
+    map_data = {
+        "version": 1,
+        "checks": [
+            {
+                "id": "wf_bad_pairs",
+                "type": "workflow_action_versions",
+                "pairs": [{"root": 1, "template": 2}],
+            }
+        ],
+    }
+    write_file(repo / "docs/map.yaml", json.dumps(map_data, indent=2))
+    result = run_sync_check(repo)
+    assert result.returncode == 1
+    assert "wf_bad_pairs" in result.stdout
+    assert "pairs must contain" in result.stdout

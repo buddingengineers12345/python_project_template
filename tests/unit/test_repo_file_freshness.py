@@ -3,23 +3,16 @@
 from __future__ import annotations
 
 import contextlib
-import importlib.util
 import io
 import json
 import os
 import sys
-from pathlib import Path
+from pathlib import Path  # noqa: TC003
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+from tests.script_imports import REPO_ROOT, load_script_module
 
 _SCRIPT = REPO_ROOT / "scripts" / "repo_file_freshness.py"
-_SPEC = importlib.util.spec_from_file_location("repo_file_freshness", _SCRIPT)
-assert _SPEC is not None
-assert _SPEC.loader is not None
-_rff_mod = importlib.util.module_from_spec(_SPEC)
-sys.modules["repo_file_freshness"] = _rff_mod
-_SPEC.loader.exec_module(_rff_mod)
-rff = _rff_mod
+rff = load_script_module("repo_file_freshness")
 
 
 def run_command(
@@ -214,3 +207,67 @@ def test_empty_repo_generates_outputs(tmp_path: Path) -> None:
     assert (repo / "assets" / "file_freshness.json").is_file()
     assert (repo / "assets" / "freshness_summary.json").is_file()
     assert (repo / "docs" / "repo_file_status_report.md").is_file()
+
+
+def test_invalid_commit_thresholds_return_exit_code_2(tmp_path: Path) -> None:
+    """Green max above yellow max is rejected with exit code 2."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    git_init(repo)
+    stderr = io.StringIO()
+    saved_argv = sys.argv
+    try:
+        sys.argv = [
+            str(_SCRIPT),
+            "--repo-root",
+            str(repo),
+            "--green-max-commits",
+            "99",
+            "--yellow-max-commits",
+            "1",
+        ]
+        with contextlib.redirect_stderr(stderr):
+            rc = rff.main()
+    finally:
+        sys.argv = saved_argv
+    assert rc == 2
+    assert (
+        "green-max-commits" in stderr.getvalue().lower() or "threshold" in stderr.getvalue().lower()
+    )
+
+
+def test_invalid_freshness_now_iso_warns_on_stderr(tmp_path: Path) -> None:
+    """Bad FRESHNESS_NOW_ISO triggers a stderr warning; run still completes."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    git_init(repo)
+    stderr = io.StringIO()
+    saved_argv = sys.argv
+    saved_now = os.environ.get("FRESHNESS_NOW_ISO")
+    os.environ["FRESHNESS_NOW_ISO"] = "not-valid-iso"
+    try:
+        sys.argv = [str(_SCRIPT), "--repo-root", str(repo), "--metric", "days"]
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+            rff.main()
+    finally:
+        sys.argv = saved_argv
+        if saved_now is None:
+            os.environ.pop("FRESHNESS_NOW_ISO", None)
+        else:
+            os.environ["FRESHNESS_NOW_ISO"] = saved_now
+    assert "FRESHNESS_NOW_ISO" in stderr.getvalue()
+
+
+def test_build_badge_fields_all_zero() -> None:
+    """When every bucket is zero, badge describes an empty scan."""
+    out = rff.build_badge_fields({"green": 0, "yellow": 0, "red": 0, "blue": 0})
+    assert out["message"] == "no files"
+    assert out["color"] == "lightgrey"
+
+
+def test_parse_git_iso_datetime_naive_assumes_utc() -> None:
+    """Naive ISO strings are treated as UTC for age math."""
+    dt = rff._parse_git_iso_datetime("2026-01-01T12:00:00")
+    assert dt is not None
+    assert dt.tzinfo is not None
+    assert dt.utcoffset() is not None

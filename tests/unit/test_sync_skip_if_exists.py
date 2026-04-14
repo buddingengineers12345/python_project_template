@@ -2,20 +2,14 @@
 
 from __future__ import annotations
 
-import importlib.util
 import sys
-from pathlib import Path
+from pathlib import Path  # noqa: TC003
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+import pytest
+from tests.script_imports import REPO_ROOT, load_script_module
 
 _SCRIPT = REPO_ROOT / "scripts" / "sync_skip_if_exists.py"
-_SPEC = importlib.util.spec_from_file_location("sync_skip_if_exists", _SCRIPT)
-assert _SPEC is not None
-assert _SPEC.loader is not None
-_mod = importlib.util.module_from_spec(_SPEC)
-sys.modules["sync_skip_if_exists"] = _mod
-_SPEC.loader.exec_module(_mod)
-ssi = _mod
+ssi = load_script_module("sync_skip_if_exists")
 
 
 def test_read_skip_block_extracts_entries() -> None:
@@ -84,3 +78,34 @@ def test_main_check_mode_runs_without_error() -> None:
     finally:
         sys.argv = saved_argv
     assert rc in {0, 1}  # 0 = up to date; 1 = drift detected (both are valid outcomes)
+
+
+def test_replace_skip_block_raises_when_block_missing() -> None:
+    """``replace_skip_block`` requires an existing ``_skip_if_exists`` key."""
+    with pytest.raises(ValueError, match="_skip_if_exists"):
+        ssi.replace_skip_block("project_name: x\n", ["a"])
+
+
+def test_template_path_counts_from_git_log_text() -> None:
+    """Only ``template/`` paths are counted; blank lines ignored."""
+    text = "\n template/a.jinja \nfoo\n  template/b.jinja  \ntemplate/a.jinja\n"
+    counts = ssi.template_path_counts_from_git_log_text(text)
+    assert counts["template/a.jinja"] == 2
+    assert counts["template/b.jinja"] == 1
+
+
+def test_main_write_resyncs_copier_yml(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """``--write`` rewrites ``copier.yml`` so ``_skip_if_exists`` matches desired entries."""
+    monkeypatch.setattr(ssi, "repo_root", lambda: tmp_path)
+    desired = ssi.compute_desired_entries(tmp_path)
+    (tmp_path / "copier.yml").write_text(
+        "_skip_if_exists:\n  - definitely-not-in-desired-list\n\nx: 1\n",
+        encoding="utf-8",
+    )
+    rc = ssi.main(["--write"])
+    assert rc == 0
+    new_raw = (tmp_path / "copier.yml").read_text(encoding="utf-8")
+    parsed = ssi.read_skip_block(new_raw)
+    assert parsed is not None
+    assert parsed[0] == desired
+    assert "x: 1" in new_raw

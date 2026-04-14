@@ -2,23 +2,16 @@
 
 from __future__ import annotations
 
-import importlib.util
 import os
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
-
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+from tests.script_imports import REPO_ROOT, load_script_module
 
 SCRIPT = REPO_ROOT / "scripts" / "pr_commit_policy.py"
-_SPEC = importlib.util.spec_from_file_location("pr_commit_policy", SCRIPT)
-assert _SPEC is not None
-assert _SPEC.loader is not None
-_pcp = importlib.util.module_from_spec(_SPEC)
-_SPEC.loader.exec_module(_pcp)
-pcp = _pcp
+pcp = load_script_module("pr_commit_policy")
 
 
 def test_strip_html_comments_removes_block() -> None:
@@ -375,3 +368,117 @@ def test_main_commits_subcommand_missing_args_returns_1() -> None:
     finally:
         sys.argv = saved_argv
     assert rc == 1
+
+
+def test_main_pr_subcommand_bad_body(monkeypatch: pytest.MonkeyPatch) -> None:
+    """``pr`` subcommand exits 1 when the body is invalid."""
+    monkeypatch.setenv("PR_TITLE", "ci: fix workflow")
+    monkeypatch.setenv("PR_BODY", "## Summary\n\nx\n")
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(SCRIPT), "pr"]
+        rc = pcp.main()
+    finally:
+        sys.argv = saved_argv
+    assert rc == 1
+
+
+def test_suggest_title_from_git_when_log_fails(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """If ``git log`` fails, return None (no crash)."""
+    import subprocess
+
+    def _fail(
+        argv: list[str],
+        *,
+        cwd: str | Path | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        return subprocess.CompletedProcess(argv, 1, "", "err")
+
+    monkeypatch.setattr(pcp, "_git_run", _fail)
+    assert pcp.suggest_title_from_git(tmp_path) is None
+
+
+def test_changes_introduced_when_git_log_fails(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """Failed ``git log`` range yields the fallback bullet."""
+    import subprocess
+
+    def _fail(
+        argv: list[str],
+        *,
+        cwd: str | Path | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        return subprocess.CompletedProcess(argv, 1, "", "boom")
+
+    monkeypatch.setattr(pcp, "_git_run", _fail)
+    out = pcp.changes_introduced_markdown(tmp_path, "main", "HEAD")
+    assert "could not list commits" in out
+
+
+def test_draft_title_only_uses_branch_name(tmp_path: Path) -> None:
+    """``draft --title-only`` prints a title derived from the current branch."""
+    import contextlib
+    import io
+
+    subprocess.run(["git", "init"], cwd=tmp_path, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "config", "user.email", "t@e.st"],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "T"],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+    )
+    gh = tmp_path / ".github"
+    gh.mkdir(parents=True)
+    block = "- Change 1\n- Change 2\n- Change 3 (if applicable)"
+    (gh / "PULL_REQUEST_TEMPLATE.md").write_text(
+        f"# PR\n\n## Changes introduced\n\n{block}\n\n## Summary\n\nx\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "f.txt").write_text("1\n", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=tmp_path, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "commit", "-m", "chore: init", "--no-verify"],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "checkout", "-b", "feat/draft-title-test"],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+    )
+    (tmp_path / "f.txt").write_text("2\n", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=tmp_path, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "commit", "-m", "fix: second", "--no-verify"],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+    )
+
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc = pcp.main(
+            [
+                "draft",
+                "--repo",
+                str(tmp_path),
+                "--base",
+                "HEAD~1",
+                "--title-only",
+            ],
+        )
+    assert rc == 0
+    assert buf.getvalue().strip() == "feat: draft title test"

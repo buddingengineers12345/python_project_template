@@ -4,6 +4,13 @@
 This script is intended for scheduled automation (see ``.github/workflows/sync-skip-if-exists.yml``).
 It merges a curated base list with paths inferred from frequently touched template sources so
 user-editable files stay protected on ``copier update``.
+
+Constants:
+    TEMPLATE_PATH_TO_SKIP_ENTRY: Maps each tracked template source path to its rendered
+        ``_skip_if_exists`` entry (``{{ package_name }}`` preserved).
+    BASE_SKIP_ENTRIES: Always-included paths (user customization hotspots).
+    GIT_FREQUENCY_THRESHOLD: Minimum occurrences in recent history to auto-add a mapped path.
+    GIT_LOG_LIMIT: Maximum number of commits scanned for path frequency.
 """
 
 from __future__ import annotations
@@ -59,8 +66,21 @@ def repo_root() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
-def git_path_change_counts(root: Path) -> dict[str, int]:
-    """Count path occurrences in recent ``git log`` output for ``template/``."""
+def template_path_counts_from_git_log_text(log_stdout: str) -> dict[str, int]:
+    """Count ``template/`` path occurrences from ``git log --name-only`` style stdout.
+
+    Blank lines and non-template paths are ignored. Suitable for unit testing without git.
+    """
+    counts: dict[str, int] = {}
+    for line in log_stdout.splitlines():
+        path = line.strip()
+        if path.startswith("template/"):
+            counts[path] = counts.get(path, 0) + 1
+    return counts
+
+
+def _git_name_only_log_stdout(root: Path) -> str:
+    """Run ``git log`` for recent renames; return stdout or empty string on failure."""
     try:
         proc = subprocess.run(
             [
@@ -76,17 +96,16 @@ def git_path_change_counts(root: Path) -> dict[str, int]:
             capture_output=True,
             text=True,
         )
-    except FileNotFoundError:  # pragma: no cover
-        return {}  # pragma: no cover
-    if proc.returncode != 0:  # pragma: no cover
-        return {}  # pragma: no cover
-    counts: dict[str, int] = {}
-    for line in proc.stdout.splitlines():
-        path = line.strip()
-        if not path.startswith("template/"):
-            continue
-        counts[path] = counts.get(path, 0) + 1
-    return counts
+    except FileNotFoundError:  # pragma: no cover -- git executable missing on PATH
+        return ""
+    if proc.returncode != 0:  # pragma: no cover -- invalid git repo or git error in CI
+        return ""
+    return proc.stdout
+
+
+def git_path_change_counts(root: Path) -> dict[str, int]:
+    """Count path occurrences in recent ``git log`` output for ``template/``."""
+    return template_path_counts_from_git_log_text(_git_name_only_log_stdout(root))
 
 
 def compute_desired_entries(root: Path) -> list[str]:
@@ -100,7 +119,6 @@ def compute_desired_entries(root: Path) -> list[str]:
         if counts.get(tpl_path, 0) >= GIT_FREQUENCY_THRESHOLD:
             entries.add(skip_entry)
 
-    # Stable, human-friendly order: directories last, then lexical.
     def sort_key(s: str) -> tuple[int, str]:
         is_dir = 0 if s.endswith("/") else 1
         return (is_dir, s.lower())
@@ -132,8 +150,8 @@ def read_skip_block(text: str) -> tuple[list[str], int, int] | None:
 def replace_skip_block(text: str, entries: list[str]) -> str:
     """Replace the ``_skip_if_exists`` block with ``entries``."""
     parsed = read_skip_block(text)
-    if parsed is None:  # pragma: no cover
-        raise ValueError("copier.yml: _skip_if_exists block not found")  # pragma: no cover
+    if parsed is None:
+        raise ValueError("copier.yml: _skip_if_exists block not found")
     _entries, start_idx, end_idx = parsed
     lines = text.splitlines(keepends=True)
     new_middle = [f"  - {item}\n" for item in entries]
@@ -142,7 +160,7 @@ def replace_skip_block(text: str, entries: list[str]) -> str:
     return "".join(lines[: start_idx + 1] + new_middle + lines[end_idx:])
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     """Parse CLI flags and update or verify ``copier.yml``."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -150,17 +168,18 @@ def main() -> int:
         action="store_true",
         help="Write copier.yml when the list changes (default: check only, exit 1 if drift).",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     root = repo_root()
     copier_path = root / "copier.yml"
     raw = copier_path.read_text(encoding="utf-8")
     parsed = read_skip_block(raw)
-    if parsed is None:  # pragma: no cover
+    if parsed is None:
         print(
-            "sync_skip_if_exists: could not parse _skip_if_exists in copier.yml", file=sys.stderr
-        )  # pragma: no cover
-        return 2  # pragma: no cover
+            "sync_skip_if_exists: could not parse _skip_if_exists in copier.yml",
+            file=sys.stderr,
+        )
+        return 2
     current, _s, _e = parsed
 
     desired = compute_desired_entries(root)
@@ -178,10 +197,10 @@ def main() -> int:
         return 1
 
     updated = replace_skip_block(raw, desired)
-    copier_path.write_text(updated, encoding="utf-8", newline="\n")  # pragma: no cover
-    print("sync_skip_if_exists: wrote copier.yml")  # pragma: no cover
-    return 0  # pragma: no cover
+    copier_path.write_text(updated, encoding="utf-8", newline="\n")
+    print("sync_skip_if_exists: wrote copier.yml")
+    return 0
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     raise SystemExit(main())

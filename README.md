@@ -156,7 +156,7 @@ Other useful commands:
 
 ### Testing this template
 
-The test suite (`tests/integration/test_template.py`, `tests/scripts/test_root_template_sync.py`, `tests/scripts/test_repo_file_freshness.py`) uses pytest to:
+The test suite (`tests/integration/test_template.py`, `tests/unit/test_root_template_sync.py`, `tests/unit/test_repo_file_freshness.py`) uses pytest to:
 - Render the template with various configurations
 - Validate generated project structure
 - Check that generated projects have valid Python syntax

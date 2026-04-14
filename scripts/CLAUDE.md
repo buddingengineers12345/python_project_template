@@ -38,7 +38,7 @@ Generates a Git-history-based file freshness dashboard for the repository.
 - yellow: 1–2 commits
 - red: 0 commits (file has never been updated after initial add)
 
-**Tested by:** `tests/scripts/test_repo_file_freshness.py`
+**Tested by:** `tests/unit/test_repo_file_freshness.py`
 
 ---
 
@@ -71,6 +71,8 @@ via `$(python scripts/bump_version.py --bump patch)`.
 `src/`; the generated `pyproject.toml` does not exempt it from ruff `D`. The version line is emitted
 via `logging_manager.write_machine_stdout_line` (T20 still enforces no `print()` in that file).
 
+**Tested by:** `tests/unit/test_bump_version.py`
+
 ---
 
 ### `pr_commit_policy.py`
@@ -90,7 +92,7 @@ conventional commit subjects over a `git rev-list` range.
 
 **Used by:** `.github/workflows/pr-policy.yml` (and the generated-project copy from `template/`).
 
-**Tested by:** `tests/scripts/test_pr_commit_policy.py`
+**Tested by:** `tests/unit/test_pr_commit_policy.py`
 
 ---
 
@@ -107,7 +109,7 @@ Actions pins, shared recipes, and other policy maps).
 
 **Used by:** `.github/workflows/lint.yml` (meta-repo CI) and `just check` / `just sync-check`.
 
-**Tested by:** `tests/scripts/test_root_template_sync.py`
+**Tested by:** `tests/unit/test_root_template_sync.py`, `tests/unit/test_check_root_template_sync.py`
 
 ---
 
@@ -123,6 +125,8 @@ and their commit frequency.
 - For each path, checks the Git commit frequency to determine if it is user-customisable
   (high churn = likely user-edited → should be in `_skip_if_exists`).
 - Produces a suggested diff to `copier.yml`'s `_skip_if_exists` list.
+
+**Tested by:** `tests/unit/test_sync_skip_if_exists.py`
 
 ---
 

@@ -31,6 +31,10 @@ from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any, Literal, Protocol, cast
 
+# ---------------------------------------------------------------------------
+# Types and argparse protocol
+# ---------------------------------------------------------------------------
+
 Status = Literal["green", "yellow", "red", "blue"]
 Metric = Literal["commits", "days"]
 
@@ -61,7 +65,13 @@ class IgnoreConfig:
         return cls(files=frozenset(), directories=(), extensions=frozenset(), patterns=())
 
 
+# ---------------------------------------------------------------------------
+# Time (test hook via FRESHNESS_NOW_ISO)
+# ---------------------------------------------------------------------------
+
+
 def _now_utc() -> datetime:
+    """Return current UTC time (used when ``FRESHNESS_NOW_ISO`` is unset)."""
     return datetime.now(UTC)
 
 
@@ -80,8 +90,13 @@ def _now_utc_from_env() -> datetime:
     return dt
 
 
+# ---------------------------------------------------------------------------
+# Git subprocess adapters
+# ---------------------------------------------------------------------------
+
+
 def _run_git(root: Path, args: list[str]) -> subprocess.CompletedProcess[str] | None:
-    """Run a git command, returning the process or None if git is missing."""
+    """Run ``git -C <root> <args>``; return None if the git executable is missing."""
     try:
         return subprocess.run(
             ["git", "-C", str(root), *args],
@@ -89,7 +104,7 @@ def _run_git(root: Path, args: list[str]) -> subprocess.CompletedProcess[str] | 
             capture_output=True,
             text=True,
         )
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover -- git binary absent on PATH
         return None
 
 
@@ -108,7 +123,6 @@ def _git_ls_files(root: Path) -> list[str]:
     if proc is None or proc.returncode != 0:
         return []
     paths = [line.strip() for line in proc.stdout.splitlines() if line.strip()]
-    # Normalize to POSIX-style even on Windows runners (Git returns / already, but keep consistent).
     return [p.replace("\\", "/") for p in paths]
 
 
@@ -142,6 +156,11 @@ def _git_commits_since(root: Path, commit_sha: str) -> int | None:
     return int(text)
 
 
+# ---------------------------------------------------------------------------
+# Parsing and classification (pure helpers)
+# ---------------------------------------------------------------------------
+
+
 def _parse_git_iso_datetime(value: str) -> datetime | None:
     """Parse Git's ISO timestamp (e.g. 2026-04-08T12:34:56+00:00)."""
     try:
@@ -149,19 +168,18 @@ def _parse_git_iso_datetime(value: str) -> datetime | None:
     except ValueError:
         return None
     if dt.tzinfo is None:
-        # Defensive: treat naive as UTC.
         return dt.replace(tzinfo=UTC)
     return dt.astimezone(UTC)
 
 
 def _age_days(now: datetime, commit_iso: str | None) -> int | None:
+    """Whole days from commit time to ``now``; None if commit time is unknown or invalid."""
     if commit_iso is None:
         return None
     dt = _parse_git_iso_datetime(commit_iso)
     if dt is None:
         return None
     delta = now - dt
-    # Floor to integer days.
     return max(0, int(delta.total_seconds() // 86400))
 
 
@@ -212,7 +230,6 @@ def load_ignore_config(path: Path) -> IgnoreConfig:
     )
     patterns = tuple(x.strip().replace("\\", "/") for x in get_list("patterns") if x.strip())
 
-    # Keep deterministic ordering for tuple fields.
     return IgnoreConfig(
         files=files,
         directories=tuple(sorted(set(directories), key=str.lower)),
@@ -225,21 +242,17 @@ def ignored_status(rel_path: str, ignore: IgnoreConfig) -> bool:
     """Return True if the path should be ignored (blue), per ignore priority."""
     p = rel_path.replace("\\", "/")
 
-    # 1) Exact file match
     if p in ignore.files:
         return True
 
-    # 2) Directory prefix match
     for d in ignore.directories:
         if p.startswith(d):
             return True
 
-    # 3) Extension match
     ext = Path(p).suffix.lower()
     if ext and ext in ignore.extensions:
         return True
 
-    # 4) Glob pattern match (relative paths)
     return any(fnmatch(p, pat) for pat in ignore.patterns)
 
 
@@ -276,7 +289,6 @@ def classify_commits(
 
 
 def _sort_key_age_desc(item: dict[str, Any]) -> tuple[int, str]:
-    # age_days descending, None last; stable tie-breaker by path.
     age = item.get("age_days")
     if isinstance(age, int):
         return (-age, cast("str", item.get("file", "")))
@@ -288,6 +300,11 @@ def _sort_key_commits_desc(item: dict[str, Any]) -> tuple[int, str]:
     if isinstance(c, int):
         return (-c, cast("str", item.get("file", "")))
     return (10**9, cast("str", item.get("file", "")))
+
+
+# ---------------------------------------------------------------------------
+# Outputs
+# ---------------------------------------------------------------------------
 
 
 def write_json(path: Path, data: Any) -> None:
@@ -356,7 +373,6 @@ def generate_markdown(
     render_section("🔴 Red (stale)", "red", show_metric=True)
     render_section("🔵 Blue (ignored)", "blue", show_metric=False)
 
-    # Single trailing newline (pre-commit end-of-file-fixer); strip trailing blank lines.
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -377,8 +393,110 @@ def build_badge_fields(summary: dict[str, int]) -> dict[str, str]:
     return {"label": "freshness", "message": f"{green} recent", "color": "brightgreen"}
 
 
-def main() -> int:
-    """Run the freshness scanner CLI and write dashboard plus JSON artifacts."""
+# ---------------------------------------------------------------------------
+# Core scan (orchestration)
+# ---------------------------------------------------------------------------
+
+
+def _classify_file_row(
+    root: Path,
+    rel_path: str,
+    *,
+    ignore: IgnoreConfig,
+    now: datetime,
+    metric: Metric,
+    green_max_commits: int,
+    yellow_max_commits: int,
+) -> dict[str, Any]:
+    """Compute one freshness row for ``rel_path``; raises only on unexpected bugs."""
+    is_ignored = ignored_status(rel_path, ignore)
+    commit_sha, commit_iso = _git_last_commit_hash_and_iso(root, rel_path)
+    age = _age_days(now, commit_iso)
+    commits_since: int | None = None
+    if metric == "commits" and commit_sha is not None:
+        commits_since = _git_commits_since(root, commit_sha)
+    if metric == "commits":
+        status = classify_commits(
+            commits_since,
+            is_ignored=is_ignored,
+            green_max=green_max_commits,
+            yellow_max=yellow_max_commits,
+        )
+    else:
+        status = classify_days(age, is_ignored=is_ignored)
+
+    return {
+        "file": rel_path,
+        "last_commit": commit_iso,
+        "last_commit_sha": commit_sha,
+        "age_days": age,
+        "commits_since": commits_since,
+        "status": status,
+    }
+
+
+def _safe_classify_file_row(
+    root: Path,
+    rel_path: str,
+    *,
+    ignore: IgnoreConfig,
+    now: datetime,
+    metric: Metric,
+    green_max_commits: int,
+    yellow_max_commits: int,
+) -> dict[str, Any]:
+    """Like :func:`_classify_file_row` but never raises; failures become a red row."""
+    try:
+        return _classify_file_row(
+            root,
+            rel_path,
+            ignore=ignore,
+            now=now,
+            metric=metric,
+            green_max_commits=green_max_commits,
+            yellow_max_commits=yellow_max_commits,
+        )
+    except Exception as exc:  # per-file reliability: log and continue
+        print(f"[freshness] Warning: failed processing {rel_path}: {exc}", file=sys.stderr)
+        return {
+            "file": rel_path,
+            "last_commit": None,
+            "last_commit_sha": None,
+            "age_days": None,
+            "commits_since": None,
+            "status": "red",
+        }
+
+
+def _aggregate_counts(items: list[dict[str, Any]]) -> dict[Status, int]:
+    counts: dict[Status, int] = {"green": 0, "yellow": 0, "red": 0, "blue": 0}
+    for it in items:
+        counts[cast("Status", it["status"])] += 1
+    return counts
+
+
+def _order_items_for_report(items: list[dict[str, Any]], *, metric: Metric) -> list[dict[str, Any]]:
+    sort_key = _sort_key_commits_desc if metric == "commits" else _sort_key_age_desc
+    blue_items = [it for it in items if it["status"] == "blue"]
+    blue_items.sort(key=lambda d: cast("str", d.get("file", "")).lower())
+    return (
+        sorted((it for it in items if it["status"] == "green"), key=sort_key)
+        + sorted((it for it in items if it["status"] == "yellow"), key=sort_key)
+        + sorted((it for it in items if it["status"] == "red"), key=sort_key)
+        + blue_items
+    )
+
+
+def _validate_threshold_args(green_max: int, yellow_max: int) -> str | None:
+    """Return an error message for stderr, or None if thresholds are valid."""
+    if green_max < 0 or yellow_max < 0:
+        return "[freshness] Error: commit thresholds must be non-negative."
+    if green_max > yellow_max:
+        return "[freshness] Error: --green-max-commits must be <= --yellow-max-commits."
+    return None
+
+
+def _parse_cli_args(argv: list[str] | None = None) -> _Args:
     parser = argparse.ArgumentParser(description="Generate repository file freshness reports.")
     _ = parser.add_argument(
         "--repo-root",
@@ -428,81 +546,33 @@ def main() -> int:
         metavar="N",
         help="Commits mode: yellow if commits_since <= N and > green max (default: 20).",
     )
-    args = cast("_Args", cast("object", parser.parse_args()))
+    ns = parser.parse_args(argv)
+    return cast("_Args", cast("object", ns))
 
-    if args.green_max_commits < 0 or args.yellow_max_commits < 0:
-        print("[freshness] Error: commit thresholds must be non-negative.", file=sys.stderr)
-        return 2
-    if args.green_max_commits > args.yellow_max_commits:
-        print(
-            "[freshness] Error: --green-max-commits must be <= --yellow-max-commits.",
-            file=sys.stderr,
-        )
-        return 2
 
+def run_freshness_scan(args: _Args) -> tuple[list[dict[str, Any]], dict[str, Any], str]:
+    """Scan the repo and return (ordered detail rows, summary dict for JSON, markdown body)."""
     root = _resolve_repo_root(args.repo_root)
     ignore = load_ignore_config((root / args.ignore_config).resolve())
     now = _now_utc_from_env()
     metric = cast("Metric", args.metric)
 
     files = _git_ls_files(root)
-    items: list[dict[str, Any]] = []
-    counts: dict[Status, int] = {"green": 0, "yellow": 0, "red": 0, "blue": 0}
+    items = [
+        _safe_classify_file_row(
+            root,
+            rel,
+            ignore=ignore,
+            now=now,
+            metric=metric,
+            green_max_commits=args.green_max_commits,
+            yellow_max_commits=args.yellow_max_commits,
+        )
+        for rel in files
+    ]
 
-    sort_key = _sort_key_commits_desc if metric == "commits" else _sort_key_age_desc
-
-    for rel_path in files:
-        try:
-            is_ignored = ignored_status(rel_path, ignore)
-            commit_sha, commit_iso = _git_last_commit_hash_and_iso(root, rel_path)
-            age = _age_days(now, commit_iso)
-            commits_since: int | None = None
-            if metric == "commits" and commit_sha is not None:
-                commits_since = _git_commits_since(root, commit_sha)
-            if metric == "commits":
-                status = classify_commits(
-                    commits_since,
-                    is_ignored=is_ignored,
-                    green_max=args.green_max_commits,
-                    yellow_max=args.yellow_max_commits,
-                )
-            else:
-                status = classify_days(age, is_ignored=is_ignored)
-
-            counts[status] += 1
-            items.append(
-                {
-                    "file": rel_path,
-                    "last_commit": commit_iso,
-                    "last_commit_sha": commit_sha,
-                    "age_days": age,
-                    "commits_since": commits_since,
-                    "status": status,
-                }
-            )
-        except Exception as exc:  # reliability: never fail per-file.
-            print(f"[freshness] Warning: failed processing {rel_path}: {exc}", file=sys.stderr)
-            status = "red"
-            counts[status] += 1
-            items.append(
-                {
-                    "file": rel_path,
-                    "last_commit": None,
-                    "last_commit_sha": None,
-                    "age_days": None,
-                    "commits_since": None,
-                    "status": status,
-                }
-            )
-
-    blue_items = [it for it in items if it["status"] == "blue"]
-    blue_items.sort(key=lambda d: cast("str", d.get("file", "")).lower())
-    ordered = (
-        sorted((it for it in items if it["status"] == "green"), key=sort_key)
-        + sorted((it for it in items if it["status"] == "yellow"), key=sort_key)
-        + sorted((it for it in items if it["status"] == "red"), key=sort_key)
-        + blue_items
-    )
+    counts = _aggregate_counts(items)
+    ordered = _order_items_for_report(items, metric=metric)
 
     summary: dict[str, int] = {
         "green": counts["green"],
@@ -515,18 +585,38 @@ def main() -> int:
     summary_out.update(build_badge_fields(summary))
 
     md_text = generate_markdown(now, summary, ordered, metric=metric)
+    return ordered, summary_out, md_text
 
-    # Always generate outputs.
+
+def write_freshness_artifacts(
+    root: Path,
+    args: _Args,
+    ordered: list[dict[str, Any]],
+    summary_out: dict[str, Any],
+    md_text: str,
+) -> None:
+    """Write JSON and Markdown outputs under ``root`` using paths from ``args``."""
     write_json((root / args.output_details_json).resolve(), ordered)
     write_json((root / args.output_summary_json).resolve(), summary_out)
     out_md_path = (root / args.output_markdown).resolve()
     out_md_path.parent.mkdir(parents=True, exist_ok=True)
     _ = out_md_path.write_text(md_text, encoding="utf-8")
 
+
+def main(argv: list[str] | None = None) -> int:
+    """Run the freshness scanner CLI and write dashboard plus JSON artifacts."""
+    args = _parse_cli_args(argv)
+    err = _validate_threshold_args(args.green_max_commits, args.yellow_max_commits)
+    if err is not None:
+        print(err, file=sys.stderr)
+        return 2
+
+    root = _resolve_repo_root(args.repo_root)
+    ordered, summary_out, md_text = run_freshness_scan(args)
+    write_freshness_artifacts(root, args, ordered, summary_out, md_text)
     return 0
 
 
 if __name__ == "__main__":
-    # Ensure a stable timezone in environments where TZ may be set oddly.
     os.environ.setdefault("TZ", "UTC")
     raise SystemExit(main())

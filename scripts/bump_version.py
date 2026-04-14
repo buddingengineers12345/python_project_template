@@ -1,7 +1,8 @@
+#!/usr/bin/env python3
 """Bump the ``[project].version`` field in the meta-repo ``pyproject.toml``.
 
 Used by ``.github/workflows/release.yml`` and local release flows. Writes the updated file and
-prints the new PEP 440 version on stdout for shell substitution.
+prints the new PEP 440 version on stdout (single line, no extra text) for shell substitution.
 """
 
 from __future__ import annotations
@@ -71,6 +72,7 @@ class Version:
 
 
 def _read_project_version(pyproject_path: Path) -> Version:
+    r"""Read ``version = "X.Y.Z"`` from the first ``[project]`` table."""
     text = pyproject_path.read_text(encoding="utf-8")
     in_project = False
     for line in text.splitlines():
@@ -83,10 +85,12 @@ def _read_project_version(pyproject_path: Path) -> Version:
             m = _VERSION_RE.match(line)
             if m:
                 return Version.parse(m.group("ver"))
-    raise RuntimeError(f"Could not find [project] version in {pyproject_path}")
+    msg = f'Could not find [project] version line (version = "X.Y.Z") in {pyproject_path}'
+    raise RuntimeError(msg)
 
 
 def _write_project_version(pyproject_path: Path, new_version: Version) -> None:
+    """Replace the version line inside ``[project]`` only."""
     text = pyproject_path.read_text(encoding="utf-8")
     out_lines: list[str] = []
     in_project = False
@@ -108,12 +112,36 @@ def _write_project_version(pyproject_path: Path, new_version: Version) -> None:
         out_lines.append(line)
 
     if not replaced:
-        raise RuntimeError(f"Could not replace [project] version in {pyproject_path}")
+        msg = f"Could not replace [project] version line in {pyproject_path}"
+        raise RuntimeError(msg)
 
     _ = pyproject_path.write_text("\n".join(out_lines) + "\n", encoding="utf-8")
 
 
-def main() -> int:
+def _parse_args(argv: list[str] | None = None) -> _Args:
+    parser = argparse.ArgumentParser(
+        description="Bump [project].version in pyproject.toml and print the new version on stdout.",
+    )
+    _ = parser.add_argument(
+        "--pyproject",
+        default="pyproject.toml",
+        metavar="PATH",
+        help="Path to pyproject.toml (default: pyproject.toml in cwd).",
+    )
+    _ = parser.add_argument(
+        "--bump",
+        choices=("patch", "minor", "major"),
+        help="Which semver part to bump (ignored if --new-version is set).",
+    )
+    _ = parser.add_argument(
+        "--new-version",
+        metavar="X.Y.Z",
+        help="Set an explicit three-part version (overrides --bump).",
+    )
+    return cast("_Args", cast("object", parser.parse_args(argv)))
+
+
+def main(argv: list[str] | None = None) -> int:
     """Run the CLI: bump ``pyproject.toml`` and print the new version on stdout.
 
     Returns:
@@ -122,30 +150,38 @@ def main() -> int:
     Raises:
         SystemExit: If arguments are invalid, the version is unchanged, or I/O fails.
     """
-    parser = argparse.ArgumentParser(description="Bump [project].version in pyproject.toml")
-    _ = parser.add_argument("--pyproject", default="pyproject.toml", help="Path to pyproject.toml")
-    _ = parser.add_argument(
-        "--bump",
-        choices=("patch", "minor", "major"),
-        help="Which semver part to bump (ignored if --new-version is provided)",
-    )
-    _ = parser.add_argument("--new-version", help="Explicit version (X.Y.Z)")
-    args = cast("_Args", cast("object", parser.parse_args()))
-
+    args = _parse_args(argv)
     pyproject_path = Path(args.pyproject)
-    current = _read_project_version(pyproject_path)
+
+    try:
+        current = _read_project_version(pyproject_path)
+    except OSError as exc:
+        raise SystemExit(f"bump_version: cannot read {pyproject_path}: {exc}") from exc
+    except RuntimeError as exc:
+        raise SystemExit(f"bump_version: {exc}") from exc
 
     if args.new_version is not None:
-        new = Version.parse(args.new_version)
+        try:
+            new = Version.parse(args.new_version)
+        except ValueError as exc:
+            raise SystemExit(f"bump_version: {exc}") from exc
     else:
         if not args.bump:
-            raise SystemExit("Either --new-version or --bump is required")
+            raise SystemExit(
+                "bump_version: specify --bump (patch|minor|major) or --new-version X.Y.Z",
+            )
         new = current.bumped(cast("BumpKind", args.bump))
 
     if new == current:
-        raise SystemExit(f"New version equals current: {current}")
+        raise SystemExit(f"bump_version: new version equals current ({current}); nothing to do")
 
-    _write_project_version(pyproject_path, new)
+    try:
+        _write_project_version(pyproject_path, new)
+    except OSError as exc:
+        raise SystemExit(f"bump_version: cannot write {pyproject_path}: {exc}") from exc
+    except RuntimeError as exc:
+        raise SystemExit(f"bump_version: {exc}") from exc
+
     print(str(new))
     return 0
 
