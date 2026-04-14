@@ -38,7 +38,7 @@ Generates a Git-history-based file freshness dashboard for the repository.
 - yellow: 1–2 commits
 - red: 0 commits (file has never been updated after initial add)
 
-**Tested by:** `tests/test_repo_file_freshness.py`
+**Tested by:** `tests/scripts/test_repo_file_freshness.py`
 
 ---
 
@@ -90,7 +90,7 @@ conventional commit subjects over a `git rev-list` range.
 
 **Used by:** `.github/workflows/pr-policy.yml` (and the generated-project copy from `template/`).
 
-**Tested by:** `tests/test_pr_commit_policy.py`
+**Tested by:** `tests/scripts/test_pr_commit_policy.py`
 
 ---
 
@@ -105,9 +105,9 @@ Actions pins, shared recipes, and other policy maps).
 - Loads JSON policy maps under the repo (workflow action versions, justfile parity rules, etc.).
 - Compares root files to their `template/` counterparts and fails with a diff on drift.
 
-**Used by:** `.github/workflows/lint.yml` (meta-repo CI) and `just ci-check` / `just sync-check`.
+**Used by:** `.github/workflows/lint.yml` (meta-repo CI) and `just check` / `just sync-check`.
 
-**Tested by:** `tests/test_root_template_sync.py`
+**Tested by:** `tests/scripts/test_root_template_sync.py`
 
 ---
 

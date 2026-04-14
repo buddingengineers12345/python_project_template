@@ -3,7 +3,7 @@ Run the full local CI pipeline for this Copier template repository and report re
 Execute `just ci` which runs in this order:
 1. `just fix` — auto-fix ruff lint issues
 2. `just fmt` — ruff formatting
-3. `just ci-check` — read-only mirror of GitHub Actions, which runs:
+3. `just check` — read-only mirror of GitHub Actions, which runs:
    - `uv sync --frozen --extra dev`
    - `just fmt-check` — verify formatting (read-only)
    - `ruff check .` — lint

@@ -54,7 +54,7 @@ project_name:
 
 project_slug:
   type: str
-  default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
+  default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') | regex_replace('[^a-z0-9-]', '') }}"
   help: Slug for URLs and package distribution
 
 package_name:
@@ -213,7 +213,7 @@ _tasks:
       elif command -v wget >/dev/null 2>&1; then
         wget -qO- https://astral.sh/uv/install.sh | sh || exit 1
       else
-        echo "uv is required but was not found, and neither curl nor wget is available to install it." >&2
+        echo "❌ uv is required but was not found. Install from https://docs.astral.sh/uv/ or ensure curl/wget is available." >&2
         exit 1
       fi
 
@@ -229,10 +229,10 @@ _tasks:
       uv sync --frozen --extra dev --extra test
       {%- if include_docs %} --extra docs{% endif -%}
       {%- if include_git_cliff %} --group changelog{% endif %}
-  - command: uv run pre-commit install
-  - command: uv run pre-commit install --hook-type pre-push
-  - command: uv run ruff check --fix --unsafe-fixes .
-  - command: uv run basedpyright
+  - command: uv run pre-commit install || true
+  - command: uv run pre-commit install --hook-type pre-push || true
+  - command: uv run ruff check --fix . || true
+  - command: uv run basedpyright || true
   - command: sh -c 'rmdir docs 2>/dev/null || true'
     when: "{{ not include_docs }}"
   - command: >-

@@ -1,6 +1,6 @@
 """CLI smoke tests for ``scripts/check_root_template_sync``.
 
-Detailed policy scenarios are in ``test_root_template_sync.py`` (integration-style name).
+Detailed policy scenarios are in ``tests/scripts/test_root_template_sync.py``.
 """
 
 from __future__ import annotations
@@ -9,8 +9,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-_REPO_ROOT = Path(__file__).resolve().parent.parent
-_SCRIPT = _REPO_ROOT / "scripts" / "check_root_template_sync.py"
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+_SCRIPT = REPO_ROOT / "scripts" / "check_root_template_sync.py"
 
 
 def test_check_root_template_sync_help_exits_zero() -> None:

@@ -6,7 +6,7 @@
 
 ## What to test
 
-Every Jinja2 template change requires a corresponding test in `tests/test_template.py`.
+Every Jinja2 template change requires a corresponding test in `tests/integration/test_template.py`.
 Tests render the template with `copier copy` and assert on the output.
 
 Scenarios to cover for each template file:
@@ -82,7 +82,7 @@ rm -rf /tmp/test-output
 ## Update testing
 
 Test `copier update` scenarios when changing `_skip_if_exists` or the `.copier-answers.yml`
-template. The `tests/test_template.py` file includes update scenario tests; add new ones
+template. The `tests/integration/test_template.py` file includes update scenario tests; add new ones
 when you add new `_skip_if_exists` entries.
 
 ## Coverage for template branches

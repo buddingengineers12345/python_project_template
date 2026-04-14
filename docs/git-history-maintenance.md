@@ -19,7 +19,7 @@ Snapshot on 2026-04-10 (this clone):
 
 - Commits: ~120
 - `git count-objects` pack/loose: ~5.2 MiB counted objects; `.git` ~7.9 MiB on disk
-- Largest historical blobs: repeated `uv.lock` revisions, `assets/file_freshness.json`, `tests/test_template.py`
+- Largest historical blobs: repeated `uv.lock` revisions, `assets/file_freshness.json`, `tests/integration/test_template.py`
 
 Optional: install [git-sizer](https://github.com/github/git-sizer) for GitHub’s recommended complexity signals.
 

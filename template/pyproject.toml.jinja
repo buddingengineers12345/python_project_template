@@ -92,6 +92,12 @@ line-length = 100
 target-version = "py{{ python_min_version | replace('.', '') }}"
 src = ["src", "tests"]
 
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = true
+
 [tool.ruff.lint]
 select = [
     "E",    # pycodestyle errors
@@ -138,6 +144,8 @@ pythonVersion = "{{ python_min_version }}"
 typeCheckingMode = "standard"
 reportMissingImports = true
 reportMissingTypeStubs = false
+venvPath = "."
+venv = ".venv"
 
 include = ["src", "tests"]
 exclude = [
@@ -154,6 +162,7 @@ exclude = [
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
+pythonpath = ["src"]  # allows imports without editable install; complements hatch dev mode
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
@@ -215,8 +224,12 @@ exclude_lines = [
 [tool.coverage.xml]
 output = "coverage.xml"
 
+[tool.coverage.html]
+directory = "htmlcov"
+
 # Commitizen: conventional commits (`cz commit`), commit-msg validation via pre-commit.
+# version_provider = "pep621" means commitizen reads/writes [project].version — no duplicate.
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.1.0"
+version_provider = "pep621"
 tag_format = "v$version"

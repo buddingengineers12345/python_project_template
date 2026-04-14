@@ -42,9 +42,9 @@ repos:
         pass_filenames: false
         stages: [pre-commit]
 
-      - id: just-ci-check
-        name: just ci-check (read-only CI gate before push)
-        entry: just ci-check
+      - id: just-check
+        name: just check (read-only CI gate before push)
+        entry: just check
         language: system
         pass_filenames: false
         always_run: true

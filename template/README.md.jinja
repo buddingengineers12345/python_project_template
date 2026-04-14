@@ -43,8 +43,8 @@ See [docs/ci.md](docs/ci.md) for Codecov-specific steps.
 - `just test` / `just test-parallel` / `just coverage`
 - `just fmt` / `just lint` / `just fix`
 - `just type` / `just docs-check` / `just review`
-- `just static_check` (lint + types + docstrings, no tests)
 - `just ci` (full local mirror of the GitHub Actions CI workflow)
+- `just check` (read-only CI gate: fmt-check, lint, type, docs, tests, pre-commit)
 - `just sync` / `just update` / `just precommit-install`
 - `just doctor` / `just clean` / `just build`
 {% if include_docs -%}

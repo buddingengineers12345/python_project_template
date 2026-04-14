@@ -41,6 +41,7 @@ Use these rules in order:
 | `.github/workflows/pre-commit-update.yml` | `template/.github/workflows/pre-commit-update.yml.jinja` | sync_structure_only | bidirectional versions |
 | `.github/workflows/release.yml` | `template/.github/workflows/release.yml.jinja` | sync_structure_only | bidirectional versions |
 | `.github/workflows/dependency-review.yml` | `template/.github/workflows/dependency-review.yml.jinja` | sync_structure_only | bidirectional versions |
+| `.github/workflows/labeler.yml` | `template/.github/workflows/labeler.yml.jinja` | sync_structure_only | bidirectional versions |
 
 ## Intentionally divergent areas
 
@@ -72,7 +73,7 @@ When editing shared standards:
 1. Update the root file first (unless the change starts in template context).
 2. Port the equivalent change to the mapped template counterpart.
 3. Run `just sync-check` locally.
-4. Run `just ci-check` before merge.
+4. Run `just check` before merge.
 
 ## Non-goals
 

@@ -173,7 +173,7 @@ When adding or modifying hooks, commands, or rules:
 ## Testing template changes
 
 Every change to `copier.yml` or a template file requires a test update in
-`tests/test_template.py`. Run:
+`tests/integration/test_template.py`. Run:
 
 ```bash
 just test    # run all template tests

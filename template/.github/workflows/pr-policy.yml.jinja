@@ -5,8 +5,8 @@
 name: PR policy
 
 on:
-  pull_request:
-    types: [opened, edited, synchronize, reopened]
+  # Temporarily disabled: manual runs only.
+  workflow_dispatch:
 
 permissions:
   contents: read

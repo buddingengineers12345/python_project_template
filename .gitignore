@@ -211,6 +211,7 @@ TASK*.md
 temp_*.py
 temp_*.ipynb
 temp_*.md
+temp_*.sh
 *.tmp
 *.temp
 *.bak

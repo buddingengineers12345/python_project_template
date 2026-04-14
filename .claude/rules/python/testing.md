@@ -21,6 +21,39 @@ tests/
 └── test_imports.py      # smoke test: every public symbol is importable
 ```
 
+### Meta-repo (this template repository)
+
+Generated projects follow the layout above. **This Copier meta-repository** has no `src/` tree;
+Python under test lives in `scripts/`. Keep pytest modules organized as:
+
+```
+tests/
+├── conftest.py          # top-level shared fixtures
+├── unit/
+│   ├── conftest.py
+│   └── test_<script>.py # mirrors scripts/<script>.py
+├── integration/
+│   ├── conftest.py
+│   └── test_template.py # Copier copy/update integration suite
+└── e2e/
+    └── conftest.py      # placeholder for future e2e tests
+```
+
+**No `__init__.py` files** — the flat layout (`pythonpath = ["."]`) avoids package nesting.
+
+**No shared constants file** — define path constants directly in each test file that needs them:
+
+```python
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+TEMPLATE_ROOT = REPO_ROOT / "template"
+COPIER_YAML = REPO_ROOT / "copier.yml"
+```
+
+Do not flatten new tests into the top level of `tests/` unless they truly have no script or
+integration home.
+
 Files must be named `test_<module>.py`. Test functions must start with `test_`.
 
 ## Running tests

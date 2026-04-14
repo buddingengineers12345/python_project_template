@@ -2,166 +2,6 @@
   {
     "age_days": 0,
     "commits_since": 5,
-    "file": ".claude/rules/common/git-workflow.md",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": ".github/CLAUDE.md",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": ".github/workflows/pr-policy.yml",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": ".gitignore",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": "README.md",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": "docs/git-history-maintenance.md",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": "docs/root-template-sync-map.yaml",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": "template/.claude/rules/common/git-workflow.md",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": "template/.github/workflows/pr-policy.yml.jinja",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": "template/CONTRIBUTING.md.jinja",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": "template/README.md.jinja",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 5,
-    "file": "template/docs/{% if include_docs %}ci.md{% endif %}.jinja",
-    "last_commit": "2026-04-13T10:42:17+02:00",
-    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 4,
-    "file": ".pre-commit-config.yaml",
-    "last_commit": "2026-04-13T12:09:47+02:00",
-    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 4,
-    "file": "docs/repo_file_status_report.md",
-    "last_commit": "2026-04-13T09:22:43Z",
-    "last_commit_sha": "4806b937b3196adaae30c583993f264314955509",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 4,
-    "file": "template/.claude/rules/python/coding-style.md.jinja",
-    "last_commit": "2026-04-13T12:09:47+02:00",
-    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 4,
-    "file": "template/.claude/rules/python/hooks.md",
-    "last_commit": "2026-04-13T12:09:47+02:00",
-    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 4,
-    "file": "template/.pre-commit-config.yaml.jinja",
-    "last_commit": "2026-04-13T12:09:47+02:00",
-    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 4,
-    "file": "template/CLAUDE.md",
-    "last_commit": "2026-04-13T12:09:47+02:00",
-    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 4,
-    "file": "template/docs/github-repository-settings.md.jinja",
-    "last_commit": "2026-04-13T12:09:47+02:00",
-    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 4,
-    "file": "template/src/{{ package_name }}/common/logging_manager.py.jinja",
-    "last_commit": "2026-04-13T12:09:47+02:00",
-    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
     "file": ".claude/commands/docs-check.md",
     "last_commit": "2026-04-13T12:46:18+02:00",
     "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
@@ -169,23 +9,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 1,
-    "file": "CLAUDE.md",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
-    "file": "pyproject.toml",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
+    "commits_since": 5,
     "file": "scripts/bump_version.py",
     "last_commit": "2026-04-13T12:46:18+02:00",
     "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
@@ -193,7 +17,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 1,
+    "commits_since": 5,
     "file": "scripts/check_root_template_sync.py",
     "last_commit": "2026-04-13T12:46:18+02:00",
     "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
@@ -201,23 +25,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 1,
-    "file": "scripts/pr_commit_policy.py",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
-    "file": "scripts/repo_file_freshness.py",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
+    "commits_since": 5,
     "file": "template/.claude/commands/docs-check.md.jinja",
     "last_commit": "2026-04-13T12:46:18+02:00",
     "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
@@ -225,7 +33,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 1,
+    "commits_since": 5,
     "file": "template/CLAUDE.md.jinja",
     "last_commit": "2026-04-13T12:46:18+02:00",
     "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
@@ -233,15 +41,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 1,
-    "file": "template/pyproject.toml.jinja",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
+    "commits_since": 5,
     "file": "template/src/{{ package_name }}/common/bump_version.py.jinja",
     "last_commit": "2026-04-13T12:46:18+02:00",
     "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
@@ -249,63 +49,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 1,
-    "file": "tests/CLAUDE.md",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
-    "file": "tests/test_pr_commit_policy.py",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
-    "file": "tests/test_repo_file_freshness.py",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
-    "file": "tests/test_root_template_sync.py",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 1,
-    "file": "tests/test_template.py",
-    "last_commit": "2026-04-13T12:46:18+02:00",
-    "last_commit_sha": "67dd3524745327f2619dc5aa3de2844a337f97f0",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 0,
-    "file": "scripts/CLAUDE.md",
-    "last_commit": "2026-04-13T13:46:53+02:00",
-    "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 0,
-    "file": "scripts/generate_obsidian_porting_report.py",
-    "last_commit": "2026-04-13T13:46:53+02:00",
-    "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
-    "status": "green"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 0,
+    "commits_since": 4,
     "file": "template/.claude/skills/prepare_pr/SKILL.md",
     "last_commit": "2026-04-13T13:46:53+02:00",
     "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
@@ -313,7 +57,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 0,
+    "commits_since": 4,
     "file": "template/.claude/skills/prepare_pr/references/section-rules.md",
     "last_commit": "2026-04-13T13:46:53+02:00",
     "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
@@ -321,7 +65,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 0,
+    "commits_since": 4,
     "file": "template/tests/conftest.py.jinja",
     "last_commit": "2026-04-13T13:46:53+02:00",
     "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
@@ -329,7 +73,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 0,
+    "commits_since": 4,
     "file": "template/tests/test_imports.py.jinja",
     "last_commit": "2026-04-13T13:46:53+02:00",
     "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
@@ -337,7 +81,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 0,
+    "commits_since": 4,
     "file": "template/tests/{{ package_name }}/test_core.py.jinja",
     "last_commit": "2026-04-13T13:46:53+02:00",
     "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
@@ -345,7 +89,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 0,
+    "commits_since": 4,
     "file": "template/tests/{{ package_name }}/test_support.py.jinja",
     "last_commit": "2026-04-13T13:46:53+02:00",
     "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
@@ -353,31 +97,271 @@
   },
   {
     "age_days": 0,
-    "commits_since": 18,
-    "file": "template/.claude/skills/skill-maintainer/SKILL.md",
-    "last_commit": "2026-04-13T02:39:43+02:00",
-    "last_commit_sha": "6ca3cebe7ba41e05c9b3f94dd628e50bb5c09211",
-    "status": "yellow"
+    "commits_since": 3,
+    "file": "docs/repo_file_status_report.md",
+    "last_commit": "2026-04-13T14:25:31+02:00",
+    "last_commit_sha": "34283fe029504ab487b7d62f18aae059c9de7f9f",
+    "status": "green"
   },
   {
     "age_days": 0,
-    "commits_since": 18,
-    "file": "template/.claude/skills/test-quality-reviewer/SKILL.md",
-    "last_commit": "2026-04-13T02:39:43+02:00",
-    "last_commit_sha": "6ca3cebe7ba41e05c9b3f94dd628e50bb5c09211",
-    "status": "yellow"
+    "commits_since": 3,
+    "file": "scripts/repo_file_freshness.py",
+    "last_commit": "2026-04-13T14:25:31+02:00",
+    "last_commit_sha": "34283fe029504ab487b7d62f18aae059c9de7f9f",
+    "status": "green"
   },
   {
     "age_days": 0,
-    "commits_since": 17,
+    "commits_since": 2,
+    "file": ".pre-commit-config.yaml",
+    "last_commit": "2026-04-13T19:44:52+02:00",
+    "last_commit_sha": "326276d818df25d07c2fcc3fe8a33949a6f6f5b9",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 2,
+    "file": "pyproject.toml",
+    "last_commit": "2026-04-13T19:44:52+02:00",
+    "last_commit_sha": "326276d818df25d07c2fcc3fe8a33949a6f6f5b9",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 2,
+    "file": "template/.pre-commit-config.yaml.jinja",
+    "last_commit": "2026-04-13T19:44:52+02:00",
+    "last_commit_sha": "326276d818df25d07c2fcc3fe8a33949a6f6f5b9",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 2,
+    "file": "template/justfile.jinja",
+    "last_commit": "2026-04-13T19:44:52+02:00",
+    "last_commit_sha": "326276d818df25d07c2fcc3fe8a33949a6f6f5b9",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 2,
+    "file": "template/pyproject.toml.jinja",
+    "last_commit": "2026-04-13T19:44:52+02:00",
+    "last_commit_sha": "326276d818df25d07c2fcc3fe8a33949a6f6f5b9",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 2,
+    "file": "template/scripts/pr_commit_policy.py.jinja",
+    "last_commit": "2026-04-13T19:44:52+02:00",
+    "last_commit_sha": "326276d818df25d07c2fcc3fe8a33949a6f6f5b9",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 2,
+    "file": "uv.lock",
+    "last_commit": "2026-04-13T19:44:52+02:00",
+    "last_commit_sha": "326276d818df25d07c2fcc3fe8a33949a6f6f5b9",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": ".claude/rules/python/hooks.md",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": ".github/PULL_REQUEST_TEMPLATE.md",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": ".gitignore",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": ".vscode/settings.json",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": "CLAUDE.md",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": "docs/file_locking_plan.md",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": "docs/github-repository-settings.md",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": "justfile",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": "scripts/CLAUDE.md",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": "scripts/pr_commit_policy.py",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": "template/.claude/rules/python/hooks.md",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 1,
+    "file": "tests/CLAUDE.md",
+    "last_commit": "2026-04-13T22:51:41+02:00",
+    "last_commit_sha": "772a674ab78eacc491c8bf1454f0a23e1310d003",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": ".github/workflows/dependency-review.yml",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": ".github/workflows/labeler.yml",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": ".github/workflows/pre-commit-update.yml",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": ".github/workflows/stale.yml",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": ".github/workflows/sync-skip-if-exists.yml",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": "docs/root-template-sync-map.yaml",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
     "file": "docs/root-template-sync-policy.md",
-    "last_commit": "2026-04-13T03:28:28+02:00",
-    "last_commit_sha": "d69e31e63d98552a3991be1da1eb8396cefd7bca",
-    "status": "yellow"
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
   },
   {
     "age_days": 0,
-    "commits_since": 15,
+    "commits_since": 0,
+    "file": "temp_docs/committed_filepaths.csv",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": "template/.github/workflows/dependency-review.yml.jinja",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": "template/.github/workflows/docs.yml.jinja",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": "template/.github/workflows/labeler.yml.jinja",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 0,
+    "file": "template/.github/workflows/pre-commit-update.yml.jinja",
+    "last_commit": "2026-04-14T00:13:44+02:00",
+    "last_commit_sha": "6d256ee43c7da35b90b7192f6ea0088496845f47",
+    "status": "green"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 19,
     "file": ".claude/skills/test-quality-reviewer/SKILL.md",
     "last_commit": "2026-04-13T03:28:44+02:00",
     "last_commit_sha": "c0a65e5e180dfa58e4c6b991f9129856c53bad1a",
@@ -385,7 +369,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 15,
+    "commits_since": 19,
     "file": "template/.claude/hooks/post-edit-markdown.sh",
     "last_commit": "2026-04-13T03:28:44+02:00",
     "last_commit_sha": "c0a65e5e180dfa58e4c6b991f9129856c53bad1a",
@@ -393,7 +377,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 15,
+    "commits_since": 19,
     "file": "template/.claude/hooks/post-edit-python.sh",
     "last_commit": "2026-04-13T03:28:44+02:00",
     "last_commit_sha": "c0a65e5e180dfa58e4c6b991f9129856c53bad1a",
@@ -401,15 +385,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 15,
-    "file": "template/.github/workflows/pre-commit-update.yml.jinja",
-    "last_commit": "2026-04-13T03:28:44+02:00",
-    "last_commit_sha": "c0a65e5e180dfa58e4c6b991f9129856c53bad1a",
-    "status": "yellow"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 15,
+    "commits_since": 19,
     "file": "template/.github/workflows/release.yml.jinja",
     "last_commit": "2026-04-13T03:28:44+02:00",
     "last_commit_sha": "c0a65e5e180dfa58e4c6b991f9129856c53bad1a",
@@ -417,7 +393,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 9,
+    "commits_since": 13,
     "file": ".claude/rules/copier/template-conventions.md",
     "last_commit": "2026-04-13T05:13:32+02:00",
     "last_commit_sha": "ab663f9551c57aacdf8f518a98d1005de6543792",
@@ -425,7 +401,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 9,
+    "commits_since": 13,
     "file": ".github/workflows/lint.yml",
     "last_commit": "2026-04-13T05:13:32+02:00",
     "last_commit_sha": "ab663f9551c57aacdf8f518a98d1005de6543792",
@@ -433,7 +409,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 9,
+    "commits_since": 13,
     "file": ".github/workflows/security.yml",
     "last_commit": "2026-04-13T05:13:32+02:00",
     "last_commit_sha": "ab663f9551c57aacdf8f518a98d1005de6543792",
@@ -441,7 +417,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 9,
+    "commits_since": 13,
     "file": "template/.github/workflows/ci.yml.jinja",
     "last_commit": "2026-04-13T05:13:32+02:00",
     "last_commit_sha": "ab663f9551c57aacdf8f518a98d1005de6543792",
@@ -449,7 +425,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 9,
+    "commits_since": 13,
     "file": "template/.github/workflows/lint.yml.jinja",
     "last_commit": "2026-04-13T05:13:32+02:00",
     "last_commit_sha": "ab663f9551c57aacdf8f518a98d1005de6543792",
@@ -457,7 +433,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 9,
+    "commits_since": 13,
     "file": "template/.github/workflows/security.yml.jinja",
     "last_commit": "2026-04-13T05:13:32+02:00",
     "last_commit_sha": "ab663f9551c57aacdf8f518a98d1005de6543792",
@@ -465,7 +441,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 8,
+    "commits_since": 12,
     "file": ".claude/CLAUDE.md",
     "last_commit": "2026-04-13T05:31:00+02:00",
     "last_commit_sha": "3a9eeebb95030ea476c6072d772873eeeb901cf8",
@@ -473,7 +449,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 8,
+    "commits_since": 12,
     "file": ".claude/commands/standards.md",
     "last_commit": "2026-04-13T05:31:00+02:00",
     "last_commit_sha": "3a9eeebb95030ea476c6072d772873eeeb901cf8",
@@ -481,7 +457,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 8,
+    "commits_since": 12,
     "file": ".claude/hooks/README.md",
     "last_commit": "2026-04-13T05:31:00+02:00",
     "last_commit_sha": "3a9eeebb95030ea476c6072d772873eeeb901cf8",
@@ -489,7 +465,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 8,
+    "commits_since": 12,
     "file": "template/.claude/commands/standards.md.jinja",
     "last_commit": "2026-04-13T05:31:00+02:00",
     "last_commit_sha": "3a9eeebb95030ea476c6072d772873eeeb901cf8",
@@ -497,7 +473,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 8,
+    "commits_since": 12,
     "file": "template/.claude/hooks/README.md",
     "last_commit": "2026-04-13T05:31:00+02:00",
     "last_commit_sha": "3a9eeebb95030ea476c6072d772873eeeb901cf8",
@@ -505,15 +481,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 8,
-    "file": "uv.lock",
-    "last_commit": "2026-04-13T05:31:00+02:00",
-    "last_commit_sha": "3a9eeebb95030ea476c6072d772873eeeb901cf8",
-    "status": "yellow"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 7,
+    "commits_since": 11,
     "file": "copier.yml",
     "last_commit": "2026-04-13T06:51:12+02:00",
     "last_commit_sha": "4041cd18632749b6f84f98f00e79cf818721e4b1",
@@ -521,7 +489,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 7,
+    "commits_since": 11,
     "file": "scripts/sync_skip_if_exists.py",
     "last_commit": "2026-04-13T06:51:12+02:00",
     "last_commit_sha": "4041cd18632749b6f84f98f00e79cf818721e4b1",
@@ -529,7 +497,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 7,
+    "commits_since": 11,
     "file": "template/env.example.jinja",
     "last_commit": "2026-04-13T06:51:12+02:00",
     "last_commit_sha": "4041cd18632749b6f84f98f00e79cf818721e4b1",
@@ -537,15 +505,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 6,
-    "file": ".github/PULL_REQUEST_TEMPLATE.md",
-    "last_commit": "2026-04-13T10:33:56+02:00",
-    "last_commit_sha": "f72a01a50a78d2ed07eb799eb63279c141e59075",
-    "status": "yellow"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 6,
+    "commits_since": 10,
     "file": ".gitmessage",
     "last_commit": "2026-04-13T10:33:56+02:00",
     "last_commit_sha": "f72a01a50a78d2ed07eb799eb63279c141e59075",
@@ -553,15 +513,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 6,
-    "file": "justfile",
-    "last_commit": "2026-04-13T10:33:56+02:00",
-    "last_commit_sha": "f72a01a50a78d2ed07eb799eb63279c141e59075",
-    "status": "yellow"
-  },
-  {
-    "age_days": 0,
-    "commits_since": 6,
+    "commits_since": 10,
     "file": "template/.github/PULL_REQUEST_TEMPLATE.md.jinja",
     "last_commit": "2026-04-13T10:33:56+02:00",
     "last_commit_sha": "f72a01a50a78d2ed07eb799eb63279c141e59075",
@@ -569,7 +521,7 @@
   },
   {
     "age_days": 0,
-    "commits_since": 6,
+    "commits_since": 10,
     "file": "template/.gitmessage",
     "last_commit": "2026-04-13T10:33:56+02:00",
     "last_commit_sha": "f72a01a50a78d2ed07eb799eb63279c141e59075",
@@ -577,303 +529,383 @@
   },
   {
     "age_days": 0,
-    "commits_since": 6,
-    "file": "template/justfile.jinja",
-    "last_commit": "2026-04-13T10:33:56+02:00",
-    "last_commit_sha": "f72a01a50a78d2ed07eb799eb63279c141e59075",
+    "commits_since": 9,
+    "file": ".claude/rules/common/git-workflow.md",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
     "status": "yellow"
   },
   {
     "age_days": 0,
-    "commits_since": 6,
-    "file": "template/scripts/pr_commit_policy.py.jinja",
-    "last_commit": "2026-04-13T10:33:56+02:00",
-    "last_commit_sha": "f72a01a50a78d2ed07eb799eb63279c141e59075",
+    "commits_since": 9,
+    "file": ".github/CLAUDE.md",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
     "status": "yellow"
   },
   {
-    "age_days": 11,
-    "commits_since": 144,
+    "age_days": 0,
+    "commits_since": 9,
+    "file": ".github/workflows/pr-policy.yml",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 9,
+    "file": "README.md",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 9,
+    "file": "docs/git-history-maintenance.md",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 9,
+    "file": "template/.claude/rules/common/git-workflow.md",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 9,
+    "file": "template/.github/workflows/pr-policy.yml.jinja",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 9,
+    "file": "template/CONTRIBUTING.md.jinja",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 9,
+    "file": "template/README.md.jinja",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 9,
+    "file": "template/docs/{% if include_docs %}ci.md{% endif %}.jinja",
+    "last_commit": "2026-04-13T10:42:17+02:00",
+    "last_commit_sha": "61f843b1b484e5d311406ff5dd093914eba901e3",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 8,
+    "file": "template/.claude/rules/python/coding-style.md.jinja",
+    "last_commit": "2026-04-13T12:09:47+02:00",
+    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 8,
+    "file": "template/CLAUDE.md",
+    "last_commit": "2026-04-13T12:09:47+02:00",
+    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 8,
+    "file": "template/docs/github-repository-settings.md.jinja",
+    "last_commit": "2026-04-13T12:09:47+02:00",
+    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
+    "status": "yellow"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 8,
+    "file": "template/src/{{ package_name }}/common/logging_manager.py.jinja",
+    "last_commit": "2026-04-13T12:09:47+02:00",
+    "last_commit_sha": "22efc9f9e2b07e824ea586993b1a6b0b9adc6bad",
+    "status": "yellow"
+  },
+  {
+    "age_days": 12,
+    "commits_since": 148,
     "file": ".vscode/extensions.json",
     "last_commit": "2026-04-01T16:16:11+02:00",
     "last_commit_sha": "f94e6af3e7f3cdc97388c16477d8a311779445b8",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 144,
+    "age_days": 12,
+    "commits_since": 148,
     "file": ".vscode/launch.json",
     "last_commit": "2026-04-01T16:16:11+02:00",
     "last_commit_sha": "f94e6af3e7f3cdc97388c16477d8a311779445b8",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 144,
-    "file": ".vscode/settings.json",
-    "last_commit": "2026-04-01T16:16:11+02:00",
-    "last_commit_sha": "f94e6af3e7f3cdc97388c16477d8a311779445b8",
-    "status": "red"
-  },
-  {
-    "age_days": 11,
-    "commits_since": 144,
+    "age_days": 12,
+    "commits_since": 148,
     "file": "LICENSE",
     "last_commit": "2026-04-01T16:16:11+02:00",
     "last_commit_sha": "f94e6af3e7f3cdc97388c16477d8a311779445b8",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 144,
+    "age_days": 12,
+    "commits_since": 148,
     "file": "template/.github/CODE_OF_CONDUCT.md.jinja",
     "last_commit": "2026-04-01T16:16:11+02:00",
     "last_commit_sha": "f94e6af3e7f3cdc97388c16477d8a311779445b8",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 144,
+    "age_days": 12,
+    "commits_since": 148,
     "file": "template/.vscode/extensions.json.jinja",
     "last_commit": "2026-04-01T16:16:11+02:00",
     "last_commit_sha": "f94e6af3e7f3cdc97388c16477d8a311779445b8",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 144,
+    "age_days": 12,
+    "commits_since": 148,
     "file": "template/.vscode/launch.json.jinja",
     "last_commit": "2026-04-01T16:16:11+02:00",
     "last_commit_sha": "f94e6af3e7f3cdc97388c16477d8a311779445b8",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 144,
+    "age_days": 12,
+    "commits_since": 148,
     "file": "template/LICENSE.jinja",
     "last_commit": "2026-04-01T16:16:11+02:00",
     "last_commit_sha": "f94e6af3e7f3cdc97388c16477d8a311779445b8",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 142,
+    "age_days": 12,
+    "commits_since": 146,
     "file": "template/.github/ISSUE_TEMPLATE/bug_report.md.jinja",
     "last_commit": "2026-04-01T18:12:59+02:00",
     "last_commit_sha": "5c17c5dab50090fef6a209cd68d661d29fb8da42",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 142,
+    "age_days": 12,
+    "commits_since": 146,
     "file": "template/.github/ISSUE_TEMPLATE/config.yml.jinja",
     "last_commit": "2026-04-01T18:12:59+02:00",
     "last_commit_sha": "5c17c5dab50090fef6a209cd68d661d29fb8da42",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 142,
+    "age_days": 12,
+    "commits_since": 146,
     "file": "template/.github/ISSUE_TEMPLATE/feature_request.md.jinja",
     "last_commit": "2026-04-01T18:12:59+02:00",
     "last_commit_sha": "5c17c5dab50090fef6a209cd68d661d29fb8da42",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 141,
+    "age_days": 12,
+    "commits_since": 145,
     "file": ".claude/commands/generate.md",
     "last_commit": "2026-04-01T23:49:24+02:00",
     "last_commit_sha": "f7ff87d01252787cb3db727287da65d38b761406",
     "status": "red"
   },
   {
-    "age_days": 11,
-    "commits_since": 141,
+    "age_days": 12,
+    "commits_since": 145,
     "file": ".claude/commands/test.md",
     "last_commit": "2026-04-01T23:49:24+02:00",
     "last_commit_sha": "f7ff87d01252787cb3db727287da65d38b761406",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 118,
+    "age_days": 11,
+    "commits_since": 122,
     "file": "template/.claude/commands/ci.md",
     "last_commit": "2026-04-02T20:14:16+02:00",
     "last_commit_sha": "1e2f6a6ea22f4e72d9d7104c7cebe804740f363f",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 118,
+    "age_days": 11,
+    "commits_since": 122,
     "file": "template/.claude/commands/generate.md",
     "last_commit": "2026-04-02T20:14:16+02:00",
     "last_commit_sha": "1e2f6a6ea22f4e72d9d7104c7cebe804740f363f",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 118,
+    "age_days": 11,
+    "commits_since": 122,
     "file": "template/.claude/commands/test.md",
     "last_commit": "2026-04-02T20:14:16+02:00",
     "last_commit_sha": "1e2f6a6ea22f4e72d9d7104c7cebe804740f363f",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 118,
+    "age_days": 11,
+    "commits_since": 122,
     "file": "template/{{_copier_conf.answers_file}}.jinja",
     "last_commit": "2026-04-02T20:14:16+02:00",
     "last_commit_sha": "1e2f6a6ea22f4e72d9d7104c7cebe804740f363f",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 112,
-    "file": "scripts/update_files.sh",
-    "last_commit": "2026-04-02T22:06:25+02:00",
-    "last_commit_sha": "a2183edf5e9022f26d410ee148b64da0b973e250",
-    "status": "red"
-  },
-  {
-    "age_days": 10,
-    "commits_since": 112,
+    "age_days": 11,
+    "commits_since": 116,
     "file": "template/.github/CODEOWNERS.jinja",
     "last_commit": "2026-04-02T22:06:25+02:00",
     "last_commit_sha": "a2183edf5e9022f26d410ee148b64da0b973e250",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 112,
+    "age_days": 11,
+    "commits_since": 116,
     "file": "template/tests/__init__.py.jinja",
     "last_commit": "2026-04-02T22:06:25+02:00",
     "last_commit_sha": "a2183edf5e9022f26d410ee148b64da0b973e250",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 112,
+    "age_days": 11,
+    "commits_since": 116,
     "file": "template/tests/{{ package_name }}/__init__.py.jinja",
     "last_commit": "2026-04-02T22:06:25+02:00",
     "last_commit_sha": "a2183edf5e9022f26d410ee148b64da0b973e250",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 110,
+    "age_days": 11,
+    "commits_since": 114,
     "file": "template/src/{{ package_name }}/common/__init__.py.jinja",
     "last_commit": "2026-04-02T19:04:46Z",
     "last_commit_sha": "04438478666a70a4ccd21b1f5228ad4be8e0e89e",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 110,
+    "age_days": 11,
+    "commits_since": 114,
     "file": "template/src/{{ package_name }}/common/decorators.py.jinja",
     "last_commit": "2026-04-02T19:04:46Z",
     "last_commit_sha": "04438478666a70a4ccd21b1f5228ad4be8e0e89e",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 110,
+    "age_days": 11,
+    "commits_since": 114,
     "file": "template/src/{{ package_name }}/common/file_manager.py.jinja",
     "last_commit": "2026-04-02T19:04:46Z",
     "last_commit_sha": "04438478666a70a4ccd21b1f5228ad4be8e0e89e",
     "status": "red"
   },
   {
-    "age_days": 10,
-    "commits_since": 103,
+    "age_days": 11,
+    "commits_since": 107,
     "file": "template/src/{{ package_name }}/common/utils.py.jinja",
     "last_commit": "2026-04-02T20:19:59Z",
     "last_commit_sha": "afc1839bcbf4b05953d5c59e314975c54b5e8cb6",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 93,
+    "age_days": 10,
+    "commits_since": 97,
     "file": ".claude/commands/coverage.md",
     "last_commit": "2026-04-03T16:37:11+02:00",
     "last_commit_sha": "a53a5c638b09732a7d3b9babd61eaf5535a1a6c1",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 93,
+    "age_days": 10,
+    "commits_since": 97,
     "file": ".claude/commands/release.md",
     "last_commit": "2026-04-03T16:55:34+02:00",
     "last_commit_sha": "159de120871d253449198344b42a76c7eef8baf4",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 93,
+    "age_days": 10,
+    "commits_since": 97,
     "file": ".claude/commands/review.md",
     "last_commit": "2026-04-03T16:37:11+02:00",
     "last_commit_sha": "a53a5c638b09732a7d3b9babd61eaf5535a1a6c1",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 93,
+    "age_days": 10,
+    "commits_since": 97,
     "file": ".claude/commands/update-claude-md.md",
     "last_commit": "2026-04-03T16:37:11+02:00",
     "last_commit_sha": "a53a5c638b09732a7d3b9babd61eaf5535a1a6c1",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 93,
+    "age_days": 10,
+    "commits_since": 97,
     "file": "template/.claude/commands/coverage.md.jinja",
     "last_commit": "2026-04-03T16:37:11+02:00",
     "last_commit_sha": "a53a5c638b09732a7d3b9babd61eaf5535a1a6c1",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 93,
+    "age_days": 10,
+    "commits_since": 97,
     "file": "template/.claude/commands/release.md.jinja",
     "last_commit": "2026-04-03T16:55:34+02:00",
     "last_commit_sha": "159de120871d253449198344b42a76c7eef8baf4",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 93,
+    "age_days": 10,
+    "commits_since": 97,
     "file": "template/.claude/commands/review.md.jinja",
     "last_commit": "2026-04-03T16:37:11+02:00",
     "last_commit_sha": "a53a5c638b09732a7d3b9babd61eaf5535a1a6c1",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 92,
+    "age_days": 10,
+    "commits_since": 96,
     "file": ".claude/commands/dependency-check.md",
     "last_commit": "2026-04-03T17:52:15+02:00",
     "last_commit_sha": "fff01e48c4d8b222ce3c35be5dcb633171a3ba93",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 92,
+    "age_days": 10,
+    "commits_since": 96,
     "file": ".claude/commands/validate-release.md",
     "last_commit": "2026-04-03T17:52:15+02:00",
     "last_commit_sha": "fff01e48c4d8b222ce3c35be5dcb633171a3ba93",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 92,
+    "age_days": 10,
+    "commits_since": 96,
     "file": "template/.claude/commands/guided-template-update.md.jinja",
     "last_commit": "2026-04-03T17:52:15+02:00",
     "last_commit_sha": "fff01e48c4d8b222ce3c35be5dcb633171a3ba93",
     "status": "red"
   },
   {
-    "age_days": 9,
-    "commits_since": 91,
+    "age_days": 10,
+    "commits_since": 95,
     "file": "template/src/{{ package_name }}/core.py.jinja",
     "last_commit": "2026-04-04T00:09:05+02:00",
     "last_commit_sha": "cd5e96f84b194696e521e5460f06e7d7083657f8",
@@ -881,39 +913,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 80,
-    "file": ".github/workflows/dependency-review.yml",
-    "last_commit": "2026-04-05T18:30:54+02:00",
-    "last_commit_sha": "4fb273b770cef7ff03c78d3dc22e50066d03a54e",
-    "status": "red"
-  },
-  {
-    "age_days": 7,
-    "commits_since": 80,
-    "file": ".github/workflows/stale.yml",
-    "last_commit": "2026-04-05T18:30:54+02:00",
-    "last_commit_sha": "4fb273b770cef7ff03c78d3dc22e50066d03a54e",
-    "status": "red"
-  },
-  {
-    "age_days": 7,
-    "commits_since": 80,
-    "file": "template/.github/workflows/dependency-review.yml.jinja",
-    "last_commit": "2026-04-05T18:30:54+02:00",
-    "last_commit_sha": "4fb273b770cef7ff03c78d3dc22e50066d03a54e",
-    "status": "red"
-  },
-  {
-    "age_days": 7,
-    "commits_since": 80,
-    "file": "template/.github/workflows/docs.yml.jinja",
-    "last_commit": "2026-04-05T18:30:54+02:00",
-    "last_commit_sha": "4fb273b770cef7ff03c78d3dc22e50066d03a54e",
-    "status": "red"
-  },
-  {
-    "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/post-bash-pr-created.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -921,7 +921,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/post-edit-copier-migration.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -929,7 +929,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/post-edit-jinja.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -937,7 +937,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/post-edit-markdown.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -945,7 +945,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/post-edit-python.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -953,7 +953,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/post-edit-template-mirror.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -961,7 +961,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/pre-bash-block-no-verify.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -969,7 +969,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/pre-bash-commit-quality.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -977,7 +977,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/pre-bash-git-push-reminder.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -985,7 +985,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/pre-compact-save-state.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -993,7 +993,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/pre-protect-uv-lock.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1001,7 +1001,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/pre-suggest-compact.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1009,7 +1009,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/pre-write-doc-file-warning.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1017,7 +1017,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/pre-write-jinja-syntax.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1025,7 +1025,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/session-start-bootstrap.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1033,7 +1033,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/stop-cost-tracker.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1041,7 +1041,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/stop-desktop-notify.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1049,7 +1049,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/stop-evaluate-session.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1057,7 +1057,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/hooks/stop-session-end.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1065,7 +1065,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/README.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1073,7 +1073,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/bash/coding-style.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1081,7 +1081,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/bash/security.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1089,7 +1089,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/common/code-review.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1097,7 +1097,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/common/coding-style.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1105,7 +1105,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/common/development-workflow.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1113,7 +1113,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/common/security.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1121,7 +1121,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/jinja/coding-style.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1129,7 +1129,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/jinja/testing.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1137,7 +1137,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/markdown/conventions.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1145,7 +1145,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/python/coding-style.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1153,7 +1153,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/python/patterns.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1161,7 +1161,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/python/security.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1169,7 +1169,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/python/testing.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1177,7 +1177,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": ".claude/rules/yaml/conventions.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1185,7 +1185,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/hooks/pre-bash-block-no-verify.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1193,7 +1193,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/hooks/pre-bash-commit-quality.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1201,7 +1201,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/hooks/pre-bash-git-push-reminder.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1209,7 +1209,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/hooks/pre-protect-uv-lock.sh",
     "last_commit": "2026-04-06T12:48:12+02:00",
     "last_commit_sha": "f8e2999109d6a6803c25de0779004247f5e0677e",
@@ -1217,7 +1217,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/README.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1225,7 +1225,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/bash/coding-style.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1233,7 +1233,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/bash/security.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1241,7 +1241,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/common/code-review.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1249,7 +1249,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/common/coding-style.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1257,7 +1257,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/common/development-workflow.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1265,7 +1265,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/common/security.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1273,7 +1273,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/markdown/conventions.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1281,7 +1281,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/python/security.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1289,7 +1289,7 @@
   },
   {
     "age_days": 7,
-    "commits_since": 79,
+    "commits_since": 83,
     "file": "template/.claude/rules/python/testing.md",
     "last_commit": "2026-04-06T10:56:27Z",
     "last_commit_sha": "cd27f9ccd509495d408dc8d95dc633d40488e99c",
@@ -1297,7 +1297,7 @@
   },
   {
     "age_days": 6,
-    "commits_since": 72,
+    "commits_since": 76,
     "file": ".github/renovate.json",
     "last_commit": "2026-04-07T13:26:04+02:00",
     "last_commit_sha": "94b645b111f6a054d82eba17e44aaec3ec86bcac",
@@ -1305,7 +1305,7 @@
   },
   {
     "age_days": 6,
-    "commits_since": 72,
+    "commits_since": 76,
     "file": ".secrets.baseline",
     "last_commit": "2026-04-07T13:26:04+02:00",
     "last_commit_sha": "94b645b111f6a054d82eba17e44aaec3ec86bcac",
@@ -1313,7 +1313,7 @@
   },
   {
     "age_days": 6,
-    "commits_since": 72,
+    "commits_since": 76,
     "file": "template/.github/renovate.json.jinja",
     "last_commit": "2026-04-07T13:26:04+02:00",
     "last_commit_sha": "94b645b111f6a054d82eba17e44aaec3ec86bcac",
@@ -1321,7 +1321,7 @@
   },
   {
     "age_days": 6,
-    "commits_since": 72,
+    "commits_since": 76,
     "file": "template/.secrets.baseline",
     "last_commit": "2026-04-07T13:26:04+02:00",
     "last_commit_sha": "94b645b111f6a054d82eba17e44aaec3ec86bcac",
@@ -1329,7 +1329,7 @@
   },
   {
     "age_days": 6,
-    "commits_since": 72,
+    "commits_since": 76,
     "file": "template/SECURITY.md.jinja",
     "last_commit": "2026-04-07T13:26:04+02:00",
     "last_commit_sha": "94b645b111f6a054d82eba17e44aaec3ec86bcac",
@@ -1337,7 +1337,7 @@
   },
   {
     "age_days": 6,
-    "commits_since": 72,
+    "commits_since": 76,
     "file": "template/src/{{ package_name }}/__init__.py.jinja",
     "last_commit": "2026-04-07T13:26:04+02:00",
     "last_commit_sha": "94b645b111f6a054d82eba17e44aaec3ec86bcac",
@@ -1345,7 +1345,7 @@
   },
   {
     "age_days": 5,
-    "commits_since": 68,
+    "commits_since": 72,
     "file": "env.example",
     "last_commit": "2026-04-08T08:22:29+02:00",
     "last_commit_sha": "6aa1e567a2d473cafaec1c46299258251684c8a6",
@@ -1353,159 +1353,143 @@
   },
   {
     "age_days": 5,
-    "commits_since": 67,
-    "file": ".github/workflows/labeler.yml",
-    "last_commit": "2026-04-08T10:27:54Z",
-    "last_commit_sha": "153d40916dd0b4e6c8c038597032bffa291ede2d",
-    "status": "red"
-  },
-  {
-    "age_days": 5,
-    "commits_since": 67,
-    "file": ".github/workflows/pre-commit-update.yml",
-    "last_commit": "2026-04-08T10:27:54Z",
-    "last_commit_sha": "153d40916dd0b4e6c8c038597032bffa291ede2d",
-    "status": "red"
-  },
-  {
-    "age_days": 5,
-    "commits_since": 67,
+    "commits_since": 71,
     "file": ".github/workflows/tests.yml",
     "last_commit": "2026-04-08T10:27:54Z",
     "last_commit_sha": "153d40916dd0b4e6c8c038597032bffa291ede2d",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 60,
+    "age_days": 5,
+    "commits_since": 64,
     "file": "template/docs/{% if include_docs %}index.md{% endif %}.jinja",
     "last_commit": "2026-04-08T16:34:44Z",
     "last_commit_sha": "375611bbdd1c405ebbcc1bd1dfcc7583e6cb93ca",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 60,
+    "age_days": 5,
+    "commits_since": 64,
     "file": "template/src/{{ package_name }}/{% if include_cli %}cli.py{% endif %}.jinja",
     "last_commit": "2026-04-08T16:34:44Z",
     "last_commit_sha": "375611bbdd1c405ebbcc1bd1dfcc7583e6cb93ca",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 60,
+    "age_days": 5,
+    "commits_since": 64,
     "file": "template/{% if include_docs %}mkdocs.yml{% endif %}.jinja",
     "last_commit": "2026-04-08T16:34:44Z",
     "last_commit_sha": "375611bbdd1c405ebbcc1bd1dfcc7583e6cb93ca",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 60,
+    "age_days": 5,
+    "commits_since": 64,
     "file": "template/{% if include_git_cliff %}cliff.toml{% endif %}.jinja",
     "last_commit": "2026-04-08T16:34:44Z",
     "last_commit_sha": "375611bbdd1c405ebbcc1bd1dfcc7583e6cb93ca",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 51,
+    "age_days": 5,
+    "commits_since": 55,
     "file": ".github/labeler.yml",
     "last_commit": "2026-04-08T19:10:47+02:00",
     "last_commit_sha": "d0f268c5bdab2179b014c99ca7de2bdc7b151606",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 50,
+    "age_days": 5,
+    "commits_since": 54,
     "file": ".claude/hooks/pre-config-protection.sh",
     "last_commit": "2026-04-08T19:49:04+02:00",
     "last_commit_sha": "83cd2e2f6a272636f16bd57f1546a62f7347f9f3",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 50,
+    "age_days": 5,
+    "commits_since": 54,
     "file": ".claude/hooks/pre-write-src-test-reminder.sh",
     "last_commit": "2026-04-08T19:49:04+02:00",
     "last_commit_sha": "83cd2e2f6a272636f16bd57f1546a62f7347f9f3",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 50,
+    "age_days": 5,
+    "commits_since": 54,
     "file": "template/.claude/hooks/pre-config-protection.sh",
     "last_commit": "2026-04-08T19:49:04+02:00",
     "last_commit_sha": "83cd2e2f6a272636f16bd57f1546a62f7347f9f3",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 50,
+    "age_days": 5,
+    "commits_since": 54,
     "file": "template/.claude/hooks/pre-write-src-test-reminder.sh",
     "last_commit": "2026-04-08T19:49:04+02:00",
     "last_commit_sha": "83cd2e2f6a272636f16bd57f1546a62f7347f9f3",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 48,
+    "age_days": 5,
+    "commits_since": 52,
     "file": "template/.claude/skills/pytest/references/anti-patterns.md",
     "last_commit": "2026-04-08T20:05:38+02:00",
     "last_commit_sha": "6d0f7f2e91fbafc7a549a0b3daafaf4b0c3e3417",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 48,
+    "age_days": 5,
+    "commits_since": 52,
     "file": "template/.claude/skills/pytest/references/assertions.md",
     "last_commit": "2026-04-08T20:05:38+02:00",
     "last_commit_sha": "6d0f7f2e91fbafc7a549a0b3daafaf4b0c3e3417",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 48,
+    "age_days": 5,
+    "commits_since": 52,
     "file": "template/.claude/skills/pytest/references/mocking.md",
     "last_commit": "2026-04-08T20:05:38+02:00",
     "last_commit_sha": "6d0f7f2e91fbafc7a549a0b3daafaf4b0c3e3417",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 48,
+    "age_days": 5,
+    "commits_since": 52,
     "file": "template/.claude/skills/pytest/references/parametrize-and-markers.md",
     "last_commit": "2026-04-08T20:05:38+02:00",
     "last_commit_sha": "6d0f7f2e91fbafc7a549a0b3daafaf4b0c3e3417",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 48,
+    "age_days": 5,
+    "commits_since": 52,
     "file": "template/.claude/skills/pytest/references/test-organization.md",
     "last_commit": "2026-04-08T20:05:38+02:00",
     "last_commit_sha": "6d0f7f2e91fbafc7a549a0b3daafaf4b0c3e3417",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 48,
+    "age_days": 5,
+    "commits_since": 52,
     "file": "template/.claude/skills/pytest/references/test-types.md",
     "last_commit": "2026-04-08T20:05:38+02:00",
     "last_commit_sha": "6d0f7f2e91fbafc7a549a0b3daafaf4b0c3e3417",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 40,
+    "age_days": 5,
+    "commits_since": 44,
     "file": "assets/freshness_ignore.json",
     "last_commit": "2026-04-08T23:14:04+02:00",
     "last_commit_sha": "99de9d9f0aff001ee1f7e7c512f293caabcd7ee3",
     "status": "red"
   },
   {
-    "age_days": 4,
-    "commits_since": 40,
+    "age_days": 5,
+    "commits_since": 44,
     "file": "template/.claude/skills/pytest/references/fixtures.md",
     "last_commit": "2026-04-08T23:14:04+02:00",
     "last_commit_sha": "99de9d9f0aff001ee1f7e7c512f293caabcd7ee3",
@@ -1513,7 +1497,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/markdown/SKILL.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1521,7 +1505,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/markdown/references/anti-patterns-cheatsheet.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1529,7 +1513,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/markdown/references/code-and-links.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1537,7 +1521,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/markdown/references/document-structure.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1545,7 +1529,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/markdown/references/extended-syntax.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1553,7 +1537,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/markdown/references/file-management.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1561,7 +1545,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/markdown/references/formatting-syntax.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1569,7 +1553,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/markdown/references/tables-images-html.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1577,7 +1561,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/pytest/references/ci-and-plugins.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1585,7 +1569,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-quality/SKILL.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1593,7 +1577,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-quality/references/bandit.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1601,7 +1585,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-quality/references/basedpyright.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1609,7 +1593,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-quality/references/complete-configs.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1617,7 +1601,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-quality/references/pre-commit.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1625,7 +1609,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-quality/references/ruff.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1633,7 +1617,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-quality/references/semgrep.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1641,7 +1625,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-reviewer/SKILL.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1649,7 +1633,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-reviewer/references/checklist.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1657,7 +1641,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-reviewer/references/output-format.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1665,7 +1649,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/python-code-reviewer/references/python-patterns.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1673,7 +1657,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/skill-maintainer/references/audit-checklist.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1681,7 +1665,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/skill-maintainer/references/audit-examples.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1689,7 +1673,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 38,
+    "commits_since": 42,
     "file": "template/.claude/skills/skill-maintainer/references/maintenance-log.md",
     "last_commit": "2026-04-09T11:03:17+02:00",
     "last_commit_sha": "43e4ae8eee5163e004dc4f87eae9ec2c592e8c83",
@@ -1697,7 +1681,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 35,
+    "commits_since": 39,
     "file": "template/.claude/skills/pytest/SKILL.md",
     "last_commit": "2026-04-09T11:21:14+02:00",
     "last_commit_sha": "6ef6d84e8e23b28484622620675832dbb40bfe0b",
@@ -1705,7 +1689,7 @@
   },
   {
     "age_days": 4,
-    "commits_since": 34,
+    "commits_since": 38,
     "file": "template/.claude/skills/pytest/scripts/find_slow_tests.py",
     "last_commit": "2026-04-09T11:27:53+02:00",
     "last_commit_sha": "03b1778702b21f508ec66bd4e4e5098366416ca2",
@@ -1713,119 +1697,119 @@
   },
   {
     "age_days": 4,
-    "commits_since": 34,
+    "commits_since": 38,
     "file": "template/.claude/skills/pytest/scripts/mark_slow_tests.py",
     "last_commit": "2026-04-09T11:27:53+02:00",
     "last_commit_sha": "03b1778702b21f508ec66bd4e4e5098366416ca2",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/SKILL.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/references/auditing.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/references/classes.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/references/examples.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/references/functions.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/references/generators.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/references/modules.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/references/overrides.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/references/properties.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 32,
+    "age_days": 4,
+    "commits_since": 36,
     "file": "template/.claude/skills/python-docstrings/references/sections.md",
     "last_commit": "2026-04-09T15:31:36+02:00",
     "last_commit_sha": "7c2f6a571ca6750e244ac7e7bf04e8f22090896e",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 31,
+    "age_days": 4,
+    "commits_since": 35,
     "file": "template/.claude/skills/cron-scheduling/references/environments.md",
     "last_commit": "2026-04-09T22:37:07+02:00",
     "last_commit_sha": "02720333c5e1f56f7cbb39d0967027356a91b970",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 31,
+    "age_days": 4,
+    "commits_since": 35,
     "file": "template/.claude/skills/cron-scheduling/references/managing-jobs.md",
     "last_commit": "2026-04-09T22:37:07+02:00",
     "last_commit_sha": "02720333c5e1f56f7cbb39d0967027356a91b970",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 31,
+    "age_days": 4,
+    "commits_since": 35,
     "file": "template/.claude/skills/cron-scheduling/references/monitoring.md",
     "last_commit": "2026-04-09T22:37:07+02:00",
     "last_commit_sha": "02720333c5e1f56f7cbb39d0967027356a91b970",
     "status": "red"
   },
   {
-    "age_days": 3,
-    "commits_since": 31,
+    "age_days": 4,
+    "commits_since": 35,
     "file": "template/.claude/skills/cron-scheduling/references/syntax-reference.md",
     "last_commit": "2026-04-09T22:37:07+02:00",
     "last_commit_sha": "02720333c5e1f56f7cbb39d0967027356a91b970",
@@ -1833,7 +1817,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 30,
+    "commits_since": 34,
     "file": ".claude/commands/ci.md",
     "last_commit": "2026-04-10T02:02:49+02:00",
     "last_commit_sha": "04618942d7b499d6399568f106b63976d90265f4",
@@ -1841,7 +1825,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 29,
+    "commits_since": 33,
     "file": "template/.vscode/settings.json.jinja",
     "last_commit": "2026-04-10T00:04:28Z",
     "last_commit_sha": "66b28d9b7f12d330f127e8aed91a7ad588d80a75",
@@ -1849,7 +1833,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 28,
+    "commits_since": 32,
     "file": "template/.claude/skills/cron-scheduling/SKILL.md",
     "last_commit": "2026-04-10T00:06:46Z",
     "last_commit_sha": "ee334cc1ebe209673a8f148f8fbf193f9c2544a6",
@@ -1857,7 +1841,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 24,
+    "commits_since": 28,
     "file": ".github/dependabot.yml",
     "last_commit": "2026-04-10T02:30:40+02:00",
     "last_commit_sha": "f9ba5a8d21633dde5b5d4e34a225415c399a84ce",
@@ -1865,7 +1849,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 24,
+    "commits_since": 28,
     "file": ".github/workflows/file-freshness.yml",
     "last_commit": "2026-04-10T02:30:40+02:00",
     "last_commit_sha": "f9ba5a8d21633dde5b5d4e34a225415c399a84ce",
@@ -1873,7 +1857,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 24,
+    "commits_since": 28,
     "file": ".github/workflows/release.yml",
     "last_commit": "2026-04-10T02:30:40+02:00",
     "last_commit_sha": "f9ba5a8d21633dde5b5d4e34a225415c399a84ce",
@@ -1881,15 +1865,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 24,
-    "file": ".github/workflows/sync-skip-if-exists.yml",
-    "last_commit": "2026-04-10T02:30:40+02:00",
-    "last_commit_sha": "f9ba5a8d21633dde5b5d4e34a225415c399a84ce",
-    "status": "red"
-  },
-  {
-    "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/commands/ci-fix.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1897,7 +1873,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/commands/tdd-green.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1905,7 +1881,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/commands/tdd-red.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1913,7 +1889,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/hooks/pre-write-src-require-test.sh",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1921,7 +1897,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/rules/common/testing.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1929,7 +1905,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/rules/python/patterns.md.jinja",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1937,7 +1913,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/settings.json",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1945,7 +1921,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/skills/tdd-test-planner/SKILL.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1953,7 +1929,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/skills/tdd-test-planner/references/pytest-patterns.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1961,7 +1937,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/skills/tdd-test-planner/references/test-doubles.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1969,7 +1945,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/skills/tdd-workflow/SKILL.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1977,7 +1953,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/skills/tdd-workflow/references/ci-detection.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1985,7 +1961,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/skills/tdd-workflow/references/skill-fallbacks.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -1993,7 +1969,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/skills/tdd-workflow/references/test-patterns.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -2001,7 +1977,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/skills/test-quality-reviewer/references/advanced-patterns.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -2009,7 +1985,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 23,
+    "commits_since": 27,
     "file": "template/.claude/skills/test-quality-reviewer/references/examples.md",
     "last_commit": "2026-04-10T03:58:36+02:00",
     "last_commit_sha": "3db1c3fd5f9c853a32eddb03cda6fee184bf66fb",
@@ -2017,7 +1993,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/commands/ci-fix.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2025,7 +2001,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/commands/tdd-green.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2033,7 +2009,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/commands/tdd-red.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2041,7 +2017,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/hooks/pre-write-src-require-test.sh",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2049,7 +2025,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/rules/common/testing.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2057,15 +2033,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
-    "file": ".claude/rules/python/hooks.md",
-    "last_commit": "2026-04-10T02:31:44Z",
-    "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
-    "status": "red"
-  },
-  {
-    "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/settings.json",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2073,7 +2041,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/skills/tdd-test-planner/SKILL.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2081,7 +2049,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/skills/tdd-test-planner/references/pytest-patterns.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2089,7 +2057,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/skills/tdd-test-planner/references/test-doubles.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2097,7 +2065,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/skills/tdd-workflow/SKILL.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2105,7 +2073,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/skills/tdd-workflow/references/ci-detection.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2113,7 +2081,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/skills/tdd-workflow/references/skill-fallbacks.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2121,7 +2089,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/skills/tdd-workflow/references/test-patterns.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2129,7 +2097,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/skills/test-quality-reviewer/references/advanced-patterns.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2137,7 +2105,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": ".claude/skills/test-quality-reviewer/references/examples.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2145,7 +2113,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": "template/.claude/hooks/post-edit-refactor-test-guard.sh",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2153,7 +2121,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": "template/.claude/hooks/pre-bash-coverage-gate.sh",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2161,7 +2129,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": "template/.claude/rules/common/hooks.md",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2169,7 +2137,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 22,
+    "commits_since": 26,
     "file": "template/.gitignore.jinja",
     "last_commit": "2026-04-10T02:31:44Z",
     "last_commit_sha": "03bded7b604acf8bc97d02466c12ac62df02c4cb",
@@ -2177,7 +2145,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 21,
+    "commits_since": 25,
     "file": ".claude/hooks/post-edit-refactor-test-guard.sh",
     "last_commit": "2026-04-10T09:08:31Z",
     "last_commit_sha": "75ec66182d3207c3daa76721c26793a81942be35",
@@ -2185,7 +2153,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 21,
+    "commits_since": 25,
     "file": ".claude/hooks/pre-bash-coverage-gate.sh",
     "last_commit": "2026-04-10T09:08:31Z",
     "last_commit_sha": "75ec66182d3207c3daa76721c26793a81942be35",
@@ -2193,7 +2161,7 @@
   },
   {
     "age_days": 3,
-    "commits_since": 21,
+    "commits_since": 25,
     "file": ".claude/rules/common/hooks.md",
     "last_commit": "2026-04-10T09:08:31Z",
     "last_commit_sha": "75ec66182d3207c3daa76721c26793a81942be35",
@@ -2201,18 +2169,106 @@
   },
   {
     "age_days": 0,
-    "commits_since": 4,
+    "commits_since": 22,
+    "file": "template/.claude/skills/skill-maintainer/SKILL.md",
+    "last_commit": "2026-04-13T02:39:43+02:00",
+    "last_commit_sha": "6ca3cebe7ba41e05c9b3f94dd628e50bb5c09211",
+    "status": "red"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 22,
+    "file": "template/.claude/skills/test-quality-reviewer/SKILL.md",
+    "last_commit": "2026-04-13T02:39:43+02:00",
+    "last_commit_sha": "6ca3cebe7ba41e05c9b3f94dd628e50bb5c09211",
+    "status": "red"
+  },
+  {
+    "age_days": null,
+    "commits_since": null,
+    "file": "tests/__init__.py",
+    "last_commit": null,
+    "last_commit_sha": null,
+    "status": "red"
+  },
+  {
+    "age_days": null,
+    "commits_since": null,
+    "file": "tests/_paths.py",
+    "last_commit": null,
+    "last_commit_sha": null,
+    "status": "red"
+  },
+  {
+    "age_days": null,
+    "commits_since": null,
+    "file": "tests/integration/test_template.py",
+    "last_commit": null,
+    "last_commit_sha": null,
+    "status": "red"
+  },
+  {
+    "age_days": null,
+    "commits_since": null,
+    "file": "tests/scripts/test_bump_version.py",
+    "last_commit": null,
+    "last_commit_sha": null,
+    "status": "red"
+  },
+  {
+    "age_days": null,
+    "commits_since": null,
+    "file": "tests/scripts/test_check_root_template_sync.py",
+    "last_commit": null,
+    "last_commit_sha": null,
+    "status": "red"
+  },
+  {
+    "age_days": null,
+    "commits_since": null,
+    "file": "tests/scripts/test_pr_commit_policy.py",
+    "last_commit": null,
+    "last_commit_sha": null,
+    "status": "red"
+  },
+  {
+    "age_days": null,
+    "commits_since": null,
+    "file": "tests/scripts/test_repo_file_freshness.py",
+    "last_commit": null,
+    "last_commit_sha": null,
+    "status": "red"
+  },
+  {
+    "age_days": null,
+    "commits_since": null,
+    "file": "tests/scripts/test_root_template_sync.py",
+    "last_commit": null,
+    "last_commit_sha": null,
+    "status": "red"
+  },
+  {
+    "age_days": null,
+    "commits_since": null,
+    "file": "tests/scripts/test_sync_skip_if_exists.py",
+    "last_commit": null,
+    "last_commit_sha": null,
+    "status": "red"
+  },
+  {
+    "age_days": 0,
+    "commits_since": 3,
     "file": "assets/file_freshness.json",
-    "last_commit": "2026-04-13T09:22:43Z",
-    "last_commit_sha": "4806b937b3196adaae30c583993f264314955509",
+    "last_commit": "2026-04-13T14:25:31+02:00",
+    "last_commit_sha": "34283fe029504ab487b7d62f18aae059c9de7f9f",
     "status": "blue"
   },
   {
     "age_days": 0,
-    "commits_since": 4,
+    "commits_since": 3,
     "file": "assets/freshness_summary.json",
-    "last_commit": "2026-04-13T09:22:43Z",
-    "last_commit_sha": "4806b937b3196adaae30c583993f264314955509",
+    "last_commit": "2026-04-13T14:25:31+02:00",
+    "last_commit_sha": "34283fe029504ab487b7d62f18aae059c9de7f9f",
     "status": "blue"
   }
 ]

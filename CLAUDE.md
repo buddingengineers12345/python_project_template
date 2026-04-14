@@ -20,14 +20,12 @@ destination folder.
 │   ├── .claude/              # Claude hooks/commands/rules/skills for generated projects
 │   ├── .github/workflows/    # Generated CI/CD workflows
 │   └── …                    # pyproject.toml.jinja, justfile.jinja, CLAUDE.md.jinja, …
-├── tests/                    # pytest tests that render the template and assert output
-│   ├── test_template.py      # Main integration suite — copier copy + assertions
-│   ├── test_root_template_sync.py   # Tests for check_root_template_sync.py
-│   ├── test_repo_file_freshness.py  # Unit tests for repo_file_freshness.py
-│   ├── test_pr_commit_policy.py     # PR body + conventional commit rules
-│   ├── test_bump_version.py         # Version bump + pyproject I/O
-│   ├── test_sync_skip_if_exists.py  # copier.yml _skip_if_exists helpers
-│   └── test_check_root_template_sync.py  # CLI smoke (see test_root_template_sync for scenarios)
+├── tests/                    # pytest suite for this meta-repo (see tests/CLAUDE.md)
+│   ├── constants.py          # REPO_ROOT / TEMPLATE_ROOT / COPIER_YAML for nested test modules
+│   ├── conftest.py           # top-level shared fixtures
+│   ├── unit/                 # fast isolated script tests
+│   ├── integration/          # Copier copy/update integration suite
+│   └── e2e/                  # end-to-end tests (placeholder)
 ├── scripts/                  # Automation scripts for CI or local tasks (see scripts/CLAUDE.md)
 │   ├── repo_file_freshness.py    # Git-based freshness dashboard (→ docs/ + assets/)
 │   ├── bump_version.py           # PEP 440 version bumper (patch/minor/major)
@@ -66,36 +64,44 @@ Prerequisites: Python 3.11+, `uv`, `just`, `git`.
 | Run all tests | `just test` |
 | Run tests in parallel | `just test-parallel` |
 | Run slow tests only | `just slow` |
+| Fast unit tests (no slow/integration) | `just test-fast` |
+| Integration tests only | `just test-integration` |
+| Tests for changed files only | `just test-changed` |
 | Verbose tests | `just test-verbose` |
 | Full debug test output | `just test-debug` |
 | Re-run last failed tests | `just test-lf` |
+| Re-run last failed tests (max verbosity) | `just test-failed-verbose` |
 | Stop on first test failure | `just test-first-fail` |
 | CI-style tests + coverage XML | `just test-ci` |
 | Coverage report | `just coverage` |
 | Lint | `just lint` |
+| Lint changed files only | `just lint-changed` |
 | Format | `just fmt` |
 | Format check (read-only) | `just fmt-check` |
 | Auto-fix lint issues | `just fix` |
 | Type check | `just type` |
 | Docstring check | `just docs-check` |
 | MkDocs recipes (generated projects only) | `just docs-help` |
-| Pre-merge review | `just review` |
-| Full CI locally | `just ci` |
-| Read-only CI check (no auto-fix) | `just ci-check` |
-| Static checks only (fix+fmt+lint+type+docs) | `just static_check` |
+| Pre-merge review (fix + lint + type + docs) | `just review` |
+| Full CI locally (fix → check) | `just ci` |
+| Read-only CI check (no auto-fix) | `just check` |
 | Run pre-commit on all files | `just precommit` |
 | Register git hooks | `just precommit-install` |
 | Interactive conventional commit (Commitizen) | `just cz-commit` |
 | Sync deps after lockfile change | `just sync` |
 | Upgrade all deps | `just update` |
+| Check for outdated dependencies | `just deps-outdated` |
+| Verify lockfile integrity | `just lock-check` |
 | Dependency security audit | `just audit` |
 | Install all deps + pre-commit | `just install` |
+| One-command developer onboarding | `just bootstrap` |
 | Diagnose environment | `just doctor` |
 | Generate freshness dashboard | `just freshness` |
 | Root ↔ template sync validation | `just sync-check` |
 | Suggested PR title + body (PR policy) | `just pr-draft` |
 | Clean build artifacts | `just clean` |
 | Build distribution | `just build` |
+| Validate built distribution | `just check-dist` |
 | Publish package | `just publish` |
 
 **Always use `just` recipes.** Do not call `uv run ruff`, `pytest`, etc. directly —
@@ -107,9 +113,9 @@ the justfile handles the correct flags and order.
 just ci
 ```
 
-This runs: `fix` → `ci-check`.
+This runs: `fix` → `check`.
 
-`ci-check` bundles: `uv sync --frozen`, `fmt-check`, `ruff check`, `basedpyright`,
+`check` bundles: `uv sync --frozen`, `fmt-check`, `ruff check`, `basedpyright`,
 `sync-check`, `docs-check` (D-only; redundant with `ruff check` for enforcement), `test-ci`
 (pytest + coverage XML), `pre-commit run --all-files --verbose`, `audit` (pip-audit).
 
@@ -209,7 +215,7 @@ file, add a corresponding test.
 
 - Line length: 100 characters (set in `pyproject.toml` under `[tool.ruff]`).
 - Target Python version: 3.11.
-- Active ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `D`, `C90`, `PERF`, `T20`.
+- Active ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `TCH`, `PGH`, `PT`, `ARG`, `D`, `C90`, `PERF`, `T20`.
   Rule `E501` (line too long) is ignored (handled by the formatter).
 - Docstring convention: **Google style** (`pydocstyle` via ruff `D` rules).
   In this meta-repo, `tests/**` and `scripts/**` enforce `D` like other Python; only `T20` (`print`) is ignored there.

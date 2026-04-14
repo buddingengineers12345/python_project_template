@@ -18,6 +18,10 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: pre-commit-update-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   autoupdate:
     name: Update pre-commit hooks

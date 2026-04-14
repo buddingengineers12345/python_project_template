@@ -4,19 +4,19 @@ This directory contains pytest tests for the **Copier template meta-repo**. Test
 that the template renders correctly, that generated files have the right content, and that
 optional features are gated properly.
 
-## Test files
+## Layout
 
-| File | Purpose |
+| Path | Purpose |
 |---|---|
-| `test_template.py` | Main integration suite: renders the template and asserts output |
-| `test_pr_commit_policy.py` | Unit tests for `scripts/pr_commit_policy.py` (PR body + commit subject rules) |
-| `test_root_template_sync.py` | Tests for `scripts/check_root_template_sync.py` |
-| `test_check_root_template_sync.py` | CLI `--help` smoke test for the sync checker |
-| `test_repo_file_freshness.py` | Unit tests for `scripts/repo_file_freshness.py` |
-| `test_bump_version.py` | Unit tests for `scripts/bump_version.py` |
-| `test_sync_skip_if_exists.py` | Unit tests for `scripts/sync_skip_if_exists.py` |
+| `conftest.py` | Top-level pytest fixtures shared across all test tiers |
+| `unit/` | Fast isolated tests for automation scripts in `scripts/` |
+| `unit/conftest.py` | Fixtures shared within the unit tier |
+| `integration/` | Tests exercising Copier copy/update across the full template |
+| `integration/conftest.py` | Fixtures shared within the integration tier |
+| `e2e/` | End-to-end tests (placeholder for external-facing scenarios) |
+| `e2e/conftest.py` | Fixtures shared within the e2e tier |
 
-## How `test_template.py` works
+## How `integration/test_template.py` works
 
 1. Each test function calls `copier copy` (via `run_copy` or `run_command`) with
    `--vcs-ref HEAD` so it uses the current uncommitted tree.
@@ -27,7 +27,7 @@ optional features are gated properly.
 5. An optional `RUN_TEMPLATE_INTEGRATION=1` environment variable enables smoke tests
    that actually run `uv lock` and other post-generation tasks.
 
-## Key helpers in `test_template.py`
+## Key helpers in `integration/test_template.py`
 
 | Helper | Purpose |
 |---|---|
@@ -75,7 +75,7 @@ optional features are gated properly.
 
 ### Root/template sync
 - `check_root_template_sync.py` policies stay consistent with root and `template/` files
-  (workflow pins, justfile parity, etc.); covered by `test_root_template_sync.py`.
+  (workflow pins, justfile parity, etc.); covered by `scripts/test_root_template_sync.py`.
 
 ### Package structure
 - `src/<package_name>/__init__.py`, `core.py`, `common/` modules all exist.
@@ -93,12 +93,29 @@ optional features are gated properly.
 
 ## Running tests
 
+`pyproject.toml` sets `pythonpath = ["."]` under `[tool.pytest.ini_options]` so scripts
+under `scripts/` are importable in tests without package prefixes.
 ```bash
 just test               # run all tests (quiet)
 just test-parallel      # run all tests in parallel with pytest-xdist
 just coverage           # run with coverage report
 RUN_TEMPLATE_INTEGRATION=1 just test   # include slow integration tests
 ```
+
+## Path constants — no shared file
+
+Do **not** create a shared constants file (e.g. `constants.py`) for path values.
+Define path constants at the top of each test file that needs them:
+
+```python
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # adjust depth as needed
+TEMPLATE_ROOT = REPO_ROOT / "template"
+COPIER_YAML = REPO_ROOT / "copier.yml"
+```
+
+Constants are trivial one-liners; a shared module adds indirection with no benefit.
 
 ## Adding a new test
 

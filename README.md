@@ -151,12 +151,12 @@ Other useful commands:
 - 🔁 **`just precommit`**: run pre-commit on all files
 - 🩺 **`just doctor`**: print toolchain and project versions
 - 🔗 **`just sync-check`**: validate root/template sync policy (`scripts/check_root_template_sync.py`)
-- 🧱 **`just static_check`**: `fix` + `lint` + `type` + `docs-check` (no tests)
-- ✋ **`just ci-check`**: read-only full gate (matches GitHub Actions lint + tests + security steps)
+- ✋ **`just check`**: read-only full gate (matches GitHub Actions lint + tests + security steps)
+- 🔄 **`just review`**: `fix` + `lint` + `type` + `docs-check` (no tests, pre-merge validation)
 
 ### Testing this template
 
-The test suite (`tests/test_template.py`, `tests/test_root_template_sync.py`, `tests/test_repo_file_freshness.py`) uses pytest to:
+The test suite (`tests/integration/test_template.py`, `tests/scripts/test_root_template_sync.py`, `tests/scripts/test_repo_file_freshness.py`) uses pytest to:
 - Render the template with various configurations
 - Validate generated project structure
 - Check that generated projects have valid Python syntax

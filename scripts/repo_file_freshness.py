@@ -199,7 +199,7 @@ def load_ignore_config(path: Path) -> IgnoreConfig:
     def get_list(key: str) -> list[str]:
         v = raw.get(key, [])
         if isinstance(v, list) and all(isinstance(x, str) for x in v):
-            return cast(list[str], v)
+            return cast("list[str]", v)
         print(
             f"[freshness] Warning: ignore key {key!r} must be a list[str]: {path}", file=sys.stderr
         )
@@ -279,15 +279,15 @@ def _sort_key_age_desc(item: dict[str, Any]) -> tuple[int, str]:
     # age_days descending, None last; stable tie-breaker by path.
     age = item.get("age_days")
     if isinstance(age, int):
-        return (-age, cast(str, item.get("file", "")))
-    return (10**9, cast(str, item.get("file", "")))
+        return (-age, cast("str", item.get("file", "")))
+    return (10**9, cast("str", item.get("file", "")))
 
 
 def _sort_key_commits_desc(item: dict[str, Any]) -> tuple[int, str]:
     c = item.get("commits_since")
     if isinstance(c, int):
-        return (-c, cast(str, item.get("file", "")))
-    return (10**9, cast(str, item.get("file", "")))
+        return (-c, cast("str", item.get("file", "")))
+    return (10**9, cast("str", item.get("file", "")))
 
 
 def write_json(path: Path, data: Any) -> None:
@@ -323,7 +323,7 @@ def generate_markdown(
 
     groups: dict[Status, list[dict[str, Any]]] = {"green": [], "yellow": [], "red": [], "blue": []}
     for it in items:
-        groups[cast(Status, it["status"])].append(it)
+        groups[cast("Status", it["status"])].append(it)
 
     def render_section(title: str, status: Status, *, show_metric: bool) -> None:
         lines.append(f"## {title}")
@@ -333,7 +333,7 @@ def generate_markdown(
             lines.append("")
             return
         for it in groups[status]:
-            path = cast(str, it["file"])
+            path = cast("str", it["file"])
             if not show_metric:
                 lines.append(f"- `{path}`")
                 continue
@@ -428,7 +428,7 @@ def main() -> int:
         metavar="N",
         help="Commits mode: yellow if commits_since <= N and > green max (default: 20).",
     )
-    args = cast(_Args, cast(object, parser.parse_args()))
+    args = cast("_Args", cast("object", parser.parse_args()))
 
     if args.green_max_commits < 0 or args.yellow_max_commits < 0:
         print("[freshness] Error: commit thresholds must be non-negative.", file=sys.stderr)
@@ -443,7 +443,7 @@ def main() -> int:
     root = _resolve_repo_root(args.repo_root)
     ignore = load_ignore_config((root / args.ignore_config).resolve())
     now = _now_utc_from_env()
-    metric = cast(Metric, args.metric)
+    metric = cast("Metric", args.metric)
 
     files = _git_ls_files(root)
     items: list[dict[str, Any]] = []
@@ -496,7 +496,7 @@ def main() -> int:
             )
 
     blue_items = [it for it in items if it["status"] == "blue"]
-    blue_items.sort(key=lambda d: cast(str, d.get("file", "")).lower())
+    blue_items.sort(key=lambda d: cast("str", d.get("file", "")).lower())
     ordered = (
         sorted((it for it in items if it["status"] == "green"), key=sort_key)
         + sorted((it for it in items if it["status"] == "yellow"), key=sort_key)
