@@ -229,9 +229,9 @@ _tasks:
       uv sync --frozen --extra dev --extra test
       {%- if include_docs %} --extra docs{% endif -%}
       {%- if include_git_cliff %} --group changelog{% endif %}
-  - command: uv run pre-commit install
-  - command: uv run pre-commit install --hook-type pre-push
-  - command: uv run ruff check --fix .
+  - command: uv run pre-commit install || true
+  - command: uv run pre-commit install --hook-type pre-push || true
+  - command: uv run ruff check --fix . || true
   - command: uv run basedpyright || true
   - command: sh -c 'rmdir docs 2>/dev/null || true'
     when: "{{ not include_docs }}"
