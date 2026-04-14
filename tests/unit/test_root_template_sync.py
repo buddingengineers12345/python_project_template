@@ -2,12 +2,34 @@
 
 from __future__ import annotations
 
+import contextlib
+import importlib.util
+import io
 import json
-import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+_SCRIPT = REPO_ROOT / "scripts" / "check_root_template_sync.py"
+_SPEC = importlib.util.spec_from_file_location("check_root_template_sync", _SCRIPT)
+assert _SPEC is not None
+assert _SPEC.loader is not None
+_crs_mod = sys.modules.get("check_root_template_sync")
+if _crs_mod is None:
+    _crs_mod = importlib.util.module_from_spec(_SPEC)
+    sys.modules["check_root_template_sync"] = _crs_mod
+    assert _SPEC.loader is not None
+    _SPEC.loader.exec_module(_crs_mod)
+crs = _crs_mod
+
+
+@dataclass
+class _Result:
+    returncode: int
+    stdout: str
+    stderr: str = ""
 
 
 def write_file(path: Path, content: str) -> None:
@@ -16,24 +38,20 @@ def write_file(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
-def run_sync_check(
-    repo_root: Path, map_rel: str = "docs/map.yaml"
-) -> subprocess.CompletedProcess[str]:
-    """Run the root/template sync checker subprocess and return its result."""
-    script = REPO_ROOT / "scripts" / "check_root_template_sync.py"
-    return subprocess.run(
-        [
-            sys.executable,
-            str(script),
-            "--repo-root",
-            str(repo_root),
-            "--map",
-            map_rel,
-        ],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+def run_sync_check(repo_root: Path, map_rel: str = "docs/map.yaml") -> _Result:
+    """Run the sync checker in-process and return a result with returncode + stdout."""
+    buf = io.StringIO()
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(_SCRIPT), "--repo-root", str(repo_root), "--map", map_rel]
+        with contextlib.redirect_stdout(buf):
+            try:
+                returncode = crs.main()
+            except SystemExit as exc:
+                returncode = int(exc.code) if exc.code is not None else 0
+    finally:
+        sys.argv = saved_argv
+    return _Result(returncode=returncode, stdout=buf.getvalue())
 
 
 def test_sync_check_passes_for_matching_pairs_and_sections(tmp_path: Path) -> None:

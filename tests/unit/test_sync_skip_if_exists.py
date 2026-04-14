@@ -68,3 +68,19 @@ def test_compute_desired_entries_includes_base(tmp_path: Path) -> None:
 def test_repo_root_points_at_workspace_parent() -> None:
     """``repo_root`` resolves to the directory containing ``scripts/``."""
     assert ssi.repo_root() == REPO_ROOT
+
+
+def test_main_check_mode_runs_without_error() -> None:
+    """``main()`` in check-only mode (no ``--write``) completes and returns an int."""
+    import contextlib
+    import io
+
+    buf = io.StringIO()
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(_SCRIPT)]
+        with contextlib.redirect_stdout(buf):
+            rc = ssi.main()
+    finally:
+        sys.argv = saved_argv
+    assert rc in {0, 1}  # 0 = up to date; 1 = drift detected (both are valid outcomes)

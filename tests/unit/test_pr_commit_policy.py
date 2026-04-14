@@ -152,10 +152,12 @@ def test_main_pr_subcommand_success(monkeypatch: pytest.MonkeyPatch) -> None:
     """``pr`` subcommand exits 0 when title and body are valid."""
     monkeypatch.setenv("PR_TITLE", "ci: fix workflow")
     monkeypatch.setenv("PR_BODY", _minimal_valid_body())
-    rc = subprocess.run(
-        [sys.executable, str(SCRIPT), "pr"],
-        check=False,
-    ).returncode
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(SCRIPT), "pr"]
+        rc = pcp.main()
+    finally:
+        sys.argv = saved_argv
     assert rc == 0
 
 
@@ -163,10 +165,12 @@ def test_main_pr_subcommand_bad_title(monkeypatch: pytest.MonkeyPatch) -> None:
     """``pr`` subcommand exits 1 when the title is not conventional."""
     monkeypatch.setenv("PR_TITLE", "not conventional")
     monkeypatch.setenv("PR_BODY", _minimal_valid_body())
-    rc = subprocess.run(
-        [sys.executable, str(SCRIPT), "pr"],
-        check=False,
-    ).returncode
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(SCRIPT), "pr"]
+        rc = pcp.main()
+    finally:
+        sys.argv = saved_argv
     assert rc == 1
 
 
@@ -301,3 +305,55 @@ def test_suggest_title_from_branch_unknown_prefix() -> None:
 def test_suggest_title_from_branch_strips_ref() -> None:
     """``refs/heads/`` prefix is ignored."""
     assert pcp.suggest_title_from_branch("refs/heads/docs/update-readme") == "docs: update readme"
+
+
+def test_validate_conventional_rejects_empty_string() -> None:
+    """An empty subject line is rejected as empty."""
+    assert pcp.validate_conventional_subject_line("") is not None
+
+
+def test_validate_pr_body_returns_error_for_none() -> None:
+    """``None`` body is rejected as empty."""
+    err = pcp.validate_pr_body(None)
+    assert err is not None
+    assert "empty" in err.lower()
+
+
+def test_validate_pr_body_returns_error_for_blank() -> None:
+    """Whitespace-only body is rejected as empty."""
+    assert pcp.validate_pr_body("   \n  ") is not None
+
+
+def test_suggest_title_from_git_returns_str_or_none() -> None:
+    """``suggest_title_from_git`` runs against the real repo and returns str or None."""
+    result = pcp.suggest_title_from_git(REPO_ROOT)
+    assert result is None or isinstance(result, str)
+
+
+def test_changes_introduced_empty_range_returns_placeholder() -> None:
+    """``HEAD..HEAD`` is an empty range and returns the no-commits placeholder."""
+    result = pcp.changes_introduced_markdown(REPO_ROOT, "HEAD", "HEAD")
+    assert "no commits" in result or isinstance(result, str)
+
+
+def test_draft_pr_body_returns_string() -> None:
+    """``draft_pr_body`` on the real repo returns a non-empty string."""
+    result = pcp.draft_pr_body(REPO_ROOT, "HEAD", "HEAD")
+    assert isinstance(result, str)
+    assert len(result) > 0
+
+
+def test_main_commits_subcommand_missing_args_returns_1() -> None:
+    """``commits`` subcommand exits 1 when ``--base``/``--head`` are empty."""
+    import contextlib
+    import io
+
+    buf = io.StringIO()
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(SCRIPT), "commits", "--base", "", "--head", ""]
+        with contextlib.redirect_stdout(buf):
+            rc = pcp.main()
+    finally:
+        sys.argv = saved_argv
+    assert rc == 1

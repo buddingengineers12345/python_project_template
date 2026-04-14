@@ -130,7 +130,7 @@ def main() -> int:
         help="Which semver part to bump (ignored if --new-version is provided)",
     )
     _ = parser.add_argument("--new-version", help="Explicit version (X.Y.Z)")
-    args = cast('_Args', cast('object', parser.parse_args()))
+    args = cast("_Args", cast("object", parser.parse_args()))
 
     pyproject_path = Path(args.pyproject)
     current = _read_project_version(pyproject_path)
@@ -140,7 +140,7 @@ def main() -> int:
     else:
         if not args.bump:
             raise SystemExit("Either --new-version or --bump is required")
-        new = current.bumped(cast('BumpKind', args.bump))
+        new = current.bumped(cast("BumpKind", args.bump))
 
     if new == current:
         raise SystemExit(f"New version equals current: {current}")

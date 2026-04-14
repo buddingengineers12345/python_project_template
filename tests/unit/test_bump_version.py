@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import importlib.util
-import subprocess
 import sys
 from pathlib import Path
 from typing import Literal, cast
@@ -67,21 +66,38 @@ def test_read_and_write_project_version_roundtrip(tmp_path: Path) -> None:
 
 def test_cli_new_version_prints_and_updates(tmp_path: Path) -> None:
     """``--new-version`` updates the file and prints the version on stdout."""
+    import contextlib
+    import io as _io
+
     path = tmp_path / "pyproject.toml"
     path.write_text('[project]\nname = "x"\nversion = "1.0.0"\n', encoding="utf-8")
-    proc = subprocess.run(
-        [
-            sys.executable,
-            str(_SCRIPT),
-            "--pyproject",
-            str(path),
-            "--new-version",
-            "1.0.1",
-        ],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert proc.returncode == 0
-    assert proc.stdout.strip() == "1.0.1"
+    buf = _io.StringIO()
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(_SCRIPT), "--pyproject", str(path), "--new-version", "1.0.1"]
+        with contextlib.redirect_stdout(buf):
+            rc = bv.main()
+    finally:
+        sys.argv = saved_argv
+    assert rc == 0
+    assert buf.getvalue().strip() == "1.0.1"
     assert 'version = "1.0.1"' in path.read_text(encoding="utf-8")
+
+
+def test_cli_bump_patch_increments_patch(tmp_path: Path) -> None:
+    """``--bump patch`` increments the patch component and prints the new version."""
+    import contextlib
+    import io as _io
+
+    path = tmp_path / "pyproject.toml"
+    path.write_text('[project]\nname = "x"\nversion = "2.3.4"\n', encoding="utf-8")
+    buf = _io.StringIO()
+    saved_argv = sys.argv
+    try:
+        sys.argv = [str(_SCRIPT), "--pyproject", str(path), "--bump", "patch"]
+        with contextlib.redirect_stdout(buf):
+            rc = bv.main()
+    finally:
+        sys.argv = saved_argv
+    assert rc == 0
+    assert buf.getvalue().strip() == "2.3.5"

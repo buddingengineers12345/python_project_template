@@ -2,13 +2,24 @@
 
 from __future__ import annotations
 
+import contextlib
+import importlib.util
+import io
 import json
 import os
-import subprocess
 import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+_SCRIPT = REPO_ROOT / "scripts" / "repo_file_freshness.py"
+_SPEC = importlib.util.spec_from_file_location("repo_file_freshness", _SCRIPT)
+assert _SPEC is not None
+assert _SPEC.loader is not None
+_rff_mod = importlib.util.module_from_spec(_SPEC)
+sys.modules["repo_file_freshness"] = _rff_mod
+_SPEC.loader.exec_module(_rff_mod)
+rff = _rff_mod
 
 
 def run_command(
@@ -17,12 +28,14 @@ def run_command(
     *,
     check: bool = True,
     extra_env: dict[str, str] | None = None,
-) -> subprocess.CompletedProcess[str]:
-    """Run a subprocess under ``cwd`` with optional extra environment variables."""
+) -> None:
+    """Run a git subprocess under ``cwd`` with optional extra environment variables."""
+    import subprocess
+
     env = dict(os.environ)
     if extra_env:
         env.update(extra_env)
-    return subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True, env=env)
+    subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True, env=env)
 
 
 def git_init(repo: Path) -> None:
@@ -53,19 +66,20 @@ def write_ignore(repo: Path, data: object) -> None:
 
 
 def run_script(repo: Path, *extra_args: str) -> None:
-    """Run ``repo_file_freshness.py`` against ``repo`` with a fixed reference time."""
-    script = REPO_ROOT / "scripts" / "repo_file_freshness.py"
-    run_command(
-        [
-            sys.executable,
-            str(script),
-            "--repo-root",
-            str(repo),
-            *extra_args,
-        ],
-        cwd=repo,
-        extra_env={"FRESHNESS_NOW_ISO": "2026-04-08T00:00:00+00:00"},
-    )
+    """Run ``repo_file_freshness.main()`` in-process with a fixed reference time."""
+    saved_argv = sys.argv
+    saved_now = os.environ.get("FRESHNESS_NOW_ISO")
+    os.environ["FRESHNESS_NOW_ISO"] = "2026-04-08T00:00:00+00:00"
+    try:
+        sys.argv = [str(_SCRIPT), "--repo-root", str(repo), *extra_args]
+        with contextlib.redirect_stdout(io.StringIO()):
+            rff.main()
+    finally:
+        sys.argv = saved_argv
+        if saved_now is None:
+            os.environ.pop("FRESHNESS_NOW_ISO", None)
+        else:
+            os.environ["FRESHNESS_NOW_ISO"] = saved_now
 
 
 def load_details(repo: Path) -> list[dict[str, object]]:
