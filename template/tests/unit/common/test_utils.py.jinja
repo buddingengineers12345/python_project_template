@@ -1,0 +1,175 @@
+"""Tests for :mod:`{{ package_name }}.common.utils`."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+import pytest
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+from {{ package_name }}.common.utils import (
+    get_simple_attributes,
+    has_nvidia_gpu,
+    load_project_env,
+)
+
+pytestmark = pytest.mark.unit
+
+
+# ---------------------------------------------------------------------------
+# has_nvidia_gpu
+# ---------------------------------------------------------------------------
+
+
+def test_has_nvidia_gpu_returns_bool() -> None:
+    """has_nvidia_gpu must always return a bool (True or False)."""
+    result = has_nvidia_gpu()
+    assert isinstance(result, bool)
+
+
+def test_has_nvidia_gpu_returns_false_when_tool_absent(monkeypatch: pytest.MonkeyPatch) -> None:
+    """has_nvidia_gpu returns False when nvidia-smi is not on PATH."""
+    import shutil
+
+    monkeypatch.setattr(shutil, "which", lambda _cmd: None)
+    assert has_nvidia_gpu() is False
+
+
+# ---------------------------------------------------------------------------
+# load_project_env
+# ---------------------------------------------------------------------------
+
+
+def test_load_project_env_returns_false_when_no_venv(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """load_project_env returns False when .venv is not found in the path hierarchy."""
+    import shutil
+
+    # Point 'which python' at an executable with no .venv ancestor
+    fake_python = tmp_path / "usr" / "bin" / "python"
+    fake_python.parent.mkdir(parents=True)
+    fake_python.touch()
+    monkeypatch.setattr(shutil, "which", lambda _cmd: str(fake_python))
+    result = load_project_env()
+    assert result is False
+
+
+def test_load_project_env_returns_false_when_missing_dotenv_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """load_project_env returns False when .venv exists but the .env file does not."""
+    import shutil
+
+    # Build a fake project tree where .venv exists but .env does not
+    project = tmp_path / "project"
+    (project / ".venv").mkdir(parents=True)
+    fake_python = project / ".venv" / "bin" / "python"
+    fake_python.parent.mkdir(parents=True)
+    fake_python.touch()
+    monkeypatch.setattr(shutil, "which", lambda _cmd: str(fake_python))
+    result = load_project_env(".env.missing")
+    assert result is False
+
+
+def test_load_project_env_loads_dotenv_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """load_project_env returns True and loads env vars when the file exists."""
+    import shutil
+
+    project = tmp_path / "project"
+    venv = project / ".venv" / "bin"
+    venv.mkdir(parents=True)
+    fake_python = venv / "python"
+    fake_python.touch()
+
+    env_file = project / ".env"
+    env_file.write_text("MY_TEST_VAR=hello_world\n", encoding="utf-8")
+
+    monkeypatch.setattr(shutil, "which", lambda _cmd: str(fake_python))
+    result = load_project_env()
+    assert result is True
+
+
+# ---------------------------------------------------------------------------
+# get_simple_attributes
+# ---------------------------------------------------------------------------
+
+
+class _SampleObj:
+    def __init__(self) -> None:
+        self.name: str = "alice"
+        self.age: int = 30
+        self.score: float = 9.5
+        self._private: str = "hidden"
+        self.data: list[int] = [1, 2, 3]
+
+    def method(self) -> None:
+        pass
+
+
+def test_get_simple_attributes_returns_scalar_fields() -> None:
+    """Only str, int, and float public attributes are returned."""
+    obj = _SampleObj()
+    result = get_simple_attributes(obj)
+    assert result == {"name": "alice", "age": 30, "score": 9.5}
+
+
+def test_get_simple_attributes_excludes_private() -> None:
+    """Attributes starting with '_' must not appear in the result."""
+    obj = _SampleObj()
+    result = get_simple_attributes(obj)
+    assert "_private" not in result
+
+
+def test_get_simple_attributes_excludes_list_fields() -> None:
+    """List-valued attributes must not appear in the result."""
+    obj = _SampleObj()
+    result = get_simple_attributes(obj)
+    assert "data" not in result
+
+
+def test_get_simple_attributes_excludes_callables() -> None:
+    """Callable attributes are excluded even if public."""
+
+    class Obj:
+        def __init__(self) -> None:
+            self.label: str = "x"
+            self.action = lambda: None
+
+    result = get_simple_attributes(Obj())
+    assert "action" not in result
+    assert result == {"label": "x"}
+
+
+def test_get_simple_attributes_empty_object() -> None:
+    """An object with no public scalar attributes yields an empty dict."""
+
+    class Empty:
+        def __init__(self) -> None:
+            self._x: int = 1
+
+    assert get_simple_attributes(Empty()) == {}
+
+
+def test_get_simple_attributes_int_values() -> None:
+    """Integer attributes are included."""
+
+    class Counted:
+        def __init__(self) -> None:
+            self.count: int = 42
+
+    assert get_simple_attributes(Counted()) == {"count": 42}
+
+
+def test_get_simple_attributes_float_values() -> None:
+    """Float attributes are included."""
+
+    class Measured:
+        def __init__(self) -> None:
+            self.temp: float = 36.6
+
+    assert get_simple_attributes(Measured()) == {"temp": 36.6}

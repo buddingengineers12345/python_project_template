@@ -1,0 +1,84 @@
+"""Tests for module-level constants in :mod:`{{ package_name }}.common.logging_manager`."""
+
+from __future__ import annotations
+
+import pytest
+
+from {{ package_name }}.common.logging_manager import (
+    EXECUTION_CONTEXT,
+    IS_LLM,
+    LOG_LINE_WIDTH,
+    PADDING_WIDTH,
+)
+
+pytestmark = pytest.mark.unit
+
+
+# ---------------------------------------------------------------------------
+# EXECUTION_CONTEXT
+# ---------------------------------------------------------------------------
+
+
+def test_execution_context_type() -> None:
+    """EXECUTION_CONTEXT must be a string."""
+    assert isinstance(EXECUTION_CONTEXT, str)
+
+
+def test_execution_context_valid_value() -> None:
+    """EXECUTION_CONTEXT must be one of the two valid tokens."""
+    assert EXECUTION_CONTEXT in ("human", "llm")
+
+
+# ---------------------------------------------------------------------------
+# IS_LLM
+# ---------------------------------------------------------------------------
+
+
+def test_is_llm_type() -> None:
+    """IS_LLM must be a boolean."""
+    assert isinstance(IS_LLM, bool)
+
+
+def test_is_llm_consistent_with_execution_context() -> None:
+    """IS_LLM must be True exactly when EXECUTION_CONTEXT is 'llm'."""
+    assert (EXECUTION_CONTEXT == "llm") == IS_LLM
+
+
+# ---------------------------------------------------------------------------
+# LOG_LINE_WIDTH
+# ---------------------------------------------------------------------------
+
+
+def test_log_line_width_type() -> None:
+    """LOG_LINE_WIDTH must be an integer."""
+    assert isinstance(LOG_LINE_WIDTH, int)
+
+
+def test_log_line_width_positive() -> None:
+    """LOG_LINE_WIDTH must be a positive column count."""
+    assert LOG_LINE_WIDTH > 0
+
+
+def test_log_line_width_reasonable() -> None:
+    """LOG_LINE_WIDTH should fall within a practical range (20-200)."""
+    assert 20 <= LOG_LINE_WIDTH <= 200
+
+
+# ---------------------------------------------------------------------------
+# PADDING_WIDTH
+# ---------------------------------------------------------------------------
+
+
+def test_padding_width_type() -> None:
+    """PADDING_WIDTH must be an integer."""
+    assert isinstance(PADDING_WIDTH, int)
+
+
+def test_padding_width_positive() -> None:
+    """PADDING_WIDTH must be positive."""
+    assert PADDING_WIDTH > 0
+
+
+def test_padding_width_less_than_line_width() -> None:
+    """PADDING_WIDTH (key column) must be narrower than the full LOG_LINE_WIDTH."""
+    assert PADDING_WIDTH < LOG_LINE_WIDTH

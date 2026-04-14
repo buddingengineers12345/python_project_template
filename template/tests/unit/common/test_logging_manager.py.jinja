@@ -1,0 +1,192 @@
+"""Tests for public human-mode helpers in :mod:`{{ package_name }}.common.logging_manager`."""
+
+from __future__ import annotations
+
+import pytest
+
+from {{ package_name }}.common.logging_manager import (
+    configure_logging,
+    list_to_numbered_string,
+    log_fields,
+    log_message,
+    log_section,
+    log_section_divider,
+    log_sub_section,
+    wrap_text,
+)
+
+pytestmark = pytest.mark.unit
+
+
+# ---------------------------------------------------------------------------
+# configure_logging guard behaviour
+# ---------------------------------------------------------------------------
+
+
+def test_configure_logging_idempotent_same_settings() -> None:
+    """Calling configure_logging twice with the same settings must not raise."""
+    configure_logging(context="human", level="WARNING")
+    configure_logging(context="human", level="WARNING")  # second call — idempotent
+
+
+def test_configure_logging_different_settings_raises() -> None:
+    """Calling configure_logging twice with different settings raises RuntimeError."""
+    configure_logging(context="human", level="INFO")
+    with pytest.raises(RuntimeError, match="configure_logging\\(\\) called multiple times"):
+        configure_logging(context="human", level="DEBUG")
+
+
+# ---------------------------------------------------------------------------
+# wrap_text
+# ---------------------------------------------------------------------------
+
+
+def test_wrap_text_short_string_unchanged() -> None:
+    """Strings shorter than the width pass through unchanged."""
+    result = wrap_text("hello", width=80)
+    assert result == "hello"
+
+
+def test_wrap_text_long_string_wraps() -> None:
+    """Strings longer than width are broken at word boundaries."""
+    long = "word " * 20
+    result = wrap_text(long.strip(), width=20)
+    assert max(len(line) for line in result.splitlines()) <= 20
+
+
+def test_wrap_text_default_width() -> None:
+    """wrap_text uses LOG_LINE_WIDTH as the default column width."""
+    from {{ package_name }}.common.logging_manager import LOG_LINE_WIDTH
+
+    text = "a " * (LOG_LINE_WIDTH + 10)
+    result = wrap_text(text.strip())
+    assert any(len(line) <= LOG_LINE_WIDTH for line in result.splitlines())
+
+
+# ---------------------------------------------------------------------------
+# list_to_numbered_string
+# ---------------------------------------------------------------------------
+
+
+def test_list_to_numbered_string_empty_list() -> None:
+    """An empty list produces an empty string."""
+    assert list_to_numbered_string([]) == ""
+
+
+def test_list_to_numbered_string_single_item() -> None:
+    """A single-item list produces a string starting with newline + '1. item'."""
+    result = list_to_numbered_string(["alpha"])
+    assert result.startswith("\n")
+    assert "1. alpha" in result
+
+
+def test_list_to_numbered_string_multiple_items() -> None:
+    """Items are numbered sequentially from 1."""
+    result = list_to_numbered_string(["a", "b", "c"])
+    assert "1. a" in result
+    assert "2. b" in result
+    assert "3. c" in result
+
+
+def test_list_to_numbered_string_count() -> None:
+    """The correct number of lines is produced."""
+    items = list(range(5))
+    result = list_to_numbered_string(items)
+    numbered_lines = [ln for ln in result.splitlines() if ln.strip()]
+    assert len(numbered_lines) == 5
+
+
+# ---------------------------------------------------------------------------
+# log_section / log_sub_section / log_section_divider
+# ---------------------------------------------------------------------------
+
+
+def test_log_section_does_not_raise(monkeypatch: pytest.MonkeyPatch) -> None:
+    """log_section must not raise in human mode."""
+    monkeypatch.setattr("{{ package_name }}.common.logging_manager.IS_LLM", False)
+    configure_logging(context="human", level="DEBUG")
+    log_section("Test Section")  # should run without error
+
+
+def test_log_sub_section_does_not_raise(monkeypatch: pytest.MonkeyPatch) -> None:
+    """log_sub_section must not raise in human mode."""
+    monkeypatch.setattr("{{ package_name }}.common.logging_manager.IS_LLM", False)
+    configure_logging(context="human", level="DEBUG")
+    log_sub_section("Sub Section")
+
+
+def test_log_section_divider_does_not_raise(monkeypatch: pytest.MonkeyPatch) -> None:
+    """log_section_divider must not raise in human mode."""
+    monkeypatch.setattr("{{ package_name }}.common.logging_manager.IS_LLM", False)
+    configure_logging(context="human", level="DEBUG")
+    log_section_divider()
+
+
+def test_log_section_is_noop_in_llm_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    """log_section must return immediately (no-op) in LLM mode."""
+    monkeypatch.setattr("{{ package_name }}.common.logging_manager.IS_LLM", True)
+    log_section("Should not emit")  # no error, no output — just a no-op
+
+
+def test_log_sub_section_is_noop_in_llm_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    """log_sub_section must be a no-op in LLM mode."""
+    monkeypatch.setattr("{{ package_name }}.common.logging_manager.IS_LLM", True)
+    log_sub_section("Should not emit")
+
+
+def test_log_section_divider_is_noop_in_llm_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    """log_section_divider must be a no-op in LLM mode."""
+    monkeypatch.setattr("{{ package_name }}.common.logging_manager.IS_LLM", True)
+    log_section_divider()
+
+
+# ---------------------------------------------------------------------------
+# log_fields
+# ---------------------------------------------------------------------------
+
+
+def test_log_fields_empty_dict_does_not_raise() -> None:
+    """An empty dict must not raise — emits a no_fields event."""
+    configure_logging(context="human", level="DEBUG")
+    log_fields({})
+
+
+def test_log_fields_string_values_does_not_raise() -> None:
+    """log_fields with string values must not raise."""
+    configure_logging(context="human", level="DEBUG")
+    log_fields({"name": "alice", "role": "admin"})
+
+
+def test_log_fields_list_values_does_not_raise() -> None:
+    """log_fields with list values must not raise."""
+    configure_logging(context="human", level="DEBUG")
+    log_fields({"items": ["a", "b", "c"]})
+
+
+def test_log_fields_mixed_values_does_not_raise() -> None:
+    """log_fields with mixed value types must not raise."""
+    configure_logging(context="human", level="DEBUG")
+    log_fields({"count": 3, "label": "test", "tags": ["x", "y"]})
+
+
+# ---------------------------------------------------------------------------
+# log_message
+# ---------------------------------------------------------------------------
+
+
+def test_log_message_does_not_raise() -> None:
+    """log_message must not raise for a normal string."""
+    configure_logging(context="human", level="DEBUG")
+    log_message("Everything is fine.")
+
+
+def test_log_message_empty_string_does_not_raise() -> None:
+    """log_message must not raise for an empty string."""
+    configure_logging(context="human", level="DEBUG")
+    log_message("")
+
+
+def test_log_message_long_string_does_not_raise() -> None:
+    """log_message must not raise for a very long string."""
+    configure_logging(context="human", level="DEBUG")
+    log_message("word " * 200)

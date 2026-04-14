@@ -1,0 +1,171 @@
+"""Tests for :mod:`{{ package_name }}.common.bump_version`."""
+
+from __future__ import annotations
+
+import textwrap
+from typing import TYPE_CHECKING
+
+import pytest
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+from {{ package_name }}.common.bump_version import (
+    Version,
+    _read_project_version,  # pyright: ignore[reportPrivateUsage]
+    _write_project_version,  # pyright: ignore[reportPrivateUsage]
+)
+
+pytestmark = pytest.mark.unit
+
+# ---------------------------------------------------------------------------
+# Version.parse
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("1.2.3", Version(1, 2, 3)),
+        ("0.0.0", Version(0, 0, 0)),
+        ("10.20.30", Version(10, 20, 30)),
+        ("  1.2.3  ", Version(1, 2, 3)),  # surrounding whitespace is stripped
+    ],
+)
+def test_version_parse_valid(raw: str, expected: Version) -> None:
+    """Version.parse must decode well-formed version strings."""
+    assert Version.parse(raw) == expected
+
+
+@pytest.mark.parametrize(
+    "bad",
+    [
+        "1.2",
+        "1.2.3.4",
+        "a.b.c",
+        "1.2.x",
+        "",
+        "1. 2.3",
+    ],
+)
+def test_version_parse_invalid_raises(bad: str) -> None:
+    """Version.parse raises ValueError for non-conforming strings."""
+    with pytest.raises(ValueError, match="Invalid version"):
+        Version.parse(bad)
+
+
+# ---------------------------------------------------------------------------
+# Version.bumped
+# ---------------------------------------------------------------------------
+
+
+def test_version_bumped_patch() -> None:
+    """Patch bump increments only the patch segment."""
+    v = Version(1, 2, 3)
+    assert v.bumped("patch") == Version(1, 2, 4)
+
+
+def test_version_bumped_minor() -> None:
+    """Minor bump increments minor and resets patch to 0."""
+    v = Version(1, 2, 3)
+    assert v.bumped("minor") == Version(1, 3, 0)
+
+
+def test_version_bumped_major() -> None:
+    """Major bump increments major and resets minor and patch to 0."""
+    v = Version(1, 2, 3)
+    assert v.bumped("major") == Version(2, 0, 0)
+
+
+def test_version_bumped_does_not_mutate() -> None:
+    """Version dataclass is frozen; bumped returns a new instance."""
+    original = Version(1, 2, 3)
+    bumped = original.bumped("patch")
+    assert original == Version(1, 2, 3)
+    assert bumped != original
+
+
+# ---------------------------------------------------------------------------
+# Version.__str__
+# ---------------------------------------------------------------------------
+
+
+def test_version_str() -> None:
+    """str(Version) must return the dotted representation."""
+    assert str(Version(3, 14, 159)) == "3.14.159"
+
+
+def test_version_str_zero_segments() -> None:
+    """Zero-valued segments are rendered as '0'."""
+    assert str(Version(0, 0, 0)) == "0.0.0"
+
+
+# ---------------------------------------------------------------------------
+# _read_project_version
+# ---------------------------------------------------------------------------
+
+_PYPROJECT_TEMPLATE = textwrap.dedent("""\
+    [build-system]
+    requires = ["hatchling"]
+
+    [project]
+    name = "{{ package_name }}"
+    version = "{ver}"
+    description = "A Python library"
+""")
+
+
+def _make_pyproject(tmp_path: Path, version: str = "0.1.0") -> Path:
+    p = tmp_path / "pyproject.toml"
+    p.write_text(_PYPROJECT_TEMPLATE.format(ver=version), encoding="utf-8")
+    return p
+
+
+def test_read_project_version_returns_correct_version(tmp_path: Path) -> None:
+    """_read_project_version extracts the version from [project] table."""
+    pyproject = _make_pyproject(tmp_path, "2.3.4")
+    assert _read_project_version(pyproject) == Version(2, 3, 4)
+
+
+def test_read_project_version_missing_raises(tmp_path: Path) -> None:
+    """_read_project_version raises RuntimeError when version line is absent."""
+    bad = tmp_path / "pyproject.toml"
+    bad.write_text("[project]\nname = 'no_version'\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="Could not find"):
+        _read_project_version(bad)
+
+
+# ---------------------------------------------------------------------------
+# _write_project_version
+# ---------------------------------------------------------------------------
+
+
+def test_write_project_version_updates_file(tmp_path: Path) -> None:
+    """_write_project_version overwrites the version in [project] table."""
+    pyproject = _make_pyproject(tmp_path, "1.0.0")
+    new_ver = Version(1, 1, 0)
+    _write_project_version(pyproject, new_ver)
+
+    updated = _read_project_version(pyproject)
+    assert updated == new_ver
+
+
+def test_write_project_version_preserves_other_content(tmp_path: Path) -> None:
+    """_write_project_version keeps all non-version lines intact."""
+    pyproject = _make_pyproject(tmp_path, "1.0.0")
+    original_text = pyproject.read_text(encoding="utf-8")
+    _write_project_version(pyproject, Version(1, 0, 1))
+
+    updated_text = pyproject.read_text(encoding="utf-8")
+    # All lines except the version should be identical
+    original_lines = [ln for ln in original_text.splitlines() if "version" not in ln]
+    updated_lines = [ln for ln in updated_text.splitlines() if "version" not in ln]
+    assert original_lines == updated_lines
+
+
+def test_write_project_version_missing_version_raises(tmp_path: Path) -> None:
+    """_write_project_version raises RuntimeError when version line is absent."""
+    bad = tmp_path / "pyproject.toml"
+    bad.write_text("[project]\nname = 'no_version'\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="Could not replace"):
+        _write_project_version(bad, Version(0, 1, 0))

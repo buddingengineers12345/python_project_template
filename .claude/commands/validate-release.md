@@ -119,7 +119,7 @@ Testing template against all feature combinations...
 
 **Issue:** Full-featured config (`include_docs=true, include_numpy=true, include_pandas_support=true`) fails at pytest stage.
 **Likely cause:** Test template not rendering correctly when all features enabled.
-**Suggested fix:** Review `template/tests/test_core.py.jinja` conditional logic.
+**Suggested fix:** Review `template/tests/unit/test_core.py.jinja` conditional logic.
 ```
 
 ## Tips

@@ -236,3 +236,6 @@ data/
 
 # Cursor Related files
 .cursor/
+
+# Mac specific files
+1 

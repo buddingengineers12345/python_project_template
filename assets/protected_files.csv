@@ -1,0 +1,36 @@
+# Column legend
+# filepath            : path relative to repo root (basename matched by hook)
+# type                : category of file
+# primary_owner       : human | ci_tooling | unknown
+# ai_can_modify       : never | with_approval | yes | not_applicable
+# human_can_modify    : always | with_review | protected | restricted
+# ci_auto_managed     : yes | no  (regenerated automatically by CI / tooling)
+# lock_tier           : hard_lock | soft_lock | open | generated | temporary
+# sensitivity         : critical | high | medium | low
+# requires_test_update: yes | no | not_applicable
+# hook_enforced       : yes | no
+# purpose             : one-line description
+# reason              : why the lock level was chosen / how to update safely
+#
+filepath,type,primary_owner,ai_can_modify,human_can_modify,ci_auto_managed,lock_tier,sensitivity,requires_test_update,hook_enforced,purpose,reason
+env.example,config,human,never,with_review,no,hard_lock,low,no,yes,Environment variable reference template (copy to .env for local dev),New env-var names must be reviewed to avoid accidentally leaking variable semantics; edit manually in your editor
+justfile,config,human,never,with_review,no,hard_lock,critical,no,yes,Task runner recipes for all dev and CI commands,Changes affect every developer's workflow; accidental breakage blocks everyone; deliberate PR required
+LICENSE,legal,human,never,protected,no,hard_lock,critical,no,yes,MIT licence text,Legal document; automated modification would be a compliance violation
+pyproject.toml,config,human,never,with_review,no,hard_lock,critical,no,yes,Package metadata and tool config (ruff / basedpyright / coverage rules),Lint and type-check standards enforced here; weakening blocked by pre-config-protection hook
+uv.lock,build_artifact,ci_tooling,never,restricted,yes,hard_lock,critical,no,yes,Frozen dependency lockfile committed for reproducible installs,Machine-generated; hand-edits corrupt hash integrity; regenerate via: just update
+copier.yml,config,human,never,with_review,no,hard_lock,critical,yes,yes,Copier template prompts and post-generation tasks,Core template definition; changes cascade to every generated project; update tests after every edit
+.gitignore,config,human,never,with_review,no,hard_lock,critical,no,yes,Git exclusion patterns for Python artefacts / secrets / caches,Removing patterns can accidentally expose secrets or build artefacts in commits
+.gitmessage,config,human,never,with_review,no,hard_lock,medium,no,yes,Git commit message template (conventional commits),Shared team convention; deliberate change via PR only
+.pre-commit-config.yaml,config,human,never,with_review,no,hard_lock,critical,no,yes,Pre-commit hook definitions (ruff / basedpyright / detect-secrets / commitizen),Runs on every commit as a security and quality gate; weakening requires explicit approval
+.secrets.baseline,security_log,ci_tooling,never,restricted,yes,hard_lock,critical,no,yes,detect-secrets known-secrets baseline to avoid false positives,Security artefact; update only via: detect-secrets scan > .secrets.baseline in a reviewed PR
+.claude/settings.json,config,human,never,with_review,no,soft_lock,critical,no,no,Claude Code hook registrations and permission allow/deny lists,Defines AI security boundaries; must be human-reviewed before any change; governs what this tool can do
+.claude/hooks/pre-protect-readonly-files.sh,hook_script,human,never,with_review,no,soft_lock,critical,no,no,Blocks AI edits to every file in this CSV,Changing this hook directly weakens the protection it enforces
+.claude/hooks/pre-protect-uv-lock.sh,hook_script,human,never,with_review,no,soft_lock,high,no,no,Dedicated lockfile guard that blocks direct edits to uv.lock,Lockfile integrity guard; redundant with CSV hook but explicit and auditable
+.claude/hooks/pre-bash-block-no-verify.sh,hook_script,human,never,with_review,no,soft_lock,critical,no,no,Blocks --no-verify flag in all git commands,Prevents bypassing commit-quality gates; removing this is a security regression
+.claude/hooks/pre-bash-commit-quality.sh,hook_script,human,never,with_review,no,soft_lock,critical,no,no,Scans staged .py files for hardcoded secrets and debug markers,Security enforcement; weakening allows secrets to reach version control
+.claude/hooks/pre-config-protection.sh,hook_script,human,never,with_review,no,soft_lock,high,no,no,Blocks weakening edits to ruff / basedpyright config,Standards enforcement; relaxing rules requires a deliberate human decision
+.github/workflows/security.yml,ci_workflow,human,never,with_review,no,hard_lock,critical,no,no,Security checks: CodeQL / detect-secrets / pip-audit,Security enforcement; weakening could allow vulnerabilities to ship undetected
+.github/workflows/lint.yml,ci_workflow,human,never,with_review,no,hard_lock,high,no,no,Ruff lint / ruff format check / basedpyright type check,Standards enforcement workflow; changes must keep all checks at current strictness or higher
+.github/workflows/tests.yml,ci_workflow,human,never,with_review,no,hard_lock,high,no,no,pytest suite (unit / integration / e2e) with coverage,Test automation gating pull request merges; disabling coverage breaks quality tracking
+.github/workflows/dependency-review.yml,ci_workflow,human,never,with_review,no,hard_lock,critical,no,no,Reviews new dependencies for security and licence compliance,Security compliance gate; removing it creates a supply-chain vulnerability
+assets/protected_files.csv,config,human,never,with_review,no,soft_lock,critical,no,no,This file — CSV of files blocked from AI modification,Self-referential; the hook reads this file; AI must not rewrite it autonomously

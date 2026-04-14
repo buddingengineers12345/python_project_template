@@ -1,0 +1,198 @@
+"""End-to-end tests for :mod:`{{ package_name }}`.
+
+Exercise the library from the public API inward, simulating consumer usage without
+mocking internal components.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pytest
+
+pytestmark = pytest.mark.e2e
+
+
+# ---------------------------------------------------------------------------
+# Package import surface
+# ---------------------------------------------------------------------------
+
+
+def test_package_imports_cleanly() -> None:
+    """Importing the package must not raise."""
+    import {{ package_name }}  # noqa: F401 — import-only test
+
+
+def test_package_exposes_version() -> None:
+    """:mod:`{{ package_name }}` must expose a non-empty ``__version__`` string."""
+    import {{ package_name }}
+
+    version = getattr({{ package_name }}, "__version__", "")
+    assert isinstance(version, str)
+    assert version
+
+
+def test_all_public_symbols_importable() -> None:
+    """Every symbol listed in ``__all__`` must be reachable on the package."""
+    import {{ package_name }}
+
+    all_symbols = getattr({{ package_name }}, "__all__", [])
+    for symbol in all_symbols:
+        assert hasattr({{ package_name }}, symbol), f"__all__ symbol {symbol!r} is not accessible"
+
+
+# ---------------------------------------------------------------------------
+# core.example_function — end-to-end behaviour
+# ---------------------------------------------------------------------------
+
+
+def test_example_function_identity_int() -> None:
+    """example_function returns integers unchanged in a real call."""
+    from {{ package_name }}.core import example_function
+
+    assert example_function(100) == 100
+
+
+def test_example_function_identity_string() -> None:
+    """example_function returns strings unchanged in a real call."""
+    from {{ package_name }}.core import example_function
+
+    assert example_function("hello e2e") == "hello e2e"
+
+
+def test_example_function_identity_list() -> None:
+    """example_function returns lists unchanged, preserving reference."""
+    from {{ package_name }}.core import example_function
+
+    data = [1, 2, 3]
+    result = example_function(data)
+    assert result is data
+
+
+def test_example_function_identity_none() -> None:
+    """example_function returns None unchanged."""
+    from {{ package_name }}.core import example_function
+
+    assert example_function(None) is None
+
+
+# ---------------------------------------------------------------------------
+# logging pipeline — full configure → emit cycle
+# ---------------------------------------------------------------------------
+
+
+def test_logging_pipeline_human_mode_does_not_raise() -> None:
+    """Configuring human-mode logging and emitting events must raise nothing."""
+    import structlog
+
+    from {{ package_name }}.common.logging_manager import configure_logging
+
+    configure_logging(context="human", level="WARNING")
+    log = structlog.get_logger()
+    log.warning("e2e_test_event", status="ok", llm=True)
+
+
+def test_logging_pipeline_llm_mode_does_not_raise() -> None:
+    """Configuring LLM-mode logging and emitting LLM-tagged events must raise nothing."""
+    import structlog
+
+    from {{ package_name }}.common.logging_manager import configure_logging
+
+    configure_logging(context="llm", level="WARNING")
+    log = structlog.get_logger()
+    log.warning("e2e_llm_test", status="ok", llm=True)
+
+
+# ---------------------------------------------------------------------------
+# file_manager — real filesystem round-trip
+# ---------------------------------------------------------------------------
+
+
+def test_load_json_real_file(tmp_path: Path) -> None:
+    """load_json reads back exactly what was written using the real filesystem."""
+    from {{ package_name }}.common.file_manager import load_json
+
+    payload = {"library": "{{ package_name }}", "version": 1}
+    p = tmp_path / "config.json"
+    p.write_text(json.dumps(payload), encoding="utf-8")
+    assert load_json(p) == payload
+
+
+def test_load_markdown_real_file(tmp_path: Path) -> None:
+    """load_markdown reads back exactly what was written using the real filesystem."""
+    from {{ package_name }}.common.file_manager import load_markdown
+
+    content = "# Title\n\nBody paragraph."
+    p = tmp_path / "README.md"
+    p.write_text(content, encoding="utf-8")
+    assert load_markdown(p) == content
+
+
+def test_load_json_missing_file_raises() -> None:
+    """load_json raises FileNotFoundError for a non-existent path."""
+    from {{ package_name }}.common.file_manager import load_json
+
+    with pytest.raises(FileNotFoundError):
+        load_json(Path("/tmp/definitely_does_not_exist_e2e_test.json"))
+
+
+# ---------------------------------------------------------------------------
+# write_machine_stdout_line — stdout capture
+# ---------------------------------------------------------------------------
+
+
+def test_write_machine_stdout_line_captured(capsys: pytest.CaptureFixture[str]) -> None:
+    """write_machine_stdout_line emits exactly one newline-terminated line on stdout."""
+    from {{ package_name }}.common.logging_manager import write_machine_stdout_line
+
+    write_machine_stdout_line("e2e-1.0.0")
+    captured = capsys.readouterr()
+    assert captured.out == "e2e-1.0.0\n"
+
+
+# ---------------------------------------------------------------------------
+# utils — end-to-end GPU probe
+# ---------------------------------------------------------------------------
+
+
+def test_has_nvidia_gpu_returns_bool_e2e() -> None:
+    """has_nvidia_gpu must return a bool in any environment."""
+    from {{ package_name }}.common.utils import has_nvidia_gpu
+
+    assert isinstance(has_nvidia_gpu(), bool)
+
+
+# ---------------------------------------------------------------------------
+# Version bump — round-trip through pyproject.toml
+# ---------------------------------------------------------------------------
+
+
+def test_version_round_trip(tmp_path: Path) -> None:
+    """A version can be read, bumped, written, and read back correctly."""
+    import textwrap
+
+    from {{ package_name }}.common.bump_version import (
+        Version,
+        _read_project_version,  # pyright: ignore[reportPrivateUsage]
+        _write_project_version,  # pyright: ignore[reportPrivateUsage]
+    )
+
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(
+        textwrap.dedent("""\
+            [project]
+            name = "{{ package_name }}"
+            version = "0.1.0"
+        """),
+        encoding="utf-8",
+    )
+
+    current = _read_project_version(pyproject)
+    assert current == Version(0, 1, 0)
+
+    new_version = current.bumped("minor")
+    _write_project_version(pyproject, new_version)
+
+    updated = _read_project_version(pyproject)
+    assert updated == Version(0, 2, 0)

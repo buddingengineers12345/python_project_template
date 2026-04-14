@@ -1,0 +1,229 @@
+"""Tests for :mod:`{{ package_name }}.common.decorators`."""
+
+from __future__ import annotations
+
+import asyncio
+import logging
+
+import pytest
+
+from {{ package_name }}.common.decorators import (
+    handle_exceptions,
+    handle_exceptions_valued,
+    time_function,
+)
+
+pytestmark = pytest.mark.unit
+
+
+# ---------------------------------------------------------------------------
+# handle_exceptions — sync
+# ---------------------------------------------------------------------------
+
+
+def test_handle_exceptions_returns_value_on_success() -> None:
+    """Decorated function must return its result when no exception is raised."""
+
+    @handle_exceptions
+    def add(a: int, b: int) -> int:
+        return a + b
+
+    assert add(2, 3) == 5
+
+
+def test_handle_exceptions_re_raises_on_failure() -> None:
+    """handle_exceptions must re-raise after logging."""
+
+    @handle_exceptions
+    def boom() -> None:
+        raise ValueError("intentional")
+
+    with pytest.raises(ValueError, match="intentional"):
+        boom()
+
+
+def test_handle_exceptions_preserves_function_name() -> None:
+    """Decorated function keeps its __name__ via functools.wraps."""
+
+    @handle_exceptions
+    def my_func() -> None:
+        pass
+
+    assert my_func.__name__ == "my_func"
+
+
+# ---------------------------------------------------------------------------
+# handle_exceptions — async
+# ---------------------------------------------------------------------------
+
+
+def test_handle_exceptions_async_returns_value() -> None:
+    """Async variant must return the awaited result on success."""
+
+    @handle_exceptions
+    async def async_add(a: int, b: int) -> int:
+        return a + b
+
+    result = asyncio.get_event_loop().run_until_complete(async_add(4, 5))
+    assert result == 9
+
+
+def test_handle_exceptions_async_re_raises() -> None:
+    """Async variant must re-raise exceptions after logging."""
+
+    @handle_exceptions
+    async def async_boom() -> None:
+        raise RuntimeError("async failure")
+
+    with pytest.raises(RuntimeError, match="async failure"):
+        asyncio.get_event_loop().run_until_complete(async_boom())
+
+
+# ---------------------------------------------------------------------------
+# time_function — sync
+# ---------------------------------------------------------------------------
+
+
+def test_time_function_returns_value() -> None:
+    """time_function must transparently return the wrapped callable's result."""
+
+    @time_function
+    def compute() -> str:
+        return "done"
+
+    assert compute() == "done"
+
+
+def test_time_function_re_raises_on_failure() -> None:
+    """time_function logs duration even when the wrapped function raises."""
+
+    @time_function
+    def failing() -> None:
+        raise TypeError("oops")
+
+    with pytest.raises(TypeError, match="oops"):
+        failing()
+
+
+def test_time_function_preserves_name() -> None:
+    """time_function keeps __name__ via functools.wraps."""
+
+    @time_function
+    def timed_fn() -> int:
+        return 0
+
+    assert timed_fn.__name__ == "timed_fn"
+
+
+# ---------------------------------------------------------------------------
+# time_function — async
+# ---------------------------------------------------------------------------
+
+
+def test_time_function_async_returns_value() -> None:
+    """Async time_function variant must return the awaited result."""
+
+    @time_function
+    async def async_work() -> int:
+        return 42
+
+    result = asyncio.get_event_loop().run_until_complete(async_work())
+    assert result == 42
+
+
+def test_time_function_async_re_raises() -> None:
+    """Async time_function must re-raise after logging elapsed time."""
+
+    @time_function
+    async def async_break() -> None:
+        raise ValueError("async timed failure")
+
+    with pytest.raises(ValueError, match="async timed failure"):
+        asyncio.get_event_loop().run_until_complete(async_break())
+
+
+# ---------------------------------------------------------------------------
+# handle_exceptions_valued — sync
+# ---------------------------------------------------------------------------
+
+
+def test_handle_exceptions_valued_returns_result_on_success() -> None:
+    """handle_exceptions_valued passes through the return value normally."""
+
+    @handle_exceptions_valued(default=-1)
+    def safe_div(a: int, b: int) -> int:
+        return a // b
+
+    assert safe_div(10, 2) == 5
+
+
+def test_handle_exceptions_valued_returns_default_on_exception() -> None:
+    """handle_exceptions_valued swallows exceptions and returns the default."""
+
+    @handle_exceptions_valued(default=-1)
+    def always_fails() -> int:
+        raise ZeroDivisionError("div by zero")
+
+    assert always_fails() == -1
+
+
+def test_handle_exceptions_valued_default_none() -> None:
+    """Default value of None is returned when no explicit default is given."""
+
+    @handle_exceptions_valued()
+    def boom() -> str:
+        raise RuntimeError
+
+    assert boom() is None
+
+
+def test_handle_exceptions_valued_deep_copies_mutable_default() -> None:
+    """Each failure must return an independent copy of the mutable default."""
+
+    @handle_exceptions_valued(default=[])
+    def fail_list() -> list[int]:
+        raise ValueError
+
+    first = fail_list()
+    second = fail_list()
+    assert first is not second
+
+
+def test_handle_exceptions_valued_custom_log_level(caplog: pytest.LogCaptureFixture) -> None:
+    """handle_exceptions_valued respects the caller-supplied log level."""
+
+    @handle_exceptions_valued(default=False, level=logging.WARNING)
+    def risky() -> bool:
+        raise RuntimeError("warn-level failure")
+
+    with caplog.at_level(logging.WARNING):
+        result = risky()
+
+    assert result is False
+
+
+# ---------------------------------------------------------------------------
+# handle_exceptions_valued — async
+# ---------------------------------------------------------------------------
+
+
+def test_handle_exceptions_valued_async_returns_result() -> None:
+    """Async variant passes through return values normally."""
+
+    @handle_exceptions_valued(default=0)
+    async def async_safe() -> int:
+        return 7
+
+    result = asyncio.get_event_loop().run_until_complete(async_safe())  # type: ignore[arg-type]
+    assert result == 7
+
+
+def test_handle_exceptions_valued_async_returns_default_on_exception() -> None:
+    """Async variant returns default when the coroutine raises."""
+
+    @handle_exceptions_valued(default="fallback")
+    async def async_failing() -> str:
+        raise RuntimeError("async error")
+
+    result = asyncio.get_event_loop().run_until_complete(async_failing())  # type: ignore[arg-type]
+    assert result == "fallback"

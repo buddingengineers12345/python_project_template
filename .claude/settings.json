@@ -97,6 +97,16 @@
         "description": "Block direct edits to uv.lock — must be regenerated via uv lock or just update"
       },
       {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-protect-readonly-files.sh"
+          }
+        ],
+        "description": "Block direct edits to protected root-level config files: env.example, justfile, LICENSE, pyproject.toml, uv.lock, copier.yml, .gitignore, .gitmessage, .pre-commit-config.yaml, .secrets.baseline"
+      },
+      {
         "matcher": "Write|Edit",
         "hooks": [
           {

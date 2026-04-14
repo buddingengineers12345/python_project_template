@@ -26,12 +26,29 @@ template/
 │       ├── logging_manager.py.jinja # structlog setup (HUMAN / LLM modes)
 │       └── utils.py.jinja           # Miscellaneous utilities
 │
-├── tests/                           # Generated test suite
+├── tests/                           # Generated test suite (all `*.py.jinja` → `*.py`)
+│   ├── __init__.py.jinja
 │   ├── conftest.py.jinja
 │   ├── test_imports.py.jinja        # Smoke test: package is importable
-│   └── {{ package_name }}/
-│       ├── test_core.py.jinja
-│       └── test_support.py.jinja    # Tests for common/* utilities
+│   ├── e2e/
+│   │   ├── __init__.py.jinja
+│   │   ├── conftest.py.jinja
+│   │   └── test_library_e2e.py.jinja
+│   ├── integration/
+│   │   ├── __init__.py.jinja
+│   │   ├── conftest.py.jinja
+│   │   └── test_support.py.jinja
+│   └── unit/
+│       ├── __init__.py.jinja
+│       ├── test_core.py.jinja       # Core API (+ optional numpy/pandas)
+│       ├── test_constants.py.jinja
+│       ├── test_bump_version.py.jinja
+│       └── common/
+│           ├── __init__.py.jinja
+│           ├── test_support.py.jinja    # Tests for common/* utilities
+│           ├── test_decorators.py.jinja
+│           ├── test_logging_manager.py.jinja
+│           └── test_utils.py.jinja
 │
 ├── docs/                            # MkDocs source (conditional) + GitHub Settings checklist (always)
 │   ├── github-repository-settings.md.jinja  # Maintainer checklist only (survives include_docs=false)

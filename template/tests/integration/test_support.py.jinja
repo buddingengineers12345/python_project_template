@@ -1,0 +1,180 @@
+"""Integration tests for cross-module behaviour in :mod:`{{ package_name }}`.
+
+Exercise at least two modules together so combined behaviour matches the contract
+exposed to library consumers.
+"""
+
+from __future__ import annotations
+
+import json
+from typing import TYPE_CHECKING
+
+import pytest
+import structlog
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+from {{ package_name }}.common.decorators import handle_exceptions, time_function
+from {{ package_name }}.common.file_manager import load_json, load_markdown
+from {{ package_name }}.common.logging_manager import (
+    bind_context,
+    clear_context,
+    configure_logging,
+    get_logger,
+)
+from {{ package_name }}.common.utils import get_simple_attributes
+from {{ package_name }}.core import example_function
+
+pytestmark = pytest.mark.integration
+
+
+# ---------------------------------------------------------------------------
+# logging_manager + structlog pipeline
+# ---------------------------------------------------------------------------
+
+
+def test_configure_logging_then_emit_info_does_not_raise() -> None:
+    """After configure_logging, emitting an info event must not raise."""
+    configure_logging(context="human", level="DEBUG")
+    log = structlog.get_logger()
+    log.info("integration_test_start", module="test_support")
+
+
+def test_get_logger_with_context_binding() -> None:
+    """get_logger bound with static values must carry those values through the lifecycle."""
+    # get_logger calls configure_logging() internally; no explicit call needed here
+    log = get_logger("integration.test", service="{{ package_name }}")
+    assert log._context.get("service") == "{{ package_name }}"
+    assert log._context.get("logger") == "integration.test"
+
+
+def test_bind_and_clear_context_across_modules() -> None:
+    """bind_context attaches fields; clear_context removes them atomically."""
+    configure_logging(context="human", level="WARNING")
+    bind_context(trace_id="abc-123", operation="load_file")
+    ctx = structlog.contextvars.get_contextvars()
+    assert ctx["trace_id"] == "abc-123"
+    assert ctx["operation"] == "load_file"
+    clear_context()
+    assert structlog.contextvars.get_contextvars() == {}
+
+
+# ---------------------------------------------------------------------------
+# file_manager + logging_manager
+# ---------------------------------------------------------------------------
+
+
+def test_load_json_result_logged_without_error(tmp_path: Path) -> None:
+    """Loading JSON and then logging its content must succeed end-to-end."""
+    configure_logging(context="human", level="DEBUG")
+    payload = {"key": "value", "count": 3}
+    p = tmp_path / "data.json"
+    p.write_text(json.dumps(payload), encoding="utf-8")
+
+    data = load_json(p)
+    log = structlog.get_logger()
+    log.info("json_loaded", key_count=len(data))  # no exception expected
+
+
+def test_load_markdown_result_logged_without_error(tmp_path: Path) -> None:
+    """Loading Markdown and then logging its length must succeed end-to-end."""
+    configure_logging(context="human", level="DEBUG")
+    content = "# Heading\n\nBody text."
+    p = tmp_path / "doc.md"
+    p.write_text(content, encoding="utf-8")
+
+    text = load_markdown(p)
+    log = structlog.get_logger()
+    log.info("markdown_loaded", char_count=len(text))
+
+
+# ---------------------------------------------------------------------------
+# decorators + core module
+# ---------------------------------------------------------------------------
+
+
+def test_handle_exceptions_applied_to_core_function() -> None:
+    """handle_exceptions wrapping example_function must pass through the result."""
+
+    @handle_exceptions
+    def wrapped_identity(value: object) -> object:
+        return example_function(value)
+
+    assert wrapped_identity("integration") == "integration"
+
+
+def test_time_function_applied_to_core_function() -> None:
+    """time_function wrapping example_function must return the correct result."""
+
+    @time_function
+    def timed_identity(value: object) -> object:
+        return example_function(value)
+
+    assert timed_identity(99) == 99
+
+
+# ---------------------------------------------------------------------------
+# utils + decorators
+# ---------------------------------------------------------------------------
+
+
+def test_get_simple_attributes_result_is_json_serialisable() -> None:
+    """Attributes extracted by get_simple_attributes must be JSON-serialisable."""
+
+    class Config:
+        def __init__(self) -> None:
+            self.host: str = "localhost"
+            self.port: int = 8080
+            self.timeout: float = 30.0
+            self._secret: str = "hidden"
+
+    attrs = get_simple_attributes(Config())
+    # Should not raise — all values are primitives
+    serialised = json.dumps(attrs)
+    restored = json.loads(serialised)
+    assert restored == {"host": "localhost", "port": 8080, "timeout": 30.0}
+
+
+def test_decorated_function_result_fed_to_utils() -> None:
+    """handle_exceptions can wrap a function whose output feeds get_simple_attributes."""
+
+    class Result:
+        def __init__(self, code: int, message: str) -> None:
+            self.code: int = code
+            self.message: str = message
+            self._internal: str = "skip"
+
+    @handle_exceptions
+    def get_result() -> Result:
+        return Result(200, "ok")
+
+    obj = get_result()
+    assert obj is not None
+    attrs = get_simple_attributes(obj)
+    assert attrs == {"code": 200, "message": "ok"}
+
+
+# ---------------------------------------------------------------------------
+# file_manager + utils (file-driven attribute loading)
+# ---------------------------------------------------------------------------
+
+
+def test_json_config_maps_to_simple_attributes(tmp_path: Path) -> None:
+    """A JSON config file can be loaded and its scalar fields re-extracted consistently."""
+    config = {"name": "my-service", "port": 9000, "debug": 1}
+    p = tmp_path / "config.json"
+    p.write_text(json.dumps(config), encoding="utf-8")
+
+    loaded = load_json(p)
+
+    class _Cfg:
+        def __init__(self, data: dict[str, object]) -> None:
+            self.name: str = str(data["name"])
+            self.port: int = int(data["port"])  # type: ignore[arg-type]
+            self.debug: int = int(data["debug"])  # type: ignore[arg-type]
+
+    obj = _Cfg(loaded)
+    attrs = get_simple_attributes(obj)
+    assert attrs["name"] == "my-service"
+    assert attrs["port"] == 9000
