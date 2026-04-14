@@ -73,6 +73,24 @@ def test_validate_conventional_allows_revert() -> None:
     assert pcp.validate_conventional_subject_line('Revert "feat: broken thing"') is None
 
 
+def test_validate_pr_title_accepts_valid_title() -> None:
+    """A valid conventional title passes through to the underlying validator and returns None."""
+    assert pcp.validate_pr_title("feat: add widget") is None
+
+
+def test_suggest_title_from_branch_empty_slug_returns_none() -> None:
+    """A branch slug that reduces to empty after stripping returns None."""
+    assert pcp.suggest_title_from_branch("feat/-_-") is None
+
+
+def test_suggest_title_from_branch_long_slug_is_truncated() -> None:
+    """A very long slug is truncated to _MAX_SUBJECT_LEN characters."""
+    long_slug = "a-" * 40
+    result = pcp.suggest_title_from_branch(f"feat/{long_slug}")
+    assert result is not None
+    assert len(result) <= pcp._MAX_SUBJECT_LEN
+
+
 def test_validate_pr_body_requires_headings() -> None:
     """PR body must include all required section headings."""
     err = pcp.validate_pr_body("## Summary\n\nx\n")
