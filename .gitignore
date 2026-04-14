@@ -1,9 +1,3 @@
-# --------------------------------------------------------------------------
-# Local developer ignores (not enforced in CI)
-# --------------------------------------------------------------------------
-runner.sh
-full_runner.sh
-
 # ==========================================================================
 # Python Core
 # ==========================================================================
@@ -237,5 +231,21 @@ data/
 # Cursor Related files
 .cursor/
 
-# Mac specific files
+# Stray root file (accidental)
+/1
 1
+
+# Task artifacts (generated outputs)
+tasks/
+task_channel/
+
+
+# Benchmark data
+.benchmarks/
+
+# --------------------------------------------------------------------------
+# Local developer ignores (not enforced in CI)
+# --------------------------------------------------------------------------
+runner.sh
+full_runner.sh
+

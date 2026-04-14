@@ -1,0 +1,97 @@
+# ─────────────────────────────────────────────
+# TASK DEFINITION TEMPLATE  (assets/task_template.yaml)
+# Copy to tasks/TASK_<ID>.yaml and fill every field.
+# Fields marked ★ are required; all others are optional.
+# ─────────────────────────────────────────────
+
+# ── Identity ─────────────────────────────────
+task_id: "TASK_000"             # ★ Unique sequential ID, e.g. TASK_042
+title: ""                       # ★ One-line description (imperative, ≤72 chars)
+type: feature                   # ★ feature | fix | refactor | chore | perf | docs
+status: draft                   # draft | ready | in-progress | review | done | blocked
+
+# ── Ownership & scheduling ───────────────────
+owner: ""                       # GitHub username or team slug
+created_at: ""                  # ISO 8601, e.g. 2026-04-14
+target_branch: ""               # Branch to create, e.g. feat/TASK-042-short-slug
+base_branch: main               # Branch to merge into
+
+# ── Sizing ───────────────────────────────────
+complexity: medium              # trivial | small | medium | large | epic
+estimated_hours: null           # Rough estimate; omit if unknown
+
+# ── Definition of Ready checklist ────────────
+# All must be true before the SDLC pipeline starts.
+definition_of_ready:
+  requirements_clear: false     # Requirement is unambiguous
+  acceptance_criteria_written: false
+  dependencies_identified: false
+  no_blockers: false
+  branch_available: false
+
+# ── Requirement ──────────────────────────────
+requirement: |
+  # ★ Full requirement statement in Given / When / Then form.
+  # Given <context>,
+  # When <action>,
+  # Then <expected outcome>.
+
+# ── Acceptance criteria ───────────────────────
+# ★ List every testable criterion.
+# Each item becomes at least one test in RED phase.
+acceptance_criteria:
+  - id: AC-1
+    given: ""
+    when: ""
+    then: ""
+    test_marker: unit            # unit | integration | e2e | performance
+  # - id: AC-2
+  #   given: ""
+  #   when: ""
+  #   then: ""
+  #   test_marker: unit
+
+# ── Constraints ──────────────────────────────
+constraints:
+  - ""   # e.g. "Do NOT use eval() or built-in shortcuts"
+
+# ── Files likely affected ────────────────────
+files_affected:
+  source:
+    - ""   # e.g. src/my_library/parser.py
+  tests:
+    - ""   # e.g. tests/unit/test_parser.py
+
+# ── Dependencies ─────────────────────────────
+depends_on: []                  # List of TASK_IDs that must be done first
+blocks: []                      # List of TASK_IDs that this task unblocks
+
+# ── Risk & rollback ──────────────────────────
+risk_level: low                 # low | medium | high | critical
+breaking_change: false          # Does this change any public API / contract?
+rollback_plan: |
+  # Describe how to revert if something goes wrong post-merge.
+  # e.g. "Revert commit <hash>; no DB migration to undo."
+migration_required: false       # Is a DB or data migration needed?
+
+# ── Testing strategy ─────────────────────────
+testing:
+  target_coverage: 85           # Minimum % for new code
+  property_based: false         # Use Hypothesis for property-based tests?
+  mutation_testing: false       # Run mutmut after GREEN?
+  performance_baseline: false   # Capture benchmark before refactor?
+
+# ── Implementation guide ─────────────────────
+# Optional step-by-step notes for the implementer.
+implementation_guide: |
+  # Step 1 — ...
+  # Step 2 — ...
+
+# ── Notes ────────────────────────────────────
+notes: |
+  # Any extra context: related issues, design decisions, links.
+
+# ── Changelog entry (auto-filled by pipeline) ─
+changelog:
+  category: ""                  # Added | Changed | Fixed | Removed | Security
+  entry: ""                     # One-line changelog line, filled at commit stage

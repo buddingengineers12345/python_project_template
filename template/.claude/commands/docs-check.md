@@ -5,7 +5,7 @@ Audit and repair documentation across all Python source files.
 1. **Run ruff docstring check** — `uv run --active ruff check --select D src/ tests/ scripts/`
    Report every violation with file, line, and rule code.
 
-2. **Deep symbol scan** — for every `.py` file under `src/{{ package_name }}/`, `tests/`, and `scripts/`:
+2. **Deep symbol scan** — for every `.py` file under `src/my_library/`, `tests/`, and `scripts/`:
    - Read the file
    - Identify all public symbols: module-level functions, classes, methods not prefixed with `_`
    - For each symbol check:
@@ -30,7 +30,7 @@ Audit and repair documentation across all Python source files.
 ## Output format
 
 ```
-## Documentation Audit — {{ package_name }}
+## Documentation Audit — my_library
 
 ### Ruff violations: N found
 [list violations]

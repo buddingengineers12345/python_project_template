@@ -210,15 +210,19 @@ exit 0
 |---|---|---|---|
 | `post-edit-python.sh` | PostToolUse | Edit\|Write | ruff + basedpyright after `.py` edits |
 | `post-edit-markdown.sh` | PostToolUse | Edit | Warn if `.md` edited outside `docs/` |
+| `post-edit-refactor-test-guard.sh` | PostToolUse | Edit\|Write | Remind to run tests after several `src/` edits |
+| `post-bash-test-coverage-reminder.sh` | PostToolUse | Bash | Surface modules below 85% after test runs |
+| `post-write-test-structure.sh` | PostToolUse | Write | Check test file structure and markers |
 | `pre-bash-block-no-verify.sh` | PreToolUse | Bash | Block `git --no-verify` |
 | `pre-bash-git-push-reminder.sh` | PreToolUse | Bash | Warn to review before push |
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Secret/debug scan before commit |
+| `pre-bash-coverage-gate.sh` | PreToolUse | Bash | Warn before `git commit` if coverage below threshold |
+| `pre-bash-branch-protection.sh` | PreToolUse | Bash | Block `git push` to main/master |
+| `pre-bash-delete-protection.sh` | PreToolUse | Bash | Block `rm` of critical files |
 | `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/basedpyright config |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
-| `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block if `tests/<pkg>/test_<module>.py` missing for top-level `src/<pkg>/<module>.py` (strict TDD) |
-| `pre-bash-coverage-gate.sh` | PreToolUse | Bash | Warn before `git commit` if coverage below threshold |
+| `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block if test file missing in `tests/unit/`, `tests/integration/`, or `tests/e2e/` for `src/<pkg>/<module>.py` (strict TDD) |
 | `pre-write-src-test-reminder.sh` | (optional) | Write\|Edit | Non-blocking alternative to `pre-write-src-require-test.sh` — **do not register both** |
-| `post-edit-refactor-test-guard.sh` | PostToolUse | Edit\|Write | Remind to run tests after several `src/` edits |
 
 ## Adding a new hook
 

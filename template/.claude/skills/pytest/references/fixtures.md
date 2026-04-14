@@ -158,10 +158,14 @@ tests/
     conftest.py              # Fixtures available to ALL tests
     unit/
         conftest.py          # Fixtures only for unit tests
+        common/
+            conftest.py      # Fixtures only for common module tests
         test_models.py
     integration/
         conftest.py          # Fixtures only for integration tests
         test_api.py
+    e2e/
+        conftest.py          # Fixtures only for e2e tests
 ```
 
 Rules:

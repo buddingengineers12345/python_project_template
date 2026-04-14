@@ -16,8 +16,8 @@ grows. This document covers layout, naming, discovery, and configuration.
 
 ## Directory layout
 
-Keep tests in a top-level `tests/` directory, separate from `src/`. Mirror the source
-structure so every module has a clear corresponding test file.
+Keep tests in a top-level `tests/` directory, separate from `src/`. Organise tests by type
+into subdirectories: `unit/`, `integration/`, and `e2e/`.
 
 ```
 project/
@@ -25,51 +25,38 @@ project/
         myapp/
             __init__.py
             core.py
-            models.py
-            utils.py
-            auth/
+            cli.py
+            common/
                 __init__.py
-                login.py
-                permissions.py
+                utils.py
+                decorators.py
+                logging_manager.py
     tests/
-        conftest.py              # Root fixtures shared by all tests
-        test_core.py             # Tests for src/myapp/core.py
-        test_models.py           # Tests for src/myapp/models.py
-        test_utils.py            # Tests for src/myapp/utils.py
-        auth/
-            conftest.py          # Fixtures for auth tests
-            test_login.py        # Tests for src/myapp/auth/login.py
-            test_permissions.py
+        conftest.py              # Global fixtures shared by all tests
+        test_imports.py          # Import smoke tests
+        unit/
+            conftest.py          # Fixtures for unit tests
+            test_core.py         # Tests for src/myapp/core.py
+            test_cli.py          # Tests for src/myapp/cli.py
+            common/
+                conftest.py      # Fixtures for common module tests
+                test_utils.py    # Tests for src/myapp/common/utils.py
+                test_decorators.py
+                test_logging_manager.py
+        integration/
+            conftest.py          # Fixtures for integration tests
+            test_*.py
+        e2e/
+            conftest.py          # Fixtures for e2e tests
+            test_*.py
 ```
 
-This layout avoids import path issues and makes it obvious which tests cover which code.
-
-### For larger projects
-
-When a project has distinct test types with different requirements (speed, dependencies),
-separate them:
-
-```
-tests/
-    conftest.py
-    unit/
-        conftest.py
-        test_core.py
-        test_models.py
-    integration/
-        conftest.py
-        test_database.py
-        test_api.py
-    e2e/
-        conftest.py
-        test_workflows.py
-```
-
-This allows running subsets easily:
+This layout makes it easy to run subsets:
 
 ```bash
 pytest tests/unit/          # fast unit tests only
 pytest tests/integration/   # integration tests only
+pytest tests/e2e/           # end-to-end tests only
 ```
 
 ## File naming and discovery
@@ -140,16 +127,15 @@ the implementation rather than the value the test receives.
 
 ## Separating test types
 
-Use markers and/or directories to separate test types so you can run subsets.
-
-### By directory (recommended for large projects)
+Tests are organised by type into subdirectories under `tests/`:
 
 ```
 tests/unit/           → pytest tests/unit
 tests/integration/    → pytest tests/integration
+tests/e2e/            → pytest tests/e2e
 ```
 
-### By marker (simpler, works for any project size)
+Additionally, use markers for cross-cutting concerns and for running subsets by marker:
 
 ```python
 @pytest.mark.unit
@@ -164,9 +150,8 @@ pytest -m unit                # run only unit tests
 pytest -m "not integration"   # skip integration tests
 ```
 
-Both approaches work. Directories are more visible; markers are more flexible. Many
-projects use directories for the primary split and markers for cross-cutting concerns
-like `@pytest.mark.slow`.
+Set `pytestmark` at module level in every test file — typically matching the directory
+the file lives in (e.g. `pytestmark = pytest.mark.unit` for files in `tests/unit/`).
 
 ## conftest.py hierarchy
 
@@ -180,9 +165,13 @@ tests/
     unit/
         conftest.py          # Available to tests/unit/ only
             → mock_db, isolated_config
+        common/
+            conftest.py      # Available to tests/unit/common/ only
     integration/
         conftest.py          # Available to tests/integration/ only
             → real_db_session, test_server
+    e2e/
+        conftest.py          # Available to tests/e2e/ only
 ```
 
 Rules:

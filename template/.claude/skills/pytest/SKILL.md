@@ -212,11 +212,20 @@ observable behaviour, not implementation details.
 ```
 tests/
     conftest.py              # Root-level shared fixtures
-    test_core.py             # Tests for src/<pkg>/core.py
-    test_utils.py            # Tests for src/<pkg>/utils.py
-    <subpackage>/
-        conftest.py          # Fixtures for this subdirectory
-        test_module_a.py     # Tests for src/<pkg>/<subpackage>/module_a.py
+    test_imports.py          # Import smoke tests
+    unit/
+        conftest.py          # Fixtures for unit tests
+        test_core.py         # Tests for src/<pkg>/core.py
+        test_cli.py          # Tests for src/<pkg>/cli.py
+        common/
+            conftest.py      # Fixtures for common module tests
+            test_utils.py    # Tests for src/<pkg>/common/utils.py
+    integration/
+        conftest.py          # Fixtures for integration tests
+        test_*.py
+    e2e/
+        conftest.py          # Fixtures for e2e tests
+        test_*.py
 ```
 
 - File names: `test_<module>.py` — mirrors the source module being tested.
@@ -224,8 +233,8 @@ tests/
 - Class names: `TestClassName` — group related tests, no `__init__`.
 - Fixture names: descriptive nouns (`db_connection`, `sample_user`, `tmp_config_file`).
 
-Read [references/test-organization.md](references/test-organization.md) for large
-project layouts, separating unit/integration tests, and discovery configuration.
+Read [references/test-organization.md](references/test-organization.md) for the full
+project layout (unit/integration/e2e subdirectories), naming rules, and discovery configuration.
 
 ---
 

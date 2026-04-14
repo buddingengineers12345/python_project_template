@@ -70,12 +70,14 @@ the same scope; running both would warn and then block on the same condition.
 
 | Hook | Trigger | What it does |
 |------|---------|----------------|
-| `pre-write-src-require-test.sh` | `Write` or `Edit` on `src/<pkg>/<module>.py` | **Blocks** write if `tests/<pkg>/test_<module>.py` does not exist (strict TDD). **Registered by default** in `.claude/settings.json`. |
+| `pre-write-src-require-test.sh` | `Write` or `Edit` on `src/<pkg>/<module>.py` | **Blocks** write if a matching test file does not exist in `tests/unit/`, `tests/integration/`, or `tests/e2e/` (strict TDD). **Registered by default** in `.claude/settings.json`. |
 | `pre-write-src-test-reminder.sh` | Same | Warns only (non-blocking). Swap into `settings.json` **instead of** `pre-write-src-require-test.sh` if you want reminders without blocking. |
 | `pre-bash-coverage-gate.sh` | `Bash` on `git commit` | Warns if test coverage is below 85% threshold |
 
-Both source/test hooks only check top-level package modules (`src/<pkg>/<name>.py`,
-excluding `__init__.py`). Nested packages are skipped.
+Both source/test hooks check top-level package modules (`src/<pkg>/<name>.py`,
+excluding `__init__.py`) and common subpackage modules (`src/<pkg>/common/<name>.py`).
+Test files are searched in `tests/unit/`, `tests/integration/`, and `tests/e2e/`
+subdirectories (e.g. `tests/unit/test_<module>.py` or `tests/unit/common/test_<module>.py`).
 
 ### How to swap to the warn-only reminder
 

@@ -9,7 +9,7 @@ This is the "am I ready to merge?" command. It runs all checks and aggregates re
    - basedpyright: `standard` mode type checking
 
 2. **Docstring coverage** — `just docs-check`
-   - All public symbols in `src/{{ package_name }}/` have Google-style docstrings
+   - All public symbols in `src/my_library/` have Google-style docstrings
    - All modules have module-level docstrings
 
 3. **Test coverage** — `just coverage`
@@ -26,7 +26,7 @@ This is the "am I ready to merge?" command. It runs all checks and aggregates re
 ## Output format
 
 ```
-## Standards Report — {{ project_name }} — <YYYY-MM-DD>
+## Standards Report — My Library — <YYYY-MM-DD>
 
 ### ✓/✗ Static Analysis (ruff + basedpyright)
 [errors or "All clean"]

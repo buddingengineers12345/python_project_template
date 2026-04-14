@@ -4,7 +4,7 @@ Analyse test coverage and write tests for any gaps found.
 
 1. **Run coverage** — execute `just coverage` to get the full report with missing lines:
    ```
-   uv run --active pytest tests/ --cov={{ package_name }} --cov-report=term-missing
+   uv run --active pytest tests/ --cov=my_library --cov-report=term-missing
    ```
 
 2. **Parse results** — from the output identify:
@@ -12,7 +12,7 @@ Analyse test coverage and write tests for any gaps found.
    - Every module below 85 % (list module name + actual percentage + missing line ranges)
 
 3. **Gap analysis** — for each under-covered module:
-   - Open the source file at `src/{{ package_name }}/`
+   - Open the source file at `src/my_library/`
    - Read the lines flagged as uncovered
    - Identify what scenarios, branches, or edge cases those lines represent
 
@@ -28,14 +28,14 @@ Analyse test coverage and write tests for any gaps found.
 ## Report format
 
 ```
-## Coverage Report — {{ package_name }}
+## Coverage Report — my_library
 
 Overall: X%  (target: ≥ 85%)
 
 ### Modules below threshold
 | Module        | Coverage | Missing lines        |
 |---------------|----------|----------------------|
-| {{ package_name }}.core | 72% | 45-52, 78 |
+| my_library.core | 72% | 45-52, 78 |
 
 ### Tests written
 - tests/.../test_core.py: added test_edge_case_x, test_branch_y

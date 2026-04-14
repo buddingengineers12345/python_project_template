@@ -1,0 +1,211 @@
+{
+  "_comment": "Project Claude Code hooks — commit this file. For personal overrides, use .claude/settings.local.json",
+
+  "hooks": {
+
+    "_comment_PreToolUse": "Fires before every tool call. Can block, modify input, or inject context.",
+
+    "PreToolUse": [
+
+      {
+        "_comment": "Security gate — block dangerous shell commands",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-dangerous.sh",
+            "timeout": 10,
+            "statusMessage": "Validating command…"
+          }
+        ]
+      },
+
+      {
+        "_comment": "Protect sensitive files from being overwritten",
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Write(.env*)|Edit(.env*)",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-secrets.sh",
+            "timeout": 5
+          }
+        ]
+      },
+
+      {
+        "_comment": "Log all tool calls for audit trail (async — doesn't block Claude)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'cat >> \"$CLAUDE_PROJECT_DIR\"/.claude/audit.jsonl'",
+            "async": true
+          }
+        ]
+      },
+
+      {
+        "_comment": "Auto-approve read-only git commands in default permission mode",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git status*)|Bash(git log*)|Bash(git diff*)|Bash(git show*)",
+            "command": "bash -c 'jq -n \"{hookSpecificOutput:{hookEventName:\\\"PreToolUse\\\",permissionDecision:\\\"allow\\\",permissionDecisionReason:\\\"Read-only git command\\\"}}\"'"
+          }
+        ]
+      }
+
+    ],
+
+    "_comment_PostToolUse": "Fires after every tool succeeds. Cannot undo; can give Claude feedback.",
+
+    "PostToolUse": [
+
+      {
+        "_comment": "Auto-format edited files with Prettier",
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=$(jq -r \".tool_input.file_path // empty\"); [ -n \"$FILE\" ] && npx prettier --write \"$FILE\" 2>/dev/null || true'",
+            "async": true,
+            "statusMessage": "Formatting…"
+          }
+        ]
+      },
+
+      {
+        "_comment": "Run Python linter after Python file writes",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Write(*.py)|Edit(*.py)",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/lint-python.sh"
+          }
+        ]
+      }
+
+    ],
+
+    "_comment_Stop": "Fires when Claude finishes responding. Can block to enforce quality gates.",
+
+    "Stop": [
+
+      {
+        "_comment": "Desktop notification when Claude finishes (macOS). Linux: use notify-send.",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'ACTIVE=$(jq -r .stop_hook_active); [ \"$ACTIVE\" = \"true\" ] && exit 0; osascript -e \"display notification \\\"Claude Code finished\\\" with title \\\"Claude Code\\\"\" 2>/dev/null || notify-send \"Claude Code\" \"Task completed\" 2>/dev/null || true'",
+            "async": true
+          }
+        ]
+      }
+
+    ],
+
+    "_comment_UserPromptSubmit": "Fires when user submits a prompt. Can add context or block.",
+
+    "UserPromptSubmit": [
+
+      {
+        "_comment": "Inject current git branch into every prompt for context",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'BRANCH=$(git branch --show-current 2>/dev/null || echo unknown); jq -n --arg b \"$BRANCH\" \"{hookSpecificOutput:{hookEventName:\\\"UserPromptSubmit\\\",additionalContext:(\\\"Git branch: \\\" + $b)}}\"'"
+          }
+        ]
+      }
+
+    ],
+
+    "_comment_SessionStart": "Fires when session begins. Use for context injection and env setup.",
+
+    "SessionStart": [
+
+      {
+        "_comment": "Inject project context and set up env vars on session startup",
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-setup.sh"
+          }
+        ]
+      }
+
+    ],
+
+    "_comment_SessionEnd": "Fires at session end. Use for cleanup and logging.",
+
+    "SessionEnd": [
+
+      {
+        "_comment": "Archive transcript on session end",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'TRANSCRIPT=$(jq -r .transcript_path); DEST=\"$CLAUDE_PROJECT_DIR/.claude/transcripts/$(date +%Y%m%d-%H%M%S).jsonl\"; cp \"$TRANSCRIPT\" \"$DEST\" 2>/dev/null || true'",
+            "async": true
+          }
+        ]
+      }
+
+    ],
+
+    "_comment_FileChanged": "Fires when a watched file changes on disk. Matcher = literal filenames to watch.",
+
+    "FileChanged": [
+
+      {
+        "_comment": "Reload direnv when .envrc changes",
+        "matcher": ".envrc",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'direnv export bash >> \"$CLAUDE_ENV_FILE\" 2>/dev/null || true'"
+          }
+        ]
+      }
+
+    ],
+
+    "_comment_CwdChanged": "Fires when the working directory changes.",
+
+    "CwdChanged": [
+
+      {
+        "_comment": "Activate direnv on directory change",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'direnv export bash >> \"$CLAUDE_ENV_FILE\" 2>/dev/null || true'"
+          }
+        ]
+      }
+
+    ],
+
+    "_comment_Notification": "Fires for permission prompts, idle notifications, etc.",
+
+    "Notification": [
+
+      {
+        "_comment": "Send Slack message when Claude needs permission (for unattended runs)",
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/slack-notify.sh",
+            "async": true
+          }
+        ]
+      }
+
+    ]
+
+  }
+}

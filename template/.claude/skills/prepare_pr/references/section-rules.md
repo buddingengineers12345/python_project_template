@@ -1,4 +1,4 @@
-# Section Rules
+# Section rules
 
 This file contains exact fill instructions for every PR section.
 Work through sections **one at a time, in the order they appear in the template**.

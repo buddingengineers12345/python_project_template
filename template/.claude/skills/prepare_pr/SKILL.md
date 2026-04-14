@@ -1,6 +1,6 @@
 ---
 name: pr-template
-description: >
+description: >-
   Enforce a strict PR (pull request) description template every time one is generated, written, or drafted.
   Use this skill whenever the user asks to: generate a PR, write a PR description, draft a pull request,
   create a PR for a branch or commit, summarize changes as a PR, or fill in a PR template.
@@ -80,6 +80,14 @@ Before outputting anything, check each item below. If a check fails, fix it firs
 After the code block:
 - **If any section contains `<!-- please verify`** → write a plain-text note listing each flagged section by name so the user knows what to fix before submitting.
 - **If no `<!-- please verify` markers exist** → output nothing after the code block.
+
+---
+
+## Quick reference: where to go deeper
+
+| Topic                                        | Reference file                                       |
+|----------------------------------------------|------------------------------------------------------|
+| Section-by-section fill rules and fallbacks  | [references/section-rules.md](references/section-rules.md) |
 
 ---
 

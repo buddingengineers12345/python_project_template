@@ -271,3 +271,21 @@ sync-check:
 # Print a conventional PR title + PR body (template + git log) for pr-policy compliance
 pr-draft:
     @uv run python scripts/pr_commit_policy.py draft
+
+# -------------------------------------------------------------------------
+# SDLC: Task management
+# -------------------------------------------------------------------------
+
+# Validate a task YAML against Definition of Ready
+dor-check TASK_ID:
+    python3 scripts/validate_dor.py tasks/{{TASK_ID}}.yaml
+
+# List all tasks and their statuses
+tasks:
+    @echo "Task ID       Status        Title"
+    @echo "----------    ----------    -----"
+    @python3 -c "import yaml; from pathlib import Path; [print(f\"{d['task_id']:<14}{d['status']:<14}{d['title']}\") for p in sorted(Path('tasks').glob('TASK_*.yaml')) if (d := yaml.safe_load(p.read_text()))]"
+
+# Run pre-flight checks before starting SDLC pipeline
+preflight TASK_ID:
+    bash scripts/preflight.sh {{TASK_ID}}

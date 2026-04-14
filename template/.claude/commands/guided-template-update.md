@@ -108,7 +108,7 @@ changed, asking for confirmation at critical steps, and verifying the update wit
 ### Success (no conflicts, CI passes)
 
 ```
-## Template Update — {{ project_name }}
+## Template Update — My Library
 
 ✓ Update available: vX.Y.Z → vA.B.C
 
@@ -133,13 +133,13 @@ Your project is now synced with the latest template!
 ### Conflicts Detected
 
 ```
-## Template Update — {{ project_name }}
+## Template Update — My Library
 
 ✓ Update available: vX.Y.Z → vA.B.C
 ✓ Update applied
 
 ✗ Conflicts found in 2 files:
-  - src/{{ package_name }}/core.py.rej
+  - src/my_library/core.py.rej
   - pyproject.toml.rej
 
 Action required:
@@ -153,14 +153,14 @@ Action required:
 ### CI Failures After Update
 
 ```
-## Template Update — {{ project_name }}
+## Template Update — My Library
 
 ✓ Update applied
 ✓ No conflicts
 ✗ CI failed at: ruff lint
 
 Error:
-  src/{{ package_name }}/core.py:42: D100 Missing docstring in public module
+  src/my_library/core.py:42: D100 Missing docstring in public module
 
 This is likely due to new standards from the updated template (e.g., new ruff D rules).
 

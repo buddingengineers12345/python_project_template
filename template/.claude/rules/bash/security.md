@@ -17,35 +17,75 @@ case "$action" in
 esac
 ```
 
-## Validate all inputs
+## Never use `shell=True` equivalent
+
+Constructing commands via string interpolation and passing to a shell interpreter
+enables injection:
 
 ```bash
-file_path="${1:?Usage: script.sh <file-path>}"
+# Wrong — $filename could contain shell metacharacters
+system("process $filename")
 
+# Correct — pass as separate argument
+process_file "$filename"
+```
+
+When calling external programs, pass arguments as separate words, never concatenated
+into a single string.
+
+## Validate and sanitise all inputs
+
+Scripts that accept arguments or read from environment variables must validate them
+before use:
+
+```bash
+file_path="${1:?Usage: script.sh <file-path>}"   # fail with message if empty
+
+# Reject paths containing traversal sequences
 if [[ "$file_path" == *..* ]]; then
     echo "Error: path traversal not allowed" >&2
     exit 1
 fi
 ```
 
-## Secrets in environment
+## Secrets in environment variables
 
 - Do not echo or log environment variables that may contain secrets.
-- Validate required variables exist before use:
-  ```bash
-  : "${API_KEY:?API_KEY environment variable is required}"
-  ```
+- Do not write secrets to temporary files unless the file is created with `mktemp`
+  and cleaned up in an `EXIT` trap.
+- Check that required environment variables exist before using them:
 
-## Temporary files
+```bash
+: "${API_KEY:?API_KEY environment variable is required}"
+```
+
+## Temporary file handling
+
+Use `mktemp` for temporary files and clean up with a trap:
 
 ```bash
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
+
+# Use $TMPFILE safely
+some_command > "$TMPFILE"
+process_output "$TMPFILE"
 ```
 
-Never use predictable names like `/tmp/output.txt`.
+Never use predictable filenames like `/tmp/output.txt` — they are vulnerable to
+symlink attacks.
 
-## Subprocess calls
+## Subprocess calls in hook scripts
+
+Hook scripts in `.claude/hooks/` execute in the context of the developer's machine.
+They should:
+- Only call trusted binaries (`uv`, `git`, `python3`, `ruff`, `basedpyright`).
+- Never download or execute code from the network.
+- Avoid `curl | bash` patterns.
+- Not modify files outside the project directory.
+
+The `pre-bash-block-no-verify.sh` hook blocks `git commit --no-verify` to ensure
+pre-commit security gates cannot be bypassed.
 
 Pass arguments as separate words; never concatenate into a shell string:
 
@@ -56,5 +96,3 @@ git status --porcelain
 # Wrong — injection risk
 sh -c "git $user_command"
 ```
-
-Avoid `curl | bash` patterns.

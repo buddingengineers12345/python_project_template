@@ -1,11 +1,11 @@
 Orchestrate a new release: verify CI, bump version, tag, and push.
 
-This command automates the release workflow for {{ project_name }}.
+This command automates the release workflow for My Library.
 
 ## Prerequisites
 
 - All changes must be committed (no dirty working tree)
-- You must have push access to origin (https://github.com/{{ github_username }}/{{ project_slug }})
+- You must have push access to origin (https://github.com/yourusername/my-library)
 - The main/master branch must be up to date with origin
 
 ## Steps
@@ -64,7 +64,7 @@ This command automates the release workflow for {{ project_name }}.
    ```
 
 9. **Create a GitHub Release** (if not automated)
-   - Go to: https://github.com/{{ github_username }}/{{ project_slug }}/releases
+   - Go to: https://github.com/yourusername/my-library/releases
    - Click "Draft a new release"
    - Select the tag you just pushed
    - Add release notes (summary of changes, new features, breaking changes, etc.)
@@ -76,7 +76,7 @@ Report to the user:
 ```
 ✓ Release vX.Y.Z created successfully
 
-Release page: https://github.com/{{ github_username }}/{{ project_slug }}/releases/tag/vX.Y.Z
+Release page: https://github.com/yourusername/my-library/releases/tag/vX.Y.Z
 
 Next steps:
 - Check that the tag pushed successfully

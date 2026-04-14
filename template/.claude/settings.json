@@ -4,6 +4,7 @@
       "Bash(just:*)",
       "Bash(uv:*)",
       "Bash(copier:*)",
+      "Bash(gh:*)",
       "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
@@ -92,6 +93,26 @@
           }
         ],
         "description": "Coverage gate: warn before git commit if test coverage is below 85%"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-delete-protection.sh"
+          }
+        ],
+        "description": "Block rm of critical files: pyproject.toml, justfile, CLAUDE.md, .pre-commit-config.yaml, .copier-answers.yml, uv.lock, .claude/settings.json"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-branch-protection.sh"
+          }
+        ],
+        "description": "Block git push to main/master branches — use feature branches and PRs"
       }
     ],
     "PostToolUse": [
@@ -124,6 +145,26 @@
           }
         ],
         "description": "TDD refactor guard: remind to run tests after multiple src/ edits"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-bash-test-coverage-reminder.sh"
+          }
+        ],
+        "description": "After pytest/just test runs, surface modules below 85% coverage"
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-write-test-structure.sh"
+          }
+        ],
+        "description": "After creating test files, check for test_ functions, no unittest.TestCase, and proper pytest markers"
       }
     ]
   }

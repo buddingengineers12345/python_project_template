@@ -8,7 +8,12 @@ Perform a thorough pre-merge code review of all recently modified Python files.
    - `just type` — basedpyright type check; report all errors with file + line
    - `just docs-check` — ruff `--select D` docstring check
 
-2. **Manual symbol scan** — for every `.py` file under `src/{{ package_name }}/` that was
+   For detailed guidance on each tool, load the relevant skill:
+   - Linting: `.claude/skills/linting/SKILL.md`
+   - Type checking: `.claude/skills/type-checking/SKILL.md`
+   - Docstrings: `.claude/skills/python-docstrings/SKILL.md`
+
+2. **Manual symbol scan** — for every `.py` file under `src/my_library/` that was
    added or modified (use `git diff --name-only`):
    - Read the file
    - List every public function, class, and method (names not prefixed with `_`)

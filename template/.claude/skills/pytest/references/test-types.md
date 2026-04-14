@@ -69,11 +69,11 @@ def test_fetches_user_profile(mocker):
     assert profile.name == "Alice"
 ```
 
-**Organise** unit tests to mirror the source layout:
+**Organise** unit tests under `tests/unit/`, mirroring the source layout:
 
 ```
-src/myapp/orders.py     →  tests/test_orders.py
-src/myapp/auth/login.py →  tests/auth/test_login.py
+src/myapp/orders.py          →  tests/unit/test_orders.py
+src/myapp/common/utils.py    →  tests/unit/common/test_utils.py
 ```
 
 ## Integration tests
@@ -118,8 +118,8 @@ def test_exports_report_to_csv(tmp_path):
     assert len(lines) == 3  # header + 2 data rows
 ```
 
-**Separating from unit tests:** either use directory structure (`tests/unit/`,
-`tests/integration/`) or markers (`@pytest.mark.integration`) so you can run them
+**Separating from unit tests:** use directory structure (`tests/unit/`,
+`tests/integration/`, `tests/e2e/`) and markers (`@pytest.mark.integration`) so you can run them
 separately.
 
 ## Functional and API tests
