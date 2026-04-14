@@ -215,7 +215,7 @@ file, add a corresponding test.
 
 - Line length: 100 characters (set in `pyproject.toml` under `[tool.ruff]`).
 - Target Python version: 3.11.
-- Active ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `D`, `C90`, `PERF`, `T20`.
+- Active ruff rules: `E`, `F`, `I`, `UP`, `B`, `SIM`, `C4`, `RUF`, `TCH`, `PGH`, `PT`, `ARG`, `D`, `C90`, `PERF`, `T20`.
   Rule `E501` (line too long) is ignored (handled by the formatter).
 - Docstring convention: **Google style** (`pydocstyle` via ruff `D` rules).
   In this meta-repo, `tests/**` and `scripts/**` enforce `D` like other Python; only `T20` (`print`) is ignored there.

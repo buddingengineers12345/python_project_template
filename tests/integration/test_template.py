@@ -1251,8 +1251,8 @@ def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
     assert "id: commitizen" in cfg
     assert "commit-msg" in cfg
     assert "no-commit-to-branch" in cfg
-    assert "just-ci-check" in cfg
-    assert "just ci-check" in cfg
+    assert "just-check" in cfg
+    assert "just check" in cfg
     assert (test_dir / ".secrets.baseline").is_file()
 
 

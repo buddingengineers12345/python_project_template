@@ -32,9 +32,9 @@ def test_version_parse_accepts_simple_triplet() -> None:
 
 def test_version_parse_rejects_invalid() -> None:
     """Non-numeric or wrong segment counts raise ``ValueError``."""
-    with pytest.raises(ValueError, match=r"\d+\.\d+\.\d+"):
+    with pytest.raises(ValueError, match=r"X\.Y\.Z"):
         bv.Version.parse("1.2")
-    with pytest.raises(ValueError, match=r"\d+\.\d+\.\d+"):
+    with pytest.raises(ValueError, match=r"X\.Y\.Z"):
         bv.Version.parse("a.b.c")
 
 

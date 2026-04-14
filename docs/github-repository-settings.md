@@ -127,7 +127,7 @@ you still *can* turn them on, but the **payoff** is uneven:
 
 | Kind | Examples | Solo takeaway |
 | ---- | -------- | ------------- |
-| **High value** | CI on `push` / PR, **block force push** and **branch deletion**, local **pre-commit** / **`just ci-check`** | Catches breakage and accidents **without** a second person. This is where most real enforcement lives. |
+| **High value** | CI on `push` / PR, **block force push** and **branch deletion**, local **pre-commit** / **`just check`** | Catches breakage and accidents **without** a second person. This is where most real enforcement lives. |
 | **Useful if you like the workflow** | **Require PR**, **required status checks** on PRs, **PR policy** as a required check | Mostly **self-discipline**: you are still approving your own work. Benefits: run CI before merging to `main`, avoid direct pushes by mistake, keep PR titles/bodies consistent—not independent review. |
 | **Little extra value** | **Required approvals**, **include administrators** when you are the only admin | No second human to block bad merges; “no bypass” matters when others share the repo. Safe to skip or treat as documentation for a future team. |
 
@@ -154,9 +154,9 @@ These work entirely on your machine:
   you develop on a feature branch (pair with GitHub’s “require PR” if you want the same rule
   remotely).
 - **`commit-msg`** hooks (**Conventional Commits**) run on every commit after `just precommit-install`.
-- **`pre-push`** runs **`just ci-check`** (read-only full gate: sync, lint, types, tests, pre-commit,
+- **`pre-push`** runs **`just check`** (read-only full gate: sync, lint, types, tests, pre-commit,
   audit) before `git push` succeeds—slower than commit time, but catches CI failures early.
-  To bypass occasionally (not for routine use): `SKIP=just-ci-check git push` or `git push --no-verify`.
+  To bypass occasionally (not for routine use): `SKIP=just-check git push` or `git push --no-verify`.
 
 ---
 

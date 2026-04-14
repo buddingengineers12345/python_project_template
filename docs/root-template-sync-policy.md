@@ -73,7 +73,7 @@ When editing shared standards:
 1. Update the root file first (unless the change starts in template context).
 2. Port the equivalent change to the mapped template counterpart.
 3. Run `just sync-check` locally.
-4. Run `just ci-check` before merge.
+4. Run `just check` before merge.
 
 ## Non-goals
 

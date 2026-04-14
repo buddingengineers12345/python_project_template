@@ -105,7 +105,7 @@ Actions pins, shared recipes, and other policy maps).
 - Loads JSON policy maps under the repo (workflow action versions, justfile parity rules, etc.).
 - Compares root files to their `template/` counterparts and fails with a diff on drift.
 
-**Used by:** `.github/workflows/lint.yml` (meta-repo CI) and `just ci-check` / `just sync-check`.
+**Used by:** `.github/workflows/lint.yml` (meta-repo CI) and `just check` / `just sync-check`.
 
 **Tested by:** `tests/scripts/test_root_template_sync.py`
 
