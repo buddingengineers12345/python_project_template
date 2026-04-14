@@ -33,7 +33,9 @@ def _load_map(path: Path) -> dict[str, Any]:
     try:
         raw = json.loads(_read_text(path))
     except json.JSONDecodeError as exc:
-        raise ValueError(f"invalid JSON/YAML mapping file {path}: {exc}") from exc  # pragma: no cover
+        raise ValueError(
+            f"invalid JSON/YAML mapping file {path}: {exc}"
+        ) from exc  # pragma: no cover
     if not isinstance(raw, dict):  # pragma: no cover
         raise ValueError("mapping root must be an object")  # pragma: no cover
     return raw
@@ -51,7 +53,9 @@ def _validate_pairs_object(check_id: str, obj: Any) -> list[dict[str, str]]:
         if isinstance(root_path, str) and isinstance(tpl_path, str):
             valid.append({"root": root_path, "template": tpl_path})
     if not valid:  # pragma: no cover
-        raise ValueError(f"{check_id}: pairs must contain at least one root/template mapping")  # pragma: no cover
+        raise ValueError(
+            f"{check_id}: pairs must contain at least one root/template mapping"
+        )  # pragma: no cover
     return valid
 
 

@@ -157,7 +157,9 @@ def main() -> int:
     raw = copier_path.read_text(encoding="utf-8")
     parsed = read_skip_block(raw)
     if parsed is None:  # pragma: no cover
-        print("sync_skip_if_exists: could not parse _skip_if_exists in copier.yml", file=sys.stderr)  # pragma: no cover
+        print(
+            "sync_skip_if_exists: could not parse _skip_if_exists in copier.yml", file=sys.stderr
+        )  # pragma: no cover
         return 2  # pragma: no cover
     current, _s, _e = parsed
 
