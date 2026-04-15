@@ -1,3 +1,9 @@
+---
+description: Perform a thorough pre-merge code review of recently modified Python files — lint, types, docstrings, test coverage. Use when the user asks to "review", "code review", or "check my changes" before merging.
+allowed-tools: Read Grep Glob Bash(just *) Bash(git diff:*) Bash(git log:*)
+context: fork
+---
+
 Perform a thorough pre-merge code review of all recently modified Python files.
 
 ## Steps

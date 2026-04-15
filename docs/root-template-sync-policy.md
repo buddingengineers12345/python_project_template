@@ -63,7 +63,7 @@ The checker (`scripts/check_root_template_sync.py`) enforces:
 3. Section parity for selected `pyproject` tool blocks.
 4. Exact parity for allowlisted shared skill files.
 
-The machine-readable map in `docs/root-template-sync-map.yaml` is the source of truth for
+The machine-readable map in `assets/root-template-sync-map.yaml` is the source of truth for
 what gets checked.
 
 ## Update workflow

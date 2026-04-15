@@ -1,3 +1,8 @@
+---
+description: Run the full local CI pipeline (fix, fmt, lint, type, test) and report results. Use when the user asks to "run CI", "check everything", or verify the project before committing.
+allowed-tools: Bash(just *)
+---
+
 Run the full local CI pipeline for this repository and report results.
 
 Execute `just ci` which runs in this order:

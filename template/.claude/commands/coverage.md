@@ -1,3 +1,9 @@
+---
+description: Analyse test coverage and write tests to fill any gaps below the 85% threshold. Use when the user asks to "check coverage", "improve coverage", or "find uncovered code".
+allowed-tools: Read Write Edit Grep Glob Bash(just *) Bash(uv *)
+disable-model-invocation: true
+---
+
 Analyse test coverage and write tests for any gaps found.
 
 ## Steps

@@ -27,7 +27,7 @@ from pathlib import Path
 from collections import Counter
 
 try:
-    data = json.loads(sys.stdin.read())
+    data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 except (json.JSONDecodeError, ValueError):
     sys.exit(0)
 

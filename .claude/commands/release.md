@@ -1,11 +1,18 @@
+---
+description: Orchestrate a new release — verify CI, bump version, tag, and push to origin. Use when the user asks to "release", "cut a release", "ship a version", or "tag and publish".
+argument-hint: [patch|minor|major|X.Y.Z]
+allowed-tools: Read Edit Bash(git *) Bash(just ci:*) Bash(uv version:*) Bash(grep *)
+disable-model-invocation: true
+---
+
 Orchestrate a new release: verify CI, bump version, tag, and push.
 
-This command automates the release workflow for this Copier template repository.
+This command automates the release workflow for My Library.
 
 ## Prerequisites
 
 - All changes must be committed (no dirty working tree)
-- You must have push access to the origin remote
+- You must have push access to origin (https://github.com/yourusername/my-library)
 - The main/master branch must be up to date with origin
 
 ## Steps
@@ -20,64 +27,82 @@ This command automates the release workflow for this Copier template repository.
    ```bash
    just ci
    ```
-   If any step fails (lint, type, test, pre-commit), fix the issue and re-run.
-   Do not proceed until `just ci` passes completely.
+   This runs: fix → fmt → lint → type → docs-check → test → pre-commit.
+   If any step fails, fix the issue and re-run. Do not proceed until all steps pass.
 
 3. **Determine the version bump**
    Ask the user: "What type of bump? (patch/minor/major) or specify explicit version (X.Y.Z)?"
-   - `patch` — bug fixes, no new features (0.0.2 → 0.0.3)
-   - `minor` — new features, backwards compatible (0.0.2 → 0.1.0)
-   - `major` — breaking changes (0.0.2 → 1.0.0)
-   - Explicit version — e.g., "0.1.0-rc1" for pre-releases (use with caution)
+   - `patch` — bug fixes, no new features (0.1.0 → 0.1.1)
+   - `minor` — new features, backwards compatible (0.1.0 → 0.2.0)
+   - `major` — breaking changes (0.1.0 → 1.0.0)
 
-4. **Bump the version** using the version bump script
+4. **Bump the version** in `pyproject.toml`
    ```bash
-   NEW_VERSION=$(python scripts/bump_version.py --bump patch)
-   # OR
-   NEW_VERSION=$(python scripts/bump_version.py --new-version X.Y.Z)
+   # Using sed or a text editor:
+   # Change the version line in [project] section from X.Y.Z to the new version
    ```
-   Output the new version to the user.
+   Or use a bump tool if one is configured:
+   ```bash
+   # Option: uv version --version X.Y.Z  (if your project uses uv version)
+   ```
 
 5. **Verify the version was bumped correctly**
    ```bash
-   grep version pyproject.toml | head -1
+   grep "^version" pyproject.toml
    ```
-   Confirm the version line matches the new version.
+   Confirm the version matches your intended bump.
 
-6. **Create a git tag** with the new version
+6. **Create a commit** for the version bump
    ```bash
-   git tag v${NEW_VERSION}
+   git add pyproject.toml
+   git commit -m "chore(release): bump version to X.Y.Z"
    ```
 
-7. **Push the tag** to origin (this triggers release.yml)
+7. **Create a git tag** with the new version
    ```bash
-   git push origin v${NEW_VERSION}
+   git tag vX.Y.Z
+   ```
+   Tags should follow PEP 440 with a `v` prefix (e.g., `v0.2.0`, `v1.0.0-rc1`).
+
+8. **Push the commit and tag** to origin
+   ```bash
+   git push origin main  # or master, depending on your default branch
+   git push origin vX.Y.Z
    ```
 
-8. **Monitor the release workflow**
-   - The tag push triggers `.github/workflows/release.yml`
-   - Wait for the workflow to complete (check GitHub Actions)
-   - Confirm that a GitHub Release was created with release notes
+9. **Create a GitHub Release** (if not automated)
+   - Go to: https://github.com/yourusername/my-library/releases
+   - Click "Draft a new release"
+   - Select the tag you just pushed
+   - Add release notes (summary of changes, new features, breaking changes, etc.)
+   - Publish the release
 
 ## Output
 
 Report to the user:
 ```
-✓ Release v<VERSION> created successfully
+✓ Release vX.Y.Z created successfully
+
+Release page: https://github.com/yourusername/my-library/releases/tag/vX.Y.Z
 
 Next steps:
-- GitHub Release: https://github.com/[org]/python_project_template/releases/tag/v<VERSION>
-- Monitor workflow: https://github.com/[org]/python_project_template/actions
-
-To update existing generated projects to this new template version:
-  copier update --trust  # in an existing generated-project directory
+- Check that the tag pushed successfully
+- Consider updating your CHANGELOG.md if not auto-generated
+- Notify users of the new release
 ```
 
 ## Rollback (if something goes wrong)
 
-If you need to undo a release before the workflow completes:
+If you need to undo a release before publishing:
 ```bash
-git tag -d v<VERSION>              # delete local tag
-git push origin :v<VERSION>        # delete remote tag
+git reset --soft HEAD~1        # undo the version commit, keep changes staged
+git tag -d vX.Y.Z             # delete local tag
 # Fix the issue, then run release again
+```
+
+If already pushed to origin:
+```bash
+git tag -d vX.Y.Z             # delete local tag
+git push origin :vX.Y.Z       # delete remote tag (colon syntax or git push --delete)
+git push origin +<previous-commit>:main  # force-push main back (use with caution!)
 ```

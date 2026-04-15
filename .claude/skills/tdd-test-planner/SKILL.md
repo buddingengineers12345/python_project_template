@@ -163,7 +163,7 @@ Produce the plan in this exact structure:
 `⚠ Assumption:` any ambiguity resolved with an assumption (omit if none).
 
 **### pytest mechanics**
-- File: `tests/test_<module>.py`
+- File: `tests/unit/test_<module>.py` (or `tests/integration/`, `tests/e2e/` as appropriate)
 - Fixtures: list; note which belong in `conftest.py`
 - Parametrize groups: which test groups use parametrize
 - Markers: unit / integration / regression / slow as applicable
@@ -181,7 +181,7 @@ For each applicable category:
 
 **### Skeletons**
 
-conftest.py skeleton (only if shared fixtures exist), then `tests/test_<module>.py`:
+conftest.py skeleton (only if shared fixtures exist), then `tests/unit/test_<module>.py`:
 
 Every test function body uses Arrange / Act / Assert comments with `...` under each.
 Every function ends with `# [A1]` (or matching ID) in the signature comment.

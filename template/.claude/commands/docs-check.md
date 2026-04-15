@@ -1,3 +1,9 @@
+---
+description: Audit and repair Google-style docstrings across all Python source files. Use when the user asks to "check docs", "fix docstrings", or "audit documentation".
+allowed-tools: Read Write Edit Grep Glob Bash(uv run:*)
+disable-model-invocation: true
+---
+
 Audit and repair documentation across all Python source files.
 
 ## Steps

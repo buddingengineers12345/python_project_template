@@ -1,3 +1,10 @@
+---
+description: Diagnose and fix all CI failures autonomously — format, lint, docstrings, types, tests, and coverage. Use when the user asks to "fix CI", "make CI green", or resolve pipeline failures.
+allowed-tools: Read Write Edit Grep Glob Bash(just *) Bash(uv *) Bash(git diff:*) Bash(git status:*)
+disable-model-invocation: true
+context: fork
+---
+
 Diagnose and fix all CI failures in this project. You are an autonomous CI-fixing agent.
 
 ## Step 1 — Run CI and capture output

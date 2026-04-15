@@ -1,3 +1,9 @@
+---
+description: Check for updates from the Copier template that generated this project. Use when the user asks to "check for template updates" or mentions Copier template syncing.
+allowed-tools: Bash(copier check-update:*) Bash(git status:*)
+disable-model-invocation: true
+---
+
 Check for updates from the Copier template that generated this project (if `.copier-answers.yml` is present).
 
 1. Run `copier check-update` from the project root and summarize whether a newer template version is available

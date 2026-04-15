@@ -1,3 +1,10 @@
+---
+description: Interactively update this project to the latest Copier template version, with conflict detection and CI verification. Use when the user asks to "update the template", "run a guided template update", or "sync with the template".
+allowed-tools: Read Write Edit Grep Bash(git *) Bash(copier *) Bash(just ci:*) Bash(find *) Bash(test *) Bash(jq *)
+disable-model-invocation: true
+context: fork
+---
+
 Interactively update this project to the latest template version with full guidance.
 
 This command makes template updates safe and understandable by walking you through what

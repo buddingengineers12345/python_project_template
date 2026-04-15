@@ -7,16 +7,17 @@
 # more than 3 source edits have occurred since the last test run, it surfaces a
 # reminder. This prevents silent regressions during the REFACTOR stage of TDD.
 #
-# Exits: 0 always (PostToolUse hooks cannot block)
+# Reference : Custom — project-specific hook, not derived from ECC.
+# Exits     : 0 always (PostToolUse hooks cannot block)
 
 set -euo pipefail
 
 INPUT=$(cat)
 
 FILE_PATH=$(printf '%s' "$INPUT" | python3 -c '
-import json, sys
+import json, os
 
-data = json.load(sys.stdin)
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get("tool_input", {}).get("file_path", ""))
 ') || {
     echo "$INPUT"

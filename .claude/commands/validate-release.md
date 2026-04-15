@@ -1,3 +1,10 @@
+---
+description: Simulate a release by rendering and testing the template against all feature combinations before shipping. Use when the user asks to "validate a release", "test the template", or before running /release.
+allowed-tools: Read Bash(git status:*) Bash(just ci:*) Bash(copier *) Bash(grep *) Bash(rm -rf /tmp/test-*)
+disable-model-invocation: true
+context: fork
+---
+
 Simulate a release by rendering and testing the template with all feature combinations.
 
 This command validates that a release won't break existing or new users by testing the template

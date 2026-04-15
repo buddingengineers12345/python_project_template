@@ -8,10 +8,13 @@ prints the new PEP 440 version on stdout (single line, no extra text) for shell 
 from __future__ import annotations
 
 import argparse
+import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Protocol, cast
+
+logger = logging.getLogger(__name__)
 
 _VERSION_RE = re.compile(r'^(?P<prefix>\s*version\s*=\s*")(?P<ver>\d+\.\d+\.\d+)(".*)$')
 
@@ -182,7 +185,7 @@ def main(argv: list[str] | None = None) -> int:
     except RuntimeError as exc:
         raise SystemExit(f"bump_version: {exc}") from exc
 
-    print(str(new))
+    logger.info(str(new))
     return 0
 
 

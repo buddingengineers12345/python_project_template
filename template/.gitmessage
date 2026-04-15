@@ -1,12 +1,46 @@
-# <type>: <short imperative description>  (subject ≤72 characters)
+# ─────────────────────────────────────────────────────────────
+# Conventional Commit Message
+# ─────────────────────────────────────────────────────────────
 #
-# Types: feat, fix, refactor, docs, test, chore, perf, ci, build
+# <type>(<scope>)!: <short imperative description>
+#              │
+#              ├── scope is optional (api, auth, ui, etc.)
+#              └── ! = breaking change
 #
-# Optional scope in parentheses, e.g. feat(api): add endpoint
-# Breaking change: add ! after type/scope, e.g. feat!: remove legacy API
+# Examples:
+#   feat(auth): add OAuth login flow
+#   fix: prevent null pointer in parser
+#   refactor(db)!: change user schema
 #
-# --- Body (wrap at ~80 columns): explain WHY, not what ---
+# ─────────────────────────────────────────────────────────────
+# SUBJECT (required, max ~72 chars)
+# ─────────────────────────────────────────────────────────────
+# - Use imperative mood: "add", "fix", "remove", not "added/fixed"
+# - No period at the end
+# - Focus on WHAT changed at a high level
 #
+# ─────────────────────────────────────────────────────────────
+# BODY (optional, wrap at ~80 chars)
+# ─────────────────────────────────────────────────────────────
+# Explain:
+#   WHY this change was made
+#   CONTEXT and trade-offs
+#   Any notable side effects
 #
-# --- Footer (optional) ---
+# Avoid:
+#   - repeating the subject
+#   - listing code changes line-by-line
+#
+# Good structure:
+#   Problem:
+#   Solution:
+#   Impact:
+#
+# ─────────────────────────────────────────────────────────────
+# FOOTER (optional)
+# ─────────────────────────────────────────────────────────────
+# Breaking change: <description>
 # Closes #123
+# Co-authored-by: Name <email>
+#
+# ─────────────────────────────────────────────────────────────

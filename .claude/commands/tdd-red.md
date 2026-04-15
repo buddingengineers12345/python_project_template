@@ -1,3 +1,9 @@
+---
+description: Validate the RED phase of a TDD cycle — confirm a specific test fails for the right reason before implementation. Use when the user asks to "check RED", "verify RED phase", or after writing a new failing test.
+argument-hint: [test-file-or-name]
+allowed-tools: Read Bash(just test:*) Bash(uv run pytest:*)
+---
+
 Validate the RED phase of a TDD cycle: confirm that a specific test FAILS for the right reason.
 
 Run the test suite with `just test` (or the specific test file if the user provides one).

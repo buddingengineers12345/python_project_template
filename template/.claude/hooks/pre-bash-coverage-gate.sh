@@ -7,19 +7,20 @@
 # hard gate — this hook gives earlier feedback so the developer can add missing
 # tests before committing.
 #
-# Exits: 0 always (non-blocking; warnings on stderr only)
+# Reference : Custom — project-specific hook, not derived from ECC.
+# Exits     : 0 always (non-blocking; warnings on stderr only)
 
 set -uo pipefail
 
 INPUT=$(cat)
 
-COMMAND=$(python3 - <<'PYEOF'
-import json, sys
+COMMAND=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get("tool_input", {}).get("command", ""))
 PYEOF
-<<<"$INPUT") || { echo "$INPUT"; exit 0; }
+) || { echo "$INPUT"; exit 0; }
 
 # Only fire for git commit commands.
 if ! echo "$COMMAND" | grep -qE '^\s*git\s+commit\b'; then

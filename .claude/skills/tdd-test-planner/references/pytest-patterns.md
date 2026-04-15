@@ -88,13 +88,19 @@ def test_parse_rejects_invalid_input(bad_input):  # [B1]
 
 ```
 tests/
-├── conftest.py          ← project-wide fixtures (DB session, HTTP client)
+├── conftest.py          <- project-wide fixtures (DB session, HTTP client)
 ├── unit/
-│   ├── conftest.py      ← unit-specific fixtures
-│   └── test_transfer.py
-└── integration/
-    ├── conftest.py      ← integration-specific fixtures (real DB, containers)
-    └── test_transfer_db.py
+│   ├── conftest.py      <- unit-specific fixtures
+│   ├── test_transfer.py
+│   └── common/
+│       ├── conftest.py  <- common module-specific fixtures
+│       └── test_utils.py
+├── integration/
+│   ├── conftest.py      <- integration-specific fixtures (real DB, containers)
+│   └── test_transfer_db.py
+└── e2e/
+    ├── conftest.py      <- e2e-specific fixtures
+    └── test_workflows.py
 ```
 
 Project-wide conftest example:

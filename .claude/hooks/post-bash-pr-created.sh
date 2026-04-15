@@ -14,13 +14,13 @@ set -euo pipefail
 
 INPUT=$(cat)
 
-OUTPUT=$(python3 - <<'PYEOF'
-import json, sys
+OUTPUT=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get("tool_output", {}).get("output", ""))
 PYEOF
-<<<"$INPUT") || exit 0
+) || exit 0
 
 # Detect a GitHub PR URL in the command output
 PR_URL=$(echo "$OUTPUT" \

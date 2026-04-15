@@ -1,108 +1,116 @@
 # AI Rules — Developer Guide
 
 This directory contains the rules that inform any AI assistant (Claude Code, Cursor, etc.)
-working on this codebase. Rules are plain Markdown files — no tool-specific frontmatter or
-format is required. Any AI that can read context from a directory will benefit from them.
+working in this project. Rules are plain Markdown files — readable by any tool without
+conversion or special configuration.
+
+The format, scoping, and organisation conventions below are the canonical reference; they
+match the `maintain-rules` skill. When adding or editing rules, follow this document.
+
+## Philosophy — rules vs skills
+
+Rules and skills serve strict, non-overlapping roles:
+
+- **Rules** (this directory) are **short, always-on, non-negotiable**. They hold hard
+  constraints ("never do X", "always use Y"), project invariants, and guardrails. Target
+  **5–7 lines per file**. If it's longer, it belongs in a skill.
+- **Skills** (`.claude/skills/`) are **rich and invoked when relevant**. They hold
+  patterns, examples, step-by-step how-tos, templates, and edge cases.
+
+Before writing a new rule, check whether a skill already covers the content. If yes,
+delete or shrink the rule — do not duplicate.
 
 ## Structure
-
-Rules are organised into a **common** layer plus **language/tool-specific** directories:
 
 ```
 .claude/rules/
 ├── README.md              ← you are here
-├── common/                # Universal principles — apply to all code in this repo
+├── common/                # Universal hard constraints — apply to all code
 │   ├── coding-style.md
 │   ├── git-workflow.md
 │   ├── testing.md
 │   ├── security.md
-│   ├── development-workflow.md
-│   └── code-review.md
-├── python/                # Python-specific (extends common/)
-│   ├── coding-style.md
-│   ├── testing.md
-│   ├── patterns.md
-│   ├── security.md
 │   └── hooks.md
-├── jinja/                 # Jinja2 template-specific
-│   ├── coding-style.md
-│   └── testing.md
+├── python/                # Python-specific (extends common/)
 ├── bash/                  # Shell script-specific
-│   ├── coding-style.md
-│   └── security.md
+├── yaml/                  # YAML authoring conventions
 ├── markdown/              # Markdown authoring conventions
-│   └── conventions.md
-├── yaml/                  # YAML file conventions (copier.yml, workflows, etc.)
-│   └── conventions.md
-└── copier/                # Copier template-specific rules (this repo only)
-    └── template-conventions.md
+└── copier/                # Copier template-repo conventions
 ```
+
+Detailed how-to content that previously lived here has moved to skills:
+
+| Former rule | Now lives in |
+|---|---|
+| `common/development-workflow.md` | `skills/sdlc-workflow/`, `skills/tdd-workflow/` |
+| `common/code-review.md` | `skills/python-code-reviewer/` |
+| `python/security.md` | `skills/security/` |
+| `python/patterns.md` | `skills/python-code-quality/` |
+| `jinja/coding-style.md`, `jinja/testing.md` | `skills/jinja-guide/` |
 
 ## Rule priority
 
-When language-specific rules and common rules conflict, **language-specific rules take
-precedence** (specific overrides general). This mirrors CSS specificity and `.gitignore`
-precedence.
+Language-specific rules override common rules where they conflict.
 
-- `common/` defines universal defaults.
-- Language directories (`python/`, `jinja/`, `bash/`, …) override those defaults where
-  language idioms differ.
+## Standard rule format
 
-## Dual-hierarchy reminder
+Every rule file follows one of two shapes.
 
-This Copier meta-repo has **two parallel rule trees**:
+### Unconditional rule — `common/*.md`
 
+Loads on every session. No frontmatter.
+
+```markdown
+# [Topic Name]
+
+- Concrete, verifiable instruction.
+- Another specific instruction.
 ```
-.claude/rules/            ← active when DEVELOPING this template repo
-template/.claude/rules/   ← rendered into every GENERATED project
+
+### Path-scoped rule — language/topic directories
+
+Loads only when Claude touches files matching the globs. Uses YAML frontmatter with a
+`paths:` key.
+
+```markdown
+---
+paths:
+  - "**/*.py"
+  - "**/*.pyi"
+---
+
+# [Topic Name]
+
+- Rule 1
+- Rule 2
 ```
 
-When you add or modify a rule:
-- Changes to `template/.claude/rules/` affect every project generated from this
-  template going forward.
-- Changes to the root `.claude/rules/` affect only this meta-repo.
-- Many rules belong in **both** trees (e.g. Python coding style, security).
-- Copier-specific rules (`copier/`) belong only in the root tree.
-- Jinja rules belong only in the root tree (generated projects do not contain Jinja files).
+Notes:
+- `paths:` values are glob patterns, always double-quoted.
+- Do **not** use the legacy `# applies-to:` comment syntax. Always use YAML frontmatter.
 
-## How to write a new rule
+## Authoring rules — checklist
 
-1. **Choose the right directory** — `common/` for language-agnostic principles,
-   a language directory for language-specific ones. Create a new directory if a
-   language or domain does not exist yet.
+Before committing a rule, verify:
 
-2. **File name** — use lowercase kebab-case matching the topic: `coding-style.md`,
-   `testing.md`, `patterns.md`, `security.md`, `hooks.md`, `performance.md`.
-
-3. **Opening line** — if the file extends a common counterpart, start with:
-   ```
-   > This file extends [common/xxx.md](../common/xxx.md) with <Language> specific content.
-   ```
-
-4. **Content guidelines**:
-   - State rules as actionable imperatives ("Always …", "Never …", "Prefer …").
-   - Use concrete code examples (correct and incorrect) wherever possible.
-   - Keep each file under 150 lines; split into multiple files if a topic grows larger.
-   - Do not repeat content already covered in the common layer — cross-reference instead.
-   - Avoid tool-specific configuration syntax in rule prose; describe intent, not config.
-
-5. **File patterns annotation** (optional but helpful) — add a YAML comment block at the
-   top listing which glob patterns the rule applies to. AI tools that understand frontmatter
-   can use this; tools that do not will simply skip the comment:
-   ```yaml
-   # applies-to: **/*.py, **/*.pyi
-   ```
-
-6. **Mirror to `template/.claude/rules/`** if the rule is relevant to generated projects.
-
-7. **Update this README** when adding a new language directory or a new top-level file.
+1. **Location** — `common/` for language-agnostic, language directory otherwise.
+2. **Filename** — lowercase kebab-case (`coding-style.md`, `testing.md`).
+3. **Frontmatter** — present with `paths:` for path-scoped; absent for unconditional.
+4. **Title** — single `#` heading matching the topic.
+5. **Content** — hard constraints only; imperatives; concrete.
+6. **Size** — **5–7 lines per file** (excluding frontmatter and title). Longer content goes in a skill.
+7. **No duplication** — if a skill already covers it, remove the rule.
+8. **README** — update this file when adding a new directory.
 
 ## How AI tools consume these rules
 
 | Tool | Mechanism |
 |------|-----------|
-| Claude Code | Reads `CLAUDE.md` (project root), then any file you reference or load via slash commands |
+| Claude Code | Loads `CLAUDE.md` plus every `.claude/rules/**/*.md`; path-scoped files activate when matching files are touched |
 | Cursor | Reads `.cursor/rules/*.mdc`; symlink or copy relevant rules there if desired |
-| Generic LLM | Pass rule file contents in system prompt or context window |
+| Generic LLM | Pass rule file contents in the system prompt or context window |
 
-Because rules are plain Markdown, they are readable by any tool without conversion.
+## Related skill
+
+The `maintain-rules` skill (at `.claude/skills/maintain-rules/`) contains the full
+reference for authoring, auditing, and organising these files.

@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import os
 import re
 import subprocess
-import sys
 from pathlib import Path
 from typing import Final
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Policy constants (Conventional Commits + PR template)
@@ -150,7 +152,16 @@ def changes_introduced_markdown(repo_cwd: Path, base_ref: str, head_ref: str) ->
 
 
 def draft_pr_body(repo_root: Path, base_ref: str, head_ref: str) -> str:
-    """Return PR body text from the template with placeholders replaced."""
+    """Generate PR body from template with actual commit messages.
+
+    Args:
+        repo_root: Repository root directory.
+        base_ref: Base branch reference (e.g., ``origin/main``).
+        head_ref: Head branch reference (e.g., ``HEAD``).
+
+    Returns:
+        PR body text with commit bullets inserted in the template placeholder.
+    """
     template_path = repo_root / ".github" / "PULL_REQUEST_TEMPLATE.md"
     text = template_path.read_text(encoding="utf-8")
     bullets = changes_introduced_markdown(repo_root, base_ref, head_ref)
@@ -174,6 +185,17 @@ def validate_pr_body(body: str | None) -> str | None:
 
 
 def _git_first_parent_subject(sha: str) -> str:
+    """Fetch the commit subject for a given commit SHA.
+
+    Args:
+        sha: Commit SHA (full or abbreviated).
+
+    Returns:
+        The commit subject line (first line of commit message).
+
+    Raises:
+        RuntimeError: If git log fails for the SHA.
+    """
     result = _git_run(["log", "-1", "--format=%s", sha])
     if result.returncode != 0:
         raise RuntimeError(f"git log failed for {sha}: {result.stderr.strip()}")
@@ -200,6 +222,14 @@ def validate_commit_range(base: str, head: str) -> str | None:
 
 
 def _git_toplevel() -> Path:
+    """Resolve the root directory of the current Git repository.
+
+    Returns:
+        The absolute path to the repository root.
+
+    Raises:
+        RuntimeError: If not in a Git repository.
+    """
     result = _git_run(["rev-parse", "--show-toplevel"])
     if result.returncode != 0:
         raise RuntimeError("not a git repository (git rev-parse --show-toplevel failed)")
@@ -207,6 +237,18 @@ def _git_toplevel() -> Path:
 
 
 def _resolve_base_ref(repo: Path, explicit: str | None) -> str:
+    """Resolve the base branch reference, defaulting to ``origin/main`` or ``main``.
+
+    Args:
+        repo: Repository root directory.
+        explicit: An explicit base ref (e.g., ``origin/main``), or ``None`` to auto-detect.
+
+    Returns:
+        The base branch reference.
+
+    Raises:
+        RuntimeError: If neither ``origin/main`` nor ``main`` exists and explicit is None.
+    """
     if explicit:
         return explicit
     for ref in ("origin/main", "main"):
@@ -220,6 +262,17 @@ def _resolve_base_ref(repo: Path, explicit: str | None) -> str:
 
 
 def _current_branch(repo: Path) -> str:
+    """Get the name of the current checked-out branch.
+
+    Args:
+        repo: Repository root directory.
+
+    Returns:
+        The short branch name (e.g., ``main``, ``feat/new-thing``).
+
+    Raises:
+        RuntimeError: If git rev-parse fails.
+    """
     result = _git_run(["-C", str(repo), "rev-parse", "--abbrev-ref", "HEAD"])
     if result.returncode != 0:
         raise RuntimeError("git rev-parse --abbrev-ref HEAD failed")
@@ -233,7 +286,18 @@ def _cmd_draft(
     title_only: bool,
     body_only: bool,
 ) -> int:
-    """Print a policy-compliant PR title and body for copy-paste or ``gh pr edit``."""
+    """Generate and print a policy-compliant PR title and body.
+
+    Args:
+        repo: Repository root directory.
+        base_ref: Explicit base branch reference, or ``None`` to auto-detect.
+        head_ref: Head branch reference (defaults to ``HEAD``).
+        title_only: If True, print only the title.
+        body_only: If True, print only the body.
+
+    Returns:
+        ``0`` on success, ``1`` if validation fails.
+    """
     base = _resolve_base_ref(repo, base_ref)
     head = head_ref or "HEAD"
     branch = _current_branch(repo)
@@ -242,20 +306,20 @@ def _cmd_draft(
         title = "chore: describe this pull request"
     body = draft_pr_body(repo, base, head)
     if title_only and body_only:
-        print(title)
-        print("\n---\n")
-        print(body)
+        logger.info(title)
+        logger.info("\n---\n")
+        logger.info(body)
         return 0
     if not title_only and not body_only:
-        print("Suggested PR title (GitHub UI or: gh pr edit --title '...'):\n")
-        print(title)
-        print("\n---\n\nSuggested PR body (paste in GitHub or: gh pr edit --body-file ...):\n")
-        print(body)
+        logger.info("Suggested PR title (GitHub UI or: gh pr edit --title '...'):")
+        logger.info(title)
+        logger.info("\n---\n\nSuggested PR body (paste in GitHub or: gh pr edit --body-file ...):")
+        logger.info(body)
         return 0
     if title_only:
-        print(title)
+        logger.info(title)
         return 0
-    print(body)
+    logger.info(body)
     return 0
 
 
@@ -264,11 +328,11 @@ def _cmd_pr() -> int:
     body = os.environ.get("PR_BODY")
     err = validate_pr_title(title)
     if err:
-        print(f"pr_commit_policy: invalid PR title: {err}", file=sys.stderr)
+        logger.error(f"invalid PR title: {err}")
         return 1
     err = validate_pr_body(body)
     if err:
-        print(f"pr_commit_policy: invalid PR body: {err}", file=sys.stderr)
+        logger.error(f"invalid PR body: {err}")
         return 1
     return 0
 
@@ -276,7 +340,7 @@ def _cmd_pr() -> int:
 def _cmd_commits(base: str, head: str) -> int:
     err = validate_commit_range(base, head)
     if err:
-        print(f"pr_commit_policy: {err}", file=sys.stderr)
+        logger.error(err)
         return 1
     return 0
 
@@ -339,7 +403,7 @@ def main(argv: list[str] | None = None) -> int:
         try:
             repo = args.repo.resolve() if args.repo else _git_toplevel()
         except RuntimeError as exc:
-            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
+            logger.error(f"draft: {exc}")
             return 1
         try:
             return _cmd_draft(
@@ -350,17 +414,16 @@ def main(argv: list[str] | None = None) -> int:
                 body_only=args.body_only,
             )
         except RuntimeError as exc:
-            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
+            logger.error(f"draft: {exc}")
             return 1
         except OSError as exc:
-            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
+            logger.error(f"draft: {exc}")
             return 1
     if args.command == "commits":
         if not args.base or not args.head:
-            print(
-                "pr_commit_policy: commits requires --base and --head "
-                "(or PR_BASE_SHA and PR_HEAD_SHA)",
-                file=sys.stderr,
+            logger.error(
+                "commits requires --base and --head "
+                "(or PR_BASE_SHA and PR_HEAD_SHA)"
             )
             return 1
         return _cmd_commits(args.base, args.head)

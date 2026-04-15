@@ -29,7 +29,7 @@ import json, os, sys, datetime, subprocess
 from pathlib import Path
 
 try:
-    data = json.loads(sys.stdin.read())
+    data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 except (json.JSONDecodeError, ValueError):
     sys.exit(0)
 

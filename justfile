@@ -169,6 +169,18 @@ lock-check:
     @uv lock --check
 
 # -------------------------------------------------------------------------
+# Environment
+# -------------------------------------------------------------------------
+
+load-env:
+    @if [ ! -f .env ]; then \
+        cp env.example .env; \
+        echo "✓ Created .env from env.example"; \
+    else \
+        echo ".env already exists"; \
+    fi
+
+# -------------------------------------------------------------------------
 # Docs (optional)
 # -------------------------------------------------------------------------
 # This repository is the Copier template source; there is no MkDocs site here.
@@ -214,7 +226,7 @@ bootstrap:
 clean:
     @test -f pyproject.toml || (echo "ERROR: Not in project root!" && exit 1)
     @rm -rf build dist *.egg-info
-    @rm -rf .pytest_cache .ruff_cache .coverage htmlcov
+    @rm -rf .pytest_cache .ruff_cache .mypy_cache .coverage htmlcov
     @find . -type d -name "__pycache__" -exec rm -rf {} +
     @find . -type f -name "*.pyc" -delete
 
@@ -247,10 +259,14 @@ doctor:
     @python --version
     @uv --version
     @echo ""
-    @echo "=== Tools ==="
+    @echo "=== Python Tools ==="
     @uv run ruff --version
     @uv run basedpyright --version || echo "basedpyright not installed"
     @uv run pytest --version
+    @uv run cz version || echo "commitizen installed"
+    @echo ""
+    @echo "=== System Tools ==="
+    @git-cliff --version || echo "⚠️  git-cliff not found (required for 'just release')"
     @echo ""
     @echo "=== Project ==="
     @echo "Repo: python_project_template"
@@ -278,7 +294,7 @@ pr-draft:
 
 # Validate a task YAML against Definition of Ready
 dor-check TASK_ID:
-    python3 scripts/validate_dor.py tasks/{{TASK_ID}}.yaml
+    python3 .claude/skills/sdlc-workflow/scripts/validate_dor.py tasks/{{TASK_ID}}.yaml
 
 # List all tasks and their statuses
 tasks:
@@ -288,4 +304,76 @@ tasks:
 
 # Run pre-flight checks before starting SDLC pipeline
 preflight TASK_ID:
-    bash scripts/preflight.sh {{TASK_ID}}
+    bash .claude/skills/sdlc-workflow/scripts/preflight.sh {{TASK_ID}}
+
+# -------------------------------------------------------------------------
+# Release & Versioning
+# -------------------------------------------------------------------------
+
+# Orchestrates the complete release workflow:
+# 1. Validates repository is clean (no uncommitted changes)
+# 2. Runs full CI to ensure all tests pass
+# 3. Uses Commitizen to bump version (reads/writes [project].version)
+# 4. Uses git-cliff to generate CHANGELOG.md from commits
+# 5. Creates annotated git tag (v<version>)
+# 6. Pushes tag and commits to main
+#
+# Workflow: conventional commits → commitizen validation → git-cliff changelog → semantic versioning
+#
+# Requirements:
+#   - Clean git state (no uncommitted changes)
+#   - All CI checks passing (just ci)
+#   - git-cliff installed (brew install git-cliff on macOS)
+#   - Push permissions to main branch
+#
+# Usage:
+#   just release patch       # v0.0.8 → v0.0.9 (bug fixes)
+#   just release minor       # v0.0.8 → v0.1.0 (new features)
+#   just release major       # v0.0.8 → v1.0.0 (breaking changes)
+release BUMP_TYPE="patch":
+    @echo "=== Release Workflow ==="
+    @echo "Release type: {{BUMP_TYPE}}"
+    @echo ""
+    
+    @echo "1️⃣  Checking git state..."
+    @if [ -n "$(git status --porcelain)" ]; then \
+        echo "❌ Error: Uncommitted changes detected. Commit or stash before release."; \
+        git status --short; \
+        exit 1; \
+    fi
+    @echo "✓ Git state clean"
+    @echo ""
+    
+    @echo "2️⃣  Checking git-cliff installation..."
+    @if ! command -v git-cliff &> /dev/null; then \
+        echo "❌ Error: git-cliff not found."; \
+        echo "Install with: brew install git-cliff (macOS) or visit https://github.com/orhun/git-cliff"; \
+        exit 1; \
+    fi
+    @echo "✓ git-cliff found"
+    @echo ""
+    
+    @echo "3️⃣  Running CI checks..."
+    @just ci
+    @echo "✓ CI passed"
+    @echo ""
+    
+    @echo "4️⃣  Bumping version with Commitizen..."
+    @uv run cz bump --increment {{BUMP_TYPE}} --changelog
+    @echo "✓ Version bumped, changelog generated"
+    @echo ""
+    
+    @echo "5️⃣  Generating release notes with git-cliff..."
+    @git-cliff --output CHANGELOG.md
+    @git add CHANGELOG.md
+    @git commit --amend --no-edit
+    @echo "✓ CHANGELOG.md updated"
+    @echo ""
+    
+    @echo "6️⃣  Pushing release to main..."
+    @git push origin main --tags
+    @echo "✓ Release pushed"
+    @echo ""
+    
+    @echo "✅ Release complete!"
+    @git describe --tags --abbrev=0

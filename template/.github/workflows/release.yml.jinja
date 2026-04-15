@@ -79,7 +79,11 @@ jobs:
 
       - name: Determine version
         id: bump
+        env:
+          INPUT_VERSION: {% raw %}${{ inputs.version }}{% endraw %}
+          INPUT_BUMP: {% raw %}${{ inputs.bump }}{% endraw %}
         run: |
+          set -euo pipefail
           # If triggered by a tag push (vX.Y.Z), use that version.
           if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
             ref="${GITHUB_REF_NAME}"
@@ -91,27 +95,34 @@ jobs:
             exit 1
           fi
 
-          if [ -n "{% raw %}${{ inputs.version }}{% endraw %}" ]; then
-            NEW_VERSION="$(uv run python src/{{ package_name }}/common/bump_version.py --new-version "{% raw %}${{ inputs.version }}{% endraw %}")"
+          if [ -n "${INPUT_VERSION}" ]; then
+            NEW_VERSION="$(uv run python scripts/bump_version.py --new-version "${INPUT_VERSION}")"
           else
-            NEW_VERSION="$(uv run python src/{{ package_name }}/common/bump_version.py --bump "{% raw %}${{ inputs.bump }}{% endraw %}")"
+            NEW_VERSION="$(uv run python scripts/bump_version.py --bump "${INPUT_BUMP}")"
+          fi
+          if [ -z "${NEW_VERSION}" ]; then
+            echo "Error: version bump script returned an empty version string" >&2
+            exit 1
           fi
           echo "version=${NEW_VERSION}" >> "${GITHUB_OUTPUT}"
 
       - name: Commit version bump
         if: {% raw %}${{ github.event_name == 'workflow_dispatch' }}{% endraw %}
         run: |
+          set -euo pipefail
           git add pyproject.toml
           git commit -m "chore(release): v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}"
 
       - name: Create tag
         if: {% raw %}${{ github.event_name == 'workflow_dispatch' }}{% endraw %}
         run: |
+          set -euo pipefail
           git tag "v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}"
 
       - name: Push commit and tag
         if: {% raw %}${{ github.event_name == 'workflow_dispatch' }}{% endraw %}
         run: |
+          set -euo pipefail
           git push origin HEAD
           git push origin "v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}"
 
@@ -123,6 +134,7 @@ jobs:
         env:
           GH_TOKEN: {% raw %}${{ github.token }}{% endraw %}
         run: |
+          set -euo pipefail
           if gh release view "v{% raw %}${{ steps.bump.outputs.version }}{% endraw %}" >/dev/null 2>&1; then
             echo "exists=true" >> "${GITHUB_OUTPUT}"
           else
@@ -136,6 +148,7 @@ jobs:
         env:
           GH_TOKEN: {% raw %}${{ github.token }}{% endraw %}
         run: |
+          set -euo pipefail
           PRERELEASE_FLAG=""
           if [ "{% raw %}${{ inputs.prerelease }}{% endraw %}" = "true" ]; then
             PRERELEASE_FLAG="--prerelease"

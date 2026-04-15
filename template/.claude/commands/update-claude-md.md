@@ -1,3 +1,9 @@
+---
+description: Detect and fix drift between CLAUDE.md and project config files (pyproject.toml, justfile, copier.yml). Use when the user asks to "sync CLAUDE.md", "update CLAUDE.md", or fix stale project documentation.
+allowed-tools: Read Edit Grep Bash(date *)
+disable-model-invocation: true
+---
+
 Detect and fix drift between CLAUDE.md and the actual project configuration files.
 
 CLAUDE.md is the project's living standards contract. It must stay in sync with

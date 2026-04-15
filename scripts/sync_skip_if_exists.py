@@ -1,27 +1,30 @@
 #!/usr/bin/env python3
-"""Keep ``_skip_if_exists`` in ``copier.yml`` aligned with the template and git history.
+"""Keep ``_skip_if_exists`` in ``copier.yml`` aligned with template and git.
 
-This script is intended for scheduled automation (see ``.github/workflows/sync-skip-if-exists.yml``).
-It merges a curated base list with paths inferred from frequently touched template sources so
-user-editable files stay protected on ``copier update``.
+Synchronizes a curated base list with paths inferred from frequently touched
+template sources so user-editable files stay protected on ``copier update``.
+
+See ``.github/workflows/sync-skip-if-exists.yml`` for scheduled automation.
 
 Constants:
-    TEMPLATE_PATH_TO_SKIP_ENTRY: Maps each tracked template source path to its rendered
-        ``_skip_if_exists`` entry (``{{ package_name }}`` preserved).
+    TEMPLATE_PATH_TO_SKIP_ENTRY: Maps template source paths to rendered
+        ``_skip_if_exists`` entries (``{{ package_name }}`` preserved).
     BASE_SKIP_ENTRIES: Always-included paths (user customization hotspots).
-    GIT_FREQUENCY_THRESHOLD: Minimum occurrences in recent history to auto-add a mapped path.
+    GIT_FREQUENCY_THRESHOLD: Minimum occurrences to auto-add a path.
     GIT_LOG_LIMIT: Maximum number of commits scanned for path frequency.
 """
 
 from __future__ import annotations
 
 import argparse
+import logging
 import subprocess
-import sys
 from pathlib import Path
 
-# Template-relative paths (POSIX) → destination path literals for ``_skip_if_exists`` (after render).
-# ``{{ package_name }}`` is preserved for Copier/Jinja output paths.
+logger = logging.getLogger(__name__)
+
+# Map template paths to destination paths for ``_skip_if_exists``. Copier variables
+# (``{{ package_name }}``) are preserved for rendered output paths.
 TEMPLATE_PATH_TO_SKIP_ENTRY: dict[str, str] = {
     "template/env.example.jinja": "env.example",
     "template/README.md.jinja": "README.md",
@@ -31,11 +34,16 @@ TEMPLATE_PATH_TO_SKIP_ENTRY: dict[str, str] = {
     "template/pyproject.toml.jinja": "pyproject.toml",
     "template/mkdocs.yml.jinja": "mkdocs.yml",
     "template/src/{{ package_name }}/__init__.py.jinja": "src/{{ package_name }}/__init__.py",
-    "template/.github/PULL_REQUEST_TEMPLATE.md.jinja": ".github/PULL_REQUEST_TEMPLATE.md",
-    "template/.github/CODE_OF_CONDUCT.md.jinja": ".github/CODE_OF_CONDUCT.md",
-    "template/.github/ISSUE_TEMPLATE/bug_report.md.jinja": ".github/ISSUE_TEMPLATE/bug_report.md",
-    "template/.github/ISSUE_TEMPLATE/feature_request.md.jinja": ".github/ISSUE_TEMPLATE/feature_request.md",
-    "template/src/{{ package_name }}/common/bump_version.py.jinja": "src/{{ package_name }}/common/bump_version.py",
+    "template/.github/PULL_REQUEST_TEMPLATE.md.jinja":
+        ".github/PULL_REQUEST_TEMPLATE.md",
+    "template/.github/CODE_OF_CONDUCT.md.jinja":
+        ".github/CODE_OF_CONDUCT.md",
+    "template/.github/ISSUE_TEMPLATE/bug_report.md.jinja":
+        ".github/ISSUE_TEMPLATE/bug_report.md",
+    "template/.github/ISSUE_TEMPLATE/feature_request.md.jinja":
+        ".github/ISSUE_TEMPLATE/feature_request.md",
+    "template/src/{{ package_name }}/common/bump_version.py.jinja":
+        "src/{{ package_name }}/common/bump_version.py",
 }
 
 # Always include these (user customization hotspots even if not in the map above).
@@ -62,14 +70,24 @@ GIT_LOG_LIMIT = 3000
 
 
 def repo_root() -> Path:
-    """Return the repository root (parent of ``scripts/``)."""
+    """Return the repository root (parent of the ``scripts/`` directory).
+
+    Returns:
+        The absolute path to the repository root.
+    """
     return Path(__file__).resolve().parent.parent
 
 
 def template_path_counts_from_git_log_text(log_stdout: str) -> dict[str, int]:
-    """Count ``template/`` path occurrences from ``git log --name-only`` style stdout.
+    """Count ``template/`` path occurrences from ``git log --name-only`` output.
 
-    Blank lines and non-template paths are ignored. Suitable for unit testing without git.
+    Blank lines and non-template paths are ignored. Suitable for testing without git.
+
+    Args:
+        log_stdout: Output from ``git log --name-only`` style command.
+
+    Returns:
+        Dict mapping template paths to their occurrence counts.
     """
     counts: dict[str, int] = {}
     for line in log_stdout.splitlines():
@@ -161,7 +179,15 @@ def replace_skip_block(text: str, entries: list[str]) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Parse CLI flags and update or verify ``copier.yml``."""
+    """Parse CLI arguments and update or verify the ``_skip_if_exists`` list.
+
+    Args:
+        argv: Command-line arguments (defaults to sys.argv[1:]).
+
+    Returns:
+        ``0`` if the skip list is up to date (or updated), ``1`` if changes are
+        needed but --write was not provided, ``2`` if an error occurred.
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--write",
@@ -175,30 +201,27 @@ def main(argv: list[str] | None = None) -> int:
     raw = copier_path.read_text(encoding="utf-8")
     parsed = read_skip_block(raw)
     if parsed is None:
-        print(
-            "sync_skip_if_exists: could not parse _skip_if_exists in copier.yml",
-            file=sys.stderr,
-        )
+        logger.error("could not parse _skip_if_exists in copier.yml")
         return 2
     current, _s, _e = parsed
 
     desired = compute_desired_entries(root)
     if current == desired:
-        print("sync_skip_if_exists: _skip_if_exists is up to date")
+        logger.info("_skip_if_exists is up to date")
         return 0
 
-    print("sync_skip_if_exists: drift detected")
+    logger.warning("drift detected")
     for label, items in ("current", current), ("desired", desired):
-        print(f"  {label}:")
+        logger.info(f"{label}:")
         for item in items:
-            print(f"    - {item}")
+            logger.info(f"  - {item}")
 
     if not args.write:
         return 1
 
     updated = replace_skip_block(raw, desired)
     copier_path.write_text(updated, encoding="utf-8", newline="\n")
-    print("sync_skip_if_exists: wrote copier.yml")
+    logger.info("wrote copier.yml")
     return 0
 
 

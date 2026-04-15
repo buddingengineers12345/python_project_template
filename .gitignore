@@ -1,15 +1,12 @@
 # ==========================================================================
-# Python Core
+# PYTHON CORE
 # ==========================================================================
-# Byte-compiled / optimized / DLL files
+
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
 
-# Distribution / packaging
 .Python
 context/
 build/
@@ -31,101 +28,103 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# PyInstaller
 *.manifest
 *.spec
 
-# Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
 htmlcov/
 .tox/
 .nox/
-.coverage
-.coverage.*
+.coverage*
 .cache
+.cache-loader/
 nosetests.xml
 coverage.xml
 *.cover
 *.py,cover
 .pytest_cache/
 
-# Translations
 *.mo
 *.pot
 
+
 # ==========================================================================
-# Frameworks
+# FRAMEWORKS & TOOLS
 # ==========================================================================
-# Django stuff:
+
 *.log
+*.log.*
+logs/
+
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
-# Flask stuff:
 instance/
-.webassets-cache
+.webassets-cache/
 
-# Scrapy stuff:
-.scrapy
+.scrapy/
 
-# Sphinx / built HTML under docs/
 docs/_build/
-
-# Local scratch / moved working copies (not committed)
 temp_docs/
 
-# PyBuilder
 target/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+.ipynb_checkpoints/
 
-# Pipeline checkpoints
 checkpoints/
 
-# IPython
 profile_default/
 ipython_config.py
 
-# Celery stuff
 celerybeat-schedule
 celerybeat.pid
 
-# SageMath parsed files
 *.sage.py
 
-# ==========================================================================
-# Tools
-# ==========================================================================
-# pyenv
-.python-version
+# Streamlit
+.streamlit/secrets.toml
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+
+# ==========================================================================
+# DEV TOOLS & TYPE CHECKERS
+# ==========================================================================
+
+.python-version
 __pyp__.py
 
-# mkdocs documentation
 /site
 
-# mypy
 .mypy_cache/
 .dmypy.json
 dmypy.json
 
-# Pyre type checker
 .pyre/
+.pyright/
 .ruff_cache/
 
+# Packaging tools
+.hatch/
+pdm.lock
+pdm.toml
+poetry.lock
+
+
 # ==========================================================================
-# Environments
+# ENVIRONMENTS & SECRETS
 # ==========================================================================
-# Environments
+
 .env
 .env.*
+*.env
 !.env.test.example
+
+*.key
+*.pem
+secrets/
+
 .venv
 env/
 venv/
@@ -134,27 +133,28 @@ env.bak/
 venv.bak/
 .adk/
 
+
 # ==========================================================================
-# IDEs
+# IDEs & EDITORS
 # ==========================================================================
-# Spyder project settings
+
 .spyderproject
 .spyproject
 
-# Rope project settings
 .ropeproject
 
-# IDEs
 # .vscode/
-.idea/
+# .idea/
+
 *.swp
 *.swo
 *~
 
+
 # ==========================================================================
-# OS Generated Files
+# OS GENERATED FILES
 # ==========================================================================
-# OS generated files
+
 .DS_Store
 .DS_Store?
 ._*
@@ -163,18 +163,18 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
+
 # ==========================================================================
-# Project Specific
+# PROJECT-SPECIFIC RULES
 # ==========================================================================
-# Project specific
-# Reports and generated files
+
+# STRICT: images forbidden in repo
 *.png
 *.jpg
 *.jpeg
 *.gif
 *.svg
 
-# Text files in root directory (notes, examples, temporary files)
 *.txt
 !README.md
 !LICENSE
@@ -183,36 +183,29 @@ Thumbs.db
 !CONTRIBUTING.md
 !TESTING_STREAMLIT.md
 
-# Backup files
 *.backup
 *.py.backup
 *.ipynb.backup
 
-# Temporary folder
 artifacts/
 notes/
-temp_*/
-tmp_*/
-temp/
-tmp/
-monocle_trace_*.json
+temp*
+tmp*
 temp_artifacts/
 outputs/
 output/
 
-# Temporary files
 TASK*.md
-temp_*.py
-temp_*.ipynb
-temp_*.md
-temp_*.sh
 *.tmp
 *.temp
 *.bak
-*.swp
-*.swo
 
-# Optuna study database and results
+monocle_trace_*.json
+
+# ML / experiment tracking
+wandb/
+dvc/.cache/
+
 optuna_study.db
 optuna_study_seed_*.db
 optuna_results.json
@@ -221,31 +214,30 @@ optuna_results.csv
 mlflow.db
 mlruns/
 
-# Data folder and its contents
 data/
 
-# Claude Code local state
 .claude/todos/
 .claude/.refactor-edit-count
 
-# Cursor Related files
 .cursor/
 
-# Stray root file (accidental)
-/1
-1
+# Docker
+.docker/
+docker-compose.override.yml
 
-# Task artifacts (generated outputs)
+# Stray root files
+1
+/1
+
 tasks/
 task_channel/
 
-
-# Benchmark data
 .benchmarks/
 
-# --------------------------------------------------------------------------
-# Local developer ignores (not enforced in CI)
-# --------------------------------------------------------------------------
+
+# ==========================================================================
+# LOCAL DEV (NOT ENFORCED IN CI)
+# ==========================================================================
+
 runner.sh
 full_runner.sh
-

@@ -1,3 +1,9 @@
+---
+description: Perform a thorough pre-merge code review of recently modified Python files — lint, types, docstrings, test coverage. Use when the user asks to "review", "code review", or "check my changes" before merging.
+allowed-tools: Read Grep Glob Bash(just *) Bash(git diff:*) Bash(git log:*)
+context: fork
+---
+
 Perform a thorough pre-merge code review of all recently modified Python files.
 
 ## Steps
@@ -8,7 +14,13 @@ Perform a thorough pre-merge code review of all recently modified Python files.
    - `just type` — basedpyright type check; report all errors with file + line
    - `just docs-check` — ruff `--select D` docstring check
 
-2. **Manual symbol scan** — for every `.py` file that was added or modified (use `git diff --name-only`):
+   For detailed guidance on each tool, load the relevant skill:
+   - Linting: `.claude/skills/linting/SKILL.md`
+   - Type checking: `.claude/skills/type-checking/SKILL.md`
+   - Docstrings: `.claude/skills/python-docstrings/SKILL.md`
+
+2. **Manual symbol scan** — for every `.py` file under `src/my_library/` that was
+   added or modified (use `git diff --name-only`):
    - Read the file
    - List every public function, class, and method (names not prefixed with `_`)
    - For each public symbol verify:
@@ -18,14 +30,9 @@ Perform a thorough pre-merge code review of all recently modified Python files.
      - No bare `type: ignore` without an explanatory inline comment
 
 3. **Test coverage sanity** — for each new function or class added, check that a corresponding
-   test exists in `tests/`. If any new public symbol lacks a test, list it explicitly.
-
-4. **Copier template integrity** (if any `.jinja` files changed) — verify that the Jinja2 hook
-   did not surface syntax errors. If it did, list the affected templates.
+   test exists under `tests/`. If any new public symbol lacks a test, list it explicitly.
 
 ## Output format
-
-Produce a concise report:
 
 ```
 ## Code Review Report

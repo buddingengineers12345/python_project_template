@@ -1,3 +1,8 @@
+---
+description: Run the complete standards enforcement suite (lint, types, docstrings, coverage) and produce a consolidated "ready to merge" report. Use when the user asks "am I ready to merge?", "check standards", or "run all checks".
+allowed-tools: Read Grep Glob Bash(just *) Bash(git diff:*)
+---
+
 Run the complete standards enforcement suite and produce a consolidated report.
 
 This is the "am I ready to merge?" command. It runs all checks and aggregates results.

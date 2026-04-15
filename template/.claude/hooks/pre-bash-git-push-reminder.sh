@@ -14,13 +14,13 @@ set -uo pipefail
 
 INPUT=$(cat)
 
-COMMAND=$(python3 - <<'PYEOF'
-import json, sys
+COMMAND=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get("tool_input", {}).get("command", ""))
 PYEOF
-<<<"$INPUT") || { echo "$INPUT"; exit 0; }
+) || { echo "$INPUT"; exit 0; }
 
 if echo "$COMMAND" | grep -qE '^\s*git\s+push\b'; then
     echo "┌─ Reminder: git push must be done manually" >&2

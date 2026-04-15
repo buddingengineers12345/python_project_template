@@ -46,11 +46,13 @@ jobs:
 
       - name: Configure git author
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Commit and push (if changed)
         run: |
+          set -euo pipefail
           git add docs/repo_file_status_report.md assets/file_freshness.json assets/freshness_summary.json assets/freshness_ignore.json
           if git diff --staged --quiet; then
             echo "No freshness changes to commit."

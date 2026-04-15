@@ -14,7 +14,8 @@
 #   2. tests/integration/test_<module>.py
 #   3. tests/e2e/test_<module>.py
 #
-# Exits: 0 = allow  |  2 = block (test file missing)
+# Reference : Custom — project-specific hook, not derived from ECC.
+# Exits     : 0 = allow  |  2 = block (test file missing)
 
 set -uo pipefail
 
@@ -23,7 +24,7 @@ INPUT=$(cat)
 FILE_PATH=$(printf '%s' "$INPUT" | python3 -c '
 import json, sys
 
-data = json.load(sys.stdin)
+data = json.loads(sys.stdin.read())
 print(data.get("tool_input", {}).get("file_path", ""))
 ') || {
     echo "$INPUT"

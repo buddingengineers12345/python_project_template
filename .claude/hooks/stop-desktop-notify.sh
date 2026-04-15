@@ -30,20 +30,20 @@ PROJECT=$(basename "$PWD")
 MESSAGE="Task complete in $PROJECT"
 
 # Try to extract the last assistant message from the transcript for a richer notification
-TRANSCRIPT_PATH=$(python3 - <<'PYEOF'
-import json, sys
+TRANSCRIPT_PATH=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os
 
 try:
-    data = json.loads(sys.stdin.read())
+    data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
     print(data.get("transcript_path", ""))
 except Exception:
     print("")
 PYEOF
-<<<"$INPUT") || true
+) || true
 
 if [[ -n "$TRANSCRIPT_PATH" ]] && [[ -f "$TRANSCRIPT_PATH" ]]; then
     LAST_MSG=$(python3 - "$TRANSCRIPT_PATH" <<'PYEOF'
-import json, sys
+import json, os
 from pathlib import Path
 
 transcript_file = sys.argv[1]

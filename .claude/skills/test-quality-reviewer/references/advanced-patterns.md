@@ -207,15 +207,20 @@ mock.sned_email()  # AttributeError: Mock object has no attribute 'sned_email'
 
 ```
 project/
-├── conftest.py          ← session-level fixtures (DB engine, test client)
 ├── tests/
 │   ├── conftest.py      ← fixtures shared across all test subdirectories
 │   ├── unit/
 │   │   ├── conftest.py  ← fixtures only for unit tests
-│   │   └── test_auth.py
-│   └── integration/
-│       ├── conftest.py  ← fixtures only for integration tests
-│       └── test_api.py
+│   │   ├── test_auth.py
+│   │   └── common/
+│   │       ├── conftest.py  ← fixtures only for common module tests
+│   │       └── test_utils.py
+│   ├── integration/
+│   │   ├── conftest.py  ← fixtures only for integration tests
+│   │   └── test_api.py
+│   └── e2e/
+│       ├── conftest.py  ← fixtures only for e2e tests
+│       └── test_workflows.py
 ```
 
 **Rule of thumb:**

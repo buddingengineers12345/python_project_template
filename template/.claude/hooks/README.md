@@ -218,7 +218,7 @@ exit 0
 | `pre-bash-commit-quality.sh` | PreToolUse | Bash | Secret/debug scan before commit |
 | `pre-bash-coverage-gate.sh` | PreToolUse | Bash | Warn before `git commit` if coverage below threshold |
 | `pre-bash-branch-protection.sh` | PreToolUse | Bash | Block `git push` to main/master |
-| `pre-bash-delete-protection.sh` | PreToolUse | Bash | Block `rm` of critical files |
+| `pre-delete-protection.sh` | PreToolUse | Bash | Block `rm` of critical files |
 | `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/basedpyright config |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
 | `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block if test file missing in `tests/unit/`, `tests/integration/`, or `tests/e2e/` for `src/<pkg>/<module>.py` (strict TDD) |

@@ -1,3 +1,8 @@
+---
+description: Validate that uv.lock is in sync with pyproject.toml and committed. Use when the user asks to "check dependencies", "verify the lockfile", or before releasing.
+allowed-tools: Read Bash(test *) Bash(git ls-files:*) Bash(git diff:*) Bash(stat *) Bash(date *) Bash(uv sync:*)
+---
+
 Validate that `uv.lock` is in sync with `pyproject.toml` and committed.
 
 This command ensures dependencies are reproducible and locked, catching silent drift that

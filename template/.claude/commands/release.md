@@ -1,11 +1,16 @@
-Orchestrate a new release: verify CI, bump version, tag, and push.
+---
+description: Orchestrate a new release — verify CI, bump version, tag, and push to origin. Use when the user asks to "release", "cut a release", "ship a version", or "tag and publish".
+argument-hint: [patch|minor|major|X.Y.Z]
+allowed-tools: Read Bash(git *) Bash(just ci:*) Bash(uv run python scripts/bump_version.py *) Bash(grep *)
+disable-model-invocation: true
+---
 
-This command automates the release workflow for My Library.
+Orchestrate a new release: verify CI, bump version, tag, and push.
 
 ## Prerequisites
 
 - All changes must be committed (no dirty working tree)
-- You must have push access to origin (https://github.com/yourusername/my-library)
+- You must have push access to origin
 - The main/master branch must be up to date with origin
 
 ## Steps
@@ -29,15 +34,17 @@ This command automates the release workflow for My Library.
    - `minor` — new features, backwards compatible (0.1.0 → 0.2.0)
    - `major` — breaking changes (0.1.0 → 1.0.0)
 
-4. **Bump the version** in `pyproject.toml`
+4. **Bump the version** in `pyproject.toml` using the release script
    ```bash
-   # Using sed or a text editor:
-   # Change the version line in [project] section from X.Y.Z to the new version
+   # Bump by type (patch / minor / major):
+   NEW_VERSION="$(uv run python scripts/bump_version.py --bump patch)"
+
+   # Or set an explicit version:
+   NEW_VERSION="$(uv run python scripts/bump_version.py --new-version 1.2.3)"
+
+   echo "New version: ${NEW_VERSION}"
    ```
-   Or use a bump tool if one is configured:
-   ```bash
-   # Option: uv version --version X.Y.Z  (if your project uses uv version)
-   ```
+   The script rewrites `pyproject.toml` in place and prints the new version on stdout.
 
 5. **Verify the version was bumped correctly**
    ```bash
