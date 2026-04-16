@@ -74,6 +74,9 @@ convention = "google"
 [tool.ruff.lint.mccabe]
 max-complexity = 10
 
+[tool.ruff.lint.isort]
+known-first-party = ["scripts"]
+
 [tool.ruff.lint.per-file-ignores]
 "tests/**"   = ["ARG", "T20"]  # print() OK in tests; unused args OK (fixtures); D enforced
 "scripts/**" = ["T20"]  # CLI scripts may use print(); docstrings enforced (D)
@@ -82,7 +85,10 @@ max-complexity = 10
 minversion = "8.0"
 testpaths = ["tests"]
 pythonpath = ["."]  # "." exposes scripts/
-addopts = ["-q", "--strict-markers", "--strict-config"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = ["-q", "--strict-markers", "--strict-config", "--tb=short", "--log-level=WARNING", "-ra"]
 markers = [
     "e2e: End-to-end tests across the full stack or external systems",
     "integration: Tests crossing module boundaries, real I/O, subprocesses, or services",
@@ -90,6 +96,10 @@ markers = [
     "slow: Routinely exceeds ~1s; excluded from default runs (override with -m slow)",
     "smoke: Minimal deploy or health checks on critical paths",
     "unit: Fast isolated tests with boundaries mocked or in-process only",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
 ]
 
 # ==========================================================================
@@ -109,7 +119,7 @@ omit = [
 precision = 2
 show_missing = true
 skip_covered = false
-fail_under = 80
+fail_under = 85
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",

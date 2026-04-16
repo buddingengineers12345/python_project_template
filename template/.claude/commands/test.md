@@ -1,3 +1,8 @@
+---
+description: Run the pytest test suite and report results with failure details. Use when the user asks to "run tests", "run the test suite", or "check if tests pass".
+allowed-tools: Bash(just test:*) Bash(uv run pytest:*)
+---
+
 Run the pytest test suite for this project.
 
 Execute `just test` and then:

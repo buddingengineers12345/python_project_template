@@ -1,0 +1,40 @@
+# Validates PR title (squash-merge default), PR body (template sections), and commit subjects.
+#
+# Skips draft PRs and common automation bots. Mark this job as a required check in branch
+# protection; see docs/github-repository-settings.md.
+name: PR policy
+
+on:
+  # Temporarily disabled: manual runs only.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-policy-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr-policy:
+    if: >-
+      github.event.pull_request.draft == false &&
+      !contains(fromJSON('["dependabot[bot]","renovate[bot]","github-actions[bot]"]'), github.actor)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate PR title and body
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: python3 scripts/pr_commit_policy.py pr
+
+      - name: Validate commit messages
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python3 scripts/pr_commit_policy.py commits

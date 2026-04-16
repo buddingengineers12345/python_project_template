@@ -21,13 +21,13 @@ set -euo pipefail
 
 INPUT=$(cat)
 
-FILE_PATH=$(python3 - <<'PYEOF'
-import json, sys
+FILE_PATH=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get("tool_input", {}).get("file_path", ""))
 PYEOF
-<<<"$INPUT") || exit 0
+) || exit 0
 
 BASENAME=$(basename "$FILE_PATH")
 if [[ "$BASENAME" != "copier.yml" ]]; then

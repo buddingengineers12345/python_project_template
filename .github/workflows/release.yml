@@ -71,7 +71,11 @@ jobs:
 
       - name: Determine version
         id: bump
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_BUMP: ${{ inputs.bump }}
         run: |
+          set -euo pipefail
           # If this workflow was triggered by pushing a tag (vX.Y.Z), use that version.
           if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
             ref="${GITHUB_REF_NAME}"
@@ -83,27 +87,34 @@ jobs:
             exit 1
           fi
 
-          if [ -n "${{ inputs.version }}" ]; then
-            NEW_VERSION="$(uv run --active python scripts/bump_version.py --new-version "${{ inputs.version }}")"
+          if [ -n "${INPUT_VERSION}" ]; then
+            NEW_VERSION="$(uv run --active python scripts/bump_version.py --new-version "${INPUT_VERSION}")"
           else
-            NEW_VERSION="$(uv run --active python scripts/bump_version.py --bump "${{ inputs.bump }}")"
+            NEW_VERSION="$(uv run --active python scripts/bump_version.py --bump "${INPUT_BUMP}")"
+          fi
+          if [ -z "${NEW_VERSION}" ]; then
+            echo "Error: version bump script returned an empty version string" >&2
+            exit 1
           fi
           echo "version=${NEW_VERSION}" >> "${GITHUB_OUTPUT}"
 
       - name: Commit version bump
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
+          set -euo pipefail
           git add pyproject.toml
           git commit -m "chore(release): v${{ steps.bump.outputs.version }}"
 
       - name: Create tag
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
+          set -euo pipefail
           git tag "v${{ steps.bump.outputs.version }}"
 
       - name: Push commit and tag
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
+          set -euo pipefail
           git push origin HEAD
           git push origin "v${{ steps.bump.outputs.version }}"
 

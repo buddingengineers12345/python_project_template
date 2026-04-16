@@ -130,10 +130,14 @@ When you add a new Copier variable or template file:
 
 ## Skipped tests
 
-Some tests are decorated with `@pytest.mark.skip` with explicit reasons:
+Some tests are decorated with conditional skip markers:
 
-- Tests that run the full generated project's CI (too slow for the template test suite).
-- Tests that require `basedpyright` in the generated project's virtualenv.
-- Tests that depend on network access for `uv lock`.
+- **Environment variable-gated tests**: Tests that depend on network access for `uv lock` and
+  full environment setup (slower integration tests). Use `RUN_TEMPLATE_INTEGRATION=1` to opt in
+  when validating a release:
+  - `test_generated_project_uv_lock_and_sync_smoke`
+  - `test_generated_project_uv_sync_docs_with_git_cliff_smoke`
 
-Use `RUN_TEMPLATE_INTEGRATION=1` to opt in to these when validating a release.
+- **Dynamic runtime skips**: Tests that may skip during execution if `copier` cannot check out
+  the template commit in its temp clone (e.g., git partial clone), which is a Copier limitation
+  not a test issue.

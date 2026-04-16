@@ -25,13 +25,13 @@ set -uo pipefail
 INPUT=$(cat)
 
 # Extract file path first (used in error message for the BLOCK case)
-FILE_PATH=$(python3 - <<'PYEOF'
-import json, sys
+FILE_PATH=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get("tool_input", {}).get("file_path", ""))
 PYEOF
-<<<"$INPUT") || { echo "$INPUT"; exit 0; }
+) || { echo "$INPUT"; exit 0; }
 
 BASENAME=$(basename "$FILE_PATH")
 
@@ -42,10 +42,10 @@ case "$BASENAME" in
 esac
 
 # Run protection analysis; outputs: OK | SKIP | BLOCK:<reason> | WARN:<reason>
-CHECK=$(python3 - <<'PYEOF'
-import json, re, sys
+CHECK=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os, re, sys
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 new_content = (
     data.get("tool_input", {}).get("new_string", "")
     or data.get("tool_input", {}).get("content", "")
@@ -83,7 +83,7 @@ if basename in ("pyproject.toml", "pyproject.toml.jinja"):
 
 print("OK")
 PYEOF
-<<<"$INPUT") || { echo "$INPUT"; exit 0; }
+) || { echo "$INPUT"; exit 0; }
 
 case "$CHECK" in
     BLOCK:*)

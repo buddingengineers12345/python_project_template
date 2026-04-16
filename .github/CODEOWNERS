@@ -1,0 +1,6 @@
+# Default owners for the template-created repo
+# Syntax: path @github-username-or-team
+* @github_username
+
+# Owners for source
+/src/ @github_username

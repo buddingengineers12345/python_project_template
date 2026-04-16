@@ -19,13 +19,13 @@ set -euo pipefail
 
 INPUT=$(cat)
 
-FILE_PATH=$(python3 - <<'PYEOF'
-import json, sys
+FILE_PATH=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get("tool_input", {}).get("file_path", ""))
 PYEOF
-<<<"$INPUT")
+)
 
 if [[ "$FILE_PATH" != *.jinja ]] || [[ -z "$FILE_PATH" ]] || [[ ! -f "$FILE_PATH" ]]; then
     exit 0

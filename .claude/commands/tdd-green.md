@@ -1,3 +1,8 @@
+---
+description: Validate the GREEN phase of a TDD cycle — confirm the target test now passes and no regressions were introduced. Use when the user asks to "check GREEN", "verify GREEN phase", or after implementing code to make a failing test pass.
+allowed-tools: Read Bash(just test:*) Bash(uv run pytest:*) Bash(echo *)
+---
+
 Validate the GREEN phase of a TDD cycle: confirm that the previously-failing test now PASSES and no regressions were introduced.
 
 Run the full test suite with `just test`.

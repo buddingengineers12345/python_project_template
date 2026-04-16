@@ -288,7 +288,7 @@ When source files are provided:
 4. **Untested boundary conditions** — min/max, empty collections, zero, None
 5. **Over-tested private internals** — `_method` tests are brittle; suggest testing via public API
 
-**File naming:** `myapp/auth.py` → `tests/test_auth.py` (not `tests/auth_tests.py`). Flag mismatches.
+**File naming:** `myapp/auth.py` → `tests/unit/test_auth.py` (not `tests/auth_tests.py`). Flag mismatches.
 
 ---
 

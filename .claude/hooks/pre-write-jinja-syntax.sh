@@ -23,13 +23,13 @@ set -uo pipefail
 
 INPUT=$(cat)
 
-FILE_PATH=$(python3 - <<'PYEOF'
-import json, sys
+FILE_PATH=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get("tool_input", {}).get("file_path", ""))
 PYEOF
-<<<"$INPUT") || { echo "$INPUT"; exit 0; }
+) || { echo "$INPUT"; exit 0; }
 
 # Only process .jinja files
 if [[ "$FILE_PATH" != *.jinja ]] || [[ -z "$FILE_PATH" ]]; then
@@ -38,13 +38,13 @@ if [[ "$FILE_PATH" != *.jinja ]] || [[ -z "$FILE_PATH" ]]; then
 fi
 
 # Extract the file content from tool_input.content
-CONTENT=$(python3 - <<'PYEOF'
-import json, sys
+CONTENT=$(CLAUDE_HOOK_INPUT="$INPUT" python3 - <<'PYEOF'
+import json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get("tool_input", {}).get("content", ""))
 PYEOF
-<<<"$INPUT") || { echo "$INPUT"; exit 0; }
+) || { echo "$INPUT"; exit 0; }
 
 if [[ -z "$CONTENT" ]]; then
     echo "$INPUT"
@@ -52,10 +52,10 @@ if [[ -z "$CONTENT" ]]; then
 fi
 
 # Validate the Jinja2 syntax with the same extensions Copier uses
-RESULT=$(python3 - <<'PYEOF'
-import sys
+RESULT=$(JINJA_CONTENT="$CONTENT" python3 - <<'PYEOF'
+import os, sys
 
-content = sys.argv[1] if len(sys.argv) > 1 else ""
+content = os.environ.get("JINJA_CONTENT", "")
 
 try:
     from jinja2 import Environment, TemplateSyntaxError
@@ -76,7 +76,7 @@ except TemplateSyntaxError as exc:
 except ImportError as exc:
     print(f"SKIP:Jinja2 not importable: {exc}")
 PYEOF
-"$CONTENT") || { echo "$INPUT"; exit 0; }
+) || { echo "$INPUT"; exit 0; }
 
 case "$RESULT" in
     OK)

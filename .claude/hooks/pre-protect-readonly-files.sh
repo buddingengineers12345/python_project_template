@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Claude PreToolUse hook — Write|Edit|MultiEdit
-# Block direct edits to files listed in assets/protected_files.csv.
+# Block direct edits to files listed in .claude/hooks/protected_files.csv.
 #
-# CSV format (assets/protected_files.csv):
+# CSV format (.claude/hooks/protected_files.csv):
 #   Column 1  (filepath)       — repo-relative path; hook matches on the basename
 #   Column 4  (ai_can_modify)  — "never" triggers the block
 #   Column 12 (reason)         — shown in the block message
@@ -10,11 +10,14 @@
 # Rows starting with # are comments and are skipped.
 # The header row (filepath,...) is also skipped.
 #
-# To protect a new file: add a row to assets/protected_files.csv.
+# To protect a new file: add a row to .claude/hooks/protected_files.csv.
 # To unprotect a file:   remove its row from that CSV.
 # Never edit this hook script to manage the list.
 #
 # Exits: 0 = allow  |  2 = block
+#
+# Reference : Custom — project-specific hook, not derived from ECC.
+# Exits     : 0 = allow  |  2 = block (protected file)
 
 set -uo pipefail
 
@@ -22,14 +25,14 @@ INPUT=$(cat)
 
 # Parse file_path from the JSON payload; pipe INPUT so heredoc/stdin don't conflict
 FILE_PATH=$(printf '%s' "$INPUT" | python3 -c "
-import json, sys
-data = json.loads(sys.stdin.read())
+import json, os
+data = json.loads(os.environ["CLAUDE_HOOK_INPUT"])
 print(data.get('tool_input', {}).get('file_path', ''))
 ") || { printf '%s' "$INPUT"; exit 0; }
 
 BASENAME=$(basename "$FILE_PATH")
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-CSV="${REPO_ROOT}/assets/protected_files.csv"
+CSV="${REPO_ROOT}/.claude/hooks/protected_files.csv"
 
 if [[ ! -f "$CSV" ]]; then
     # CSV missing — fail open so development is not blocked
@@ -77,7 +80,7 @@ if [[ "$RESULT" == BLOCK:* ]]; then
     printf '│  and commit via the normal review process.\n' >&2
     printf '│\n' >&2
     printf '│  To change the protected-files list, edit (with human review):\n' >&2
-    printf '│    assets/protected_files.csv\n' >&2
+    printf '│    .claude/hooks/protected_files.csv\n' >&2
     printf '└─\n' >&2
     exit 2
 fi

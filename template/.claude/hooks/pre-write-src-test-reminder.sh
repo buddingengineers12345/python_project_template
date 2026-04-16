@@ -18,7 +18,7 @@ INPUT=$(cat)
 FILE_PATH=$(printf '%s' "$INPUT" | python3 -c '
 import json, sys
 
-data = json.load(sys.stdin)
+data = json.loads(sys.stdin.read())
 print(data.get("tool_input", {}).get("file_path", ""))
 ') || {
     echo "$INPUT"

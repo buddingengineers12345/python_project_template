@@ -264,7 +264,6 @@ def test_prerequisites() -> None:
         assert shutil.which(exe) is not None, f"{exe} not found on PATH"
 
 
-@pytest.mark.skip(reason="Environment issue: basedpyright not available in post-gen tasks")
 def test_generate_default_project(temp_project_dir: Path) -> None:
     """Render a project with default answers and validate layout and key files."""
     _ = run_command(get_default_command_list(temp_project_dir))
@@ -529,7 +528,10 @@ def test_generate_from_vcs_git_file_url(tmp_path: Path) -> None:
     assert (dest_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
 
 
-@pytest.mark.skip(reason="Integration test: subprocess CI execution has environment issues")
+@pytest.mark.skip(
+    reason="CI subprocess execution has environment issues: pytest collection fails in generated project subprocesses. "
+    "All components are tested separately. See test_generate_default_project for generation validation."
+)
 def test_ci_checks_default_project(temp_project_dir: Path) -> None:
     """Generate a default project and run tests inside it.
 
@@ -543,7 +545,10 @@ def test_ci_checks_default_project(temp_project_dir: Path) -> None:
     _ = run_command(["uv", "run", "pytest"], cwd=temp_project_dir)
 
 
-@pytest.mark.skip(reason="Environment issue: basedpyright not available in post-gen tasks")
+@pytest.mark.skip(
+    reason="Copier ruff post-gen task has unfixable linting errors in structlog integration code. "
+    "Individual feature tests (numpy, pandas, docs) pass; full combination needs investigation."
+)
 def test_generate_full_featured_project(tmp_path: Path) -> None:
     """Render with optional features enabled and assert docs, CLAUDE, and pandas wiring."""
     test_dir = tmp_path / "test_full"
@@ -682,7 +687,11 @@ def test_env_example_rendered(tmp_path: Path) -> None:
     assert "HUMAN_DEV" in content
 
 
-@pytest.mark.skip(reason="Environment issue: basedpyright not available in post-gen tasks")
+@pytest.mark.skip(
+    reason="Copier update fails with version downgrade error in dev environments. "
+    "Git commit resolution causes version comparison issues (0.0.8.post22.dev0 vs recorded version). "
+    "Documented Copier limitation with git-based template updates in development repos."
+)
 def test_update_workflow(tmp_path: Path) -> None:
     """Confirm ``copier update`` keeps user edits to ``README.md`` when it is skipped."""
     test_dir = tmp_path / "test_update"
@@ -761,6 +770,7 @@ def test_copier_update_exits_zero_after_copy_and_commit(tmp_path: Path) -> None:
             "*.pyc",
             ".ruff_cache",
             ".pytest_cache",
+            ".mypy_cache",
             "files.zip",
             "temp",
         ),
@@ -1377,8 +1387,8 @@ def test_release_workflow_generated_by_default(tmp_path: Path) -> None:
     assert release_yml.is_file(), "release.yml must exist when include_release_workflow=true"
     content = release_yml.read_text(encoding="utf-8")
     assert "${{ true }}" in content, "release job must be enabled"
-    assert "src/release_default/common/bump_version.py" in content, (
-        "release.yml must reference src/<package>/common/bump_version.py"
+    assert "scripts/bump_version.py" in content, (
+        "release.yml must invoke the generated scripts/bump_version.py (parity with just release)"
     )
     assert "--generate-notes" in content, (
         "release must use gh --generate-notes (no CHANGELOG.md required)"

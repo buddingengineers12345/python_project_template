@@ -13,16 +13,19 @@ Logging conventions used here:
 
 from __future__ import annotations
 
-from typing import TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 import structlog
 
-{% if include_numpy %}
-import numpy as np
-import numpy.typing as npt
-{% endif %}
-{% if include_pandas_support %}
-import pandas as pd
+{% if include_numpy or include_pandas_support %}
+if TYPE_CHECKING:
+{%- if include_numpy %}
+    import numpy as np
+    import numpy.typing as npt
+{%- endif %}
+{%- if include_pandas_support %}
+    import pandas as pd
+{%- endif %}
 {% endif %}
 
 log = structlog.get_logger()

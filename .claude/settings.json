@@ -1,9 +1,11 @@
 {
+  "plansDirectory": ".claude/plans/",
   "permissions": {
     "allow": [
       "Bash(just:*)",
       "Bash(uv:*)",
       "Bash(copier:*)",
+      "Bash(gh:*)",
       "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",

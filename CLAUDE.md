@@ -72,7 +72,8 @@ Prerequisites: Python 3.11+, `uv`, `just`, `git`.
 | Re-run last failed tests | `just test-lf` |
 | Re-run last failed tests (max verbosity) | `just test-failed-verbose` |
 | Stop on first test failure | `just test-first-fail` |
-| CI-style tests + coverage XML | `just test-ci` |
+| CI-style tests + coverage XML (3.11 only) | `just test-ci` |
+| Full tests.yml Python matrix (3.11–3.13) | `just test-ci-matrix` |
 | Coverage report | `just coverage` |
 | Lint | `just lint` |
 | Lint changed files only | `just lint-changed` |
@@ -116,8 +117,8 @@ just ci
 This runs: `fix` → `check`.
 
 `check` bundles: `uv sync --frozen`, `fmt-check`, `ruff check`, `basedpyright`,
-`sync-check`, `docs-check` (D-only; redundant with `ruff check` for enforcement), `test-ci`
-(pytest + coverage XML), `pre-commit run --all-files --verbose`, `audit` (pip-audit).
+`sync-check`, `docs-check` (D-only; redundant with `ruff check` for enforcement), `test-ci-matrix`
+(same pytest commands as `tests.yml` for 3.11/3.12/3.13), `pre-commit run --all-files --verbose`, `audit` (pip-audit).
 
 Together, `lint.yml` + `tests.yml` + `security.yml` mirror these checks on GitHub (CodeQL is
 GHA-only). All steps must pass before a PR is mergeable.

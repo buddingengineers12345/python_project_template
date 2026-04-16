@@ -1,0 +1,40 @@
+# Dependency review workflow — scans dependency changes in PRs for known vulnerabilities
+# and license compliance issues before they are merged.
+#
+# References:
+#   About dependency review:    https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review
+#   Configuring the action:     https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/configuring-the-dependency-review-action
+#   Security hardening:         https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions
+#   Workflow permissions:       https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+name: Dependency Review
+
+on:
+  pull_request:
+    branches: [main, master]
+
+# contents:read is sufficient — the action only reads the dependency graph.
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-review-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-review:
+    name: Review Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          # Retry if the snapshot is not yet available (can happen on first push).
+          # See: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/configuring-the-dependency-review-action
+          retry-on-snapshot-warnings: true
+          # Only allow OSI-approved permissive/copyleft licenses used in this project.
+          allow-licenses: >-
+            MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, PSF-2.0,
+            MIT-0, LGPL-2.1, LGPL-3.0, MPL-2.0

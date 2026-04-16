@@ -1,0 +1,52 @@
+# Stale issues/PRs workflow — labels issues and PRs that have had no activity for
+# 60 days and closes them after a further 7 days of inactivity.
+#
+# References:
+#   actions/stale:        https://github.com/actions/stale
+#   Closing inactive issues tutorial: https://docs.github.com/en/actions/use-cases-and-examples/project-management/closing-inactive-issues
+#   Workflow permissions: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+name: Stale Issues
+
+on:
+  schedule:
+    - cron: "0 2 * * *"  # Daily at 02:00 UTC
+  workflow_dispatch:
+
+# issues:write + pull-requests:write are the minimum permissions to label and close.
+permissions:
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: stale-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v10
+        with:
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has not had
+            any activity for 60 days. It will be closed in 7 days if no further
+            activity occurs. Thank you for your contributions.
+          stale-pr-message: >
+            This pull request has been automatically marked as stale because it has
+            not had any activity for 60 days. It will be closed in 7 days if no
+            further activity occurs.
+          close-issue-message: >
+            This issue was closed automatically after being stale for 7 days with no
+            activity. Feel free to re-open if still relevant.
+          close-pr-message: >
+            This pull request was closed automatically after being stale for 7 days
+            with no activity.
+          days-before-stale: 60
+          days-before-close: 7
+          stale-issue-label: stale
+          stale-pr-label: stale
+          exempt-issue-labels: "pinned,security,blocked"
+          exempt-pr-labels: "pinned,security,blocked"
+          # Skip draft PRs — they are actively being worked on and should not be closed.
+          # Ref: https://github.com/actions/stale#exempt-draft-pr
+          exempt-draft-pr: true

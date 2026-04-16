@@ -1,9 +1,11 @@
 {
+  "plansDirectory": ".claude/plans/",
   "permissions": {
     "allow": [
       "Bash(just:*)",
       "Bash(uv:*)",
       "Bash(copier:*)",
+      "Bash(gh:*)",
       "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
@@ -22,6 +24,18 @@
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-start-bootstrap.sh"
+          }
+        ],
+        "description": "Display project status, toolchain versions, and previous session snapshot on startup"
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -92,6 +106,46 @@
           }
         ],
         "description": "Coverage gate: warn before git commit if test coverage is below 85%"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-delete-protection.sh"
+          }
+        ],
+        "description": "Block rm of critical files: pyproject.toml, justfile, CLAUDE.md, .pre-commit-config.yaml, .copier-answers.yml, uv.lock, .claude/settings.json"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-branch-protection.sh"
+          }
+        ],
+        "description": "Block git push to main/master branches — use feature branches and PRs"
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-write-doc-file-warning.sh"
+          }
+        ],
+        "description": "Block writing .md files outside docs/ (pre-flight — prevents the wrong location)"
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-suggest-compact.sh"
+          }
+        ],
+        "description": "Suggest /compact every ~50 edit/write operations to prevent context degradation"
       }
     ],
     "PostToolUse": [
@@ -124,6 +178,98 @@
           }
         ],
         "description": "TDD refactor guard: remind to run tests after multiple src/ edits"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-bash-test-coverage-reminder.sh"
+          }
+        ],
+        "description": "After pytest/just test runs, surface modules below 85% coverage"
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-write-test-structure.sh"
+          }
+        ],
+        "description": "After creating test files, check for test_ functions, no unittest.TestCase, and proper pytest markers"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-bash-pr-created.sh"
+          }
+        ],
+        "description": "Log PR URL and suggest gh review commands after gh pr create succeeds"
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-compact-save-state.sh"
+          }
+        ],
+        "description": "Snapshot git status and modified files before context compaction"
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-session-end.sh",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Persist session state (branch, session_id, transcript_path) after each response"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-desktop-notify.sh",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Send macOS desktop notification with task summary when Claude finishes responding"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-cost-tracker.sh",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Append a lightweight token/cost metrics entry to ~/.claude/cost-log/ after each turn"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-evaluate-session.sh",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "Extract reusable patterns (hot files, block events) into ~/.claude/patterns/"
       }
     ]
   }
