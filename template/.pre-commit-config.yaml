@@ -17,20 +17,21 @@ repos:
         entry: found Copier update rejection files; review and remove them before committing.
         language: fail
         files: \.rej$
+
       - id: ruff-format
         name: Ruff Format
-        entry: uv run ruff format
+        entry: uv run ruff format --quiet
         language: system
         types: [python]
-        pass_filenames: true
+        pass_filenames: false
         stages: [pre-commit]
 
       - id: ruff-check
         name: Ruff Lint (auto-fix)
-        entry: uv run ruff check --fix --exit-non-zero-on-fix
+        entry: uv run ruff check --fix --exit-non-zero-on-fix --quiet
         language: system
         types: [python]
-        pass_filenames: true
+        pass_filenames: false
         stages: [pre-commit]
 
       - id: basedpyright

@@ -2,9 +2,11 @@
 # Justfile for {{ project_name }}
 #
 # Usage:
-#   just            # list commands
-#   just ci         # run full CI locally
-#   just test       # run tests
+#   just             # list commands
+#   just sync        # install dev deps for this template repo
+#   just test        # run template tests (pytest)
+#   just lint        # ruff lint this repo
+#   just fmt         # ruff format this repo
 # ==========================================================================
 
 # Always show commands if no recipe is given
@@ -24,27 +26,27 @@ _set_env:
 # -------------------------------------------------------------------------
 
 fmt:
-    @uv run ruff format src tests
+    @uv run ruff format .
 
 lint:
-    @uv run ruff check src tests
+    @uv run ruff check .
 
 # Lint only changed (unstaged+staged) Python files — fast feedback loop
 lint-changed:
     @uv run ruff check $(git diff --name-only -- '*.py')
 
 fix:
-    @uv run ruff format src tests
-    @uv run ruff check --fix src tests
+    @uv run ruff format .
+    @uv run ruff check --fix .
 
 # Format check (read-only) — matches GitHub Actions
 fmt-check:
-    @uv run ruff format --check src tests
+    @uv run ruff format --check .
 
-# Check docstring coverage on all source Python files (Google style, D rules)
+# Check docstring coverage 
 docs-check:
     @echo "=== Docstring coverage check ==="
-    @uv run ruff check --select D src
+    @uv run ruff check --select D .
     @echo "✓ Docstring check complete"
 
 # Run all static analysis + docstring checks (pre-merge review)
@@ -146,7 +148,13 @@ cz-commit:
     @uv run cz commit
 
 precommit:
-    @uv run pre-commit run --all-files --verbose
+    @uv run pre-commit run --all-files
+
+# Dependency audit matching .github/workflows/security.yml (pip-audit).
+# Uses ``uv run --with pip-audit`` so the tool runs with the project Python (``uv tool run``/``uvx``
+# can pick a different interpreter whose venv ``ensurepip`` fails on some hosts).
+audit:
+    @uv export --frozen --format requirements-txt --extra dev | uv run --with pip-audit pip-audit --requirement /dev/stdin
 
 # -------------------------------------------------------------------------
 # Dependency management
@@ -253,8 +261,9 @@ clean:
 check:
     @uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}{% if include_git_cliff %} --group changelog{% endif %}
     @just fmt-check
-    @uv run ruff check src tests
+    @uv run ruff check .
     @uv run basedpyright
+    @just sync-check
     @just docs-check
     @just test-ci
     @uv run pre-commit run --all-files --verbose
@@ -262,6 +271,28 @@ check:
 ci:
     @just fix
     @just check
+
+# -------------------------------------------------------------------------
+# Doctor / Diagnostics
+# -------------------------------------------------------------------------
+
+doctor:
+    @echo "=== Environment ==="
+    @python --version
+    @uv --version
+    @echo ""
+    @echo "=== Python Tools ==="
+    @uv run ruff --version
+    @uv run basedpyright --version || echo "basedpyright not installed"
+    @uv run pytest --version
+    @uv run cz version || echo "commitizen installed"
+    @echo ""
+    @echo "=== System Tools ==="
+    @git-cliff --version || echo "⚠️  git-cliff not found (required for 'just release')"
+    @echo ""
+    @echo "=== Project ==="
+    @echo "Package: {{ package_name }}"
+    @echo "Python: >= {{ python_min_version }}"
 
 # -------------------------------------------------------------------------
 # Release & Versioning
@@ -334,25 +365,3 @@ release BUMP_TYPE="patch":
 
     @echo "✅ Release complete!"
     @git describe --tags --abbrev=0
-
-# -------------------------------------------------------------------------
-# Doctor / Diagnostics
-# -------------------------------------------------------------------------
-
-doctor:
-    @echo "=== Environment ==="
-    @python --version
-    @uv --version
-    @echo ""
-    @echo "=== Python Tools ==="
-    @uv run ruff --version
-    @uv run basedpyright --version || echo "basedpyright not installed"
-    @uv run pytest --version
-    @uv run cz version || echo "commitizen installed"
-    @echo ""
-    @echo "=== System Tools ==="
-    @git-cliff --version || echo "⚠️  git-cliff not found (required for 'just release')"
-    @echo ""
-    @echo "=== Project ==="
-    @echo "Package: {{ package_name }}"
-    @echo "Python: >= {{ python_min_version }}"

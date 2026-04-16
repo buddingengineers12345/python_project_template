@@ -42,7 +42,7 @@ fix:
 fmt-check:
     @uv run ruff format --check .
 
-# Check docstring coverage on all non-test Python files
+# Check docstring coverage 
 docs-check:
     @echo "=== Docstring coverage check ==="
     @uv run ruff check --select D .
@@ -119,8 +119,13 @@ test-integration:
 test-failed-verbose:
     @uv run pytest --lf -vv
 
+# Run tests with coverage report (full HTML/XML/term output)
 coverage:
-    @uv run pytest --cov --cov-report=term-missing --cov-report=xml
+    @uv run pytest tests/ \
+        --cov \
+        --cov-report=term-missing \
+        --cov-report=html \
+        --cov-report=xml
 
 # Test command matching GitHub CI (3.11 matrix leg in .github/workflows/tests.yml)
 test-ci:
@@ -159,13 +164,14 @@ precommit-install:
     @uv run pre-commit install --hook-type pre-push
     @uv run pre-commit install --hook-type commit-msg
     @git config commit.template "$(git rev-parse --show-toplevel)/.gitmessage"
+    @echo "✓ Hooks installed, .gitmessage template configured"
 
 # Interactive conventional commit (Commitizen); alternative to `git commit`.
 cz-commit:
     @uv run cz commit
 
 precommit:
-    @uv run pre-commit run --all-files --verbose
+    @uv run pre-commit run --all-files
 
 # Dependency audit matching .github/workflows/security.yml (pip-audit).
 # Uses ``uv run --with pip-audit`` so the tool runs with the project Python (``uv tool run``/``uvx``
@@ -182,7 +188,7 @@ sync: _set_env
 
 update:
     @uv lock --upgrade
-    @uv sync --frozen --extra dev
+    @just sync
 
 # Check for outdated dependencies
 deps-outdated:
@@ -297,40 +303,6 @@ doctor:
     @echo "Python: >= 3.11"
 
 # -------------------------------------------------------------------------
-# Repo automation
-# -------------------------------------------------------------------------
-
-# Generate repo freshness dashboard + JSON artifacts
-freshness:
-    @uv run python scripts/repo_file_freshness.py
-
-# Validate root/template sync map and parity checks
-sync-check:
-    @uv run python scripts/check_root_template_sync.py
-
-# Print a conventional PR title + PR body (template + git log) for pr-policy compliance
-pr-draft:
-    @uv run python scripts/pr_commit_policy.py draft
-
-# -------------------------------------------------------------------------
-# SDLC: Task management
-# -------------------------------------------------------------------------
-
-# Validate a task YAML against Definition of Ready
-dor-check TASK_ID:
-    python3 .claude/skills/sdlc-workflow/scripts/validate_dor.py tasks/{{TASK_ID}}.yaml
-
-# List all tasks and their statuses
-tasks:
-    @echo "Task ID       Status        Title"
-    @echo "----------    ----------    -----"
-    @python3 -c "import yaml; from pathlib import Path; [print(f\"{d['task_id']:<14}{d['status']:<14}{d['title']}\") for p in sorted(Path('tasks').glob('TASK_*.yaml')) if (d := yaml.safe_load(p.read_text()))]"
-
-# Run pre-flight checks before starting SDLC pipeline
-preflight TASK_ID:
-    bash .claude/skills/sdlc-workflow/scripts/preflight.sh {{TASK_ID}}
-
-# -------------------------------------------------------------------------
 # Release & Versioning
 # -------------------------------------------------------------------------
 
@@ -401,3 +373,37 @@ release BUMP_TYPE="patch":
 
     @echo "✅ Release complete!"
     @git describe --tags --abbrev=0
+
+# -------------------------------------------------------------------------
+# Repo automation
+# -------------------------------------------------------------------------
+
+# Generate repo freshness dashboard + JSON artifacts
+freshness:
+    @uv run python scripts/repo_file_freshness.py
+
+# Validate root/template sync map and parity checks
+sync-check:
+    @uv run python scripts/check_root_template_sync.py
+
+# Print a conventional PR title + PR body (template + git log) for pr-policy compliance
+pr-draft:
+    @uv run python scripts/pr_commit_policy.py draft
+
+# -------------------------------------------------------------------------
+# SDLC: Task management
+# -------------------------------------------------------------------------
+
+# Validate a task YAML against Definition of Ready
+dor-check TASK_ID:
+    python3 .claude/skills/sdlc-workflow/scripts/validate_dor.py tasks/{{TASK_ID}}.yaml
+
+# List all tasks and their statuses
+tasks:
+    @echo "Task ID       Status        Title"
+    @echo "----------    ----------    -----"
+    @python3 -c "import yaml; from pathlib import Path; [print(f\"{d['task_id']:<14}{d['status']:<14}{d['title']}\") for p in sorted(Path('tasks').glob('TASK_*.yaml')) if (d := yaml.safe_load(p.read_text()))]"
+
+# Run pre-flight checks before starting SDLC pipeline
+preflight TASK_ID:
+    bash .claude/skills/sdlc-workflow/scripts/preflight.sh {{TASK_ID}}
