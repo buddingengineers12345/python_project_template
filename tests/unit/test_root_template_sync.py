@@ -712,15 +712,15 @@ def test_resolve_repo_root_with_explicit_path() -> None:
 def test_resolve_repo_root_with_none() -> None:
     """``_resolve_repo_root`` uses script parent when arg is None."""
     result = crs._resolve_repo_root(None)
-    # Should be parent of scripts directory
-    assert "python_starter_template" in str(result) or "scripts" in str(result.parent)
+    # Should be parent of scripts directory; check for repo root markers
+    assert (result / "copier.yml").exists() or (result / "justfile").exists()
 
 
 def test_resolve_repo_root_with_empty_string() -> None:
     """``_resolve_repo_root`` uses script parent when arg is empty string."""
     result = crs._resolve_repo_root("")
-    # Should be parent of scripts directory
-    assert "python_starter_template" in str(result) or "scripts" in str(result.parent)
+    # Should be parent of scripts directory; check for repo root markers
+    assert (result / "copier.yml").exists() or (result / "justfile").exists()
 
 
 # ============================================================================
