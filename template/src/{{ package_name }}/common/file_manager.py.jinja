@@ -1,0 +1,48 @@
+"""Small filesystem helpers for JSON and Markdown files.
+
+Functions accept path-like inputs and use UTF-8 encoding. They are suitable for
+configuration snippets and documentation fragments loaded at runtime.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any, cast
+
+
+def load_json(file_path: str | Path) -> dict[str, Any]:
+    """Parse a JSON object from a UTF-8 encoded file.
+
+    Args:
+        file_path: Path to a JSON document.
+
+    Returns:
+        The top-level JSON object as a dictionary.
+
+    Raises:
+        FileNotFoundError: If ``file_path`` does not exist.
+        json.JSONDecodeError: If the file is not valid JSON.
+    """
+    path = Path(file_path)
+    with path.open(encoding="utf-8") as handle:
+        data = json.load(handle)
+        return cast("dict[str, Any]", data)
+
+
+def load_markdown(file_path: str | Path) -> str:
+    """Read a Markdown file and return its text.
+
+    Args:
+        file_path: Path to a UTF-8 text file.
+
+    Returns:
+        Full file contents as a string.
+
+    Raises:
+        FileNotFoundError: If ``file_path`` does not exist.
+        UnicodeDecodeError: If the bytes are not valid UTF-8.
+    """
+    path = Path(file_path)
+    with path.open(encoding="utf-8") as handle:
+        return handle.read()

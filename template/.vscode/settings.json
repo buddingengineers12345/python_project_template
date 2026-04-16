@@ -1,0 +1,103 @@
+{
+  // ============================================================
+  // Editor Behavior
+  // ============================================================
+  "editor.formatOnSave": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  // Visual line guidance (must match Ruff)
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 100,
+  "editor.rulers": [100],
+  "editor.trimAutoWhitespace": true,
+  "editor.wrappingStrategy": "advanced",
+  "editor.minimap.enabled": false,
+  // ============================================================
+  // Python: Interpreter & Environment
+  // ============================================================
+  // uv-managed virtual environment
+  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.terminal.activateEnvironment": true,
+  // ============================================================
+  // Python: Formatting & Linting (Ruff-only)
+  // ============================================================
+  // Disable legacy tools explicitly
+  "python.formatting.provider": "none",
+  "python.linting.enabled": false,
+  // Ruff extension settings
+  "ruff.enable": true,
+  "ruff.organizeImports": true,
+  "ruff.fixAll": true,
+  // Let Ruff read configuration from pyproject.toml
+  "ruff.configurationPreference": "pyproject",
+  // ============================================================
+  // Python: Testing
+  // ============================================================
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.pytestArgs": ["tests"],
+  // ============================================================
+  // Copilot Optimization
+  // ============================================================
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": true,
+    "yaml": true
+  },
+  // Encourage explicitness in suggestions
+  "editor.inlineSuggest.enabled": true,
+  // ============================================================
+  // File Hygiene
+  // ============================================================
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
+    "**/.mypy_cache": true,
+    "**/.coverage": true,
+    "**/htmlcov": true
+  },
+  "search.exclude": {
+    "**/__pycache__": true,
+    "**/.venv": true,
+    "**/.ruff_cache": true,
+    "**/.pytest_cache": true
+  },
+  // ============================================================
+  // JSON / YAML / TOML (Template-heavy repo friendliness)
+  // ============================================================
+  "[json]": {
+    "editor.formatOnSave": false
+  },
+  "[yaml]": {
+    "editor.formatOnSave": false
+  },
+  "[toml]": {
+    "editor.formatOnSave": false
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "never",
+      "source.organizeImports": "never"
+    }
+  },
+  "python.languageServer": "None",
+  "python.analysis.typeCheckingMode": "off",
+  // ============================================================
+  // macOS: silence uv "Ignoring `SSL_CERT_DIR`" when the variable
+  // points at a directory with no PEM certs (e.g. /etc/ssl/certs).
+  // Empty value lets uv use its default trust store. If you rely on
+  // a custom bundle, prefer SSL_CERT_FILE to a single PEM file instead.
+  // ============================================================
+  "terminal.integrated.env.osx": {
+    "SSL_CERT_DIR": ""
+  }
+}

@@ -84,9 +84,7 @@ def _now_utc_from_env() -> datetime:
         return _now_utc()
     dt = _parse_git_iso_datetime(raw)
     if dt is None:
-        logger.warning(
-            f"invalid FRESHNESS_NOW_ISO (expected ISO-8601): {raw!r}"
-        )
+        logger.warning(f"invalid FRESHNESS_NOW_ISO (expected ISO-8601): {raw!r}")
         return _now_utc()
     return dt
 
@@ -219,9 +217,7 @@ def load_ignore_config(path: Path) -> IgnoreConfig:
         v = raw.get(key, [])
         if isinstance(v, list) and all(isinstance(x, str) for x in v):
             return cast("list[str]", v)
-        logger.warning(
-            f"ignore key {key!r} must be a list[str]: {path}"
-        )
+        logger.warning(f"ignore key {key!r} must be a list[str]: {path}")
         return []
 
     files = frozenset(x.strip().replace("\\", "/") for x in get_list("files") if x.strip())

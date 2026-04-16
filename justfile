@@ -80,7 +80,7 @@ test:
     @uv run pytest tests/
 
 # Run only slow tests
-slow:
+test-slow:
     @uv run pytest tests/ -m slow
 
 # Run tests in parallel with minimal output
@@ -122,9 +122,33 @@ test-failed-verbose:
 coverage:
     @uv run pytest --cov --cov-report=term-missing --cov-report=xml
 
-# Test command matching GitHub CI (3.11 path in .github/workflows/tests.yml)
+# Test command matching GitHub CI (3.11 matrix leg in .github/workflows/tests.yml)
 test-ci:
     @uv run pytest -q --cov --cov-report=xml --cov-report=term-missing
+
+# Full tests.yml matrix (3.11 with coverage; 3.12/3.13 with pytest -q only).
+# 3.11 uses the default project .venv (same as `test-ci`). 3.12/3.13 use
+# UV_PROJECT_ENVIRONMENT so those syncs do not replace .venv.
+test-ci-matrix:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    ROOT="$(git rev-parse --show-toplevel)"
+    cd "$ROOT"
+    uv python install 3.11 3.12 3.13
+    echo "=== Python 3.11 + coverage (tests.yml matrix) ==="
+    unset UV_PROJECT_ENVIRONMENT
+    uv sync --frozen --extra dev --python 3.11
+    uv run pytest -q --cov --cov-report=xml --cov-report=term-missing
+    for py in 3.12 3.13; do
+      echo "=== Python ${py} (tests.yml matrix) ==="
+      suffix="${py//./}"
+      export UV_PROJECT_ENVIRONMENT="${ROOT}/.venv-ci-${suffix}"
+      uv sync --frozen --extra dev --python "${py}"
+      uv run pytest -q
+    done
+    unset UV_PROJECT_ENVIRONMENT
+    uv sync --frozen --extra dev --python 3.11
+    echo "✓ Restored default .venv (Python 3.11)"
 
 # -------------------------------------------------------------------------
 # Pre-commit
@@ -234,7 +258,7 @@ clean:
 # CI (local mirror of GitHub Actions)
 # -------------------------------------------------------------------------
 
-# Read-only mirror of GitHub Actions lint/test/security steps
+# Read-only mirror of GitHub Actions: lint.yml + tests.yml matrix + pip-audit (CodeQL/dep-review are GHA-only).
 check:
     @uv sync --frozen --extra dev
     @just fmt-check
@@ -242,7 +266,7 @@ check:
     @uv run basedpyright
     @just sync-check
     @just docs-check
-    @just test-ci
+    @just test-ci-matrix
     @uv run pre-commit run --all-files --verbose
     @just audit
 

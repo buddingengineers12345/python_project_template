@@ -34,16 +34,11 @@ TEMPLATE_PATH_TO_SKIP_ENTRY: dict[str, str] = {
     "template/pyproject.toml.jinja": "pyproject.toml",
     "template/mkdocs.yml.jinja": "mkdocs.yml",
     "template/src/{{ package_name }}/__init__.py.jinja": "src/{{ package_name }}/__init__.py",
-    "template/.github/PULL_REQUEST_TEMPLATE.md.jinja":
-        ".github/PULL_REQUEST_TEMPLATE.md",
-    "template/.github/CODE_OF_CONDUCT.md.jinja":
-        ".github/CODE_OF_CONDUCT.md",
-    "template/.github/ISSUE_TEMPLATE/bug_report.md.jinja":
-        ".github/ISSUE_TEMPLATE/bug_report.md",
-    "template/.github/ISSUE_TEMPLATE/feature_request.md.jinja":
-        ".github/ISSUE_TEMPLATE/feature_request.md",
-    "template/src/{{ package_name }}/common/bump_version.py.jinja":
-        "src/{{ package_name }}/common/bump_version.py",
+    "template/.github/PULL_REQUEST_TEMPLATE.md.jinja": ".github/PULL_REQUEST_TEMPLATE.md",
+    "template/.github/CODE_OF_CONDUCT.md.jinja": ".github/CODE_OF_CONDUCT.md",
+    "template/.github/ISSUE_TEMPLATE/bug_report.md.jinja": ".github/ISSUE_TEMPLATE/bug_report.md",
+    "template/.github/ISSUE_TEMPLATE/feature_request.md.jinja": ".github/ISSUE_TEMPLATE/feature_request.md",
+    "template/src/{{ package_name }}/common/bump_version.py.jinja": "src/{{ package_name }}/common/bump_version.py",
 }
 
 # Always include these (user customization hotspots even if not in the map above).
@@ -210,11 +205,11 @@ def main(argv: list[str] | None = None) -> int:
         logger.info("_skip_if_exists is up to date")
         return 0
 
-    logger.warning("drift detected")
+    logger.error("drift detected")
     for label, items in ("current", current), ("desired", desired):
-        logger.info(f"{label}:")
+        logger.error(f"  {label}:")
         for item in items:
-            logger.info(f"  - {item}")
+            logger.error(f"    - {item}")
 
     if not args.write:
         return 1

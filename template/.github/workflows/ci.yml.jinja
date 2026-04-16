@@ -117,7 +117,7 @@ jobs:
         run: uv run pytest -n auto --cov --cov-report=xml --cov-report=term
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         if: matrix.python-version == '{{ python_min_version }}'
         with:
           token: {% raw %}${{ secrets.CODECOV_TOKEN }}{% endraw %}

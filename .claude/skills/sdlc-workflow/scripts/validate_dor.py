@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Validate a task YAML file against the Definition of Ready schema."""
 
+import logging
 import sys
 from pathlib import Path
 
 import yaml
+
+logger = logging.getLogger(__name__)
 
 VALID_TYPES = {"feature", "fix", "refactor", "chore", "perf", "docs"}
 VALID_STATUSES = {"draft", "ready", "in-progress", "review", "done", "blocked"}
@@ -89,17 +92,17 @@ def validate(path: str) -> list[str]:
 def main() -> None:
     """Run validation on the given task YAML file."""
     if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <path/to/TASK_ID.yaml>")
+        logger.error(f"Usage: {sys.argv[0]} <path/to/TASK_ID.yaml>")
         sys.exit(2)
 
     errors = validate(sys.argv[1])
     if errors:
-        print("FAIL -- Definition of Ready not met:")
+        logger.error("FAIL -- Definition of Ready not met:")
         for err in errors:
-            print(f"  - {err}")
+            logger.error(f"  - {err}")
         sys.exit(1)
     else:
-        print("PASS -- Definition of Ready met")
+        logger.info("PASS -- Definition of Ready met")
         sys.exit(0)
 
 

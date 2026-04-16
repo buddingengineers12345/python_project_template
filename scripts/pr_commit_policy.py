@@ -8,6 +8,7 @@ import logging
 import os
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Final
 
@@ -328,11 +329,11 @@ def _cmd_pr() -> int:
     body = os.environ.get("PR_BODY")
     err = validate_pr_title(title)
     if err:
-        logger.error(f"invalid PR title: {err}")
+        print(f"pr_commit_policy: invalid PR title: {err}", file=sys.stderr)
         return 1
     err = validate_pr_body(body)
     if err:
-        logger.error(f"invalid PR body: {err}")
+        print(f"pr_commit_policy: invalid PR body: {err}", file=sys.stderr)
         return 1
     return 0
 
@@ -340,7 +341,7 @@ def _cmd_pr() -> int:
 def _cmd_commits(base: str, head: str) -> int:
     err = validate_commit_range(base, head)
     if err:
-        logger.error(err)
+        print(f"pr_commit_policy: {err}", file=sys.stderr)
         return 1
     return 0
 
@@ -403,7 +404,7 @@ def main(argv: list[str] | None = None) -> int:
         try:
             repo = args.repo.resolve() if args.repo else _git_toplevel()
         except RuntimeError as exc:
-            logger.error(f"draft: {exc}")
+            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
             return 1
         try:
             return _cmd_draft(
@@ -414,16 +415,17 @@ def main(argv: list[str] | None = None) -> int:
                 body_only=args.body_only,
             )
         except RuntimeError as exc:
-            logger.error(f"draft: {exc}")
+            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
             return 1
         except OSError as exc:
-            logger.error(f"draft: {exc}")
+            print(f"pr_commit_policy: draft: {exc}", file=sys.stderr)
             return 1
     if args.command == "commits":
         if not args.base or not args.head:
-            logger.error(
-                "commits requires --base and --head "
-                "(or PR_BASE_SHA and PR_HEAD_SHA)"
+            print(
+                "pr_commit_policy: commits requires --base and --head "
+                "(or PR_BASE_SHA and PR_HEAD_SHA)",
+                file=sys.stderr,
             )
             return 1
         return _cmd_commits(args.base, args.head)

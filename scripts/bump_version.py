@@ -185,7 +185,7 @@ def main(argv: list[str] | None = None) -> int:
     except RuntimeError as exc:
         raise SystemExit(f"bump_version: {exc}") from exc
 
-    logger.info(str(new))
+    logger.info(f"new version: {new}")
     return 0
 
 

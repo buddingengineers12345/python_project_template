@@ -22,6 +22,10 @@
           "template": "template/.github/workflows/release.yml.jinja"
         },
         {
+          "root": ".github/workflows/tests.yml",
+          "template": "template/.github/workflows/ci.yml.jinja"
+        },
+        {
           "root": ".github/workflows/dependency-review.yml",
           "template": "template/.github/workflows/dependency-review.yml"
         },
@@ -32,9 +36,87 @@
       ]
     },
     {
+      "id": "git_config_parity",
+      "type": "exact_file_pairs",
+      "pairs": [
+        {
+          "root": ".gitignore",
+          "template": "template/.gitignore"
+        },
+        {
+          "root": ".gitmessage",
+          "template": "template/.gitmessage"
+        },
+        {
+          "root": ".pre-commit-config.yaml",
+          "template": "template/.pre-commit-config.yaml"
+        },
+        {
+          "root": ".secrets.baseline",
+          "template": "template/.secrets.baseline"
+        }
+      ]
+    },
+    {
+      "id": "vscode_parity",
+      "type": "exact_file_pairs",
+      "pairs": [
+        {
+          "root": ".vscode/extensions.json",
+          "template": "template/.vscode/extensions.json"
+        },
+        {
+          "root": ".vscode/launch.json",
+          "template": "template/.vscode/launch.json"
+        },
+        {
+          "root": ".vscode/settings.json",
+          "template": "template/.vscode/settings.json"
+        }
+      ]
+    },
+    {
+      "id": "github_plain_files_parity",
+      "type": "exact_file_pairs",
+      "pairs": [
+        {
+          "root": ".github/PULL_REQUEST_TEMPLATE.md",
+          "template": "template/.github/PULL_REQUEST_TEMPLATE.md"
+        },
+        {
+          "root": ".github/dependabot.yml",
+          "template": "template/.github/dependabot.yml"
+        },
+        {
+          "root": ".github/labeler.yml",
+          "template": "template/.github/labeler.yml"
+        },
+        {
+          "root": ".github/renovate.json",
+          "template": "template/.github/renovate.json"
+        },
+        {
+          "root": ".github/ISSUE_TEMPLATE/feature_request.md",
+          "template": "template/.github/ISSUE_TEMPLATE/feature_request.md"
+        },
+        {
+          "root": ".github/workflows/stale.yml",
+          "template": "template/.github/workflows/stale.yml"
+        },
+        {
+          "root": ".github/workflows/pr-policy.yml",
+          "template": "template/.github/workflows/pr-policy.yml"
+        }
+      ]
+    },
+    {
       "id": "shared_hook_parity",
       "type": "exact_file_pairs",
       "pairs": [
+        {
+          "root": ".claude/hooks/README.md",
+          "template": "template/.claude/hooks/README.md"
+        },
         {
           "root": ".claude/hooks/pre-bash-block-no-verify.sh",
           "template": "template/.claude/hooks/pre-bash-block-no-verify.sh"
@@ -96,6 +178,14 @@
           "template": "template/.claude/hooks/pre-write-doc-file-warning.sh"
         },
         {
+          "root": ".claude/hooks/pre-write-src-require-test.sh",
+          "template": "template/.claude/hooks/pre-write-src-require-test.sh"
+        },
+        {
+          "root": ".claude/hooks/pre-write-src-test-reminder.sh",
+          "template": "template/.claude/hooks/pre-write-src-test-reminder.sh"
+        },
+        {
           "root": ".claude/hooks/pre-suggest-compact.sh",
           "template": "template/.claude/hooks/pre-suggest-compact.sh"
         },
@@ -122,6 +212,122 @@
         {
           "root": ".claude/hooks/stop-evaluate-session.sh",
           "template": "template/.claude/hooks/stop-evaluate-session.sh"
+        }
+      ]
+    },
+    {
+      "id": "shared_commands_parity",
+      "type": "exact_file_pairs",
+      "pairs": [
+        {
+          "root": ".claude/commands/ci.md",
+          "template": "template/.claude/commands/ci.md"
+        },
+        {
+          "root": ".claude/commands/ci-fix.md",
+          "template": "template/.claude/commands/ci-fix.md"
+        },
+        {
+          "root": ".claude/commands/coverage.md",
+          "template": "template/.claude/commands/coverage.md"
+        },
+        {
+          "root": ".claude/commands/dependency-check.md",
+          "template": "template/.claude/commands/dependency-check.md"
+        },
+        {
+          "root": ".claude/commands/docs-check.md",
+          "template": "template/.claude/commands/docs-check.md"
+        },
+        {
+          "root": ".claude/commands/release.md",
+          "template": "template/.claude/commands/release.md"
+        },
+        {
+          "root": ".claude/commands/review.md",
+          "template": "template/.claude/commands/review.md"
+        },
+        {
+          "root": ".claude/commands/standards.md",
+          "template": "template/.claude/commands/standards.md"
+        },
+        {
+          "root": ".claude/commands/tdd-green.md",
+          "template": "template/.claude/commands/tdd-green.md"
+        },
+        {
+          "root": ".claude/commands/tdd-red.md",
+          "template": "template/.claude/commands/tdd-red.md"
+        },
+        {
+          "root": ".claude/commands/test.md",
+          "template": "template/.claude/commands/test.md"
+        },
+        {
+          "root": ".claude/commands/update-claude-md.md",
+          "template": "template/.claude/commands/update-claude-md.md"
+        },
+        {
+          "root": ".claude/commands/validate-release.md",
+          "template": "template/.claude/commands/validate-release.md"
+        }
+      ]
+    },
+    {
+      "id": "shared_rules_parity",
+      "type": "exact_file_pairs",
+      "pairs": [
+        {
+          "root": ".claude/rules/README.md",
+          "template": "template/.claude/rules/README.md"
+        },
+        {
+          "root": ".claude/rules/common/coding-style.md",
+          "template": "template/.claude/rules/common/coding-style.md"
+        },
+        {
+          "root": ".claude/rules/common/git-workflow.md",
+          "template": "template/.claude/rules/common/git-workflow.md"
+        },
+        {
+          "root": ".claude/rules/common/hooks.md",
+          "template": "template/.claude/rules/common/hooks.md"
+        },
+        {
+          "root": ".claude/rules/common/security.md",
+          "template": "template/.claude/rules/common/security.md"
+        },
+        {
+          "root": ".claude/rules/common/testing.md",
+          "template": "template/.claude/rules/common/testing.md"
+        },
+        {
+          "root": ".claude/rules/python/coding-style.md",
+          "template": "template/.claude/rules/python/coding-style.md"
+        },
+        {
+          "root": ".claude/rules/python/hooks.md",
+          "template": "template/.claude/rules/python/hooks.md"
+        },
+        {
+          "root": ".claude/rules/python/testing.md",
+          "template": "template/.claude/rules/python/testing.md"
+        },
+        {
+          "root": ".claude/rules/bash/coding-style.md",
+          "template": "template/.claude/rules/bash/coding-style.md"
+        },
+        {
+          "root": ".claude/rules/bash/security.md",
+          "template": "template/.claude/rules/bash/security.md"
+        },
+        {
+          "root": ".claude/rules/markdown/conventions.md",
+          "template": "template/.claude/rules/markdown/conventions.md"
+        },
+        {
+          "root": ".claude/rules/yaml/conventions.md",
+          "template": "template/.claude/rules/yaml/conventions.md"
         }
       ]
     },
@@ -192,6 +398,82 @@
       "type": "exact_file_pairs",
       "pairs": [
         {
+          "root": ".claude/skills/bash-guide/SKILL.md",
+          "template": "template/.claude/skills/bash-guide/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/config-management/SKILL.md",
+          "template": "template/.claude/skills/config-management/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/cron-scheduling/SKILL.md",
+          "template": "template/.claude/skills/cron-scheduling/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/css-guide/SKILL.md",
+          "template": "template/.claude/skills/css-guide/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/html-guide/SKILL.md",
+          "template": "template/.claude/skills/html-guide/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/jinja-guide/SKILL.md",
+          "template": "template/.claude/skills/jinja-guide/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/linting/SKILL.md",
+          "template": "template/.claude/skills/linting/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/maintain-commands/SKILL.md",
+          "template": "template/.claude/skills/maintain-commands/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/maintain-hooks/SKILL.md",
+          "template": "template/.claude/skills/maintain-hooks/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/maintain-rules/SKILL.md",
+          "template": "template/.claude/skills/maintain-rules/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/maintain-skills/SKILL.md",
+          "template": "template/.claude/skills/maintain-skills/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/markdown/SKILL.md",
+          "template": "template/.claude/skills/markdown/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/prepare_pr/SKILL.md",
+          "template": "template/.claude/skills/prepare_pr/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/pytest/SKILL.md",
+          "template": "template/.claude/skills/pytest/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/python-code-quality/SKILL.md",
+          "template": "template/.claude/skills/python-code-quality/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/python-code-reviewer/SKILL.md",
+          "template": "template/.claude/skills/python-code-reviewer/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/python-docstrings/SKILL.md",
+          "template": "template/.claude/skills/python-docstrings/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/sdlc-workflow/SKILL.md",
+          "template": "template/.claude/skills/sdlc-workflow/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/security/SKILL.md",
+          "template": "template/.claude/skills/security/SKILL.md"
+        },
+        {
           "root": ".claude/skills/tdd-test-planner/SKILL.md",
           "template": "template/.claude/skills/tdd-test-planner/SKILL.md"
         },
@@ -202,6 +484,10 @@
         {
           "root": ".claude/skills/test-quality-reviewer/SKILL.md",
           "template": "template/.claude/skills/test-quality-reviewer/SKILL.md"
+        },
+        {
+          "root": ".claude/skills/type-checking/SKILL.md",
+          "template": "template/.claude/skills/type-checking/SKILL.md"
         }
       ]
     }

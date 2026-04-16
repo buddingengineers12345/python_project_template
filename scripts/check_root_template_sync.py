@@ -6,13 +6,10 @@ from __future__ import annotations
 import argparse
 import difflib
 import json
-import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-
-logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Regexes (workflows, TOML)
@@ -595,29 +592,29 @@ def main(argv: list[str] | None = None) -> int:
     repo_root = _resolve_repo_root(args.repo_root)
     map_path = (repo_root / args.map).resolve()
     if not map_path.is_file():
-        logger.error(f"mapping file not found: {map_path}")
+        print(f"[sync-check] ERROR: mapping file not found: {map_path}")
         return 2
 
     try:
         mapping = _load_map(map_path)
     except ValueError as exc:
-        logger.error(str(exc))
+        print(f"[sync-check] ERROR: {exc}")
         return 2
 
     checks = mapping.get("checks", [])
     if not isinstance(checks, list) or not checks:
-        logger.error("mapping must define a non-empty checks list")
+        print("[sync-check] ERROR: mapping must define a non-empty checks list")
         return 2
 
     violations = run_all_checks(mapping, repo_root)
 
     if violations:
-        logger.error(f"found {len(violations)} sync violation(s)")
+        print(f"[sync-check] FAIL: found {len(violations)} sync violation(s)")
         for item in violations:
-            logger.error(f"[{item.check_id}] {item.message}")
+            print(f" - [{item.check_id}] {item.message}")
         return 1
 
-    logger.info("root/template sync map checks passed")
+    print("[sync-check] PASS: root/template sync map checks passed")
     return 0
 
 

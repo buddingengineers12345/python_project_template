@@ -264,7 +264,6 @@ def test_prerequisites() -> None:
         assert shutil.which(exe) is not None, f"{exe} not found on PATH"
 
 
-@pytest.mark.skip(reason="Environment issue: basedpyright not available in post-gen tasks")
 def test_generate_default_project(temp_project_dir: Path) -> None:
     """Render a project with default answers and validate layout and key files."""
     _ = run_command(get_default_command_list(temp_project_dir))
@@ -529,7 +528,6 @@ def test_generate_from_vcs_git_file_url(tmp_path: Path) -> None:
     assert (dest_dir / "pyproject.toml").exists(), "Missing pyproject.toml"
 
 
-@pytest.mark.skip(reason="Integration test: subprocess CI execution has environment issues")
 def test_ci_checks_default_project(temp_project_dir: Path) -> None:
     """Generate a default project and run tests inside it.
 
@@ -543,7 +541,6 @@ def test_ci_checks_default_project(temp_project_dir: Path) -> None:
     _ = run_command(["uv", "run", "pytest"], cwd=temp_project_dir)
 
 
-@pytest.mark.skip(reason="Environment issue: basedpyright not available in post-gen tasks")
 def test_generate_full_featured_project(tmp_path: Path) -> None:
     """Render with optional features enabled and assert docs, CLAUDE, and pandas wiring."""
     test_dir = tmp_path / "test_full"
@@ -682,7 +679,6 @@ def test_env_example_rendered(tmp_path: Path) -> None:
     assert "HUMAN_DEV" in content
 
 
-@pytest.mark.skip(reason="Environment issue: basedpyright not available in post-gen tasks")
 def test_update_workflow(tmp_path: Path) -> None:
     """Confirm ``copier update`` keeps user edits to ``README.md`` when it is skipped."""
     test_dir = tmp_path / "test_update"

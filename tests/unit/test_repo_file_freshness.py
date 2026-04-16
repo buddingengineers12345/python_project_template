@@ -8,6 +8,10 @@ import json
 import os
 import sys
 from pathlib import Path  # noqa: TC003
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import pytest
 
 from tests.script_imports import REPO_ROOT, load_script_module
 
@@ -209,12 +213,15 @@ def test_empty_repo_generates_outputs(tmp_path: Path) -> None:
     assert (repo / "docs" / "repo_file_status_report.md").is_file()
 
 
-def test_invalid_commit_thresholds_return_exit_code_2(tmp_path: Path) -> None:
+def test_invalid_commit_thresholds_return_exit_code_2(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
     """Green max above yellow max is rejected with exit code 2."""
+    import logging
+
     repo = tmp_path / "repo"
     repo.mkdir()
     git_init(repo)
-    stderr = io.StringIO()
     saved_argv = sys.argv
     try:
         sys.argv = [
@@ -226,28 +233,29 @@ def test_invalid_commit_thresholds_return_exit_code_2(tmp_path: Path) -> None:
             "--yellow-max-commits",
             "1",
         ]
-        with contextlib.redirect_stderr(stderr):
+        with caplog.at_level(logging.ERROR):
             rc = rff.main()
     finally:
         sys.argv = saved_argv
     assert rc == 2
-    assert (
-        "green-max-commits" in stderr.getvalue().lower() or "threshold" in stderr.getvalue().lower()
-    )
+    assert "green-max-commits" in caplog.text.lower() or "threshold" in caplog.text.lower()
 
 
-def test_invalid_freshness_now_iso_warns_on_stderr(tmp_path: Path) -> None:
+def test_invalid_freshness_now_iso_warns_on_stderr(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
     """Bad FRESHNESS_NOW_ISO triggers a stderr warning; run still completes."""
+    import logging
+
     repo = tmp_path / "repo"
     repo.mkdir()
     git_init(repo)
-    stderr = io.StringIO()
     saved_argv = sys.argv
     saved_now = os.environ.get("FRESHNESS_NOW_ISO")
     os.environ["FRESHNESS_NOW_ISO"] = "not-valid-iso"
     try:
         sys.argv = [str(_SCRIPT), "--repo-root", str(repo), "--metric", "days"]
-        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+        with caplog.at_level(logging.WARNING):
             rff.main()
     finally:
         sys.argv = saved_argv
@@ -255,7 +263,7 @@ def test_invalid_freshness_now_iso_warns_on_stderr(tmp_path: Path) -> None:
             os.environ.pop("FRESHNESS_NOW_ISO", None)
         else:
             os.environ["FRESHNESS_NOW_ISO"] = saved_now
-    assert "FRESHNESS_NOW_ISO" in stderr.getvalue()
+    assert "FRESHNESS_NOW_ISO" in caplog.text
 
 
 def test_build_badge_fields_all_zero() -> None:

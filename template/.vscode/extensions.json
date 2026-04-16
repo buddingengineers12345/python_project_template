@@ -1,0 +1,42 @@
+{
+  "recommendations": [
+    // ============================================================
+    // Python Core
+    // ============================================================
+    "ms-python.python", // Python language support
+    "charliermarsh.ruff", // Ruff: linting, formatting, imports
+    "detachhead.basedpyright", // BasedPyright: strict type checking
+    // ============================================================
+    // Testing
+    // ============================================================
+    "ms-python.vscode-pylance", // Fast language server (used by BasedPyright)
+    "littlefoxteam.vscode-python-test-adapter", // pytest discovery & run UI
+    // ============================================================
+    // AI Assistance
+    // ============================================================
+    "github.copilot",
+    "github.copilot-chat",
+    // ============================================================
+    // Documentation & Config Files
+    // ============================================================
+    "redhat.vscode-yaml",
+    "tamasfe.even-better-toml",
+    "yzhang.markdown-all-in-one",
+    // ============================================================
+    // Git & Workflow
+    // ============================================================
+    "eamodio.gitlens",
+    // ============================================================
+    // Optional Quality-of-Life
+    // ============================================================
+    "editorconfig.editorconfig"
+  ],
+  "unwantedRecommendations": [
+    // Legacy / conflicting Python tooling
+    "ms-python.black-formatter",
+    "ms-python.flake8",
+    "ms-python.isort",
+    // Notebook-first tooling (libraries ≠ notebooks)
+    "ms-toolsai.jupyter"
+  ]
+}

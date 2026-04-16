@@ -90,40 +90,38 @@ def test_cli_rejects_unchanged_version(tmp_path: Path) -> None:
         sys.argv = saved_argv
 
 
-def test_cli_new_version_prints_and_updates(tmp_path: Path) -> None:
-    """``--new-version`` updates the file and prints the version on stdout."""
-    import contextlib
-    import io as _io
+def test_cli_new_version_prints_and_updates(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """``--new-version X.Y.Z`` sets an explicit version, logs it, and updates the file."""
+    import logging
 
     path = tmp_path / "pyproject.toml"
     path.write_text('[project]\nname = "x"\nversion = "1.0.0"\n', encoding="utf-8")
-    buf = _io.StringIO()
     saved_argv = sys.argv
     try:
         sys.argv = [str(_SCRIPT), "--pyproject", str(path), "--new-version", "1.0.1"]
-        with contextlib.redirect_stdout(buf):
+        with caplog.at_level(logging.INFO):
             rc = bv.main()
     finally:
         sys.argv = saved_argv
     assert rc == 0
-    assert buf.getvalue().strip() == "1.0.1"
+    assert "1.0.1" in caplog.text
     assert 'version = "1.0.1"' in path.read_text(encoding="utf-8")
 
 
-def test_cli_bump_patch_increments_patch(tmp_path: Path) -> None:
-    """``--bump patch`` increments the patch component and prints the new version."""
-    import contextlib
-    import io as _io
+def test_cli_bump_patch_increments_patch(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    """``--bump patch`` increments the patch component and logs the new version."""
+    import logging
 
     path = tmp_path / "pyproject.toml"
     path.write_text('[project]\nname = "x"\nversion = "2.3.4"\n', encoding="utf-8")
-    buf = _io.StringIO()
     saved_argv = sys.argv
     try:
         sys.argv = [str(_SCRIPT), "--pyproject", str(path), "--bump", "patch"]
-        with contextlib.redirect_stdout(buf):
+        with caplog.at_level(logging.INFO):
             rc = bv.main()
     finally:
         sys.argv = saved_argv
     assert rc == 0
-    assert buf.getvalue().strip() == "2.3.5"
+    assert "2.3.5" in caplog.text
