@@ -189,7 +189,11 @@ Thumbs.db
 
 artifacts/
 notes/
+# Match scratch dirs named temp… but not `template/` (Copier source tree; `temp*` would
+# ignore it and break fresh repos that `git add -A` before the first commit).
 temp*
+!template/
+!template/**
 tmp*
 temp_artifacts/
 outputs/

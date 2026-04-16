@@ -1377,8 +1377,8 @@ def test_release_workflow_generated_by_default(tmp_path: Path) -> None:
     assert release_yml.is_file(), "release.yml must exist when include_release_workflow=true"
     content = release_yml.read_text(encoding="utf-8")
     assert "${{ true }}" in content, "release job must be enabled"
-    assert "src/release_default/common/bump_version.py" in content, (
-        "release.yml must reference src/<package>/common/bump_version.py"
+    assert "scripts/bump_version.py" in content, (
+        "release.yml must invoke the generated scripts/bump_version.py (parity with just release)"
     )
     assert "--generate-notes" in content, (
         "release must use gh --generate-notes (no CHANGELOG.md required)"
