@@ -8,11 +8,8 @@ import json
 import os
 import sys
 from pathlib import Path  # noqa: TC003
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    import pytest
-
+import pytest
 from tests.script_imports import REPO_ROOT, load_script_module
 
 _SCRIPT = REPO_ROOT / "scripts" / "repo_file_freshness.py"
@@ -94,6 +91,7 @@ def by_file(items: list[dict[str, object]]) -> dict[str, dict[str, object]]:
     return out
 
 
+@pytest.mark.slow
 def test_classification_green_yellow_red_days(tmp_path: Path) -> None:
     """Days mode: green <=2d, yellow (2,4], red >4 (reference 2026-04-08)."""
     repo = tmp_path / "repo"
@@ -121,6 +119,7 @@ def test_classification_green_yellow_red_days(tmp_path: Path) -> None:
     assert items["old.txt"]["status"] == "red"
 
 
+@pytest.mark.slow
 def test_classification_commits_since_last_change(tmp_path: Path) -> None:
     """Commits metric counts commits since the last change to each file."""
     repo = tmp_path / "repo"

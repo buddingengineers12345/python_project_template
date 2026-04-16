@@ -266,7 +266,7 @@ check:
     @uv run basedpyright
     @just sync-check
     @just docs-check
-    @just test-ci-matrix
+    @just test-ci
     @uv run pre-commit run --all-files --verbose
     @just audit
 

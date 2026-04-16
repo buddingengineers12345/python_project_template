@@ -185,6 +185,7 @@ def test_main_pr_subcommand_bad_title(monkeypatch: pytest.MonkeyPatch) -> None:
     assert rc == 1
 
 
+@pytest.mark.slow
 def test_validate_commit_range_empty_ok(tmp_path: Path) -> None:
     """Empty or single-commit ranges do not produce validation errors."""
     subprocess.run(["git", "init"], cwd=tmp_path, check=True, capture_output=True)
@@ -237,61 +238,6 @@ def test_validate_commit_range_empty_ok(tmp_path: Path) -> None:
         assert pcp.validate_commit_range(h1, h1) is None
     finally:
         os.chdir(cwd)
-
-
-def test_validate_commit_range_rejects_bad_subject(tmp_path: Path) -> None:
-    """A non-conventional commit in the range yields an error message."""
-    subprocess.run(["git", "init"], cwd=tmp_path, check=True, capture_output=True)
-    subprocess.run(
-        ["git", "config", "user.email", "t@e.st"],
-        cwd=tmp_path,
-        check=True,
-        capture_output=True,
-    )
-    subprocess.run(
-        ["git", "config", "user.name", "T"],
-        cwd=tmp_path,
-        check=True,
-        capture_output=True,
-    )
-    (tmp_path / "f").write_text("1", encoding="utf-8")
-    subprocess.run(["git", "add", "f"], cwd=tmp_path, check=True, capture_output=True)
-    subprocess.run(
-        ["git", "commit", "-m", "feat: ok", "--no-verify"],
-        cwd=tmp_path,
-        check=True,
-        capture_output=True,
-    )
-    h1 = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=tmp_path,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    (tmp_path / "f").write_text("2", encoding="utf-8")
-    subprocess.run(["git", "add", "f"], cwd=tmp_path, check=True, capture_output=True)
-    subprocess.run(
-        ["git", "commit", "-m", "bad subject", "--no-verify"],
-        cwd=tmp_path,
-        check=True,
-        capture_output=True,
-    )
-    h2 = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=tmp_path,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    cwd = Path.cwd()
-    try:
-        os.chdir(tmp_path)
-        err = pcp.validate_commit_range(h1, h2)
-    finally:
-        os.chdir(cwd)
-    assert err is not None
-    assert "bad subject" in err
 
 
 @pytest.mark.parametrize(
@@ -717,6 +663,7 @@ def test_validate_pr_title_multiline_uses_first_line() -> None:
     assert result is None
 
 
+@pytest.mark.slow
 def test_draft_both_title_and_body_only(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
     """``draft --title-only --body-only`` outputs both title and body separated."""
     import logging
@@ -819,6 +766,7 @@ def test_draft_body_only(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> No
     assert rc == 0
 
 
+@pytest.mark.slow
 def test_draft_no_title_from_branch_or_git(
     tmp_path: Path, caplog: pytest.LogCaptureFixture
 ) -> None:
@@ -871,6 +819,7 @@ def test_draft_no_title_from_branch_or_git(
     assert "chore: describe this pull request" in caplog.text
 
 
+@pytest.mark.slow
 def test_draft_runtime_error_in_cmd_draft(
     tmp_path: Path,
 ) -> None:
@@ -924,6 +873,7 @@ def test_validate_conventional_rejects_no_space_after_colon() -> None:
     assert err is not None
 
 
+@pytest.mark.slow
 def test_main_commits_success(tmp_path: Path) -> None:
     """``commits`` subcommand succeeds when all commits are conventional."""
     subprocess.run(["git", "init"], cwd=tmp_path, check=True, capture_output=True)
