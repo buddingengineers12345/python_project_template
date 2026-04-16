@@ -50,18 +50,26 @@ if echo "$FILE_PATH" | grep -qE '(^|/)docs/'; then
     exit 0
 fi
 
+# Files under tasks_summary/ are allowed (SDLC workflow summaries)
+if echo "$FILE_PATH" | grep -qE '(^|/)tasks_summary/'; then
+    echo "$INPUT"
+    exit 0
+fi
+
 # ── Violation — block the write ───────────────────────────────────────────────
 echo "┌─ BLOCKED: Markdown placement violation" >&2
 echo "│" >&2
 echo "│  Attempted path: $FILE_PATH" >&2
 echo "│" >&2
 echo "│  RULE: Markdown files produced during workflows or analysis must" >&2
-echo "│  be written inside the docs/ folder." >&2
+echo "│  be written inside the docs/ or tasks_summary/ folder." >&2
 echo "│" >&2
 echo "│  Allowed exceptions:" >&2
-echo "│    • README.md   — anywhere" >&2
-echo "│    • CLAUDE.md   — anywhere" >&2
+echo "│    • README.md        — anywhere" >&2
+echo "│    • CLAUDE.md        — anywhere" >&2
+echo "│    • docs/**          — any depth" >&2
+echo "│    • tasks_summary/** — SDLC workflow summaries" >&2
 echo "│" >&2
-echo "│  Action: recreate the file under docs/ — e.g. docs/$(basename "$FILE_PATH")" >&2
+echo "│  Action: recreate the file under docs/ or tasks_summary/" >&2
 echo "└─" >&2
 exit 2

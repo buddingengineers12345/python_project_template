@@ -1,3 +1,5 @@
+
+
 # git-cliff — https://git-cliff.org/docs/configuration
 
 [changelog]
@@ -9,6 +11,7 @@ All notable changes to this project will be documented in this file.
 """
 
 body = """
+
 {% if version %}
 
 ## {{ version }} - {{ timestamp | date(format="%Y-%m-%d") }}
@@ -28,6 +31,7 @@ body = """
 * {{ commit.message | upper_first }}{% if commit.scope %} ({{ commit.scope }}){% endif %}{% if commit.breaking %} ⚠️ BREAKING{% endif %}
   {% endfor %}
   {% endfor %}
+
   """
 
 footer = """
@@ -116,5 +120,5 @@ group = "Other"
 # ----------------------
 
 [remote.github]
-owner = "your-username"
-repo = "your-repo"
+owner = "yourusername"
+repo = "my-library"

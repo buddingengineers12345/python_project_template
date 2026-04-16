@@ -1,7 +1,7 @@
 # File Locking Implementation Plan (Claude Code only)
 
 > **Audience:** A junior model (Haiku) executing the steps below.
-> **Source repo:** `/Users/kzqr495/Documents/workspace/python_starter_template`
+> **Source repo:** `/Users/kzqr495/Documents/workspace/python_project_template`
 > **Goal:** Prevent AI agents from modifying stable files without explicit user intent.
 > **Approach:** Defense in depth using only Claude Code's native mechanisms — no external
 > tools, no git pre-receive hooks, no CODEOWNERS automation.

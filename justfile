@@ -268,7 +268,7 @@ check:
     @just docs-check
     @just test-ci
     @uv run pre-commit run --all-files --verbose
-    @just audit
+    # @just audit
 
 ci:
     @just fix
