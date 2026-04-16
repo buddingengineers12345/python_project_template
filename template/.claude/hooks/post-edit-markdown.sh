@@ -49,17 +49,24 @@ if echo "$FILE_PATH" | grep -qE '(^|/)docs/'; then
     exit 0
 fi
 
+# Files under tasks_summary/ are allowed (SDLC workflow summaries)
+if echo "$FILE_PATH" | grep -qE '(^|/)tasks_summary/'; then
+    exit 0
+fi
+
 # ── Violation ──────────────────────────────────────────────────────────────
 echo "┌─ Markdown placement violation: $FILE_PATH"
 echo "│"
 echo "│  RULE: Markdown files produced during agent workflows or analysis"
-echo "│  MUST be written inside the docs/ folder."
+echo "│  MUST be written inside the docs/ or tasks_summary/ folder."
 echo "│"
 echo "│  Allowed exceptions:"
-echo "│    • README.md  (anywhere)"
-echo "│    • CLAUDE.md  (anywhere)"
+echo "│    • README.md        (anywhere)"
+echo "│    • CLAUDE.md        (anywhere)"
+echo "│    • docs/**          (any depth)"
+echo "│    • tasks_summary/** (SDLC workflow summaries)"
 echo "│"
-echo "│  Action required: delete this file and recreate it under docs/."
+echo "│  Action required: delete this file and recreate it under docs/ or tasks_summary/."
 echo "└─"
 
 exit 0

@@ -31,7 +31,7 @@ current, `○` for upcoming.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SDLC  ○DESIGN  ○RED  ○GREEN  ○REFACTOR  ○QUALITY  ○SECURE  ○DOCS  ○COMMIT  ○PR
+SDLC  ○DESIGN  ○RED  ○GREEN  ○REFACTOR  ○QUALITY  ○SECURE  ○DOCS  ○COMMIT  ○PR  ○SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -54,6 +54,7 @@ Stage   Name                    Model    Execution          Sub-skills
   6     DOCUMENTATION           Haiku    Agent (parallel)   python-docstrings, markdown
   7     COMMIT + CHANGELOG      Haiku    Agent (sequential) (inline guidance)
   8     PULL REQUEST            Haiku    Agent (sequential) prepare_pr
+  9     SUMMARY                 Haiku    Agent (sequential) (task_summary_template.md)
 ```
 
 Conditional stages (2.5, 3.5) only activate when flagged in task YAML.
@@ -68,9 +69,10 @@ Conditional stages (2.5, 3.5) only activate when flagged in task YAML.
 3. Run `just preflight TASK_ID` to execute pre-flight checks.
 4. This project uses `just test` for tests and `just ci` for full CI.
 5. Explore the codebase: `pyproject.toml`, `conftest.py`, existing tests, target modules.
-6. Create `task_channel/task_TASK_ID/` directory for persistent artifacts.
+6. Create `tasks_summary/` directory if it does not exist (`mkdir -p tasks_summary`).
 7. Output: requirement summary, acceptance criteria list, files that will change.
-8. Get user approval before proceeding.
+
+Proceed automatically to Stage 0.5.
 
 ---
 
@@ -95,8 +97,7 @@ Gate: all pre-flight checks pass. No user approval needed.
    - Name: `test_<behaviour>_when_<condition>`
    - Structure: AAA (Arrange-Act-Assert)
    - Every test file must set `pytestmark = pytest.mark.<marker>` at module level.
-4. Show draft to user, wait for approval.
-5. Write the test file(s).
+4. Write the test file(s).
 6. Run `just test`. Classify the failure:
 
    | Failure type | Meaning | Action |
@@ -121,8 +122,7 @@ Do not proceed until RED is confirmed for all acceptance criteria.
    - Include type annotations on all public functions.
    - If logging is involved, follow the structlog guidelines in `CLAUDE.md`
      (see "Structured logging" and "Mandatory `logging_manager` usage" sections).
-2. Show draft, wait for approval.
-3. Write implementation.
+2. Write implementation.
 4. Run `just test`. All tests must pass.
 5. Check coverage: `just coverage`. New code should be fully covered.
    - If coverage below 85%, write targeted tests for the uncovered lines
@@ -256,6 +256,39 @@ Report: PR URL and title.
 
 ---
 
+## Stage 9 — SUMMARY: Write task summary
+
+**Model:** Haiku (Agent call, sequential after stage 8)
+
+```
+Using the task_summary_template.md from .claude/skills/sdlc-workflow/assets/templates/task_summary_template.md:
+
+1. Create the tasks_summary/ directory if it does not already exist:
+     mkdir -p tasks_summary
+
+2. Collect the following values from pipeline outputs:
+   - task_id, title, type, status, owner from the task YAML
+   - target_branch from `git branch --show-current`
+   - commit_hash from `git log -1 --format=%h`
+   - pr_url from Stage 8 output
+   - date: today's date (ISO 8601)
+   - stage-by-stage results: test counts, coverage %, lint/type/security findings, refactor changes
+
+3. Fill every {{placeholder}} in the template with the collected values.
+
+4. Write the completed document to:
+     tasks_summary/TASK_ID_summary.md
+   where TASK_ID is the actual task ID from the YAML.
+
+5. Print the path of the written file.
+
+Report: path of written summary file.
+```
+
+Gate: file exists at `tasks_summary/TASK_ID_summary.md`.
+
+---
+
 ## Error handling
 
 | Stage | On failure |
@@ -265,6 +298,7 @@ Report: PR URL and title.
 | 4-6 (parallel) | Each retries up to 3 times independently. Others continue. |
 | 7 (COMMIT) | CI fix loop, max 3 iterations. Then stop + report. |
 | 8 (PR) | Report error. Provide PR body for manual creation. |
+| 9 (SUMMARY) | Log warning. Do not fail the pipeline — PR is already merged. |
 
 ---
 
@@ -296,6 +330,7 @@ When TASK.md has several acceptance criteria:
 | Definition of Ready validator | [scripts/validate_dor.py](scripts/validate_dor.py) |
 | Task YAML starter template | [assets/templates/task_template.yaml](assets/templates/task_template.yaml) |
 | Task summary starter template | [assets/templates/task_summary_template.md](assets/templates/task_summary_template.md) |
+| Task summary output location | `tasks_summary/TASK_ID_summary.md` (repo root) |
 
 ## Support scripts
 
