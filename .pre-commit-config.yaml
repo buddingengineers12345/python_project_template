@@ -70,7 +70,7 @@ repos:
       - id: check-toml
       - id: check-yaml
       - id: check-json
-        exclude: ^\.vscode/.*\.json$ # VS Code uses JSONC (allows comments)
+        exclude: \.vscode/.*\.json$  # VS Code uses JSONC (allows comments)
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: mixed-line-ending
