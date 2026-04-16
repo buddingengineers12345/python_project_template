@@ -1246,6 +1246,16 @@ def test_generated_pyproject_pytest_markers_and_asyncio(tmp_path: Path) -> None:
     for marker in ("e2e:", "integration:", "regression:", "slow:", "smoke:", "unit:"):
         assert marker in joined
 
+    # --testmon must be in addopts; --cov must NOT be (conflicts with testmon tracing)
+    addopts = cast(
+        "Sequence[str]",
+        require_sequence(ini_options.get("addopts"), name="pytest.ini_options.addopts"),
+    )
+    assert "--testmon" in addopts, "addopts must enable testmon by default"
+    assert not any("--cov" in opt for opt in addopts), (
+        "--cov must not be in addopts: it conflicts with testmon's coverage tracing"
+    )
+
 
 def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
     """Pre-commit config in generated projects should run detect-secrets with a baseline."""
@@ -1557,14 +1567,20 @@ def test_ci_workflow_aligns_with_just_ci(tmp_path: Path) -> None:
     assert "needs: [lint, typecheck, precommit, test]" in workflow, (
         "Aggregate check must gate on pre-commit alongside lint, typecheck, and tests"
     )
-    assert "uv run pre-commit run --all-files --verbose" in workflow
+    assert "uv run pre-commit run --all-files" in workflow
     assert "uv run ruff format --check src tests" in workflow
     assert "uv run ruff check src tests" in workflow
-    assert "uv run pytest -n auto --cov --cov-report=xml --cov-report=term" in workflow
+    assert (
+        "uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider"
+        in workflow
+    )
 
     justfile = (test_dir / "justfile").read_text(encoding="utf-8")
     assert "test-ci:" in justfile
-    assert "pytest -n auto --cov --cov-report=xml --cov-report=term" in justfile
+    assert (
+        "pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider"
+        in justfile
+    )
     assert "@just test-ci" in justfile
 
     lint_yml = (test_dir / ".github" / "workflows" / "lint.yml").read_text(encoding="utf-8")

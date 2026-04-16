@@ -80,6 +80,16 @@ Docstrings are narrative text. Use proper capitalization, punctuation, and compl
 
 ---
 
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When adding docstrings to multiple functions in the same file,
+  combine all docstring additions into a single Edit tool call. Do not make one
+  edit per function.
+- **Read before edit:** Read the entire file first, identify all constructs needing
+  docstrings, draft all docstrings mentally, then apply in one Edit call per file.
+- **Multi-file tasks:** When auditing multiple files, read all target files first,
+  then edit each file once with all its docstrings in a single call.
+
 ## Quick reference: where to go deeper
 
 | Topic                                           | Reference file                                       |

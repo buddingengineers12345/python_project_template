@@ -254,6 +254,23 @@ conventions on top of Jinja. Auto-escape defaults differ (Flask: on for
 structure, and security defaults, see
 [references/best-practices.md](references/best-practices.md).
 
+## When to load references
+
+| If the task involves…                          | Load                              |
+|-------------------------------------------------|-----------------------------------|
+| Operator syntax, literals, global functions    | `references/syntax.md`            |
+| Filter usage beyond basics (A-Z list)          | `references/filters-reference.md` |
+| Template inheritance, include, import, macros  | `references/inheritance.md`       |
+| Performance, security, testing best practices  | `references/best-practices.md`    |
+| Simple template edits (default)                | No reference needed — use inline  |
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When modifying multiple template files, read all target
+  templates first, then edit each in a single Edit call per file.
+- **Read before edit:** Read the base template and child templates to understand
+  the inheritance chain before making block changes.
+
 ## Quick reference: where to go deeper
 
 | Topic                                                           | Reference file                                                           |

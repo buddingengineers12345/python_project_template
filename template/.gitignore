@@ -222,6 +222,7 @@ mlruns/
 data/
 
 .claude/todos/
+.claude/worktrees/
 .claude/.refactor-edit-count
 
 .cursor/
@@ -246,3 +247,11 @@ task_channel/
 
 runner.sh
 full_runner.sh
+
+# ==========================================================================
+# PYTEST-TESTMON
+# ==========================================================================
+
+.testmondata
+.testmondata-shm
+.testmondata-wal

@@ -36,9 +36,19 @@ topic.
 | `find_slow_tests.py`   | Runs pytest, identifies tests exceeding a time threshold |
 | `mark_slow_tests.py`   | Adds `@pytest.mark.slow` to the identified slow tests   |
 
-Read the relevant reference file before working on a specific area. For a new test file,
-skim `test-organization.md` and `fixtures.md` first. For debugging flaky tests, start
-with `anti-patterns.md`.
+## When to load references
+
+| If the task involves…                   | Load                                            |
+|------------------------------------------|-------------------------------------------------|
+| Fixture scopes, yield, DI, factories    | `references/fixtures.md`                        |
+| Parametrize, custom markers, xfail      | `references/parametrize-and-markers.md`         |
+| Mocking, monkeypatch, test doubles      | `references/mocking.md`                         |
+| Complex assertions, approx, raises      | `references/assertions.md`                      |
+| Unit vs integration vs e2e decisions    | `references/test-types.md`                      |
+| Project layout, naming, conftest        | `references/test-organization.md`               |
+| Debugging flaky tests, common mistakes  | `references/anti-patterns.md`                   |
+| CI config, coverage, plugins            | `references/ci-and-plugins.md`                  |
+| Simple test writing (default)           | No reference needed — use inline guidance below |
 
 ---
 
@@ -136,7 +146,7 @@ Key rules for fixtures:
 - Use `yield` for setup + teardown in a single function.
 - Use `tmp_path` for filesystem operations — never hardcode `/tmp` paths.
 
-Read [references/fixtures.md](references/fixtures.md) for scopes, autouse, factory
+For advanced fixture patterns, read [references/fixtures.md](references/fixtures.md) for scopes, autouse, factory
 fixtures, and advanced patterns.
 
 ### Parametrize to cover multiple inputs
@@ -155,7 +165,7 @@ def test_email_validation(email: str, is_valid: bool) -> None:
     assert validate_email(email) == is_valid
 ```
 
-Each parameter set runs as a separate test, so failures are pinpointed. Read
+Each parameter set runs as a separate test, so failures are pinpointed. For advanced parametrization, read
 [references/parametrize-and-markers.md](references/parametrize-and-markers.md) for
 advanced parametrization and custom markers.
 
@@ -177,7 +187,7 @@ def test_sends_notification_on_order(mocker):
     )
 ```
 
-Read [references/mocking.md](references/mocking.md) for `monkeypatch`, `pytest-mock`,
+For advanced mocking patterns, read [references/mocking.md](references/mocking.md) for `monkeypatch`, `pytest-mock`,
 factory patterns, and when *not* to mock.
 
 ### Test isolation is non-negotiable
@@ -325,6 +335,17 @@ Run the full suite (including slow tests) before opening a PR or in CI.
 Read [references/parametrize-and-markers.md](references/parametrize-and-markers.md)
 for more on custom markers and [references/ci-and-plugins.md](references/ci-and-plugins.md)
 for CI integration patterns.
+
+---
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When adding multiple test functions to the same file, write
+  them all in a single Edit tool call rather than one function at a time.
+- **Parallel calls:** When running `just test` and `just coverage` independently,
+  make both calls in a single message.
+- **Read before edit:** Read the target test file and the source module once each,
+  plan all test functions, then write them in one Edit call.
 
 ---
 

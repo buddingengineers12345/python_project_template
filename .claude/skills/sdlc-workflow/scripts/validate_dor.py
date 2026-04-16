@@ -97,12 +97,12 @@ def main() -> None:
 
     errors = validate(sys.argv[1])
     if errors:
-        logger.error("FAIL -- Definition of Ready not met:")
+        logger.error("Definition of Ready not met:")
         for err in errors:
             logger.error(f"  - {err}")
         sys.exit(1)
     else:
-        logger.info("PASS -- Definition of Ready met")
+        logger.info("Definition of Ready met")
         sys.exit(0)
 
 

@@ -253,6 +253,23 @@ Recommended stylelint rules: `color-named: "never"`, `color-no-invalid-hex`,
 `declaration-no-important`, a BEM-compatible `selector-class-pattern`, and
 `no-duplicate-selectors`.
 
+## When to load references
+
+| If the task involves…                   | Load                                |
+|------------------------------------------|-------------------------------------|
+| ITCSS layers, CSS architecture design   | `references/css-architecture.md`    |
+| ARIA, focus styles, a11y compliance     | `references/accessibility.md`       |
+| Grid, flexbox, responsive breakpoints   | `references/layout-responsive.md`   |
+| Starting a new project from scratch     | `templates/css-tokens.css` + `templates/css-reset.css` |
+| Simple CSS edits (default)              | No reference needed — use inline    |
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When adding multiple CSS rules or updating a stylesheet,
+  combine all changes into a single Edit call per file.
+- **Read before edit:** Read the full stylesheet first to understand existing
+  patterns, tokens, and class naming before modifying.
+
 ## Quick reference: where to go deeper
 
 | Topic                                                    | Reference file                                                         |

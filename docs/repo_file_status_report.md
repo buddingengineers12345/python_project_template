@@ -19,8 +19,8 @@ _Metric: **commits**._
 - `template/.claude/commands/docs-check.md.jinja` — **5** commits since last change
 - `template/CLAUDE.md.jinja` — **5** commits since last change
 - `template/src/{{ package_name }}/common/bump_version.py.jinja` — **5** commits since last change
-- `template/.claude/skills/prepare_pr/SKILL.md` — **4** commits since last change
-- `template/.claude/skills/prepare_pr/references/section-rules.md` — **4** commits since last change
+- `template/.claude/skills/prepare-pr/SKILL.md` — **4** commits since last change
+- `template/.claude/skills/prepare-pr/references/section-rules.md` — **4** commits since last change
 - `template/tests/conftest.py.jinja` — **4** commits since last change
 - `template/tests/test_imports.py.jinja` — **4** commits since last change
 - `template/tests/{{ package_name }}/test_core.py.jinja` — **4** commits since last change

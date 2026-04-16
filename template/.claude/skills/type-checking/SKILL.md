@@ -50,6 +50,13 @@ See `references/basedpyright.md` for:
 - Avoid `# type: ignore` without specific error codes.
 - When suppressing, use: `# type: ignore[error-code]` with an explanation.
 
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When fixing multiple type errors in the same file, combine
+  all annotation fixes into a single Edit call.
+- **Read before edit:** Read the full file first to understand the type
+  relationships before adding annotations.
+
 ## Quick reference: where to go deeper
 
 | Topic                    | Reference file                                           |

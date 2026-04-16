@@ -53,7 +53,7 @@ Stage   Name                    Model    Execution          Sub-skills
   5     SECURITY                Haiku    Agent (parallel)   security
   6     DOCUMENTATION           Haiku    Agent (parallel)   python-docstrings, markdown
   7     COMMIT + CHANGELOG      Haiku    Agent (sequential) (inline guidance)
-  8     PULL REQUEST            Haiku    Agent (sequential) prepare_pr
+  8     PULL REQUEST            Haiku    Agent (sequential) prepare-pr
   9     SUMMARY                 Haiku    Agent (sequential) (task_summary_template.md)
 ```
 
@@ -91,8 +91,11 @@ Gate: all pre-flight checks pass. No user approval needed.
 **Model:** Full (main model, interactive)
 
 1. Load the `pytest` skill (read `.claude/skills/pytest/SKILL.md`).
-2. For fixture patterns, read `.claude/skills/pytest/references/fixtures.md`.
-   For mocking guidance, read `.claude/skills/pytest/references/mocking.md`.
+2. If writing tests that use fixtures beyond basic `@pytest.fixture`:
+   read `.claude/skills/pytest/references/fixtures.md`.
+   If writing tests that need mocks or monkeypatch:
+   read `.claude/skills/pytest/references/mocking.md`.
+   Otherwise: use inline guidance from the pytest skill's core principles.
 3. For each acceptance criterion, draft the smallest test:
    - Name: `test_<behaviour>_when_<condition>`
    - Structure: AAA (Arrange-Act-Assert)
@@ -243,7 +246,7 @@ Report: commit hash and message.
 **Model:** Haiku (Agent call, sequential after stage 7)
 
 ```
-Load the prepare_pr skill (.claude/skills/prepare_pr/SKILL.md).
+Load the prepare-pr skill (.claude/skills/prepare-pr/SKILL.md).
 
 1. Read .github/PULL_REQUEST_TEMPLATE.md (if exists).
 2. Extract signals from commits: git log main..HEAD, git diff main...HEAD --stat.
@@ -286,6 +289,18 @@ Report: path of written summary file.
 ```
 
 Gate: file exists at `tasks_summary/TASK_ID_summary.md`.
+
+---
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When applying multiple changes to the same implementation or
+  test file (e.g., adding docstrings to several functions), combine them into
+  a single Edit tool call.
+- **Parallel calls:** Stages 4, 5, and 6 already run as parallel Agent calls.
+  Within each agent, run independent lint/type/security commands in parallel.
+- **Read before edit:** In GREEN and REFACTOR stages, read each target file once,
+  plan all changes, then apply in the fewest Edit calls possible.
 
 ---
 

@@ -89,7 +89,7 @@ jobs:
         run: uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 
       - name: Pre-commit (all files)
-        run: uv run pre-commit run --all-files --verbose
+        run: uv run pre-commit run --all-files
 
   test:
     name: Test (Python {% raw %}${{ matrix.python-version }}{% endraw %})
@@ -114,7 +114,7 @@ jobs:
         run: uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 
       - name: Run tests
-        run: uv run pytest -n auto --cov --cov-report=xml --cov-report=term
+        run: uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v6

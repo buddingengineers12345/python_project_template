@@ -19,20 +19,24 @@ dependencies = []  # Runtime dependencies go here
 
 [project.optional-dependencies]
 dev = [
-  "copier>=9.11.2",
-  "jinja2-time>=0.2.0",
-  "pytest>=8.0.0",
-  "pytest-xdist>=3.5.0",
-  "pytest-cov>=6.0.0",
-  "coverage[toml]>=7.6.0",
-  "ruff>=0.8.0",
-  "basedpyright>=1.21.0",
-  "pre-commit>=4.0.0",
-  "typing-extensions>=4.12.0",
-  "detect-secrets>=1.5.0",
-  "commitizen>=4.0.0",
+    "copier>=9.11.2",
+    "jinja2-time>=0.2.0",
+    "ruff>=0.8.0",
+    "basedpyright>=1.21.0",
+    "pre-commit>=4.0.0",
+    "typing-extensions>=4.12.0",
+    "detect-secrets>=1.5.0",
+    "commitizen>=4.0.0",
 ]
 
+test = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-xdist>=3.5.0",
+    "pytest-cov>=6.0.0",
+    "coverage[toml]>=7.6.0",
+    "pytest-testmon>=2.2.0",
+]
 [dependency-groups]
 changelog = [
     "git-cliff>=2.6.0",
@@ -135,12 +139,10 @@ addopts = [
     "-q",
     "--strict-markers",
     "--strict-config",
-    "--cov=my_library",
-    "--cov-report=term-missing",
     "--tb=short",
     "--log-level=WARNING",
-    "-p", "no:cacheprovider",
     "-ra",
+    "--testmon",
 ]
 markers = [
     "e2e: End-to-end tests across the full stack or external systems",

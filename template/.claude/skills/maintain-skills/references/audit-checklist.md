@@ -5,6 +5,8 @@ thorough reviews, repo-wide sweeps, or when unsure about a specific quality area
 
 The six consistency dimensions (in SKILL.md) are the minimum bar. This checklist
 goes deeper into content quality, technical accuracy, and cross-skill health.
+It also covers the two efficiency dimensions (lazy loading and batch guidance)
+introduced as dimensions 8 and 9.
 
 ---
 
@@ -195,9 +197,79 @@ Quick pass — flag anything surprising for human review:
 
 ---
 
+## Area 10 — Lazy reference loading (dimension 8)
+
+Verify that reference files are loaded on demand, not eagerly.
+
+**Audit steps:**
+
+1. Grep for all "load", "read", "consult" instructions targeting reference files:
+```bash
+grep -n -iE '\b(load|read|consult)\b.*references/' "$SKILL_DIR/SKILL.md"
+```
+
+2. For each match, check whether it has a conditional trigger (if/when/for):
+```bash
+grep -n -iE '\b(load|read|consult)\b.*references/' "$SKILL_DIR/SKILL.md" \
+    | grep -viE '(if |when |for |only|conditional)'
+```
+Any remaining lines are unconditional loads — flag as MED severity.
+
+3. Check for a conditional loading table or decision tree:
+```bash
+grep -c 'If the task involves\|When to load\|Reference loading' "$SKILL_DIR/SKILL.md"
+```
+If zero, flag as MED — skill needs a conditional loading table.
+
+4. Verify the 80% case is covered inline. Read the SKILL.md body content:
+   - Does it contain enough guidance to handle the most common task without
+     loading any reference file?
+   - Or does every workflow step require reading a reference first?
+
+**Red flags:**
+- "Always load X before starting" — should be "If doing X, load…"
+- Stage 1 of an orchestrator loading all sub-skills upfront
+- Reference table exists but no conditional loading guidance above it
+- All reference files are mentioned as mandatory reads in the workflow
+
+---
+
+## Area 11 — Batch tool call guidance (dimension 9)
+
+Verify that skills which edit files include batch edit guidance.
+
+**Audit steps:**
+
+1. Determine if the skill involves file editing or command running:
+```bash
+grep -cilE '(edit|write|fix|apply|create file|modify|run |execute)' \
+    "$SKILL_DIR/SKILL.md"
+```
+If zero, this dimension does not apply — skill is read-only/informational.
+
+2. Check for batch guidance:
+```bash
+grep -cilE '(batch edit|parallel call|single edit|minimize.*call|combine.*edit)' \
+    "$SKILL_DIR/SKILL.md"
+```
+If zero and step 1 matched, flag as MED — skill needs batch guidance.
+
+3. If present, verify the guidance covers all three aspects:
+   - **Batch edits** — combining changes to the same file
+   - **Parallel calls** — independent commands in one message
+   - **Read before edit** — plan all changes first
+
+**Red flags:**
+- Skill has step-by-step instructions that say "edit line X… now edit line Y…
+  now edit line Z…" for the same file
+- Multiple sequential independent commands with no mention of parallelism
+- No "read the file first" instruction before a series of edits
+
+---
+
 ## Producing an audit report
 
-After completing all 9 areas:
+After completing all 11 areas:
 
 ```markdown
 ## Skill audit: <skill-name>

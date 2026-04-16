@@ -4,16 +4,18 @@ description: >-
   Audit, standardize, and improve existing skills in a skills directory (commonly
   `.claude/skills/` or `template/.claude/skills/`). Use for 'audit this skill', 'review
   skill quality', 'standardize skills', or any request to systematically review or
-  improve a SKILL.md file. Validates all seven consistency dimensions: frontmatter block
+  improve a SKILL.md file. Validates all nine consistency dimensions: frontmatter block
   scalars, title format, reference table headers, bundled-file naming, H1 headings, line
-  count, and bundled-asset layout. Provides step-by-step fix instructions for each
-  violation. Do NOT use for creating new skills from scratch — use skill-creator instead.
+  count, bundled-asset layout, lazy reference loading, and batch tool calls. Provides
+  step-by-step fix instructions for each violation. Do NOT use for creating new skills
+  from scratch — use skill-creator instead.
 ---
 
 # Maintain Skills Skill
 
 Audit, standardize, and improve existing skills. This skill provides exact rules and
-commands so any model — including haiku — can maintain skills mechanically.
+commands so any model — including haiku — can maintain skills mechanically. Covers nine
+consistency dimensions including lazy reference loading and batch tool call guidance.
 
 Skills live under a skills root directory. The canonical path in this repo is
 `.claude/skills/` (Claude Code / Cowork default); older layouts used
@@ -49,9 +51,9 @@ reference table (dimension 3). No orphans, regardless of directory.
 
 ---
 
-## The seven consistency dimensions
+## The nine consistency dimensions
 
-Every skill MUST pass all seven checks. These are the primary audit criteria.
+Every skill MUST pass all nine checks. These are the primary audit criteria.
 
 ### Dimension 1 — Frontmatter block scalar
 
@@ -218,80 +220,119 @@ done
 ```
 Output must be empty.
 
+### Dimension 8 — Lazy reference loading
+
+Skills MUST load reference files **on demand**, not eagerly. SKILL.md MUST contain a
+**conditional loading table** (or decision tree) that maps task contexts to specific
+references. The most common use case MUST be handled by inline guidance in SKILL.md
+itself, so simple tasks require **zero** reference file loads.
+
+**Pattern — conditional loading table:**
+
+```markdown
+## When to load references
+
+| If the task involves…               | Load                               |
+|--------------------------------------|------------------------------------|
+| Writing async tests                  | `references/async-testing.md`      |
+| Using mocks or test doubles          | `references/mocking.md`            |
+| Fixture scopes or factory fixtures   | `references/fixtures.md`           |
+| Simple test writing (default)        | No reference needed — use inline   |
+```
+
+**Pattern — decision tree (alternative):**
+
+```markdown
+## Reference loading
+
+├── Writing a new test file?
+│   └── Use inline guidance below (AAA, naming, assertions)
+├── Need fixtures beyond basic `@pytest.fixture`?
+│   └── Load `references/fixtures.md`
+├── Need mocking guidance?
+│   └── Load `references/mocking.md`
+└── Debugging flaky tests?
+    └── Load `references/anti-patterns.md`
+```
+
+**Rules:**
+
+- Never instruct "Load reference X" without a condition or context.
+- The words "read", "load", or "consult" for a reference file MUST be preceded by
+  a conditional ("if", "when", "for `<context>`").
+- Inline guidance in SKILL.md must cover the 80% case. References are for depth,
+  not basics.
+- Skills with a single reference file: the condition can be simple ("For the full
+  config reference, see…") but must still exist — never "always load X first".
+- Orchestrator skills (sdlc-workflow, tdd-workflow) load sub-skill SKILL.md files
+  at the **start of the stage that needs them**, not all upfront. Each stage's load
+  instruction is itself a conditional.
+
+**Check:**
+```bash
+for f in "$SKILLS_DIR"/*/SKILL.md; do
+    skill=$(basename "$(dirname "$f")")
+    # Find unconditional "load/read" instructions for reference files
+    hits=$(grep -n -iE '(^[0-9]+\.|^- ).*\b(load|read)\b.*references/' "$f" \
+        | grep -viE '(if |when |for |only|conditional)' || true)
+    [ -n "$hits" ] && echo "  $skill: unconditional reference loads found:" \
+        && echo "$hits"
+done
+```
+Ideally returns empty — all reference loads are conditional.
+
+### Dimension 9 — Batch tool calls
+
+Skills that involve editing files or running commands MUST include explicit **batch
+edit guidance** instructing the executing model to minimize API calls.
+
+**Required guidance block** — add this verbatim or adapted to the skill's domain:
+
+```markdown
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When making multiple changes to the same file, combine them
+  into a single Edit tool call where possible. Do not make incremental
+  single-line changes.
+- **Parallel calls:** When running independent checks (e.g., lint + type-check),
+  make all tool calls in a single message rather than sequentially.
+- **Read before edit:** Read each file once, plan all changes, then apply them
+  in the fewest possible Edit calls.
+```
+
+**Rules:**
+
+- Every skill that instructs the model to edit files (write code, fix issues,
+  apply docstrings, etc.) MUST contain batch edit guidance.
+- Every skill that instructs the model to run multiple independent commands
+  MUST mention parallel execution.
+- Orchestrator skills (sdlc-workflow, tdd-workflow) that launch Agent calls
+  already handle parallelism via multiple Agent invocations — add batch guidance
+  for within-agent edits.
+- Skills that are read-only or informational (no file edits, no command runs)
+  are exempt.
+
+**Check:**
+```bash
+for f in "$SKILLS_DIR"/*/SKILL.md; do
+    skill=$(basename "$(dirname "$f")")
+    # Check for batch/parallel guidance
+    has_batch=$(grep -cilE '(batch edit|parallel call|single edit|minimize.*call)' \
+        "$f" || true)
+    has_edits=$(grep -cilE '(edit|write|fix|apply|create file|modify)' "$f" || true)
+    if [ "$has_edits" -gt 0 ] && [ "$has_batch" -eq 0 ]; then
+        echo "  $skill: edits files but has no batch guidance"
+    fi
+done
+```
+Ideally returns empty — all editing skills have batch guidance.
+
 ---
 
 ## Full verification script
 
-Run this after ANY skill edit. All seven dimensions in one pass. Set `SKILLS_DIR`
-to match your layout (`.claude/skills` or `template/.claude/skills`).
-
-```bash
-SKILLS_DIR="${SKILLS_DIR:-.claude/skills}"
-
-echo "=== 1. Frontmatter block scalar ==="
-for f in "$SKILLS_DIR"/*/SKILL.md; do
-    skill=$(basename "$(dirname "$f")")
-    scalar=$(grep 'description:' "$f" | head -1 | sed 's/.*description: *//')
-    echo "  $skill: $scalar"
-done
-
-echo ""
-echo "=== 2. Title format ==="
-for f in "$SKILLS_DIR"/*/SKILL.md; do
-    skill=$(basename "$(dirname "$f")")
-    echo "  $skill: $(grep '^# ' "$f" | head -1)"
-done
-
-echo ""
-echo "=== 3. Reference table header ==="
-for f in "$SKILLS_DIR"/*/SKILL.md; do
-    skill=$(basename "$(dirname "$f")")
-    header=$(grep 'where to go deeper' "$f" || echo "(NOT FOUND)")
-    echo "  $skill: $header"
-done
-
-echo ""
-echo "=== 4. Bundled file + folder naming (non-kebab?) ==="
-bad_folders=$(ls -d "$SKILLS_DIR"/*/ 2>/dev/null | grep -E '[_A-Z]' || true)
-bad_files=$(find "$SKILLS_DIR"/*/references "$SKILLS_DIR"/*/templates \
-  "$SKILLS_DIR"/*/assets -type f \
-  \( -name '[0-9]*' -o -name '*_*' -o -name '[A-Z]*' \) 2>/dev/null || true)
-[ -z "$bad_folders$bad_files" ] && echo "  None found ✓" \
-  || { echo "  folders: $bad_folders"; echo "  files:   $bad_files"; }
-
-echo ""
-echo "=== 5. Reference H1 headings ==="
-for f in "$SKILLS_DIR"/*/references/*.md; do
-    [ -f "$f" ] || continue
-    skill=$(basename "$(dirname "$(dirname "$f")")")
-    echo "  $skill/$(basename "$f"): $(head -1 "$f")"
-done
-
-echo ""
-echo "=== 6. SKILL.md line counts ==="
-wc -l "$SKILLS_DIR"/*/SKILL.md
-
-echo ""
-echo "=== 7. Bundled asset layout (no mixing templates/ and assets/templates/) ==="
-for dir in "$SKILLS_DIR"/*/; do
-    skill=$(basename "$dir")
-    if [ -d "$dir/templates" ] && [ -d "$dir/assets/templates" ]; then
-        echo "  $skill: MIXED LAYOUT"
-    fi
-done
-```
-
-**Pass criteria:** ALL of these must be true:
-
-- Dimension 1: every skill shows `>-`
-- Dimension 2: every title ends with ` Skill`
-- Dimension 3: every skill has exactly one `where to go deeper` match, and every
-  file under `references/`, `templates/`, `assets/` is linked from that table
-- Dimension 4: every folder and bundled file is kebab-case (no numbers, no
-  underscores, no uppercase)
-- Dimension 5: every H1 heading is sentence case
-- Dimension 6: every SKILL.md is under 400 lines
-- Dimension 7: no skill mixes top-level `templates/` with `assets/templates/`
+Run the script in [references/verification-script.md](references/verification-script.md)
+after ANY skill edit. It checks all nine dimensions in one pass.
 
 ---
 
@@ -301,11 +342,32 @@ entire skill repositories, SKILL.md structure, and writing style guidelines, see
 
 ---
 
+## When to load references
+
+| If the task involves…                      | Load                              |
+|---------------------------------------------|-----------------------------------|
+| Step-by-step standardization of one skill  | `references/fixing-skills.md`     |
+| Full 11-area deep audit of a skill         | `references/audit-checklist.md`   |
+| Before/after fix examples for reference    | `references/audit-examples.md`    |
+| Logging a completed audit session          | `references/maintenance-log.md`   |
+| Running the 9-dimension verification check | `references/verification-script.md` |
+| Quick dimension check (default)            | No reference needed — use inline  |
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When fixing multiple dimensions in a single SKILL.md, combine
+  all fixes (frontmatter, title, references, etc.) into a single Edit call.
+- **Parallel audits:** When auditing multiple skills, run dimension checks for
+  independent skills in parallel.
+- **Read before edit:** Read the full SKILL.md once, note all violations, then
+  apply all fixes in the fewest Edit calls possible.
+
 ## Quick reference: where to go deeper
 
 | Topic                                              | Reference file                                                       |
 |----------------------------------------------------|----------------------------------------------------------------------|
 | Step-by-step fixing, auditing, and style guide    | [references/fixing-skills.md](references/fixing-skills.md)           |
-| Full 9-area deep audit checklist                  | [references/audit-checklist.md](references/audit-checklist.md)       |
+| Full 11-area deep audit checklist                 | [references/audit-checklist.md](references/audit-checklist.md)       |
 | Annotated before/after fix examples               | [references/audit-examples.md](references/audit-examples.md)         |
 | Running log of all audit sessions                 | [references/maintenance-log.md](references/maintenance-log.md)       |
+| Full verification script (all 9 dimensions)       | [references/verification-script.md](references/verification-script.md) |

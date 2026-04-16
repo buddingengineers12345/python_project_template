@@ -47,6 +47,7 @@ test = [
     "pytest-xdist>=3.5.0",
     "pytest-cov>=6.0.0",
     "coverage[toml]>=7.6.0",
+    "pytest-testmon>=2.2.0",
 ]
 
 {% if include_docs %}
@@ -175,12 +176,10 @@ addopts = [
     "-q",
     "--strict-markers",
     "--strict-config",
-    "--cov={{ package_name }}",
-    "--cov-report=term-missing",
     "--tb=short",
     "--log-level=WARNING",
-    "-p", "no:cacheprovider",
     "-ra",
+    "--testmon",
 ]
 markers = [
     "e2e: End-to-end tests across the full stack or external systems",

@@ -29,9 +29,18 @@ readable, portable, accessible, and maintainable over time.
 | File management and doc systems    | [references/file-management.md](references/file-management.md)               |
 | Anti-patterns and cheat sheet      | [references/anti-patterns-cheatsheet.md](references/anti-patterns-cheatsheet.md) |
 
-Read the relevant reference file before working on a specific area. For a new README,
-skim `document-structure.md` first. For table formatting or GFM features, check the
-corresponding reference.
+## When to load references
+
+| If the task involves…                     | Load                                       |
+|--------------------------------------------|--------------------------------------------|
+| Front matter, document skeleton, headings  | `references/document-structure.md`         |
+| Lists, emphasis, whitespace formatting     | `references/formatting-syntax.md`          |
+| Code blocks, fenced blocks, links         | `references/code-and-links.md`             |
+| Tables, images, or inline HTML            | `references/tables-images-html.md`         |
+| GFM features, callouts, task lists        | `references/extended-syntax.md`            |
+| Doc systems, multi-file docs, wikis       | `references/file-management.md`            |
+| Common mistakes quick reference           | `references/anti-patterns-cheatsheet.md`   |
+| Writing a basic README or doc (default)   | No reference needed — use inline guidance  |
 
 ---
 
@@ -170,6 +179,13 @@ Strongly prefer plain Markdown over HTML. Acceptable uses: `<br>`, `<details>`,
 | Empty alt text on images         | Always write descriptive alt text       |
 
 ---
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When restructuring a Markdown file (fixing headings, lists,
+  and links), plan all changes first, then apply them in a single Edit call.
+- **Read before edit:** Read the full file once to understand its structure before
+  making any changes. Apply all edits in the fewest calls possible.
 
 ## See Also
 

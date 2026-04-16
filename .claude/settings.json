@@ -13,7 +13,6 @@
       "Bash(git commit:*)",
       "Bash(git checkout:*)",
       "Bash(git branch:*)",
-      "Bash(rm -rf /tmp/test-output*)",
       "Bash(python3:*)",
       "Bash(bash .claude/hooks/*)"
     ],
@@ -69,16 +68,6 @@
         "description": "Pre-commit: scan staged .py files for secrets/debug markers before git commit"
       },
       {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/pre-bash-coverage-gate.sh"
-          }
-        ],
-        "description": "Coverage gate: warn before git commit if test coverage is below 85%"
-      },
-      {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
           {
@@ -86,7 +75,7 @@
             "command": "bash .claude/hooks/pre-config-protection.sh"
           }
         ],
-        "description": "Block weakening edits to ruff/basedpyright config in pyproject.toml and .pre-commit-config.yaml"
+        "description": "Block weakening edits to ruff/basedpyright config in pyproject.toml"
       },
       {
         "matcher": "Write|Edit",
@@ -99,16 +88,6 @@
         "description": "Block direct edits to uv.lock — must be regenerated via uv lock or just update"
       },
       {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/pre-protect-readonly-files.sh"
-          }
-        ],
-        "description": "Block direct edits to protected root-level config files: env.example, justfile, LICENSE, pyproject.toml, uv.lock, copier.yml, .gitignore, .gitmessage, .pre-commit-config.yaml, .secrets.baseline"
-      },
-      {
         "matcher": "Write|Edit",
         "hooks": [
           {
@@ -119,6 +98,36 @@
         "description": "TDD enforcement: block writing src/<pkg>/<module>.py if test file does not exist (use pre-write-src-test-reminder.sh instead for warn-only — do not register both)"
       },
       {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-coverage-gate.sh"
+          }
+        ],
+        "description": "Coverage gate: warn before git commit if test coverage is below 85%"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-delete-protection.sh"
+          }
+        ],
+        "description": "Block rm of critical files: pyproject.toml, justfile, CLAUDE.md, .pre-commit-config.yaml, .copier-answers.yml, uv.lock, .claude/settings.json"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-branch-protection.sh"
+          }
+        ],
+        "description": "Block git push to main/master branches — use feature branches and PRs"
+      },
+      {
         "matcher": "Write",
         "hooks": [
           {
@@ -127,16 +136,6 @@
           }
         ],
         "description": "Block writing .md files outside docs/ (pre-flight — prevents the wrong location)"
-      },
-      {
-        "matcher": "Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/pre-write-jinja-syntax.sh"
-          }
-        ],
-        "description": "Validate Jinja2 syntax before writing new/overwritten .jinja template files"
       },
       {
         "matcher": "Edit|Write",
@@ -161,26 +160,6 @@
         "description": "Run ruff check + basedpyright after every .py edit for immediate feedback"
       },
       {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/post-edit-refactor-test-guard.sh"
-          }
-        ],
-        "description": "TDD refactor guard: remind to run tests after multiple src/ or scripts/ edits"
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/post-edit-jinja.sh"
-          }
-        ],
-        "description": "Validate Jinja2 syntax after every .jinja template edit (post-edit secondary layer)"
-      },
-      {
         "matcher": "Edit",
         "hooks": [
           {
@@ -195,20 +174,30 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/post-edit-copier-migration.sh"
+            "command": "bash .claude/hooks/post-edit-refactor-test-guard.sh"
           }
         ],
-        "description": "Remind about _migrations, _skip_if_exists, and tests after copier.yml edits"
+        "description": "TDD refactor guard: remind to run tests after multiple src/ edits"
       },
       {
-        "matcher": "Edit|Write",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/post-edit-template-mirror.sh"
+            "command": "bash .claude/hooks/post-bash-test-coverage-reminder.sh"
           }
         ],
-        "description": "Remind to mirror template/.claude/ changes to root .claude/ (and vice versa)"
+        "description": "After pytest/just test runs, surface modules below 85% coverage"
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-write-test-structure.sh"
+          }
+        ],
+        "description": "After creating test files, check for test_ functions, no unittest.TestCase, and proper pytest markers"
       },
       {
         "matcher": "Bash",

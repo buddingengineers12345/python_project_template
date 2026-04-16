@@ -11,6 +11,7 @@
 #   •  README.md       — allowed anywhere
 #   •  CLAUDE.md       — allowed anywhere
 #   •  docs/**/         — any depth under any docs/ directory
+#   •  .claude/**/      — skills, rules, commands, hooks docs
 #
 # All other .md files → BLOCKED. Recreate them under docs/.
 #
@@ -52,6 +53,12 @@ fi
 
 # Files under tasks_summary/ are allowed (SDLC workflow summaries)
 if echo "$FILE_PATH" | grep -qE '(^|/)tasks_summary/'; then
+    echo "$INPUT"
+    exit 0
+fi
+
+# Files under .claude/ are allowed (skills, rules, commands, hooks docs)
+if echo "$FILE_PATH" | grep -qE '(^|/)\.claude/'; then
     echo "$INPUT"
     exit 0
 fi

@@ -140,7 +140,9 @@ For the sub-items, load `references/checklist.md`. Do not duplicate checklist co
 
 ## Phase 3 — Output the Review
 
-Load `references/output-format.md` and select the matching template:
+If you need the exact output template format, load `references/output-format.md`
+and select the matching template. For Quick mode reviews, use this compact format:
+> **Verdict: [APPROVE/REQUEST CHANGES]** — [1-line summary]. Findings: [list].
 - **Template A** — snippet / function / module (most common)
 - **Template B** — PR / diff review
 - **Template C** — full module audit (Deep mode only)

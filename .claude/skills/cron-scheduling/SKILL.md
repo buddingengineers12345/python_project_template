@@ -14,6 +14,13 @@ description: >-
 
 # Cron Scheduling Skill
 
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When setting up multiple cron jobs, write all entries in a
+  single `crontab -e` session or Edit call rather than one job at a time.
+- **Read before edit:** Read the current crontab first (`crontab -l`) to
+  understand existing jobs before adding or modifying entries.
+
 ## Quick reference: where to go deeper
 
 | Topic | Reference file |

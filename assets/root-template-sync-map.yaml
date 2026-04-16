@@ -446,8 +446,8 @@
           "template": "template/.claude/skills/markdown/SKILL.md"
         },
         {
-          "root": ".claude/skills/prepare_pr/SKILL.md",
-          "template": "template/.claude/skills/prepare_pr/SKILL.md"
+          "root": ".claude/skills/prepare-pr/SKILL.md",
+          "template": "template/.claude/skills/prepare-pr/SKILL.md"
         },
         {
           "root": ".claude/skills/pytest/SKILL.md",

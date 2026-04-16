@@ -42,7 +42,7 @@ fix:
 fmt-check:
     @uv run ruff format --check .
 
-# Check docstring coverage 
+# Check docstring coverage
 docs-check:
     @echo "=== Docstring coverage check ==="
     @uv run ruff check --select D .
@@ -85,7 +85,7 @@ test-slow:
 
 # Run tests in parallel with minimal output
 test-parallel:
-    @uv run pytest tests/ -n auto
+    @uv run pytest tests/ -n auto --no-testmon
 
 # Run tests with verbose output (shows test names, INFO logs)
 test-verbose:
@@ -97,7 +97,7 @@ test-debug:
 
 # Re-run only the tests that failed in the last run
 test-lf:
-    @uv run pytest tests/ --lf
+    @uv run pytest tests/ --lf --no-testmon
 
 # Stop on first test failure (fast feedback)
 test-first-fail:
@@ -105,7 +105,7 @@ test-first-fail:
 
 # Run tests for changed (unstaged+staged) Python files only — fast incremental feedback
 test-changed:
-    @uv run pytest $(git diff --name-only -- '*.py' | sed 's/src/tests/g')
+    @uv run pytest --no-testmon $(git diff --name-only -- '*.py' | sed 's/src/tests/g')
 
 # Fast unit tests only — excludes slow and integration markers
 test-fast:
@@ -117,11 +117,12 @@ test-integration:
 
 # Re-run last failed tests with maximum verbosity — fast debugging loop
 test-failed-verbose:
-    @uv run pytest --lf -vv
+    @uv run pytest --lf -vv --no-testmon
 
 # Run tests with coverage report (full HTML/XML/term output)
 coverage:
     @uv run pytest tests/ \
+        --no-testmon \
         --cov \
         --cov-report=term-missing \
         --cov-report=html \
@@ -129,7 +130,7 @@ coverage:
 
 # Test command matching GitHub CI (3.11 matrix leg in .github/workflows/tests.yml)
 test-ci:
-    @uv run pytest -q --cov --cov-report=xml --cov-report=term-missing
+    @uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider
 
 # Full tests.yml matrix (3.11 with coverage; 3.12/3.13 with pytest -q only).
 # 3.11 uses the default project .venv (same as `test-ci`). 3.12/3.13 use
@@ -143,13 +144,13 @@ test-ci-matrix:
     echo "=== Python 3.11 + coverage (tests.yml matrix) ==="
     unset UV_PROJECT_ENVIRONMENT
     uv sync --frozen --extra dev --python 3.11
-    uv run pytest -q --cov --cov-report=xml --cov-report=term-missing
+    uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing
     for py in 3.12 3.13; do
       echo "=== Python ${py} (tests.yml matrix) ==="
       suffix="${py//./}"
       export UV_PROJECT_ENVIRONMENT="${ROOT}/.venv-ci-${suffix}"
       uv sync --frozen --extra dev --python "${py}"
-      uv run pytest -q
+      uv run pytest -q --no-testmon
     done
     unset UV_PROJECT_ENVIRONMENT
     uv sync --frozen --extra dev --python 3.11
@@ -184,7 +185,7 @@ audit:
 # -------------------------------------------------------------------------
 
 sync: _set_env
-    @uv sync --frozen --extra dev
+    @uv sync --frozen --extra dev --extra test
 
 update:
     @uv lock --upgrade
@@ -266,14 +267,14 @@ clean:
 
 # Read-only mirror of GitHub Actions: lint.yml + tests.yml matrix + pip-audit (CodeQL/dep-review are GHA-only).
 check:
-    @uv sync --frozen --extra dev
+    @uv sync --frozen --extra dev --extra test
     @just fmt-check
     @uv run ruff check .
     @uv run basedpyright
     @just sync-check
     @just docs-check
     @just test-ci
-    @uv run pre-commit run --all-files --verbose
+    @uv run pre-commit run --all-files
     # @just audit
 
 ci:

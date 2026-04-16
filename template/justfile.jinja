@@ -43,7 +43,7 @@ fix:
 fmt-check:
     @uv run ruff format --check .
 
-# Check docstring coverage 
+# Check docstring coverage
 docs-check:
     @echo "=== Docstring coverage check ==="
     @uv run ruff check --select D .
@@ -86,7 +86,7 @@ test-slow:
 
 # Run tests in parallel with minimal output
 test-parallel:
-    @uv run pytest tests/ -n auto
+    @uv run pytest tests/ -n auto --no-testmon
 
 # Run tests with verbose output (shows test names, INFO logs)
 test-verbose:
@@ -98,7 +98,7 @@ test-debug:
 
 # Re-run only the tests that failed in the last run
 test-lf:
-    @uv run pytest tests/ --lf
+    @uv run pytest tests/ --lf --no-testmon
 
 # Stop on first test failure (fast feedback)
 test-first-fail:
@@ -106,7 +106,7 @@ test-first-fail:
 
 # Run tests for changed (unstaged+staged) Python files only — fast incremental feedback
 test-changed:
-    @uv run pytest $(git diff --name-only -- '*.py' | sed 's/src/tests/g')
+    @uv run pytest --no-testmon $(git diff --name-only -- '*.py' | sed 's/src/tests/g')
 
 # Fast unit tests only — excludes slow and integration markers
 test-fast:
@@ -118,11 +118,12 @@ test-integration:
 
 # Re-run last failed tests with maximum verbosity — fast debugging loop
 test-failed-verbose:
-    @uv run pytest --lf -vv
+    @uv run pytest --lf -vv --no-testmon
 
 # Run tests with coverage report (full HTML/XML/term output)
 coverage:
     @uv run pytest tests/ \
+        --no-testmon \
         --cov={{ package_name }} \
         --cov-report=term-missing \
         --cov-report=html \
@@ -130,7 +131,7 @@ coverage:
 
 # Test command matching GitHub CI (.github/workflows/ci.yml test job)
 test-ci:
-    @uv run pytest -n auto --cov --cov-report=xml --cov-report=term
+    @uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider
 
 # -------------------------------------------------------------------------
 # Pre-commit
@@ -266,7 +267,7 @@ check:
     @just sync-check
     @just docs-check
     @just test-ci
-    @uv run pre-commit run --all-files --verbose
+    @uv run pre-commit run --all-files
 
 ci:
     @just fix

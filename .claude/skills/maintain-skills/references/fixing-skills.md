@@ -83,9 +83,77 @@ Add a row to the quick-reference table for each new file.
 
 If the skill has both `templates/` (top-level) and `assets/templates/`, consolidate into one. Prefer `assets/templates/` when the skill also ships other asset categories (icons, fonts, settings starters); prefer top-level `templates/` for simple skills that only ship a handful of Markdown starters.
 
-### Step 10 — Run verification
+### Step 10 — Fix lazy reference loading (dimension 8)
 
-Run the full verification script from the main skill. ALL seven dimensions must pass.
+Audit every line in SKILL.md that says "load", "read", or "consult" a reference file.
+Each must have a conditional trigger. Fix unconditional loads:
+
+**Before (unconditional):**
+```markdown
+1. Load the `pytest` skill (read `.claude/skills/pytest/SKILL.md`).
+2. For fixture patterns, read `.claude/skills/pytest/references/fixtures.md`.
+   For mocking guidance, read `.claude/skills/pytest/references/mocking.md`.
+```
+
+**After (conditional):**
+```markdown
+1. Load the `pytest` skill (read `.claude/skills/pytest/SKILL.md`).
+2. If writing tests that need fixtures beyond basic `@pytest.fixture`:
+   read `.claude/skills/pytest/references/fixtures.md`.
+   If using mocks or test doubles:
+   read `.claude/skills/pytest/references/mocking.md`.
+   Otherwise: use inline guidance from the pytest skill's core principles.
+```
+
+For skills with many references, create a **conditional loading table**:
+
+```markdown
+## When to load references
+
+| If the task involves…             | Load                            |
+|------------------------------------|---------------------------------|
+| <specific context A>               | `references/a.md`              |
+| <specific context B>               | `references/b.md`              |
+| Simple / default case              | No reference needed — use inline |
+```
+
+**Rules for the 80% case:** The most common use case must be covered by inline
+guidance already in SKILL.md. A user doing the most typical task should never need
+to load a reference file. References are for depth, advanced cases, and edge cases.
+
+For orchestrator skills (sdlc-workflow, tdd-workflow): ensure each stage loads its
+dependencies at the start of that stage, not all upfront. Each stage's load
+instruction must include "if entering this stage" as the condition.
+
+### Step 11 — Fix batch tool call guidance (dimension 9)
+
+If the skill instructs the model to edit files or run commands, add a batch guidance
+section. Use the standard block or adapt it to the skill's domain:
+
+```markdown
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When making multiple changes to the same file, combine them
+  into a single Edit tool call where possible. Do not make incremental
+  single-line changes.
+- **Parallel calls:** When running independent checks (e.g., lint + type-check),
+  make all tool calls in a single message rather than sequentially.
+- **Read before edit:** Read each file once, plan all changes, then apply them
+  in the fewest possible Edit calls.
+```
+
+Place this section after the main workflow but before the "Quick reference" table.
+
+For skills that are read-only or purely informational (no file edits, no command
+runs), this dimension does not apply — skip it.
+
+For orchestrator skills: add batch guidance for within-agent edits. The Agent-level
+parallelism is already handled by multiple Agent calls — the batch guidance targets
+edits within each agent's scope.
+
+### Step 12 — Run verification
+
+Run the full verification script from the main skill. ALL nine dimensions must pass.
 
 ---
 
@@ -132,8 +200,10 @@ When restructuring a SKILL.md, use this standard order:
 2. `# <Name> Skill` title
 3. 1-3 line intro paragraph
 4. Core content sections (main workflows, principles, checklists)
-5. `## Quick reference: where to go deeper` (reference table covering every file under `references/`, `templates/`, and `assets/`)
-6. Optional: `## Bundled scripts` (if `scripts/` exists)
+5. Conditional reference loading table or decision tree (dimension 8)
+6. Efficiency: batch edits and parallel calls (dimension 9, if applicable)
+7. `## Quick reference: where to go deeper` (reference table covering every file under `references/`, `templates/`, and `assets/`)
+8. Optional: `## Bundled scripts` (if `scripts/` exists)
 
 ---
 

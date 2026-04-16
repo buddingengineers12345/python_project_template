@@ -100,16 +100,14 @@ floats.
 
 #### E — Integration Points
 Interactions with external collaborators (DB, API, filesystem, message queue,
-another module). One test per meaningful interaction. Load
-`references/test-doubles.md` to choose the right test double (stub/mock/fake).
+another module). One test per meaningful interaction. If the test plan requires mocks, stubs, or fakes, load `references/test-doubles.md` to choose the right test double (stub/mock/fake).
 
 ---
 
 ## Step 4 — Select pytest mechanics
 
 **Fixtures:** Use for any setup shared across 2+ tests. Fixtures used across
-multiple test files belong in `conftest.py` — not inline. See
-`references/pytest-patterns.md` for conftest layout.
+multiple test files belong in `conftest.py` — not inline. If you need specific pytest patterns (parametrize, fixtures, markers), load `references/pytest-patterns.md` for conftest layout and other patterns.
 
 **Parametrize:** Use when the same assertion logic applies to multiple
 input/output pairs. Always add human-readable `ids=` so test output says
