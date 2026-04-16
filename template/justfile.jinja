@@ -291,7 +291,7 @@ release BUMP_TYPE="patch":
     @echo "=== Release Workflow ==="
     @echo "Release type: {{BUMP_TYPE}}"
     @echo ""
-    
+
     @echo "1️⃣  Checking git state..."
     @if [ -n "$(git status --porcelain)" ]; then \
         echo "❌ Error: Uncommitted changes detected. Commit or stash before release."; \
@@ -300,7 +300,7 @@ release BUMP_TYPE="patch":
     fi
     @echo "✓ Git state clean"
     @echo ""
-    
+
     @echo "2️⃣  Checking git-cliff installation..."
     @if ! command -v git-cliff &> /dev/null; then \
         echo "❌ Error: git-cliff not found."; \
@@ -309,29 +309,29 @@ release BUMP_TYPE="patch":
     fi
     @echo "✓ git-cliff found"
     @echo ""
-    
+
     @echo "3️⃣  Running CI checks..."
     @just ci
     @echo "✓ CI passed"
     @echo ""
-    
+
     @echo "4️⃣  Bumping version with Commitizen..."
     @uv run cz bump --increment {{BUMP_TYPE}} --changelog
     @echo "✓ Version bumped, changelog generated"
     @echo ""
-    
+
     @echo "5️⃣  Generating release notes with git-cliff..."
     @git-cliff --output CHANGELOG.md
     @git add CHANGELOG.md
     @git commit --amend --no-edit
     @echo "✓ CHANGELOG.md updated"
     @echo ""
-    
+
     @echo "6️⃣  Pushing release to main..."
     @git push origin main --tags
     @echo "✓ Release pushed"
     @echo ""
-    
+
     @echo "✅ Release complete!"
     @git describe --tags --abbrev=0
 

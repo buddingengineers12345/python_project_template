@@ -307,7 +307,7 @@ git describe --tags --abbrev=0    # Shows v0.1.0
 # 5. Verify CHANGELOG.md
 cat CHANGELOG.md
 # ## v0.1.0 - 2026-04-15
-# 
+#
 # ### ✨ Features
 # * Add user profile page (user)
 # * Add OAuth login flow (auth)

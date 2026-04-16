@@ -247,7 +247,7 @@ Generate a standup update from the activity above.
 
 Format:
 **Yesterday**: What I worked on
-**Today**: What I plan to work on  
+**Today**: What I plan to work on
 **Blockers**: Anything blocking me (say "None" if nothing)
 
 Keep it brief — 2-3 bullet points per section max.
@@ -266,7 +266,7 @@ Estimate the effort for: $ARGUMENTS
 
 Given this codebase, provide:
 1. **T-shirt size**: XS / S / M / L / XL
-2. **Hour range**: rough low-high estimate  
+2. **Hour range**: rough low-high estimate
 3. **Key unknowns**: what would make this take longer?
 4. **Suggested breakdown**: 3-5 subtasks
 

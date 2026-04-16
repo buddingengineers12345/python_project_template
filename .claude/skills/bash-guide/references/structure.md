@@ -70,7 +70,7 @@ my_function() {
 ```
 Line 1      : #!/bin/bash
 Lines 2-N   : File header comment block
-             
+
 N+1         : set -euo pipefail
 N+2         : (blank line)
 

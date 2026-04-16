@@ -770,6 +770,7 @@ def test_copier_update_exits_zero_after_copy_and_commit(tmp_path: Path) -> None:
             "*.pyc",
             ".ruff_cache",
             ".pytest_cache",
+            ".mypy_cache",
             "files.zip",
             "temp",
         ),

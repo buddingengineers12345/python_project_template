@@ -51,8 +51,8 @@ sort_commits = "newest"
 # Clean commit messages
 
 commit_preprocessors = [
-{ pattern = "\(#[0-9]+\)", replace = "" }, # remove PR numbers
-{ pattern = "\s+", replace = " " },         # normalize whitespace
+{ pattern = "\\(#[0-9]+\\)", replace = "" }, # remove PR numbers
+{ pattern = "\\s+", replace = " " },         # normalize whitespace
 ]
 
 # ----------------------

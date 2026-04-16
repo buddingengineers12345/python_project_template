@@ -223,7 +223,7 @@ argument-hint: <filepath>
 ---
 Review the file @$ARGUMENTS for:
 - Code quality issues
-- Missing error handling  
+- Missing error handling
 - Performance concerns
 - Documentation gaps
 ```
@@ -278,12 +278,12 @@ Commands that explain reasoning are more robust than rigid checklists:
 ```markdown
 # ✓ Good — explains purpose
 Review this PR focusing on correctness and security. We care less about style
-(linting handles that) and more about logic errors, missing edge cases, and 
+(linting handles that) and more about logic errors, missing edge cases, and
 anything that could fail in production.
 
 # ✗ Brittle — mechanical list with no context
 1. Check variable names
-2. Check function names  
+2. Check function names
 3. Check comments
 4. Check imports
 ```

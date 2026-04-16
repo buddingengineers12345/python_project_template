@@ -6,8 +6,8 @@ Complete reference for all YAML frontmatter fields in `.claude/commands/*.md` an
 
 ## `name`
 
-**Type**: string  
-**Default**: directory name (for skills) or filename without `.md` (for commands)  
+**Type**: string
+**Default**: directory name (for skills) or filename without `.md` (for commands)
 **Constraints**: lowercase letters, numbers, hyphens only; max 64 characters
 
 Overrides the display name and the `/slash-command` trigger. Usually you want the filename to be the name, so this field is rarely needed.
@@ -20,8 +20,8 @@ name: deploy-prod
 
 ## `description`
 
-**Type**: string  
-**Default**: first paragraph of markdown body  
+**Type**: string
+**Default**: first paragraph of markdown body
 **Recommended**: always include
 
 The primary text Claude reads to decide whether to auto-invoke this skill. Also shown in `/help` listings and autocomplete.
@@ -38,7 +38,7 @@ description: Generate a conventional commit message from staged changes. Use whe
 
 ## `when_to_use`
 
-**Type**: string (supports multi-line with `|`)  
+**Type**: string (supports multi-line with `|`)
 **Default**: none
 
 Additional context for auto-invocation. Extends `description` without cluttering it. Useful for listing synonyms, edge cases, and trigger phrases.
@@ -54,7 +54,7 @@ when_to_use: |
 
 ## `argument-hint`
 
-**Type**: string  
+**Type**: string
 **Default**: none
 
 Hint shown in the autocomplete dropdown describing expected arguments. Purely cosmetic — does not validate or parse arguments.
@@ -73,7 +73,7 @@ Common conventions:
 
 ## `allowed-tools`
 
-**Type**: space-separated string  
+**Type**: space-separated string
 **Default**: none (uses session permissions)
 
 Pre-approves specific tools so Claude can use them without per-call confirmation when this command is active. This does NOT grant tools not already available in the session — it only pre-approves prompts for tools that are available.
@@ -99,8 +99,8 @@ allowed-tools: Bash(git log:*) Bash(git diff:*)  # Multiple bash patterns
 
 ### Bash scoping patterns
 
-`Bash(command *)` — all arguments to `command`  
-`Bash(command subcommand:*)` — only `command subcommand` and its args  
+`Bash(command *)` — all arguments to `command`
+`Bash(command subcommand:*)` — only `command subcommand` and its args
 `Bash(command subcommand flag)` — exact command only
 
 **Best practice**: never use bare `Bash` without a scope pattern for production commands. It grants unrestricted shell access.
@@ -109,7 +109,7 @@ allowed-tools: Bash(git log:*) Bash(git diff:*)  # Multiple bash patterns
 
 ## `disable-model-invocation`
 
-**Type**: boolean  
+**Type**: boolean
 **Default**: `false`
 
 When `true`, prevents Claude from auto-triggering this command based on context. The user must invoke it explicitly with `/command-name`.
@@ -131,7 +131,7 @@ Good candidates:
 
 ## `model`
 
-**Type**: string  
+**Type**: string
 **Default**: session default (usually Sonnet)
 
 Pins this command to a specific Claude model. Useful when a command requires Opus for complex reasoning, or Haiku for fast/cheap operations.
@@ -146,7 +146,7 @@ model: claude-haiku-4-5-20251001  # Fast, cheap, good for simple tasks
 
 ## `context`
 
-**Type**: string  
+**Type**: string
 **Default**: inline (runs in current conversation)
 
 Controls where the skill executes.
