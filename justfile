@@ -143,17 +143,17 @@ test-ci-matrix:
     uv python install 3.11 3.12 3.13
     echo "=== Python 3.11 + coverage (tests.yml matrix) ==="
     unset UV_PROJECT_ENVIRONMENT
-    uv sync --frozen --extra dev --python 3.11
+    uv sync --frozen --extra dev --extra test --python 3.11
     uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing
     for py in 3.12 3.13; do
       echo "=== Python ${py} (tests.yml matrix) ==="
       suffix="${py//./}"
       export UV_PROJECT_ENVIRONMENT="${ROOT}/.venv-ci-${suffix}"
-      uv sync --frozen --extra dev --python "${py}"
+      uv sync --frozen --extra dev --extra test --python "${py}"
       uv run pytest -q --no-testmon
     done
     unset UV_PROJECT_ENVIRONMENT
-    uv sync --frozen --extra dev --python 3.11
+    uv sync --frozen --extra dev --extra test --python 3.11
     echo "✓ Restored default .venv (Python 3.11)"
 
 # -------------------------------------------------------------------------
