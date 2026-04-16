@@ -57,12 +57,6 @@ if echo "$FILE_PATH" | grep -qE '(^|/)tasks_summary/'; then
     exit 0
 fi
 
-# Files under .claude/ are allowed (skills, rules, commands, hooks docs)
-if echo "$FILE_PATH" | grep -qE '(^|/)\.claude/'; then
-    echo "$INPUT"
-    exit 0
-fi
-
 # ── Violation — block the write ───────────────────────────────────────────────
 echo "┌─ BLOCKED: Markdown placement violation" >&2
 echo "│" >&2
