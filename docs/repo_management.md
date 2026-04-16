@@ -160,7 +160,7 @@ both are **Copy** (including every `SKILL.md`, `references/*`, `templates/*`, `a
 Shared skills (Copy in their entirety): `bash-guide/`, `config-management/`,
 `cron-scheduling/`, `css-guide/`, `html-guide/`, `jinja-guide/`, `linting/`,
 `maintain-commands/`, `maintain-hooks/`, `maintain-rules/`, `maintain-skills/`, `markdown/`,
-`prepare_pr/`, `pytest/`, `python-code-quality/`, `python-code-reviewer/`,
+`prepare-pr/`, `pytest/`, `python-code-quality/`, `python-code-reviewer/`,
 `python-docstrings/`, `sdlc-workflow/`, `security/`, `tdd-test-planner/`, `tdd-workflow/`,
 `test-quality-reviewer/`, `type-checking/`.
 

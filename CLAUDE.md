@@ -118,7 +118,7 @@ This runs: `fix` → `check`.
 
 `check` bundles: `uv sync --frozen`, `fmt-check`, `ruff check`, `basedpyright`,
 `sync-check`, `docs-check` (D-only; redundant with `ruff check` for enforcement), `test-ci-matrix`
-(same pytest commands as `tests.yml` for 3.11/3.12/3.13), `pre-commit run --all-files --verbose`, `audit` (pip-audit).
+(same pytest commands as `tests.yml` for 3.11/3.12/3.13), `pre-commit run --all-files`, `audit` (pip-audit).
 
 Together, `lint.yml` + `tests.yml` + `security.yml` mirror these checks on GitHub (CodeQL is
 GHA-only). All steps must pass before a PR is mergeable.

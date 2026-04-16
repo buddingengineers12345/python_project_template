@@ -225,6 +225,17 @@ Never patch first. A bug without a reproducing test will return.
 
 ---
 
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When writing the test file in RED or the implementation in
+  GREEN, write the complete file content in a single Edit call rather than
+  adding functions one by one.
+- **Read before edit:** Read the target module and existing test file once before
+  planning changes. Apply all edits in the fewest calls possible.
+- **REFACTOR batching:** Group related refactoring changes (e.g., all naming
+  fixes) into a single Edit call per file. Run tests after each logical group,
+  not after each individual change.
+
 ## Skill dependencies
 
 | Stage    | Load first                                          | Fallback (if not installed)     |

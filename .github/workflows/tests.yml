@@ -46,14 +46,14 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Sync dependencies
-        run: uv sync --frozen --extra dev
+        run: uv sync --frozen --extra dev --extra test
 
       - name: Run tests
         run: |
           if [ "${{ matrix.python-version }}" = "3.11" ]; then
-            uv run pytest -q --cov --cov-report=xml --cov-report=term-missing
+            uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider
           else
-            uv run pytest -q
+            uv run pytest -q --no-testmon -p no:cacheprovider
           fi
 
       - name: Upload coverage XML

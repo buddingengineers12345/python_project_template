@@ -50,7 +50,7 @@
   {
     "age_days": 0,
     "commits_since": 4,
-    "file": "template/.claude/skills/prepare_pr/SKILL.md",
+    "file": "template/.claude/skills/prepare-pr/SKILL.md",
     "last_commit": "2026-04-13T13:46:53+02:00",
     "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
     "status": "green"
@@ -58,7 +58,7 @@
   {
     "age_days": 0,
     "commits_since": 4,
-    "file": "template/.claude/skills/prepare_pr/references/section-rules.md",
+    "file": "template/.claude/skills/prepare-pr/references/section-rules.md",
     "last_commit": "2026-04-13T13:46:53+02:00",
     "last_commit_sha": "011f41e68e92af7662616b8cb19ffd8ff2bd77f5",
     "status": "green"

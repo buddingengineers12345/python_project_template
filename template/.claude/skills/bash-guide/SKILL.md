@@ -198,6 +198,23 @@ done
 
 For the full pattern library, see [references/patterns.md](references/patterns.md).
 
+## When to load references
+
+| If the task involves…                      | Load                            |
+|---------------------------------------------|---------------------------------|
+| Script headers, `main()` layout, comments  | `references/structure.md`       |
+| Dual-mode logging, JSON log output         | `references/logging.md`         |
+| Arg parsing, traps, arrays, retries        | `references/patterns.md`        |
+| Starting a new script from scratch         | `templates/script-skeleton.sh`  |
+| Simple script edit or small function       | No reference needed — use inline |
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When adding multiple functions to a script, write them all in
+  a single Edit call rather than one function at a time.
+- **Read before edit:** Read the full script first to understand its structure,
+  existing style, and variable names before making any changes.
+
 ## Quick reference: where to go deeper
 
 | Topic                                                | Reference file                                                 |

@@ -285,6 +285,23 @@ Recommended `.htmlhintrc`:
 }
 ```
 
+## When to load references
+
+| If the task involves…                      | Load                               |
+|---------------------------------------------|------------------------------------|
+| Choosing semantic elements (article, nav)   | `references/semantic-elements.md`  |
+| WCAG compliance, ARIA, focus management    | `references/accessibility.md`      |
+| Starting a new HTML page                   | `templates/html-template.html`     |
+| Simple HTML edits (default)                | No reference needed — use inline   |
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When restructuring an HTML file (fixing semantics, adding
+  ARIA attributes, updating structure), plan all changes first and apply in
+  a single Edit call.
+- **Read before edit:** Read the full HTML file first to understand existing
+  structure and patterns.
+
 ## Quick reference: where to go deeper
 
 | Topic                                                    | Reference file                                                     |

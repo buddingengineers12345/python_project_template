@@ -47,6 +47,7 @@ test = [
     "pytest-xdist>=3.5.0",
     "pytest-cov>=6.0.0",
     "coverage[toml]>=7.6.0",
+    "pytest-testmon>=2.2.0",
 ]
 
 {% if include_docs %}
@@ -112,10 +113,10 @@ select = [
     "PGH",  # pygrep-hooks
     "PT",   # flake8-pytest-style
     "ARG",  # flake8-unused-arguments
-    "D",    # pydocstyle — enforce Google-style docstrings on public symbols
-    "C90",  # McCabe complexity — flag functions above max-complexity
+    "D",    # pydocstyle — enforce Google-style docstrings
+    "C90",  # McCabe complexity
     "PERF", # perflint — catch performance anti-patterns
-    "T20",  # flake8-print — no print() in application code (use structlog)
+    "T20",  # flake8-print — discourage print() in non-test code
 ]
 
 ignore = [
@@ -129,8 +130,8 @@ convention = "google"
 max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["ARG", "T20"]  # tests: ruff D (docstrings) enforced; print() OK (T20)
-"scripts/**" = ["T20"]  # CLI-style scripts may use print
+"tests/**"   = ["ARG", "T20"]  # print() OK in tests; unused args OK (fixtures); D enforced
+"scripts/**" = ["T20"]  # CLI scripts may use print(); docstrings enforced (D)
 
 [tool.ruff.lint.isort]
 known-first-party = ["{{ package_name }}"]
@@ -142,10 +143,6 @@ known-first-party = ["{{ package_name }}"]
 [tool.basedpyright]
 pythonVersion = "{{ python_min_version }}"
 typeCheckingMode = "standard"
-reportMissingImports = true
-reportMissingTypeStubs = false
-venvPath = "."
-venv = ".venv"
 
 include = ["src", "tests"]
 exclude = [
@@ -154,6 +151,15 @@ exclude = [
     "build",
     "dist",
 ]
+
+venvPath = "."
+venv = ".venv"
+reportImplicitOverride = false
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
 
 # ==========================================================================
 # Pytest Configuration
@@ -167,16 +173,13 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
+    "-q",
     "--strict-markers",
     "--strict-config",
-    "--cov={{ package_name }}",
-    "--cov-report=term-missing",
-    "--cov-report=xml",
     "--tb=short",
     "--log-level=WARNING",
-    "-m", "not slow",
-    "-p", "no:cacheprovider",
     "-ra",
+    "--testmon",
 ]
 markers = [
     "e2e: End-to-end tests across the full stack or external systems",

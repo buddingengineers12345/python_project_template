@@ -42,7 +42,7 @@ fix:
 fmt-check:
     @uv run ruff format --check .
 
-# Check docstring coverage on all non-test Python files
+# Check docstring coverage
 docs-check:
     @echo "=== Docstring coverage check ==="
     @uv run ruff check --select D .
@@ -85,7 +85,7 @@ test-slow:
 
 # Run tests in parallel with minimal output
 test-parallel:
-    @uv run pytest tests/ -n auto
+    @uv run pytest tests/ -n auto --no-testmon
 
 # Run tests with verbose output (shows test names, INFO logs)
 test-verbose:
@@ -97,7 +97,7 @@ test-debug:
 
 # Re-run only the tests that failed in the last run
 test-lf:
-    @uv run pytest tests/ --lf
+    @uv run pytest tests/ --lf --no-testmon
 
 # Stop on first test failure (fast feedback)
 test-first-fail:
@@ -105,7 +105,7 @@ test-first-fail:
 
 # Run tests for changed (unstaged+staged) Python files only — fast incremental feedback
 test-changed:
-    @uv run pytest $(git diff --name-only -- '*.py' | sed 's/src/tests/g')
+    @uv run pytest --no-testmon $(git diff --name-only -- '*.py' | sed 's/src/tests/g')
 
 # Fast unit tests only — excludes slow and integration markers
 test-fast:
@@ -117,14 +117,20 @@ test-integration:
 
 # Re-run last failed tests with maximum verbosity — fast debugging loop
 test-failed-verbose:
-    @uv run pytest --lf -vv
+    @uv run pytest --lf -vv --no-testmon
 
+# Run tests with coverage report (full HTML/XML/term output)
 coverage:
-    @uv run pytest --cov --cov-report=term-missing --cov-report=xml
+    @uv run pytest tests/ \
+        --no-testmon \
+        --cov \
+        --cov-report=term-missing \
+        --cov-report=html \
+        --cov-report=xml
 
 # Test command matching GitHub CI (3.11 matrix leg in .github/workflows/tests.yml)
 test-ci:
-    @uv run pytest -q --cov --cov-report=xml --cov-report=term-missing
+    @uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider
 
 # Full tests.yml matrix (3.11 with coverage; 3.12/3.13 with pytest -q only).
 # 3.11 uses the default project .venv (same as `test-ci`). 3.12/3.13 use
@@ -137,17 +143,17 @@ test-ci-matrix:
     uv python install 3.11 3.12 3.13
     echo "=== Python 3.11 + coverage (tests.yml matrix) ==="
     unset UV_PROJECT_ENVIRONMENT
-    uv sync --frozen --extra dev --python 3.11
-    uv run pytest -q --cov --cov-report=xml --cov-report=term-missing
+    uv sync --frozen --extra dev --extra test --python 3.11
+    uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing
     for py in 3.12 3.13; do
       echo "=== Python ${py} (tests.yml matrix) ==="
       suffix="${py//./}"
       export UV_PROJECT_ENVIRONMENT="${ROOT}/.venv-ci-${suffix}"
-      uv sync --frozen --extra dev --python "${py}"
-      uv run pytest -q
+      uv sync --frozen --extra dev --extra test --python "${py}"
+      uv run pytest -q --no-testmon
     done
     unset UV_PROJECT_ENVIRONMENT
-    uv sync --frozen --extra dev --python 3.11
+    uv sync --frozen --extra dev --extra test --python 3.11
     echo "✓ Restored default .venv (Python 3.11)"
 
 # -------------------------------------------------------------------------
@@ -159,13 +165,14 @@ precommit-install:
     @uv run pre-commit install --hook-type pre-push
     @uv run pre-commit install --hook-type commit-msg
     @git config commit.template "$(git rev-parse --show-toplevel)/.gitmessage"
+    @echo "✓ Hooks installed, .gitmessage template configured"
 
 # Interactive conventional commit (Commitizen); alternative to `git commit`.
 cz-commit:
     @uv run cz commit
 
 precommit:
-    @uv run pre-commit run --all-files --verbose
+    @uv run pre-commit run --all-files
 
 # Dependency audit matching .github/workflows/security.yml (pip-audit).
 # Uses ``uv run --with pip-audit`` so the tool runs with the project Python (``uv tool run``/``uvx``
@@ -178,11 +185,11 @@ audit:
 # -------------------------------------------------------------------------
 
 sync: _set_env
-    @uv sync --frozen --extra dev
+    @uv sync --frozen --extra dev --extra test
 
 update:
     @uv lock --upgrade
-    @uv sync --frozen --extra dev
+    @just sync
 
 # Check for outdated dependencies
 deps-outdated:
@@ -260,14 +267,14 @@ clean:
 
 # Read-only mirror of GitHub Actions: lint.yml + tests.yml matrix + pip-audit (CodeQL/dep-review are GHA-only).
 check:
-    @uv sync --frozen --extra dev
+    @uv sync --frozen --extra dev --extra test
     @just fmt-check
     @uv run ruff check .
     @uv run basedpyright
     @just sync-check
     @just docs-check
     @just test-ci
-    @uv run pre-commit run --all-files --verbose
+    @uv run pre-commit run --all-files
     # @just audit
 
 ci:
@@ -295,40 +302,6 @@ doctor:
     @echo "=== Project ==="
     @echo "Repo: python_project_template"
     @echo "Python: >= 3.11"
-
-# -------------------------------------------------------------------------
-# Repo automation
-# -------------------------------------------------------------------------
-
-# Generate repo freshness dashboard + JSON artifacts
-freshness:
-    @uv run python scripts/repo_file_freshness.py
-
-# Validate root/template sync map and parity checks
-sync-check:
-    @uv run python scripts/check_root_template_sync.py
-
-# Print a conventional PR title + PR body (template + git log) for pr-policy compliance
-pr-draft:
-    @uv run python scripts/pr_commit_policy.py draft
-
-# -------------------------------------------------------------------------
-# SDLC: Task management
-# -------------------------------------------------------------------------
-
-# Validate a task YAML against Definition of Ready
-dor-check TASK_ID:
-    python3 .claude/skills/sdlc-workflow/scripts/validate_dor.py tasks/{{TASK_ID}}.yaml
-
-# List all tasks and their statuses
-tasks:
-    @echo "Task ID       Status        Title"
-    @echo "----------    ----------    -----"
-    @python3 -c "import yaml; from pathlib import Path; [print(f\"{d['task_id']:<14}{d['status']:<14}{d['title']}\") for p in sorted(Path('tasks').glob('TASK_*.yaml')) if (d := yaml.safe_load(p.read_text()))]"
-
-# Run pre-flight checks before starting SDLC pipeline
-preflight TASK_ID:
-    bash .claude/skills/sdlc-workflow/scripts/preflight.sh {{TASK_ID}}
 
 # -------------------------------------------------------------------------
 # Release & Versioning
@@ -401,3 +374,37 @@ release BUMP_TYPE="patch":
 
     @echo "✅ Release complete!"
     @git describe --tags --abbrev=0
+
+# -------------------------------------------------------------------------
+# Repo automation
+# -------------------------------------------------------------------------
+
+# Generate repo freshness dashboard + JSON artifacts
+freshness:
+    @uv run python scripts/repo_file_freshness.py
+
+# Validate root/template sync map and parity checks
+sync-check:
+    @uv run python scripts/check_root_template_sync.py
+
+# Print a conventional PR title + PR body (template + git log) for pr-policy compliance
+pr-draft:
+    @uv run python scripts/pr_commit_policy.py draft
+
+# -------------------------------------------------------------------------
+# SDLC: Task management
+# -------------------------------------------------------------------------
+
+# Validate a task YAML against Definition of Ready
+dor-check TASK_ID:
+    python3 .claude/skills/sdlc-workflow/scripts/validate_dor.py tasks/{{TASK_ID}}.yaml
+
+# List all tasks and their statuses
+tasks:
+    @echo "Task ID       Status        Title"
+    @echo "----------    ----------    -----"
+    @python3 -c "import yaml; from pathlib import Path; [print(f\"{d['task_id']:<14}{d['status']:<14}{d['title']}\") for p in sorted(Path('tasks').glob('TASK_*.yaml')) if (d := yaml.safe_load(p.read_text()))]"
+
+# Run pre-flight checks before starting SDLC pipeline
+preflight TASK_ID:
+    bash .claude/skills/sdlc-workflow/scripts/preflight.sh {{TASK_ID}}

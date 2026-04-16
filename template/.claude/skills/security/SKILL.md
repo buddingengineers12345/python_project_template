@@ -35,6 +35,13 @@ When reviewing code, check for:
 | Path traversal | user_input validated against base directory; use `.resolve()` |
 | Error handling | Error messages don't expose internal paths or config values |
 
+## Efficiency: batch edits and parallel calls
+
+- **Parallel calls:** Run `bandit` and `semgrep` scans in parallel as
+  independent tool calls in a single message.
+- **Batch edits:** When fixing multiple security findings in the same file,
+  combine all fixes into a single Edit call.
+
 ## Quick reference: where to go deeper
 
 | Topic                        | Reference file                                     |

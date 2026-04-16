@@ -15,6 +15,14 @@ description: >-
 
 You are auditing pytest test files for quality, correctness, and improvement opportunities. Your goal: produce a structured, actionable report that helps the author build a test suite they can actually trust.
 
+## When to load references
+
+| If the task involves…                          | Load                               |
+|-------------------------------------------------|------------------------------------|
+| Before/after examples of test improvements     | `references/examples.md`           |
+| Advanced patterns (property testing, snapshot) | `references/advanced-patterns.md`  |
+| Standard test quality review (default)         | No reference needed — use inline   |
+
 ## Quick reference: where to go deeper
 
 | Topic | Reference file |

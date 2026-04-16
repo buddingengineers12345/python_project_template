@@ -19,19 +19,37 @@ dependencies = []  # Runtime dependencies go here
 
 [project.optional-dependencies]
 dev = [
-  "copier>=9.11.2",
-  "jinja2-time>=0.2.0",
-  "pytest>=8.0.0",
-  "pytest-xdist>=3.5.0",
-  "pytest-cov>=6.0.0",
-  "coverage[toml]>=7.6.0",
-  "ruff>=0.8.0",
-  "basedpyright>=1.21.0",
-  "pre-commit>=4.0.0",
-  "typing-extensions>=4.12.0",
-  "detect-secrets>=1.5.0",
-  "commitizen>=4.0.0",
+    "copier>=9.11.2",
+    "jinja2-time>=0.2.0",
+    "ruff>=0.8.0",
+    "basedpyright>=1.21.0",
+    "pre-commit>=4.0.0",
+    "typing-extensions>=4.12.0",
+    "detect-secrets>=1.5.0",
+    "commitizen>=4.0.0",
 ]
+
+test = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-xdist>=3.5.0",
+    "pytest-cov>=6.0.0",
+    "coverage[toml]>=7.6.0",
+    "pytest-testmon>=2.2.0",
+]
+[dependency-groups]
+changelog = [
+    "git-cliff>=2.6.0",
+]
+[project.urls]
+Homepage = "https://github.com/buddingengineers12345/python_project_template"
+Documentation = "https://github.com/buddingengineers12345/python_project_template#readme"
+Repository = "https://github.com/buddingengineers12345/python_project_template"
+Issues = "https://github.com/buddingengineers12345/python_project_template/issues"
+
+# ==========================================================================
+# Ruff Configuration
+# ==========================================================================
 
 [tool.ruff]
 line-length = 100
@@ -74,12 +92,41 @@ convention = "google"
 [tool.ruff.lint.mccabe]
 max-complexity = 10
 
-[tool.ruff.lint.isort]
-known-first-party = ["scripts"]
-
 [tool.ruff.lint.per-file-ignores]
 "tests/**"   = ["ARG", "T20"]  # print() OK in tests; unused args OK (fixtures); D enforced
 "scripts/**" = ["T20"]  # CLI scripts may use print(); docstrings enforced (D)
+
+[tool.ruff.lint.isort]
+known-first-party = ["scripts"]
+
+# ==========================================================================
+# BasedPyright Configuration
+# ==========================================================================
+
+[tool.basedpyright]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+
+include = ["scripts", "tests"]
+exclude = [
+    "**/__pycache__",
+    "**/.*",
+    "build",
+    "dist",
+]
+
+venvPath = "."
+venv = ".venv"
+reportImplicitOverride = false
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
+
+# ==========================================================================
+# Pytest Configuration
+# ==========================================================================
 
 [tool.pytest.ini_options]
 minversion = "8.0"
@@ -88,7 +135,15 @@ pythonpath = ["."]  # "." exposes scripts/
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = ["-q", "--strict-markers", "--strict-config", "--tb=short", "--log-level=WARNING", "-ra"]
+addopts = [
+    "-q",
+    "--strict-markers",
+    "--strict-config",
+    "--tb=short",
+    "--log-level=WARNING",
+    "-ra",
+    "--testmon",
+]
 markers = [
     "e2e: End-to-end tests across the full stack or external systems",
     "integration: Tests crossing module boundaries, real I/O, subprocesses, or services",
@@ -103,13 +158,14 @@ filterwarnings = [
 ]
 
 # ==========================================================================
-# Coverage Configuration (for template-repo test suite)
+# Coverage Configuration
 # ==========================================================================
 
 [tool.coverage.run]
 branch = true
-source = ["scripts"]  # measure application code, not the test suite
+source = ["scripts"]
 omit = [
+    "tests/*",
     "**/__init__.py",
     "*/tests/*",
     "*/__pycache__/*",
@@ -136,25 +192,6 @@ output = "coverage.xml"
 
 [tool.coverage.html]
 directory = "htmlcov"
-
-[tool.basedpyright]
-pythonVersion = "3.11"
-typeCheckingMode = "standard"
-reportMissingImports = true
-include = ["scripts", "tests"]
-exclude = [
-    "**/__pycache__",
-    "**/.*",
-    "build",
-    "dist",
-]
-venvPath = "."
-venv = ".venv"
-reportImplicitOverride = false
-reportMissingTypeStubs = false
-reportUnknownMemberType = false
-reportUnknownArgumentType = false
-reportUnknownVariableType = false
 
 # Commitizen: conventional commits (`cz commit`), commit-msg validation via pre-commit.
 # version_provider = "pep621" means commitizen reads/writes [project].version — no duplicate.

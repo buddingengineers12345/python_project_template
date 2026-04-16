@@ -600,7 +600,7 @@ bundle).
 | `maintain-rules/` |
 | `maintain-skills/` |
 | `markdown/` |
-| `prepare_pr/` |
+| `prepare-pr/` |
 | `pytest/` |
 | `python-code-quality/` |
 | `python-code-reviewer/` |
@@ -629,7 +629,7 @@ Run it once per directory, substituting `<SKILL>`.
 ```bash
 for d in bash-guide config-management cron-scheduling css-guide html-guide \
          jinja-guide linting maintain-commands maintain-hooks maintain-rules \
-         maintain-skills markdown prepare_pr pytest python-code-quality \
+         maintain-skills markdown prepare-pr pytest python-code-quality \
          python-code-reviewer python-docstrings sdlc-workflow security \
          tdd-test-planner tdd-workflow test-quality-reviewer type-checking; do
   diff -rq --exclude='.DS_Store' --exclude='.refactor-edit-count' \

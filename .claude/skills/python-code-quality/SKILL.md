@@ -73,6 +73,18 @@ ruff format --check  →  ruff check  →  bandit  →  semgrep  →  basedpyrig
 
 ---
 
+## When to load references
+
+| If the task involves…                 | Load                              |
+|----------------------------------------|-----------------------------------|
+| Configuring or debugging ruff          | `references/ruff.md`              |
+| Setting up or fixing pre-commit hooks  | `references/pre-commit.md`        |
+| Type errors or basedpyright config     | `references/basedpyright.md`      |
+| Security scan findings (bandit)        | `references/bandit.md`            |
+| Custom semgrep rules                   | `references/semgrep.md`           |
+| Complete config file examples          | `references/complete-configs.md`  |
+| Running `just lint`/`just fix` (default) | No reference needed — use inline |
+
 ## Quick reference: where to go deeper
 
 Read the relevant reference file for configuration details, error code explanations,
@@ -88,6 +100,15 @@ or CI integration specifics:
 | Complete config files            | [references/complete-configs.md](references/complete-configs.md)     |
 
 ---
+
+## Efficiency: batch edits and parallel calls
+
+- **Parallel calls:** Run independent checks (`ruff check`, `basedpyright`,
+  `bandit`) in parallel as separate tool calls in a single message.
+- **Batch edits:** When fixing multiple lint violations in the same file, combine
+  all fixes into a single Edit tool call.
+- **CI ordering:** Follow the fast-fail order (format → lint → bandit → semgrep →
+  type → test) but run independent stages in parallel where possible.
 
 ## Adding a new tool
 

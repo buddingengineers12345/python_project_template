@@ -1,5 +1,5 @@
 ---
-name: pr-template
+name: prepare-pr
 description: >-
   Enforce a strict PR (pull request) description template every time one is generated, written, or drafted.
   Use this skill whenever the user asks to: generate a PR, write a PR description, draft a pull request,
@@ -52,8 +52,14 @@ Scan everything the user provided. Find these signals:
 
 ## STEP 3 — Fill each section
 
-Read `references/section-rules.md` now.
-It contains exact fill instructions, fallback text, and examples for every section.
+If the PR template has custom sections or you need exact fill rules for each
+section, read `references/section-rules.md`. For standard PRs with Summary,
+Test Plan, and Breaking Changes sections, use the inline template below:
+
+> **Summary:** [2-3 bullets on what changed and why]
+> **Test plan:** [bullets: what to test and how]
+> **Breaking changes:** [None / list of breaking changes]
+
 Work through each section **one at a time, in template order**.
 
 ---

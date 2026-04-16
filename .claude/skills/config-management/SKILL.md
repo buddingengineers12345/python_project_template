@@ -86,6 +86,13 @@ Run all hooks manually: `just precommit`
 4. Keep `justfile` recipes simple — one concern per recipe.
 5. Pin all dependency versions in `pyproject.toml`.
 
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** When modifying pyproject.toml (e.g., adding dependencies and
+  updating tool config), combine all changes into a single Edit call.
+- **Read before edit:** Read the full config file first. Plan all sections that
+  need changes, then apply in one Edit call.
+
 ## Quick reference: where to go deeper
 
 | Topic                       | Reference file                                                   |
