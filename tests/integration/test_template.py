@@ -1568,6 +1568,7 @@ def test_ci_workflow_aligns_with_just_ci(tmp_path: Path) -> None:
         "Aggregate check must gate on pre-commit alongside lint, typecheck, and tests"
     )
     assert "uv run pre-commit run --all-files" in workflow
+    assert "SKIP: no-commit-to-branch" in workflow
     assert "uv run ruff format --check src tests" in workflow
     assert "uv run ruff check src tests" in workflow
     assert (
@@ -1582,6 +1583,7 @@ def test_ci_workflow_aligns_with_just_ci(tmp_path: Path) -> None:
         in justfile
     )
     assert "@just test-ci" in justfile
+    assert "SKIP=no-commit-to-branch uv run pre-commit run --all-files" in justfile
 
     lint_yml = (test_dir / ".github" / "workflows" / "lint.yml").read_text(encoding="utf-8")
     assert "uv run ruff format --check src tests" in lint_yml

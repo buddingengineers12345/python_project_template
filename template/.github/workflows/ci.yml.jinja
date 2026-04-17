@@ -88,7 +88,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 
+      # no-commit-to-branch blocks direct commits to main; SKIP avoids false failures when
+      # checkout is on main (e.g. post-merge push) while still running the hook on git commit.
       - name: Pre-commit (all files)
+        env:
+          SKIP: no-commit-to-branch
         run: uv run pre-commit run --all-files
 
   test:

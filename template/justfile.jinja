@@ -149,7 +149,7 @@ cz-commit:
     @uv run cz commit
 
 precommit:
-    @uv run pre-commit run --all-files
+    @SKIP=no-commit-to-branch uv run pre-commit run --all-files
 
 # Dependency audit matching .github/workflows/security.yml (pip-audit).
 # Uses ``uv run --with pip-audit`` so the tool runs with the project Python (``uv tool run``/``uvx``
@@ -266,7 +266,7 @@ check:
     @uv run basedpyright
     @just docs-check
     @just test-ci
-    @uv run pre-commit run --all-files
+    @SKIP=no-commit-to-branch uv run pre-commit run --all-files
 
 ci:
     @just fix
