@@ -123,14 +123,14 @@ test-failed-verbose:
 coverage:
     @uv run pytest tests/ \
         --no-testmon \
-        --cov \
+        --cov=scripts \
         --cov-report=term-missing \
         --cov-report=html \
         --cov-report=xml
 
 # Test command matching GitHub CI (3.11 matrix leg in .github/workflows/tests.yml)
 test-ci:
-    @uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider
+    @uv run pytest -q --no-testmon --cov=scripts --cov-report=xml --cov-report=term-missing -p no:cacheprovider
 
 # Full tests.yml matrix (3.11 with coverage; 3.12/3.13 with pytest -q only).
 # 3.11 uses the default project .venv (same as `test-ci`). 3.12/3.13 use
@@ -144,7 +144,7 @@ test-ci-matrix:
     echo "=== Python 3.11 + coverage (tests.yml matrix) ==="
     unset UV_PROJECT_ENVIRONMENT
     uv sync --frozen --extra dev --extra test --python 3.11
-    uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing
+    uv run pytest -q --no-testmon --cov=scripts --cov-report=xml --cov-report=term-missing
     for py in 3.12 3.13; do
       echo "=== Python ${py} (tests.yml matrix) ==="
       suffix="${py//./}"
@@ -237,12 +237,32 @@ publish:
 # -------------------------------------------------------------------------
 # Install all package dependencies
 # -------------------------------------------------------------------------
+# Ensures `uv` is a user-level tool (not installed into the project venv). On Windows, install
+# uv from https://docs.astral.sh/uv/ if bash/curl are unavailable.
 
 install:
-    @python -m pip install --upgrade pip
-    @python -m pip install --upgrade uv
-    @just sync
-    @just precommit-install
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! command -v uv >/dev/null 2>&1; then
+        if command -v curl >/dev/null 2>&1; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+        elif command -v wget >/dev/null 2>&1; then
+            wget -qO- https://astral.sh/uv/install.sh | sh
+        else
+            echo "Install uv from https://docs.astral.sh/uv/ (Windows: PowerShell installer)." >&2
+            exit 1
+        fi
+        if [ -f "${HOME}/.local/bin/env" ]; then
+            # shellcheck source=/dev/null
+            . "${HOME}/.local/bin/env"
+        fi
+    fi
+    command -v uv >/dev/null 2>&1 || {
+        echo "uv not found on PATH after install" >&2
+        exit 1
+    }
+    just sync
+    just precommit-install
 
 # One-command developer onboarding: sync deps, register hooks, run diagnostics
 bootstrap:

@@ -182,7 +182,6 @@ Thumbs.db
 !SECURITY.md
 !CODE_OF_CONDUCT.md
 !CONTRIBUTING.md
-!TESTING_STREAMLIT.md
 
 *.backup
 *.py.backup
@@ -233,7 +232,6 @@ docker-compose.override.yml
 
 # Stray root files
 1
-/1
 
 tasks/
 task_channel/
