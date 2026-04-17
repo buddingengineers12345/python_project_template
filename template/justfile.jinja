@@ -365,3 +365,37 @@ release BUMP_TYPE="patch":
 
     @echo "✅ Release complete!"
     @git describe --tags --abbrev=0
+
+# -------------------------------------------------------------------------
+# Repo automation
+# -------------------------------------------------------------------------
+
+# Generate repo freshness dashboard + JSON artifacts
+freshness:
+    @uv run python scripts/repo_file_freshness.py
+
+# Validate root/template sync map and parity checks
+sync-check:
+    @uv run python scripts/check_root_template_sync.py
+
+# Print a conventional PR title + PR body (template + git log) for pr-policy compliance
+pr-draft:
+    @uv run python scripts/pr_commit_policy.py draft
+
+# -------------------------------------------------------------------------
+# SDLC: Task management
+# -------------------------------------------------------------------------
+
+# Validate a task YAML against Definition of Ready
+dor-check TASK_ID:
+    python3 .claude/skills/sdlc-workflow/scripts/validate_dor.py tasks/{{TASK_ID}}.yaml
+
+# List all tasks and their statuses
+tasks:
+    @echo "Task ID       Status        Title"
+    @echo "----------    ----------    -----"
+    @python3 -c "import yaml; from pathlib import Path; [print(f\"{d['task_id']:<14}{d['status']:<14}{d['title']}\") for p in sorted(Path('tasks').glob('TASK_*.yaml')) if (d := yaml.safe_load(p.read_text()))]"
+
+# Run pre-flight checks before starting SDLC pipeline
+preflight TASK_ID:
+    bash .claude/skills/sdlc-workflow/scripts/preflight.sh {{TASK_ID}}
