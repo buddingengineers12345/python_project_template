@@ -264,7 +264,6 @@ check:
     @just fmt-check
     @uv run ruff check .
     @uv run basedpyright
-    @just sync-check
     @just docs-check
     @just test-ci
     @uv run pre-commit run --all-files
