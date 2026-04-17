@@ -59,5 +59,9 @@ jobs:
       - name: Root/template sync policy check
         run: uv run python scripts/check_root_template_sync.py
 
+      # no-commit-to-branch blocks direct commits to main; SKIP avoids false failures when
+      # checkout is on main (e.g. post-merge push) while still running the hook on git commit.
       - name: Pre-commit (all files)
+        env:
+          SKIP: no-commit-to-branch
         run: uv run pre-commit run --all-files

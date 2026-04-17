@@ -172,7 +172,7 @@ cz-commit:
     @uv run cz commit
 
 precommit:
-    @uv run pre-commit run --all-files
+    @SKIP=no-commit-to-branch uv run pre-commit run --all-files
 
 # Dependency audit matching .github/workflows/security.yml (pip-audit).
 # Uses ``uv run --with pip-audit`` so the tool runs with the project Python (``uv tool run``/``uvx``
@@ -274,7 +274,7 @@ check:
     @just sync-check
     @just docs-check
     @just test-ci
-    @uv run pre-commit run --all-files
+    @SKIP=no-commit-to-branch uv run pre-commit run --all-files
     # @just audit
 
 ci:
@@ -324,9 +324,9 @@ doctor:
 #   - Push permissions to main branch
 #
 # Usage:
-#   just release patch       # v0.0.8 → v0.0.9 (bug fixes)
-#   just release minor       # v0.0.8 → v0.1.0 (new features)
-#   just release major       # v0.0.8 → v1.0.0 (breaking changes)
+#   just release patch       # v0.0.9 → v0.0.10 (bug fixes)
+#   just release minor       # v0.0.9 → v0.1.0 (new features)
+#   just release major       # v0.0.9 → v1.0.0 (breaking changes)
 release BUMP_TYPE="patch":
     @echo "=== Release Workflow ==="
     @echo "Release type: {{BUMP_TYPE}}"
