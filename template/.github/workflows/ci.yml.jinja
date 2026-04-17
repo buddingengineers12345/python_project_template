@@ -118,7 +118,7 @@ jobs:
         run: uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
 
       - name: Run tests
-        run: uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider
+        run: uv run pytest -q --no-testmon --cov={{ package_name }} --cov-report=xml --cov-report=term-missing -p no:cacheprovider
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v6

@@ -62,9 +62,9 @@ package_name:
   default: "{{ project_name | lower | replace(' ', '_') | replace('-', '_') }}"
   help: Python package name (must be valid Python identifier)
   validator: >-
-    {% if not package_name.replace('_', '').isalnum()
-       or (package_name | length > 0 and package_name[0].isdigit()) %}
-    Package name must be a valid Python identifier (alphanumeric and underscores only; cannot start with a digit)
+    {% if not package_name.isidentifier()
+       or not package_name.replace('_', '').isalnum() %}
+    Package name must be a valid Python identifier (letters, digits, underscores; cannot start with a digit)
     {% endif %}
 
 project_description:
@@ -158,6 +158,8 @@ current_year:
   when: false
   default: "{% now 'utc', '%Y' %}"
 
+# Renders as a JSON array string, e.g. '["3.11", "3.12", "3.13"]'. In workflow templates,
+# use fromJson() when passing to a matrix (e.g. matrix.python: ${{ fromJson(...) }}).
 github_actions_python_versions:
   type: str
   when: false
@@ -226,7 +228,7 @@ _tasks:
       '
   - command: uv lock
   - command: >-
-      uv sync --frozen --extra dev --extra test
+      uv sync --extra dev --extra test
       {%- if include_docs %} --extra docs{% endif -%}
       {%- if include_git_cliff %} --group changelog{% endif %}
   - command: uv run pre-commit install || true

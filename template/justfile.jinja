@@ -131,7 +131,7 @@ coverage:
 
 # Test command matching GitHub CI (.github/workflows/ci.yml test job)
 test-ci:
-    @uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider
+    @uv run pytest -q --no-testmon --cov={{ package_name }} --cov-report=xml --cov-report=term-missing -p no:cacheprovider
 
 # -------------------------------------------------------------------------
 # Pre-commit
@@ -230,12 +230,32 @@ publish:
 # -------------------------------------------------------------------------
 # Install all package dependencies
 # -------------------------------------------------------------------------
+# Ensures `uv` is a user-level tool (not installed into the project venv). On Windows, install
+# uv from https://docs.astral.sh/uv/ if bash/curl are unavailable.
 
 install:
-    @python -m pip install --upgrade pip
-    @python -m pip install --upgrade uv
-    @just sync
-    @just precommit-install
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! command -v uv >/dev/null 2>&1; then
+        if command -v curl >/dev/null 2>&1; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+        elif command -v wget >/dev/null 2>&1; then
+            wget -qO- https://astral.sh/uv/install.sh | sh
+        else
+            echo "Install uv from https://docs.astral.sh/uv/ (Windows: PowerShell installer)." >&2
+            exit 1
+        fi
+        if [ -f "${HOME}/.local/bin/env" ]; then
+            # shellcheck source=/dev/null
+            . "${HOME}/.local/bin/env"
+        fi
+    fi
+    command -v uv >/dev/null 2>&1 || {
+        echo "uv not found on PATH after install" >&2
+        exit 1
+    }
+    just sync
+    just precommit-install
 
 # One-command developer onboarding: sync deps, register hooks, run diagnostics
 bootstrap:

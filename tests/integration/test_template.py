@@ -394,6 +394,28 @@ def test_package_name_validator_rejects_leading_digit(tmp_path: Path) -> None:
     assert proc.returncode != 0, "copier should reject package_name starting with a digit"
 
 
+def test_package_name_validator_rejects_non_identifier(tmp_path: Path) -> None:
+    """Hyphenated ``package_name`` values must fail Copier validation (not a Python identifier)."""
+    test_dir = tmp_path / "bad_hyphen_pkg"
+    proc = run_command(
+        [
+            "copier",
+            "copy",
+            "--vcs-ref",
+            "HEAD",
+            TEMPLATE_GIT_SRC,
+            str(test_dir),
+            "--trust",
+            "--defaults",
+            "--skip-tasks",
+            "--data",
+            "package_name=my-bad-pkg",
+        ],
+        check=False,
+    )
+    assert proc.returncode != 0, "copier should reject package_name that is not a valid identifier"
+
+
 def test_computed_values_not_recorded_in_answers_file(tmp_path: Path) -> None:
     """Questions with ``when: false`` must not be stored in the answers file."""
     test_dir = tmp_path / "computed_answers"
@@ -1572,14 +1594,14 @@ def test_ci_workflow_aligns_with_just_ci(tmp_path: Path) -> None:
     assert "uv run ruff format --check src tests" in workflow
     assert "uv run ruff check src tests" in workflow
     assert (
-        "uv run pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider"
+        "uv run pytest -q --no-testmon --cov=ci_just_align --cov-report=xml --cov-report=term-missing -p no:cacheprovider"
         in workflow
     )
 
     justfile = (test_dir / "justfile").read_text(encoding="utf-8")
     assert "test-ci:" in justfile
     assert (
-        "pytest -q --no-testmon --cov --cov-report=xml --cov-report=term-missing -p no:cacheprovider"
+        "pytest -q --no-testmon --cov=ci_just_align --cov-report=xml --cov-report=term-missing -p no:cacheprovider"
         in justfile
     )
     assert "@just test-ci" in justfile

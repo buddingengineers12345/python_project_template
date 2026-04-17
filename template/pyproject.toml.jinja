@@ -119,8 +119,9 @@ select = [
     "T20",  # flake8-print — discourage print() in non-test code
 ]
 
+# E501 is intentionally ignored — line length is enforced by ruff format, not ruff check
 ignore = [
-    "E501",  # line too long (handled by formatter)
+    "E501",
 ]
 
 [tool.ruff.lint.pydocstyle]
