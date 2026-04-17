@@ -82,10 +82,13 @@ and are readable by any AI assistant (Claude Code, Cursor, or any LLM):
 ```
 .claude/rules/
 ├── README.md            ← how to read and write rules
-├── common/              ← language-agnostic: coding-style, git-workflow, testing, security, …
-├── python/              ← Python: coding-style, testing, patterns, security, hooks
+├── common/              ← language-agnostic: coding-style, git-workflow, testing, security, hooks
+├── python/              ← Python: coding-style, testing, hooks
 ├── bash/                ← Bash: coding-style, security
-└── markdown/            ← placement rules, authoring conventions
+├── yaml/                ← YAML authoring (workflows, config)
+├── markdown/            ← placement rules, authoring conventions
+└── copier/              ← Copier update workflow (see `paths` in `template-conventions.md`)
+    └── template-conventions.md
 ```
 
 ## Standards enforcement

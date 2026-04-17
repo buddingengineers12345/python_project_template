@@ -10,7 +10,7 @@ optional features are gated properly.
 |---|---|
 | `conftest.py` | Top-level pytest fixtures shared across all test tiers |
 | `unit/` | Fast isolated tests for automation scripts in `scripts/` |
-| `script_imports.py` | `load_script_module()` helper for importing `scripts/*.py` in unit tests |
+| `script_imports.py` | `REPO_ROOT` and `load_script_module()` for unit tests that import `scripts/*.py` |
 | `unit/conftest.py` | Fixtures shared within the unit tier |
 | `integration/` | Tests exercising Copier copy/update across the full template |
 | `integration/conftest.py` | Fixtures shared within the integration tier |
@@ -80,8 +80,8 @@ optional features are gated properly.
 
 ### Package structure
 - `src/<package_name>/__init__.py`, `core.py`, `common/` modules all exist.
-- `tests/<package_name>/test_core.py`, `test_support.py` exist.
-- `conftest.py` exists.
+- `tests/unit/test_core.py`, `tests/unit/common/test_support.py` (and other `tests/unit/common/*`) exist.
+- `tests/conftest.py` exists.
 
 ### Logging layout
 - `logging_manager.py` is present under `common/`.
@@ -103,20 +103,13 @@ just coverage           # run with coverage report
 RUN_TEMPLATE_INTEGRATION=1 just test   # include slow integration tests
 ```
 
-## Path constants — no shared file
+## Path constants
 
-Do **not** create a shared constants file (e.g. `constants.py`) for path values.
-Define path constants at the top of each test file that needs them:
-
-```python
-from pathlib import Path
-
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # adjust depth as needed
-TEMPLATE_ROOT = REPO_ROOT / "template"
-COPIER_YAML = REPO_ROOT / "copier.yml"
-```
-
-Constants are trivial one-liners; a shared module adds indirection with no benefit.
+- **Unit tests** that load `scripts/*.py` should import **`REPO_ROOT`** from **`tests.script_imports`**
+  (see `tests/unit/test_*.py`).
+- **Integration tests** (for example `integration/test_template.py`) define **`REPO_ROOT`**,
+  **`TEMPLATE_ROOT`**, and **`COPIER_YAML`** at the top of the file — do not add a separate
+  `constants.py` module for these; keep paths next to the tests that use them.
 
 ## Adding a new test
 
