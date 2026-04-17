@@ -144,15 +144,14 @@ Other useful commands:
 - 🔍 **`just lint`**: lint check
 - 🧠 **`just type`**: type check (basedpyright **standard** mode)
 - 📜 **`just docs-check`**: Google-style docstrings (ruff `D` only)
-- ✅ **`just review`**: `fix` → `lint` → `type` → `docs-check`
+- ✅ **`just review`**: `fix` → `lint` → `type` → `docs-check` (no tests; pre-merge static checks)
 - 🧪 **`just test`**: run template integration tests (renders the template and asserts output)
 - 📊 **`just coverage`**: run tests with coverage report
 - ⚡ **`just test-parallel`**: run tests in parallel (faster)
 - 🔁 **`just precommit`**: run pre-commit on all files
 - 🩺 **`just doctor`**: print toolchain and project versions
 - 🔗 **`just sync-check`**: validate root/template sync policy (`scripts/check_root_template_sync.py`)
-- ✋ **`just check`**: read-only full gate (matches GitHub Actions lint + tests + security steps)
-- 🔄 **`just review`**: `fix` + `lint` + `type` + `docs-check` (no tests, pre-merge validation)
+- ✋ **`just check`**: read-only gate (`fmt-check`, lint, types, sync-check, docstrings, `test-ci`, pre-commit). For the full Python 3.11–3.13 matrix locally, use **`just test-ci-matrix`**. Dependency audit: **`just audit`** (also runs in `security.yml` on GitHub).
 
 ### Testing this template
 

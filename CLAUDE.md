@@ -21,7 +21,7 @@ destination folder.
 │   ├── .github/workflows/    # Generated CI/CD workflows
 │   └── …                    # pyproject.toml.jinja, justfile.jinja, CLAUDE.md.jinja, …
 ├── tests/                    # pytest suite for this meta-repo (see tests/CLAUDE.md)
-│   ├── constants.py          # REPO_ROOT / TEMPLATE_ROOT / COPIER_YAML for nested test modules
+│   ├── script_imports.py     # REPO_ROOT + load_script_module() for unit tests importing scripts/
 │   ├── conftest.py           # top-level shared fixtures
 │   ├── unit/                 # fast isolated script tests
 │   ├── integration/          # Copier copy/update integration suite
@@ -117,11 +117,14 @@ just ci
 This runs: `fix` → `check`.
 
 `check` bundles: `uv sync --frozen`, `fmt-check`, `ruff check`, `basedpyright`,
-`sync-check`, `docs-check` (D-only; redundant with `ruff check` for enforcement), `test-ci-matrix`
-(same pytest commands as `tests.yml` for 3.11/3.12/3.13), `pre-commit run --all-files`, `audit` (pip-audit).
+`sync-check`, `docs-check` (D-only; redundant with `ruff check` for enforcement), `test-ci`
+(pytest with coverage on the default Python 3.11 venv — same command as the 3.11 leg of `tests.yml`),
+`pre-commit run --all-files`. Dependency audit (`pip-audit`) is **not** part of `check`; run
+`just audit` locally or rely on `security.yml` on GitHub (CodeQL is GHA-only). Use `just test-ci-matrix`
+to exercise the full 3.11 / 3.12 / 3.13 matrix locally.
 
-Together, `lint.yml` + `tests.yml` + `security.yml` mirror these checks on GitHub (CodeQL is
-GHA-only). All steps must pass before a PR is mergeable.
+Together, `lint.yml` + `tests.yml` + `security.yml` cover the merge gate on GitHub. All steps must
+pass before a PR is mergeable.
 
 ## Generating a test project from the template
 
@@ -240,16 +243,17 @@ and are readable by any AI assistant (Claude Code, Cursor, or any LLM):
 ```
 .claude/rules/
 ├── README.md            ← how to read and write rules; dual-hierarchy explained
-├── common/              ← language-agnostic: coding-style, git-workflow, testing, security,
-│                           development-workflow, code-review
-├── python/              ← Python: coding-style, testing, patterns, security, hooks
-├── jinja/               ← Jinja2: coding-style, testing  (meta-repo only)
+├── common/              ← language-agnostic: coding-style, git-workflow, testing, security, hooks
+├── python/              ← Python: coding-style, testing, hooks
 ├── bash/                ← Bash: coding-style, security
 ├── markdown/            ← placement rules, authoring conventions
-├── yaml/                ← YAML formatting for copier.yml and workflows  (meta-repo only)
+├── yaml/                ← YAML formatting for copier.yml and workflows (meta-repo only)
 └── copier/              ← Copier template conventions (meta-repo only)
     └── template-conventions.md
 ```
+
+Jinja2 and broader Copier how-tos live under `.claude/skills/` (for example `jinja-guide/`), not
+as a separate `rules/jinja/` tree.
 
 The `template/.claude/rules/` tree mirrors this structure for generated projects
 (common, python, bash, markdown — no Jinja, yaml, or Copier-specific rules).
@@ -407,5 +411,5 @@ just clean   # removes build/, dist/, .pytest_cache, .ruff_cache, __pycache__, *
 - Added `CLAUDE.md` in `template/` — explains Jinja2 source layout, Copier variables, dual `.claude/` hierarchy
 - Added `CLAUDE.md` in `tests/` — explains test patterns, helpers, categories, and how to add new tests
 - Added `CLAUDE.md` in `scripts/` — documents each script, CLI flags, outputs, and CI integration
-- Added `CLAUDE.md` in `.claude/` — orientation hub for hooks, commands, rules, and the dual-hierarchy
+- Documented hooks and rules in `.claude/hooks/README.md` and `.claude/rules/README.md` (dual hierarchy with `template/.claude/`)
 - Added `CLAUDE.md` in `.github/` — documents all meta-repo workflows and design principles

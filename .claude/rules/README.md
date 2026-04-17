@@ -35,7 +35,8 @@ delete or shrink the rule — do not duplicate.
 ├── bash/                  # Shell script-specific
 ├── yaml/                  # YAML authoring conventions
 ├── markdown/              # Markdown authoring conventions
-└── copier/                # Copier template-repo conventions
+└── copier/                # Copier update workflow and answers-file rules
+    └── template-conventions.md
 ```
 
 Detailed how-to content that previously lived here has moved to skills:

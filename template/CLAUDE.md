@@ -59,11 +59,14 @@ template/
 │   ├── workflows/
 │   │   ├── ci.yml.jinja             # Main test matrix (Python 3.11–3.13)
 │   │   ├── lint.yml.jinja           # Ruff + basedpyright on PRs
-│   │   ├── dependency-review.yml.jinja  # Dependency diff review on PRs (optional)
 │   │   ├── docs.yml.jinja           # MkDocs deploy to gh-pages (conditional)
 │   │   ├── pre-commit-update.yml.jinja  # Weekly pre-commit autoupdate
 │   │   ├── release.yml.jinja        # Version bump + GitHub Release (conditional)
-│   │   └── security.yml.jinja       # CodeQL + pip-audit (conditional)
+│   │   ├── security.yml.jinja       # CodeQL + pip-audit (conditional)
+│   │   ├── dependency-review.yml    # PR dependency review (static)
+│   │   ├── labeler.yml              # Path-based PR labels (static)
+│   │   ├── pr-policy.yml            # PR title/body/commits (static)
+│   │   └── stale.yml                # Stale issue/PR bot (static)
 │   ├── ISSUE_TEMPLATE/              # Bug report + feature request templates
 │   ├── CODE_OF_CONDUCT.md.jinja
 │   ├── CODEOWNERS.jinja
