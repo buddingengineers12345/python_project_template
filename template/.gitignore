@@ -119,11 +119,18 @@ poetry.lock
 .env
 .env.*
 *.env
+!.env.example
+!.env.sample
 !.env.test.example
 
+credentials.json
+secrets.json
+secrets/
 *.key
 *.pem
-secrets/
+*.p8
+*.p12
+*.pfx
 
 .venv
 .venv-ci-*/
@@ -144,8 +151,8 @@ venv.bak/
 
 .ropeproject
 
-# .vscode/
-# .idea/
+.vscode/
+.idea/
 
 *.swp
 *.swo
@@ -168,6 +175,16 @@ Thumbs.db
 # ==========================================================================
 # PROJECT-SPECIFIC RULES
 # ==========================================================================
+
+# Local configuration
+config/local.*
+local.config.*
+settings.local.*
+
+# Private data
+private/
+internal/
+confidential/
 
 # STRICT: images forbidden in repo
 *.png

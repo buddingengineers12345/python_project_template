@@ -1,4 +1,37 @@
 {
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/*.env": true,
+    "**/secrets.json": true,
+    "**/config/credentials.*": true,
+    "**/.env*": true,
+    "**/private/**": true,
+    "**/*secret*": true,
+    "**/*credential*": true,
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
+    "**/.mypy_cache": true,
+    "**/.coverage": true,
+    "**/htmlcov": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/*.log": true,
+    "**/sensitive-folder/**": true,
+    "**/__pycache__": true,
+    "**/.venv": true,
+    "**/.ruff_cache": true,
+    "**/.pytest_cache": true
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/node_modules/**": true,
+    "**/sensitive-data/**": true
+  },
   "editor.formatOnSave": false,
   "editor.formatOnPaste": false,
   "editor.formatOnType": false,
@@ -31,21 +64,6 @@
     "yaml": true
   },
   "editor.inlineSuggest.enabled": true,
-  "files.exclude": {
-    "**/__pycache__": true,
-    "**/*.pyc": true,
-    "**/.pytest_cache": true,
-    "**/.ruff_cache": true,
-    "**/.mypy_cache": true,
-    "**/.coverage": true,
-    "**/htmlcov": true
-  },
-  "search.exclude": {
-    "**/__pycache__": true,
-    "**/.venv": true,
-    "**/.ruff_cache": true,
-    "**/.pytest_cache": true
-  },
   "[json]": {
     "editor.formatOnSave": false
   },
