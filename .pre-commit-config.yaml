@@ -62,7 +62,7 @@ repos:
         exclude: ^(template/.*\.jinja|assets/file_freshness\.json)$
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=1000"]
@@ -80,7 +80,7 @@ repos:
         args: ["--branch", "main", "--branch", "master"]
 
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.13.10
+    rev: v4.15.0
     hooks:
       - id: commitizen
         stages: [commit-msg]
