@@ -85,7 +85,7 @@
             "command": "bash .claude/hooks/pre-protect-uv-lock.sh"
           }
         ],
-        "description": "Block direct edits to uv.lock — must be regenerated via uv lock or just update"
+        "description": "Block direct edits to uv.lock \u2014 must be regenerated via uv lock or just update"
       },
       {
         "matcher": "Write|Edit",
@@ -95,7 +95,7 @@
             "command": "bash .claude/hooks/pre-write-src-require-test.sh"
           }
         ],
-        "description": "TDD enforcement: block writing src/<pkg>/<module>.py if test file does not exist (use pre-write-src-test-reminder.sh instead for warn-only — do not register both)"
+        "description": "TDD enforcement: block writing src/<pkg>/<module>.py if test file does not exist (use pre-write-src-test-reminder.sh instead for warn-only \u2014 do not register both)"
       },
       {
         "matcher": "Bash",
@@ -125,7 +125,7 @@
             "command": "bash .claude/hooks/pre-bash-branch-protection.sh"
           }
         ],
-        "description": "Block git push to main/master branches — use feature branches and PRs"
+        "description": "Block git push to main/master branches \u2014 use feature branches and PRs"
       },
       {
         "matcher": "Write",
@@ -135,7 +135,7 @@
             "command": "bash .claude/hooks/pre-write-doc-file-warning.sh"
           }
         ],
-        "description": "Block writing .md files outside docs/ (pre-flight — prevents the wrong location)"
+        "description": "Block writing .md files outside docs/ (pre-flight \u2014 prevents the wrong location)"
       },
       {
         "matcher": "Edit|Write",
@@ -272,5 +272,12 @@
         "description": "Extract reusable patterns (hot files, block events) into ~/.claude/patterns/"
       }
     ]
+  },
+  "mcpServers": {
+    "agentmemory": {
+      "env": {
+        "AGENTMEMORY_TEAM_ID": "python_project_template"
+      }
+    }
   }
 }
