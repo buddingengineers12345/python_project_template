@@ -3,12 +3,18 @@
     "agentmemory": {
       "type": "local",
       "command": "npx",
-      "args": ["-y", "@agentmemory/mcp"],
-      "tools": ["*"],
+      "args": [
+        "-y",
+        "@agentmemory/mcp"
+      ],
+      "tools": [
+        "*"
+      ],
       "env": {
         "AGENTMEMORY_TEAM_ID": "python_project_template",
         "AGENTMEMORY_URL": "http://localhost:3111",
-        "AGENTMEMORY_TOOLS": "all"
+        "AGENTMEMORY_TOOLS": "all",
+        "AGENTMEMORY_SECRET": "agentmemory-local"
       }
     }
   }

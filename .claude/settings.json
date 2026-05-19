@@ -34,16 +34,6 @@
           }
         ],
         "description": "Display project status, toolchain versions, and previous session snapshot on startup"
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node /home/engineer/.npm-global/lib/node_modules/@agentmemory/agentmemory/dist/hooks/session-start.mjs"
-          }
-        ],
-        "description": "AgentMemory: register session and inject prior context"
       }
     ],
     "PreToolUse": [
@@ -230,16 +220,6 @@
           }
         ],
         "description": "Snapshot git status and modified files before context compaction"
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node /home/engineer/.npm-global/lib/node_modules/@agentmemory/agentmemory/dist/hooks/pre-compact.mjs"
-          }
-        ],
-        "description": "AgentMemory: preserve context before compaction"
       }
     ],
     "Stop": [
@@ -290,18 +270,6 @@
           }
         ],
         "description": "Extract reusable patterns (hot files, block events) into ~/.claude/patterns/"
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node /home/engineer/.npm-global/lib/node_modules/@agentmemory/agentmemory/dist/hooks/stop.mjs",
-            "async": true,
-            "timeout": 10
-          }
-        ],
-        "description": "AgentMemory: flush session observations on stop"
       }
     ]
   },
