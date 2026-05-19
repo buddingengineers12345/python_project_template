@@ -413,3 +413,26 @@ just clean   # removes build/, dist/, .pytest_cache, .ruff_cache, __pycache__, *
 - Added `CLAUDE.md` in `scripts/` — documents each script, CLI flags, outputs, and CI integration
 - Documented hooks and rules in `.claude/hooks/README.md` and `.claude/rules/README.md` (dual hierarchy with `template/.claude/`)
 - Added `CLAUDE.md` in `.github/` — documents all meta-repo workflows and design principles
+
+---
+
+## Agent Memory
+
+This project uses AgentMemory for persistent cross-session memory. The MCP server runs on localhost:3111 with project-scoped TEAM_ID `python_project_template`.
+
+### Session Protocol
+1. **On session start**: Call `memory_recall` with the current task/goal to retrieve relevant context from past sessions.
+2. **During work**: Call `memory_save` for important decisions, architectural choices, bugs found, or non-obvious patterns discovered. Use type: `pattern`, `architecture`, `bug`, `workflow`, or `preference`.
+3. **On session end**: Call `memory_save` with type "pattern" or "workflow" for lessons learned (what worked, what to avoid, edge cases discovered).
+
+### When to Save
+- Architectural decisions and their rationale
+- Bug root causes and fixes (especially non-obvious ones)
+- User preferences and workflow patterns
+- Project-specific conventions not captured in CLAUDE.md
+- Integration gotchas and environment quirks
+
+### When NOT to Save
+- Information already in CLAUDE.md or code comments
+- Ephemeral debugging state
+- File paths or code that can be found by searching
