@@ -30,6 +30,9 @@ _skip_if_exists:
   - .github/ISSUE_TEMPLATE/feature_request.md
   - .github/PULL_REQUEST_TEMPLATE.md
   - CLAUDE.md
+  - AGENTS.md
+  - GEMINI.md
+  - CURSOR.md
   - CONTRIBUTING.md
   - env.example
   - mkdocs.yml

@@ -47,7 +47,11 @@ Grep of all `.md` files shows zero references to `MEMORY.md` or `CONFLICTS.md`. 
 
 Read from `.agentmemory-project`: **`python_project_template`**
 
-## template/ subdir — needs separate pass
+## template/ subdir — completed 2026-05-21
+
+See `template/.claude/migration-summary.md` for Copier-output 4-file model, references mirror, and `settings.json.jinja`.
+
+## template/ subdir — original deferred note (superseded)
 
 ### Finding: `copier.yml` structure
 

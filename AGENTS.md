@@ -58,3 +58,17 @@ This repo uses AgentMemory (MCP server `localhost:3111`, project-scoped TEAM_ID 
 ## Repo-specific guidance
 
 Detailed how-tos live in `.claude/references/` (load per the table above). Rules and enforcement hooks are under `.claude/rules/` and `.claude/hooks/` — referenced in `.claude/rules/README.md` and `.claude/hooks/README.md`.
+
+## AgentMemory Insights (snapshot 2026-05-21)
+
+### Architecture & Design
+- _No durable insights surfaced this snapshot._
+
+### Working Preferences & Conventions
+- _No durable insights surfaced this snapshot._
+
+### Bugs, Incidents & Gotchas
+- _No durable insights surfaced this snapshot._
+
+### Active Projects / WIP Context
+- _No durable insights surfaced this snapshot._

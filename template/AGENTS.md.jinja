@@ -1,0 +1,32 @@
+# AGENTS.md — {{ project_name }}
+
+> Canonical agent guide for this generated project. CLAUDE.md / GEMINI.md / CURSOR.md are thin wrappers.
+
+## What this project is
+
+{{ project_description }}
+
+## Setup
+
+```bash
+uv sync --frozen --extra dev --extra test{% if include_docs %} --extra docs{% endif %}
+just precommit-install
+```
+
+## Context loading
+
+| When the task involves… | Read |
+|---|---|
+| Commands, CI, just recipes | `.claude/references/justfile-recipes.md`, `.claude/references/ci-pipeline.md` |
+| Code style, types, logging | `.claude/references/code-style.md`, `CLAUDE.md` module notes under `src/` |
+| Tests | `tests/` + `.claude/references/testing.md` |
+| Copier updates | `.claude/references/copier-template.md` |
+| AI rules, hooks, skills | `.claude/rules/README.md`, `.claude/hooks/README.md` |
+
+## Memory — AgentMemory only
+
+MCP `localhost:3111`, `TEAM_ID: {{ project_slug }}`. Use `memory_recall` / `memory_save`. No `MEMORY.md` / `CONFLICTS.md`.
+
+## Definition of done
+
+Run `just ci` before merge. See `.claude/references/standards-enforcement.md`.
