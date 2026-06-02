@@ -1,14 +1,13 @@
 ---
 name: markdown
 description: >-
-  Expert guidance for writing, editing, managing, and handling Markdown (.md) files
-  to a professional standard. Use this skill whenever the user wants to: create or
-  write a new Markdown file, edit or improve an existing .md file, review Markdown
-  for style/consistency, convert content into well-structured Markdown, build README
-  files, technical docs, changelogs, wikis, or any documentation in .md format.
-  Also trigger for requests involving front matter/metadata, table formatting, code
-  blocks, link hygiene, accessibility in Markdown, GitHub-flavored Markdown (GFM),
-  or best practices for Markdown documentation systems. If the user mentions .md,
+  Write, edit, manage, and handle Markdown (.md) files to a professional standard.
+  Use this skill whenever the user wants to: create or write a new Markdown file,
+  edit or improve an existing .md file, review Markdown for style/consistency,
+  convert content into well-structured Markdown, build README files, technical docs,
+  changelogs, wikis, or any documentation in .md format. Also trigger for requests
+  involving front matter/metadata, table formatting, code blocks, link hygiene,
+  accessibility, GitHub-flavored Markdown, or best practices. If user mentions .md,
   README, CHANGELOG, docs, or wiki, use this skill.
 ---
 

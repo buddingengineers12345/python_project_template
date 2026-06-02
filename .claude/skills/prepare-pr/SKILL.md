@@ -7,6 +7,7 @@ description: >-
   Also trigger when the user says things like "make a PR for this", "write up the PR", "PR description for
   these changes", "help me open a PR", or pastes a diff/commit log and asks for a PR.
   ALWAYS use this skill for any PR-related generation task — never freeform a PR description without it.
+  Do NOT use for authoring commit messages — use sdlc-workflow or tdd-workflow for full git integration.
 ---
 
 # PR Template Skill
@@ -86,6 +87,14 @@ Before outputting anything, check each item below. If a check fails, fix it firs
 After the code block:
 - **If any section contains `<!-- please verify`** → write a plain-text note listing each flagged section by name so the user knows what to fix before submitting.
 - **If no `<!-- please verify` markers exist** → output nothing after the code block.
+
+---
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** combine multiple PR section updates into a single Edit call.
+- **Parallel checks:** lint markdown and validate section content in one message.
+- **Read before edit:** read the full PR template once, identify all sections needing changes, then apply in one Edit call.
 
 ---
 

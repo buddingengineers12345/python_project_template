@@ -374,6 +374,12 @@ Hooks execute arbitrary shell commands. Before writing or accepting hook config:
 
 ---
 
+## Efficiency: batch hook configuration
+
+- **Batch edits:** when adding multiple hooks to `.claude/settings.json`, write all hook definitions and make all path/matcher changes in one atomic edit.
+- **Test before applying:** read each hook configuration once, plan all hooks, then apply the complete configuration in a single edit.
+- **Parallel event testing:** run hooks for independent events (e.g., PreToolUse and PostToolUse) in parallel to verify no conflicts.
+
 ## Quick reference: where to go deeper
 
 | Topic                                           | Reference file                                                                     |

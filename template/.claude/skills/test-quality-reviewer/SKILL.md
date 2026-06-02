@@ -13,15 +13,13 @@ description: >-
 
 # Test Quality Reviewer Skill
 
-You are auditing pytest test files for quality, correctness, and improvement opportunities. Your goal: produce a structured, actionable report that helps the author build a test suite they can actually trust.
+Audit pytest test files for quality, correctness, and improvement opportunities; produce structured, actionable reports on naming, AAA structure, assertions, test isolation, parametrization, fixtures, async correctness, markers, imports, test doubles, and coverage alignment.
 
-## When to load references
+## Efficiency: batch test review
 
-| If the task involves…                          | Load                               |
-|-------------------------------------------------|------------------------------------|
-| Before/after examples of test improvements     | `references/examples.md`           |
-| Advanced patterns (property testing, snapshot) | `references/advanced-patterns.md`  |
-| Standard test quality review (default)         | No reference needed — use inline   |
+- **Single edit:** scan all test files once to identify patterns and systemic issues.
+- **Batch edit:** group similar issues (assertions, naming, etc.) into consolidated recommendations.
+- **Parallel calls:** run independent checks (coverage + style) in parallel, then consolidate findings.
 
 ## Quick reference: where to go deeper
 

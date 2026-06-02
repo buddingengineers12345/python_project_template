@@ -1,15 +1,13 @@
 ---
 name: cron-scheduling
 description: >-
-  Complete cron job lifecycle skill: setup, write, update, manage, pause, stop, and monitor
-  scheduled tasks on Linux, macOS, Windows, Docker, Kubernetes, GitHub Actions, Node.js, and Python.
-  Use this skill whenever a user asks about scheduling, automating recurring tasks, cron expressions,
-  crontab editing, job management, cron monitoring, task schedulers, or any variation of
-  "run this script automatically", "set up a scheduled job", "run every X minutes/hours/days",
-  "cronjob", "crontab", "stop a cron job", "why isn't my cron job running", or
-  "how do I see what cron jobs are running". Always reach for this skill even for
-  adjacent topics like launchd, Task Scheduler, GitHub Actions schedules, APScheduler,
-  node-cron, or Kubernetes CronJobs.
+  Manage cron jobs and scheduled tasks: setup, write, update, manage, pause, stop,
+  and monitor on Linux, macOS, Windows, Docker, Kubernetes, GitHub Actions, Node.js,
+  and Python. Use this skill whenever a user asks about scheduling, automating
+  recurring tasks, cron expressions, crontab editing, job management, or any variation
+  of "run this script automatically", "set up a scheduled job", "run every X minutes",
+  "cronjob", "crontab", "stop a cron job", or "why isn't my cron job running". Always
+  reach for this for adjacent topics like launchd, Task Scheduler, or APScheduler.
 ---
 
 # Cron Scheduling Skill
@@ -37,27 +35,26 @@ description: >-
 ```
 User asks about cron…
 │
-├── "What does */5 * * * * mean?" / "How do I write a schedule for…"
-│   └── Read: references/syntax-reference.md
+├── If asking "What does */5 * * * * mean?" / "How do I write a schedule for…"
+│   → When: for syntax help, load references/syntax-reference.md
 │
-├── "Set up / create a cron job"
-│   └── Follow: §Setup workflow below — no extra file needed for Linux basics
-│       If macOS / Windows / Docker / K8s / Node / Python → also read: references/environments.md
+├── If asking about "Set up / create a cron job"
+│   → When: for non-Linux environments, load references/environments.md
 │
-├── "Update / change / edit a cron job"
-│   └── Read: references/managing-jobs.md §Updating
+├── If asking about "Update / change / edit a cron job"
+│   → When: for job updates, load references/managing-jobs.md §Updating
 │
-├── "Pause / disable / stop / delete a cron job"
-│   └── Read: references/managing-jobs.md §Stopping & disabling
+├── If asking about "Pause / disable / stop / delete a cron job"
+│   → When: for stopping jobs, load references/managing-jobs.md §Stopping & disabling
 │
-├── "My cron job isn't running" / "How do I debug?"
-│   └── Read: references/monitoring.md §Debugging
+├── If asking "My cron job isn't running" / "How do I debug?"
+│   → When: for debugging, load references/monitoring.md §Debugging
 │
-├── "Monitor / see logs / alert on failures"
-│   └── Read: references/monitoring.md
+├── If asking to "Monitor / see logs / alert on failures"
+│   → When: for monitoring, load references/monitoring.md
 │
-└── Non-Linux environment question
-    └── Read: references/environments.md
+└── For non-Linux environment questions
+    → When: for non-Linux, load references/environments.md
 ```
 
 ---

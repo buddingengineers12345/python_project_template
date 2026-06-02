@@ -1,11 +1,12 @@
 ---
 name: type-checking
 description: >-
-  BasedPyright type checking: configuration, common errors, fix strategies, and
-  standard mode settings. Use this skill when debugging type errors, configuring
-  basedpyright, or understanding type annotations. Trigger on mentions of:
-  type checking, type annotation, basedpyright, typing errors, mypy, type error,
-  Protocol, Union, Generic, or any request to fix type issues in Python.
+  Debug and fix type errors using BasedPyright (strict type checker). Covers configuration,
+  common type annotation errors, fix strategies, and standard mode settings. Use this skill
+  when debugging type errors, configuring basedpyright, or understanding type annotations.
+  Trigger on mentions of: type checking, type annotation, basedpyright, typing errors,
+  mypy, type error, Protocol, Union, Generic, or any request to fix type issues in Python.
+  Do NOT use for general code quality issues — use python-code-quality for multi-tool orchestration.
 model: haiku
 ---
 

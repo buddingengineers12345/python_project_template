@@ -354,10 +354,29 @@ When asked to audit, reorganize, or improve existing commands:
 
 ---
 
+## When to load references
+
+| If the task involves…                      | Load                                |
+|---------------------------------------------|------------------------------------|
+| Learning command syntax and frontmatter   | `references/frontmatter-reference.md` |
+| Finding or adapting existing command patterns | `references/command-patterns.md`  |
+| Writing a new command from scratch         | `templates/command-template.md`   |
+| Writing a simple command (default)         | No reference needed — inline guidance suffices |
+
+---
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** combine multiple command definitions into a single Edit call.
+- **Parallel checks:** validate command syntax and schemas in one message.
+- **Read before edit:** read all `.claude/commands/` files once, plan all changes, then apply in one Edit call.
+
+---
+
 ## Quick reference: where to go deeper
 
 | Topic                                              | Reference file                                                       |
 |----------------------------------------------------|----------------------------------------------------------------------|
-| Complete frontmatter field docs with all options   | [references/frontmatter-reference.md](references/frontmatter-reference.md) |
-| Ready-to-use command examples by category          | [references/command-patterns.md](references/command-patterns.md)     |
-| Annotated template for writing a new command       | [templates/command-template.md](templates/command-template.md)       |
+| For complete frontmatter field docs with all options   | [references/frontmatter-reference.md](references/frontmatter-reference.md) |
+| For ready-to-use command examples by category          | [references/command-patterns.md](references/command-patterns.md)     |
+| For annotated template for writing a new command       | [templates/command-template.md](templates/command-template.md)       |

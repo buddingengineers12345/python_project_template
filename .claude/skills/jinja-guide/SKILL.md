@@ -1,17 +1,14 @@
 ---
 name: jinja-guide
 description: >-
-  Expert Jinja2 template authoring, maintenance, and refactoring skill. Use
-  this skill whenever the user mentions Jinja, Jinja2, .j2 files, .jinja
-  files, or template files used with Flask, Ansible, dbt, SaltStack, Pelican,
-  or any other Jinja-powered system. Triggers on requests to: create a Jinja
-  template, update/edit an existing .j2 or .jinja file, add macros, fix
-  template inheritance, debug template errors, refactor templates, add
-  filters, write base/child templates, or follow Jinja best practices. Also
-  triggers on phrases like "template logic", "block override", "extend base
-  template", "jinja macro", "jinja filter", "whitespace control", or
-  "template variable". Always consult this skill before writing any Jinja
-  template code.
+  Author and maintain Jinja2 templates for Flask, Ansible, dbt, SaltStack, Pelican,
+  and other Jinja-powered systems. Use this skill whenever the user mentions Jinja,
+  Jinja2, .j2 files, .jinja files, or template files. Triggers on requests to: create
+  a Jinja template, update/edit an existing .j2 or .jinja file, add macros, fix
+  template inheritance, debug template errors, refactor templates, add filters, write
+  base/child templates, or follow Jinja best practices. Also triggers for: "template
+  logic", "block override", "extend base template", "jinja macro", "jinja filter",
+  "whitespace control", or "template variable".
 ---
 
 # Jinja Guide Skill

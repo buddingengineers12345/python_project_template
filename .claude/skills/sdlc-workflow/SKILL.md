@@ -7,6 +7,7 @@ description: >-
   updated or the user says "run the pipeline", "implement this task", "start the
   workflow", "SDLC", "implement from TASK.md", or any request to execute the full
   development lifecycle from a task description.
+  Do NOT use for single RED/GREEN cycles — use tdd-workflow for focused TDD guidance.
 ---
 
 # SDLC Workflow Skill
@@ -65,7 +66,7 @@ Conditional stages (2.5, 3.5) only activate when flagged in task YAML.
 
 1. Read `tasks/TASK_ID.yaml`. Parse: task_id, type, status, requirement,
    acceptance_criteria, constraints, files_affected, testing_strategy, and changelog entry.
-2. Read `assets/templates/task_template.yaml` (bundled with this skill) for YAML schema reference.
+2. Read `assets/templates/task-template.yaml` (bundled with this skill) for YAML schema reference.
 3. Run `just preflight TASK_ID` to execute pre-flight checks.
 4. This project uses `just test` for tests and `just ci` for full CI.
 5. Explore the codebase: `pyproject.toml`, `conftest.py`, existing tests, target modules.
@@ -92,9 +93,9 @@ Gate: all pre-flight checks pass. No user approval needed.
 
 1. Load the `pytest` skill (read `.claude/skills/pytest/SKILL.md`).
 2. If writing tests that use fixtures beyond basic `@pytest.fixture`:
-   read `.claude/skills/pytest/references/fixtures.md`.
+   load `.claude/skills/pytest/references/fixtures.md` for guidance.
    If writing tests that need mocks or monkeypatch:
-   read `.claude/skills/pytest/references/mocking.md`.
+   load `.claude/skills/pytest/references/mocking.md` for guidance.
    Otherwise: use inline guidance from the pytest skill's core principles.
 3. For each acceptance criterion, draft the smallest test:
    - Name: `test_<behaviour>_when_<condition>`
@@ -341,19 +342,15 @@ When TASK.md has several acceptance criteria:
 |---|---|
 | TASK.md format and validation | [references/task-template.md](references/task-template.md) |
 | Stage banner format | [references/stage-banner.md](references/stage-banner.md) |
-| Pre-flight shell script | [scripts/preflight.sh](scripts/preflight.sh) |
-| Definition of Ready validator | [scripts/validate_dor.py](scripts/validate_dor.py) |
-| Task YAML starter template | [assets/templates/task_template.yaml](assets/templates/task_template.yaml) |
+| Task YAML starter template | [assets/templates/task-template.yaml](assets/templates/task-template.yaml) |
 | Task summary starter template | [assets/templates/task_summary_template.md](assets/templates/task_summary_template.md) |
 | Task summary output location | `tasks_summary/TASK_ID_summary.md` (repo root) |
 
 ## Support scripts
 
-These scripts live in `scripts/` within this skill and are invoked via `just`:
+Run scripts in `scripts/` to automate pre-flight checks and Definition of Ready validation:
 
-- **`scripts/preflight.sh`** — run by `just preflight TASK_ID`. Checks that the task file
-  exists, DoR is met, the working tree is clean, the base branch is up to date, and baseline
-  CI passes.
-- **`scripts/validate_dor.py`** — run by `just dor-check TASK_ID`. Validates a task YAML
-  against the Definition of Ready schema (required fields, type/status enums, acceptance
-  criteria, DoR flags).
+| Script | What it does |
+|---|---|
+| `preflight.sh` | Run by `just preflight TASK_ID` — checks task file, DoR compliance, clean tree, base branch sync, baseline CI |
+| `validate_dor.py` | Run by `just dor-check TASK_ID` — validates YAML against Definition of Ready schema |

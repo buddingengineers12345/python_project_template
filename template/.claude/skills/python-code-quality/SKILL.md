@@ -49,8 +49,8 @@ semgrep --config .semgrep.yml src/  # pattern scan
 | `ruff format` changes file | File not formatted | Run `ruff format .` and re-stage |
 | pre-commit hook not running | Hook not installed | Run `pre-commit install` |
 | pre-commit passes locally, fails in CI | Staged-only vs all-files mismatch | Run `pre-commit run --all-files` before pushing |
-| basedpyright `reportUnknownVariableType` | Missing annotation | Add type annotation; see `references/basedpyright.md` |
-| basedpyright `reportMissingImports` | Package not in venv | Install package or add stub; see `references/basedpyright.md` |
+| basedpyright `reportUnknownVariableType` | Missing annotation | Add type annotation (for advanced rules, see `references/basedpyright.md`) |
+| basedpyright `reportMissingImports` | Package not in venv | Install package or add stub (for stubgen, see `references/basedpyright.md`) |
 | bandit `B[code]` finding | Security anti-pattern | Fix or add `# nosec B<code>` with explanation |
 | semgrep finding | Code matches security pattern | Fix or add `# nosemgrep: <rule-id>` inline |
 
@@ -87,9 +87,6 @@ ruff format --check  →  ruff check  →  bandit  →  semgrep  →  basedpyrig
 
 ## Quick reference: where to go deeper
 
-Read the relevant reference file for configuration details, error code explanations,
-or CI integration specifics:
-
 | Topic                           | Reference file                                                       |
 |---------------------------------|----------------------------------------------------------------------|
 | ruff (lint + format)            | [references/ruff.md](references/ruff.md)                             |
@@ -114,7 +111,7 @@ or CI integration specifics:
 
 1. Create `references/<toolname>.md` using the template below.
 2. Add a row to the tools table at the top of this file.
-3. Add the tool's hook to `.pre-commit-config.yaml` (see `references/pre-commit.md`).
+3. Add the tool's hook to `.pre-commit-config.yaml` (for hook configuration, load `references/pre-commit.md`).
 4. Add the tool's `pyproject.toml` section to `references/complete-configs.md`.
 5. Insert the tool into the CI ordering table above with a rationale for placement.
 

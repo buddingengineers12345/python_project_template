@@ -1,12 +1,12 @@
 ---
 name: security
 description: >-
-  Bandit, semgrep, and Python security patterns. Covers hardcoded secrets,
-  injection risks, unsafe patterns, input validation, and cryptographic
-  security. Use this skill when scanning for vulnerabilities, understanding
-  security errors, or fixing security issues. Trigger on mentions of: security,
-  vulnerability, bandit, semgrep, secret, API key, injection, SQL injection,
-  command injection, or any request to audit code for security.
+  Audit and fix Python security vulnerabilities using bandit, semgrep, and manual code review.
+  Covers hardcoded secrets, injection risks, unsafe patterns, input validation, and cryptographic
+  security. Use this skill when scanning for vulnerabilities, understanding security errors, or
+  fixing security issues. Trigger on mentions of: security, vulnerability, bandit, semgrep, secret,
+  API key, injection, SQL injection, command injection, or any request to audit code for security.
+  Do NOT use for general code review — use python-code-reviewer for full code audit.
 model: haiku
 ---
 

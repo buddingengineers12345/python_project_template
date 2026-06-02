@@ -1,16 +1,14 @@
 ---
 name: bash-guide
 description: >-
-  Expert bash scripting skill for writing, maintaining, and updating
-  production-quality shell scripts. Use this skill whenever the user asks to
-  write a bash script, create a shell utility, automate a task with shell,
-  update or refactor an existing .sh file, add logging to a script, handle
-  errors in bash, set up script structure, or follow shell best practices.
-  Also triggers for: "write me a script", "shell automation", "bash function",
-  "cron job script", "deployment script", "wrapper script", or any task
-  producing a .sh or executable shell file. Covers Google Shell Style Guide
-  compliance, dual-mode logging (human vs LLM execution contexts), and
-  LLM-agent readability patterns.
+  Write, maintain, and update production-quality shell scripts. Use this skill
+  whenever the user asks to write a bash script, create a shell utility,
+  automate a task with shell, update or refactor an existing .sh file, add
+  logging to a script, handle errors in bash, set up script structure, or follow
+  shell best practices. Also triggers for: "write me a script", "shell
+  automation", "bash function", "cron job script", "deployment script", "wrapper
+  script", or any task producing a .sh or executable shell file. Covers Google
+  Shell Style Guide compliance, dual-mode logging, and LLM-agent readability.
 ---
 
 # Bash Guide Skill

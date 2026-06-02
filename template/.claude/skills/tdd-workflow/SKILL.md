@@ -16,7 +16,7 @@ description: >-
 
 # TDD Workflow Skill
 
-This skill guides you and the user through a strict **RED → GREEN → REFACTOR → VALIDATE** cycle. The user makes decisions at every stage — what to test, how to implement, what to refactor. Your role is to keep the cycle honest, prompt the right actions, and call in specialist skills (or their fallbacks) at the right moment.
+Execute the strict **RED → GREEN → REFACTOR → VALIDATE** cycle: write failing tests (RED), implement minimally (GREEN), improve code (REFACTOR), verify CI passes (VALIDATE).
 
 **Hard rules — never break these:**
 - No implementation code before a failing test exists.

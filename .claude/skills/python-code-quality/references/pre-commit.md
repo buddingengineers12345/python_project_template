@@ -1,4 +1,4 @@
-# pre-commit
+# Pre-commit
 
 pre-commit is a framework for managing Git hooks. It runs configured tools automatically
 before each commit, blocking the commit if any check fails.

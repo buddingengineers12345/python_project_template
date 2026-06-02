@@ -1,25 +1,26 @@
 ---
 name: tdd-test-planner
 description: >-
-  Convert a requirement, user story, feature description, or bug report into a
-  structured pytest test plan — before writing any implementation code. Use
-  this skill whenever someone asks: "plan my tests", "what tests should I
-  write", "test cases for this feature", "break down requirements into tests",
-  "generate test skeleton", "what edge cases should I cover", "help me TDD
-  this", "write tests first", "TDD approach", "before I implement", "spec my
-  tests", "what should I assert", or any request to systematically derive test
-  cases from a requirement. Also trigger when a user pastes a ticket, spec,
-  user story, or bug report and asks how to approach testing it. Produces
-  categorised test cases (happy path, error path, boundary values, edge cases,
-  integration points) plus pytest skeletons with AAA structure, fixtures,
-  parametrize patterns, and markers — but no implementation bodies. Always use
-  this skill when the user is planning tests before writing code.
+  Convert a requirement, user story, feature description, or bug report into a structured pytest test plan before
+  writing any implementation code. Use this skill whenever someone asks: "plan my tests", "what tests should I write",
+  "test cases for this feature", "break down requirements into tests", "generate test skeleton", "what edge cases should I cover",
+  "help me TDD this", "write tests first", "TDD approach", "before I implement", "spec my tests", "what should I assert",
+  or any request to systematically derive test cases from a requirement. Also trigger when a user pastes a ticket, spec,
+  user story, or bug report and asks how to approach testing it. Produces categorised test cases (happy path, error path,
+  boundary values, edge cases, integration points) plus pytest skeletons with AAA structure, fixtures, parametrize patterns, and markers.
+  Do NOT use for implementation code — test planning only, no implementation bodies.
 ---
 
 # TDD Test Planner Skill
 
 Converts a requirement into a structured test plan and pytest skeletons.
 No implementation code is written — only test shapes the developer then fills in.
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** combine multiple test plan sections into a single Edit call.
+- **Parallel generation:** create test skeletons and parametrize fixtures in one message.
+- **Read before edit:** read the requirement once, plan all test cases, then output in one batch.
 
 ## Quick reference: where to go deeper
 

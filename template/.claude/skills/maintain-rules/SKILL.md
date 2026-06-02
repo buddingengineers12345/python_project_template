@@ -322,6 +322,12 @@ Symlinks are resolved and loaded normally; circular symlinks are handled gracefu
 
 ---
 
+## Efficiency: batch rule updates
+
+- **Batch edits:** when updating multiple rules in `.claude/rules.md` or rule reference files, apply all changes in a single edit.
+- **Consolidated validation:** read all rule files once, identify all needed changes, then apply rules updates together.
+- **Parallel rule categories:** if your rule set spans multiple categories (lint rules, security rules, naming rules), you can validate them in parallel but apply all fixes in one pass.
+
 ## Quick reference: where to go deeper
 
 | Topic                                              | Reference file                                           |

@@ -1,15 +1,14 @@
 ---
 name: python-code-quality
 description: >-
-  Use this skill whenever the task involves Python code style, formatting, linting, type
-  checking, security scanning, or commit hygiene in this project. Triggers include:
-  configuring or running ruff (lint or format), setting up or modifying pre-commit hooks,
-  configuring or running basedpyright, running bandit or semgrep, fixing lint/type/security
-  errors, writing or updating pyproject.toml quality sections, CI pipeline steps for code
-  quality, or any question like "how do I enforce formatting", "why is ruff complaining",
-  "pre-commit isn't running", "type error I don't understand", or "security finding I need
-  to suppress". Also use proactively when writing new Python files that will need to pass
-  CI checks.
+  Configure and run Python code quality tools: ruff (lint + format), pre-commit hooks, basedpyright (type checking),
+  bandit (security), and semgrep (pattern scanning). Trigger whenever the task involves Python code style, formatting,
+  linting, type checking, security scanning, or commit hygiene. Includes: configuring or running ruff (lint or format),
+  setting up or modifying pre-commit hooks, configuring or running basedpyright, running bandit or semgrep, fixing
+  lint/type/security errors, writing or updating pyproject.toml quality sections, CI pipeline steps for code quality,
+  or questions like "how do I enforce formatting", "why is ruff complaining", "pre-commit isn't running", "type error
+  I don't understand", or "security finding I need to suppress". Also use proactively when writing new Python files.
+  Do NOT use for individual language-specific skills — use type-checking for basedpyright focus, security for bandit/semgrep focus.
 ---
 
 # Python Code Quality Skill

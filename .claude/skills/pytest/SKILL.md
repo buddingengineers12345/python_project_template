@@ -8,6 +8,7 @@ description: >-
   feature. Trigger on mentions of: pytest, test cases, test coverage, fixtures, mocking,
   parametrize, TDD, test-driven development, unit test, integration test, conftest, or
   any request to add/improve/fix tests in a Python project.
+  Do NOT use for writing integration tests without proper fixtures — use test-quality-reviewer for audit.
 ---
 
 # Pytest Skill
@@ -29,12 +30,12 @@ topic.
 | Anti-patterns and fixes        | [references/anti-patterns.md](references/anti-patterns.md)         |
 | CI, coverage, and plugins      | [references/ci-and-plugins.md](references/ci-and-plugins.md)       |
 
-**Bundled scripts** (in `scripts/` — run directly, no need to read them into context):
+**Bundled scripts** (in `scripts/` — run directly with `python <script-path>` from project root):
 
-| Script                 | What it does                                             |
-|------------------------|----------------------------------------------------------|
-| `find_slow_tests.py`   | Runs pytest, identifies tests exceeding a time threshold |
-| `mark_slow_tests.py`   | Adds `@pytest.mark.slow` to the identified slow tests   |
+| Script | What it does |
+|---|---|
+| `find_slow_tests.py` | Executes pytest with `--durations=0` and identifies tests exceeding a time threshold |
+| `mark_slow_tests.py` | Adds `@pytest.mark.slow` to identified slow tests, pipes output from find_slow_tests.py |
 
 ## When to load references
 
@@ -332,9 +333,8 @@ Run the full suite (including slow tests) before opening a PR or in CI.
 - When `pytest --durations=10` shows tests taking more than a second.
 - During CI optimisation — split fast and slow test runs into separate jobs.
 
-Read [references/parametrize-and-markers.md](references/parametrize-and-markers.md)
-for more on custom markers and [references/ci-and-plugins.md](references/ci-and-plugins.md)
-for CI integration patterns.
+For more on custom markers, load [references/parametrize-and-markers.md](references/parametrize-and-markers.md).
+For CI integration patterns, load [references/ci-and-plugins.md](references/ci-and-plugins.md).
 
 ---
 

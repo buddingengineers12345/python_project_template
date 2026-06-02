@@ -245,14 +245,14 @@ itself, so simple tasks require **zero** reference file loads.
 ```markdown
 ## Reference loading
 
-├── Writing a new test file?
-│   └── Use inline guidance below (AAA, naming, assertions)
-├── Need fixtures beyond basic `@pytest.fixture`?
-│   └── Load `references/fixtures.md`
-├── Need mocking guidance?
-│   └── Load `references/mocking.md`
-└── Debugging flaky tests?
-    └── Load `references/anti-patterns.md`
+├── If writing a new test file?
+│   └── When: for basics, use inline guidance below (AAA, naming, assertions)
+├── If you need fixtures beyond basic `@pytest.fixture`?
+│   └── When: for advanced fixtures, load `references/fixtures.md`
+├── If you need mocking guidance?
+│   └── When: for mocking, load `references/mocking.md`
+└── If debugging flaky tests?
+    └── When: for debugging, load `references/anti-patterns.md`
 ```
 
 **Rules:**
@@ -268,15 +268,15 @@ itself, so simple tasks require **zero** reference file loads.
   at the **start of the stage that needs them**, not all upfront. Each stage's load
   instruction is itself a conditional.
 
-**Check:**
+**Check** *(run only when validating dimension 8)*:
 ```bash
+# When verifying: detect reference instructions lacking conditions
 for f in "$SKILLS_DIR"/*/SKILL.md; do
     skill=$(basename "$(dirname "$f")")
-    # Find unconditional "load/read" instructions for reference files
-    hits=$(grep -n -iE '(^[0-9]+\.|^- ).*\b(load|read)\b.*references/' "$f" \
-        | grep -viE '(if |when |for |only|conditional)' || true)
-    [ -n "$hits" ] && echo "  $skill: unconditional reference loads found:" \
-        && echo "$hits"
+    # Regex: lines with (consult|use|read) references, lacking (if|when|for)
+    unsafe=$(grep -n -iE '(^[0-9]+\.|^- ).*(use|read|consult).*references' "$f" \
+        | grep -viE '(if |when |for |only)' || true)
+    [ -n "$unsafe" ] && echo "  $skill: conditional guidance needed"
 done
 ```
 Ideally returns empty — all reference loads are conditional.

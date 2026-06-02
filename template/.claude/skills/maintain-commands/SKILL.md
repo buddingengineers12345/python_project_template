@@ -354,6 +354,12 @@ When asked to audit, reorganize, or improve existing commands:
 
 ---
 
+## Efficiency: batch edits and organization
+
+- **Batch edit:** when adding multiple commands, combine all YAML frontmatter and structure changes in one pass.
+- **Bulk migration:** when upgrading from legacy `.claude/commands/` to modern `.claude/skills/`, migrate all files together in batch.
+- **Single read:** read the entire commands directory structure once to plan all standardization edits.
+
 ## Quick reference: where to go deeper
 
 | Topic                                              | Reference file                                                       |

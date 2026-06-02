@@ -62,6 +62,12 @@ See `references/ruff.md` for the complete configuration and every rule set.
 - Always include a comment explaining why: `# noqa: B008 — FastAPI Depends()`
 - Prefer fixing over suppressing
 
+## Efficiency: batch edit and parallel calls
+
+- **Batch edit:** run `just fix` once to apply all safe auto-fixes in a single pass.
+- **Parallel calls:** run `just fix` and `just fmt` concurrently when their outputs don't depend on each other.
+- **Single lint pass:** run `just lint` last to verify no violations remain after fixing.
+
 ## Quick reference: where to go deeper
 
 | Topic                      | Reference file                                     |

@@ -140,7 +140,7 @@ callers can branch on them. For LLM-executable scripts, emit a final structured
 line containing `EXIT_CODE=<n> REASON="..."` before `exit`.
 
 For arg-parsing patterns (`getopts` vs. manual), `trap` cleanup, array idioms,
-heredocs, and retry loops, see [references/patterns.md](references/patterns.md).
+heredocs, and retry loops — for the full pattern library, refer to [references/patterns.md](references/patterns.md). Most scripts use inline patterns without loading extra files.
 
 ### 6. LLM-agent readability checklist
 
@@ -196,7 +196,7 @@ done
 (( attempt >= MAX_RETRIES )) && die "Failed after ${MAX_RETRIES} attempts"
 ```
 
-For the full pattern library, see [references/patterns.md](references/patterns.md).
+For the full pattern library and advanced patterns, if you need them, load [references/patterns.md](references/patterns.md).
 
 ## When to load references
 

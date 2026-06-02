@@ -16,10 +16,8 @@ description: >-
 
 ## Efficiency: batch edits and parallel calls
 
-- **Batch edits:** When setting up multiple cron jobs, write all entries in a
-  single `crontab -e` session or Edit call rather than one job at a time.
-- **Read before edit:** Read the current crontab first (`crontab -l`) to
-  understand existing jobs before adding or modifying entries.
+- **Batch edit:** When setting up multiple cron jobs, write all entries in a single `crontab -e` session rather than one job at a time.
+- **Read before edit:** Read the current crontab first (`crontab -l`) to understand existing jobs before making changes.
 
 ## Quick reference: where to go deeper
 
@@ -42,7 +40,7 @@ User asks about cron…
 │
 ├── "Set up / create a cron job"
 │   └── Follow: §Setup workflow below — no extra file needed for Linux basics
-│       If macOS / Windows / Docker / K8s / Node / Python → also read: references/environments.md
+│       Platform-specific: for macOS / Windows / Docker / K8s / Node / Python, see [references/environments.md](references/environments.md)
 │
 ├── "Update / change / edit a cron job"
 │   └── Read: references/managing-jobs.md §Updating

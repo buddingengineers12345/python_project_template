@@ -92,9 +92,9 @@ Gate: all pre-flight checks pass. No user approval needed.
 
 1. Load the `pytest` skill (read `.claude/skills/pytest/SKILL.md`).
 2. If writing tests that use fixtures beyond basic `@pytest.fixture`:
-   read `.claude/skills/pytest/references/fixtures.md`.
+   for fixture patterns, for fixture patterns, read `.claude/skills/pytest/references/fixtures.md`.
    If writing tests that need mocks or monkeypatch:
-   read `.claude/skills/pytest/references/mocking.md`.
+   for mocking patterns, for mocking patterns, read `.claude/skills/pytest/references/mocking.md`.
    Otherwise: use inline guidance from the pytest skill's core principles.
 3. For each acceptance criterion, draft the smallest test:
    - Name: `test_<behaviour>_when_<condition>`
@@ -341,8 +341,8 @@ When TASK.md has several acceptance criteria:
 |---|---|
 | TASK.md format and validation | [references/task-template.md](references/task-template.md) |
 | Stage banner format | [references/stage-banner.md](references/stage-banner.md) |
-| Pre-flight shell script | [scripts/preflight.sh](scripts/preflight.sh) |
-| Definition of Ready validator | [scripts/validate_dor.py](scripts/validate_dor.py) |
+| Read pre-flight shell script | [scripts/preflight.sh](scripts/preflight.sh) |
+| Read Definition of Ready validator | [scripts/validate_dor.py](scripts/validate_dor.py) |
 | Task YAML starter template | [assets/templates/task_template.yaml](assets/templates/task_template.yaml) |
 | Task summary starter template | [assets/templates/task_summary_template.md](assets/templates/task_summary_template.md) |
 | Task summary output location | `tasks_summary/TASK_ID_summary.md` (repo root) |

@@ -18,17 +18,15 @@ description: >-
 
 ## STEP 1 — Get the template
 
-The PR template lives at `.github/PULL_REQUEST_TEMPLATE.md` in the user's repository.
-Obtain it using whichever situation applies — check in order:
+The PR template lives at `.github/PULL_REQUEST_TEMPLATE.md`. Obtain it in priority order:
 
-| Situation | What to do |
+| Situation | Action |
 |---|---|
-| **User pasted the template** in their message | Use that content directly as your skeleton |
-| **File access is available** (e.g. Claude Code, filesystem tools) | Read `.github/PULL_REQUEST_TEMPLATE.md` from the repo root |
-| **Neither of the above** | Use the fallback skeleton at the bottom of this document |
+| **User pasted the template** in their message | Use that content directly |
+| **File access available** (Claude Code, filesystem tools) | Read `.github/PULL_REQUEST_TEMPLATE.md` from repo root |
+| **Neither available** | Use the fallback skeleton at the bottom of this document |
 
-- Do **not** modify the template's headings, section order, or structure.
-- Do **not** mix the fallback with a user-provided template. Use exactly one source.
+Rules: Do NOT modify template headings, section order, or structure. Do NOT mix fallback with user-provided template.
 
 > ⚠️ Do not proceed to Step 2 until you have the template loaded.
 
@@ -53,7 +51,7 @@ Scan everything the user provided. Find these signals:
 ## STEP 3 — Fill each section
 
 If the PR template has custom sections or you need exact fill rules for each
-section, read `references/section-rules.md`. For standard PRs with Summary,
+section; for detailed section guidelines, load `references/section-rules.md`. For standard PRs with Summary,
 Test Plan, and Breaking Changes sections, use the inline template below:
 
 > **Summary:** [2-3 bullets on what changed and why]
@@ -88,6 +86,12 @@ After the code block:
 - **If no `<!-- please verify` markers exist** → output nothing after the code block.
 
 ---
+
+## Efficiency: batch PR preparation
+
+- **Single edit:** review your entire PR once (title, description, commits, code) before making changes.
+- **Batch edit:** if refining multiple sections (Summary, Changes, Testing), apply all edits together.
+- **Parallel verification:** verify formatting and content independently, then merge findings into one final check.
 
 ## Quick reference: where to go deeper
 

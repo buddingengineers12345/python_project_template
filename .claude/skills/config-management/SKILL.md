@@ -1,7 +1,7 @@
 ---
 name: config-management
 description: >-
-  Guide for pyproject.toml, justfile, pre-commit, and CI pipeline configuration.
+  Manage pyproject.toml, justfile, pre-commit, and CI pipeline configuration.
   Use this skill when modifying project configuration files, adding dependencies,
   configuring tools, or troubleshooting CI. Trigger on mentions of: pyproject.toml,
   justfile, pre-commit, CI configuration, GitHub Actions, tool configuration,

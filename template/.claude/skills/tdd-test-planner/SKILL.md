@@ -12,14 +12,20 @@ description: >-
   user story, or bug report and asks how to approach testing it. Produces
   categorised test cases (happy path, error path, boundary values, edge cases,
   integration points) plus pytest skeletons with AAA structure, fixtures,
-  parametrize patterns, and markers — but no implementation bodies. Always use
-  this skill when the user is planning tests before writing code.
+  parametrize patterns, and markers — but no implementation bodies. Do NOT use
+  for implementing code after planning; tdd-workflow handles the full cycle.
 ---
 
 # TDD Test Planner Skill
 
 Converts a requirement into a structured test plan and pytest skeletons.
 No implementation code is written — only test shapes the developer then fills in.
+
+## Efficiency: batch test planning
+
+- **Single edit:** outline all tests for the feature before writing code.
+- **Batch edit:** once the plan is solid, write all test stubs in one pass.
+- **Parallel calls:** if you need test-double patterns, read `references/test-doubles.md` once, then apply to all tests.
 
 ## Quick reference: where to go deeper
 
@@ -100,7 +106,7 @@ floats.
 
 #### E — Integration Points
 Interactions with external collaborators (DB, API, filesystem, message queue,
-another module). One test per meaningful interaction. If the test plan requires mocks, stubs, or fakes, load `references/test-doubles.md` to choose the right test double (stub/mock/fake).
+another module). One test per meaningful interaction. For testing with mocks/stubs/fakes: see [references/test-doubles.md](references/test-doubles.md) to choose the right test double.
 
 ---
 
@@ -220,7 +226,7 @@ function name.
 - **Imports** — `import pytest` at top; `from <module> import <subject>` using
   the most obvious path derivable from the requirement.
 - **Class grouping** — for a subject with 8+ tests, wrap in
-  `class TestSubjectName:` — see `references/pytest-patterns.md`.
+  `class TestSubjectName:` — for naming patterns, see `references/pytest-patterns.md`.
 
 ---
 

@@ -302,10 +302,12 @@ Recommended `.htmlhintrc`:
 - **Read before edit:** Read the full HTML file first to understand existing
   structure and patterns.
 
-## Quick reference: where to go deeper
+## Quick reference: optional deep-dive resources
+
+(These load only when needed per the "When to load references" conditions above)
 
 | Topic                                                    | Reference file                                                     |
 |----------------------------------------------------------|--------------------------------------------------------------------|
-| WCAG 2.2 checklist, ARIA patterns, screen reader testing | [references/accessibility.md](references/accessibility.md)         |
-| Complete element reference with use cases                | [references/semantic-elements.md](references/semantic-elements.md) |
-| Production-ready HTML boilerplate                        | [templates/html-template.html](templates/html-template.html)       |
+| For WCAG 2.2 compliance, ARIA patterns, screen readers | [references/accessibility.md](references/accessibility.md)         |
+| For semantic element reference with use cases                | [references/semantic-elements.md](references/semantic-elements.md) |
+| For production-ready HTML boilerplate                        | [templates/html-template.html](templates/html-template.html)       |

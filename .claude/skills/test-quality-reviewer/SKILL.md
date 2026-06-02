@@ -1,14 +1,13 @@
 ---
 name: test-quality-reviewer
 description: >-
-  Review pytest test files for quality and trustworthiness. Use for "review my tests",
-  "are my tests good?", "test quality check", "audit my test suite", or any request to
-  evaluate existing test code. Checks naming, AAA structure, assertions, test isolation,
-  parametrization, fixtures, async correctness, markers, imports, test doubles, and
-  coverage alignment. Produces structured review with health score, severity-ranked issues,
-  Quick Wins, and before/after fixes. Complements pytest-writing skills by focusing on
-  quality assessment of existing tests — not just how to write tests, but whether they're
-  actually trustworthy.
+  Review pytest test files for quality and trustworthiness. Use for "review my tests", "are my tests good?",
+  "test quality check", "audit my test suite", or any request to evaluate existing test code. Checks naming,
+  AAA structure, assertions, test isolation, parametrization, fixtures, async correctness, markers, imports,
+  test doubles, and coverage alignment. Produces structured review with health score, severity-ranked issues,
+  Quick Wins, and before/after fixes. Complements pytest-writing skills by focusing on quality assessment of
+  existing tests — not just how to write tests, but whether they're actually trustworthy.
+  Do NOT use for writing new tests — use pytest skill for test creation.
 ---
 
 # Test Quality Reviewer Skill
@@ -22,6 +21,12 @@ You are auditing pytest test files for quality, correctness, and improvement opp
 | Before/after examples of test improvements     | `references/examples.md`           |
 | Advanced patterns (property testing, snapshot) | `references/advanced-patterns.md`  |
 | Standard test quality review (default)         | No reference needed — use inline   |
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** combine multiple test improvements into a single Edit call.
+- **Parallel checks:** run type checking and quality analysis in one message.
+- **Read before edit:** read the full test suite once, categorize all issues, then apply fixes in one Edit call.
 
 ## Quick reference: where to go deeper
 
@@ -344,7 +349,6 @@ The 3 highest-impact changes to make right now:
 "This pattern appears in 6 tests. Example: test_foo.py::test_bar. Fix pattern:"]
 
 ---
-
 ### 🔵 Suggestions
 
 [same structure]
@@ -360,7 +364,6 @@ Tests: `test_a`, `test_b`, `test_c`
 ```
 
 ---
-
 ### Coverage Gaps  *(only if source was provided)*
 
 | Function / Branch | File:Line | Gap |
@@ -388,7 +391,6 @@ Start at 10. Deduct −2 per Critical (cap −6), −0.5 per Warning (cap −3),
 | 1–2 | Poor — largely decorative; major rewrite needed |
 
 ## Tone and calibration
-
 - Direct and constructive — goal is better tests, not blame.
 - **Small files (<10 tests):** be thorough, call out every issue.
 - **Large files (50+ tests):** focus on patterns and group identical issues with one representative example.

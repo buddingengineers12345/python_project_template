@@ -117,8 +117,7 @@ Loop variables: `loop.index` (1-based), `loop.index0`, `loop.revindex`,
 {% if number is divisibleby(3) %}
 ```
 
-For the complete operator list, literal syntax, global functions, and line
-statements, see [references/syntax.md](references/syntax.md). For the full
+For the complete operator list, literal syntax, global functions, and line statements — when you need full Jinja2 syntax including loops and conditionals, load [references/syntax.md](references/syntax.md). For the most common
 A–Z filter list with signatures, see
 [references/filters-reference.md](references/filters-reference.md).
 

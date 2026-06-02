@@ -8,6 +8,7 @@ description: >-
   or any task involving __doc__ or inline Python documentation. Always load this skill
   before writing any Python docstring — it contains all rules, templates, and reference
   pointers needed to produce correct, complete, Google-style documentation.
+  Do NOT use for user-facing documentation or README writing — use markdown skill for those.
 ---
 
 # Python Docstrings Skill

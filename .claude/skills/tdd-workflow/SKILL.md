@@ -1,17 +1,14 @@
 ---
 name: tdd-workflow
 description: >-
-  Guide a complete Test-Driven Development (TDD) cycle for Python: discover the
-  project, write a failing test (RED), write minimal implementation (GREEN),
-  refactor both production and test code (REFACTOR), then validate with CI
-  (VALIDATE). Always use this skill when the user says "implement with TDD",
-  "test-driven development", "RED GREEN REFACTOR", "write tests first", "TDD
-  workflow", "implement feature with tests", "write the test before the code",
-  "fix this bug TDD-style", or any request to build or fix Python code following
-  test-first discipline. This skill orchestrates pytest, python-code-reviewer,
-  python-docstrings, and ci-fixer at the appropriate stage; it loads fallback
-  guidance from references/skill-fallbacks.md when those skills are not
-  installed.
+  Guide a complete Test-Driven Development (TDD) cycle for Python: discover the project, write a failing test (RED),
+  write minimal implementation (GREEN), refactor both production and test code (REFACTOR), then validate with CI (VALIDATE).
+  Always use this skill when the user says "implement with TDD", "test-driven development", "RED GREEN REFACTOR",
+  "write tests first", "TDD workflow", "implement feature with tests", "write the test before the code", "fix this bug TDD-style",
+  or any request to build or fix Python code following test-first discipline. This skill orchestrates pytest, python-code-reviewer,
+  python-docstrings, and ci-fixer at the appropriate stage; it loads fallback guidance from references/skill-fallbacks.md when
+  those skills are not installed.
+  Do NOT use for multi-stage pipelines — use sdlc-workflow for complete SDLC orchestration.
 ---
 
 # TDD Workflow Skill
@@ -49,7 +46,7 @@ TDD  ✓DISCOVER  ✓RED  ●GREEN  ○REFACTOR  ○VALIDATE
 
 ### 0a. Detect commands
 
-Read `references/ci-detection.md` and detect the project's test and CI commands. State them explicitly:
+For detecting the project's test and CI commands, load `references/ci-detection.md`. State them explicitly:
 > "I'll use `pytest` for tests and `just ci` for full CI."
 
 Let the user confirm or override.

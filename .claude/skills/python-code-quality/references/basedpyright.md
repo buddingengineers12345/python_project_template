@@ -1,4 +1,4 @@
-# basedpyright
+# Basedpyright
 
 basedpyright is a community fork of pyright (Microsoft's static type checker for Python).
 It adds stricter defaults, clearer error messages, and additional rules over vanilla pyright.

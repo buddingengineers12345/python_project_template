@@ -374,6 +374,14 @@ Hooks execute arbitrary shell commands. Before writing or accepting hook config:
 
 ---
 
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** combine multiple `.claude/settings.json` changes into a single Edit call.
+- **Parallel validation:** run hook syntax checks and schema validation in one message.
+- **Read before edit:** read `.claude/settings.json` once, note all hook additions/changes, then apply in one Edit call.
+
+---
+
 ## Quick reference: where to go deeper
 
 | Topic                                           | Reference file                                                                     |

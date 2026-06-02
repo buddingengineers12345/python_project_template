@@ -72,7 +72,7 @@ Select before starting:
 | **Standard** | Default | All 8 categories below | Unlimited |
 | **Deep** | Full module, audit, "thorough review" | All 13 in `checklist.md` | Unlimited |
 
-For **Deep** mode: load `references/checklist.md` now and work through all 13 sections.
+For **Deep** mode: if needed for a comprehensive review, load `references/checklist.md` and work through all 13 sections.
 
 ---
 
@@ -92,7 +92,7 @@ Report CRITICAL issues at the top — never bury them.
 ### Category Prompts (Standard mode)
 
 These are decision prompts — they tell you *whether* to flag an issue in each area.
-For the sub-items, load `references/checklist.md`. Do not duplicate checklist content here.
+For the detailed sub-items, if working in Deep mode, load `references/checklist.md`. (Most reviews stay in Quick mode.)
 
 **1. Security** (always check, all modes)
 - Hardcoded credentials / tokens? SQL string concatenation? `eval()`/`exec()` on input?
@@ -140,7 +140,7 @@ For the sub-items, load `references/checklist.md`. Do not duplicate checklist co
 
 ## Phase 3 — Output the Review
 
-If you need the exact output template format, load `references/output-format.md`
+If generating structured output, load `references/output-format.md` for the exact template format.
 and select the matching template. For Quick mode reviews, use this compact format:
 > **Verdict: [APPROVE/REQUEST CHANGES]** — [1-line summary]. Findings: [list].
 - **Template A** — snippet / function / module (most common)
@@ -186,6 +186,12 @@ When the author submits a revision:
 4. **Post-merge** — treat as a standard review; open issues for CRITICAL/HIGH rather than blocking.
 
 ---
+
+## Efficiency: batch review workflows
+
+- **Single edit:** read target file(s) once and identify all issues before drafting feedback.
+- **Batch edit:** group related issues (docstrings, types, etc.) into one response.
+- **Parallel calls:** run independent checks (style + types) in parallel, then merge findings.
 
 ## Quick reference: where to go deeper
 

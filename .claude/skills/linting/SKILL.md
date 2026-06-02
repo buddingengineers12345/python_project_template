@@ -1,11 +1,11 @@
 ---
 name: linting
 description: >-
-  Ruff lint and format guidance: configuration, error codes, auto-fix workflows,
-  CI ordering, and per-file-ignores. Use this skill when fixing lint violations,
-  configuring ruff rules, or understanding lint error codes. Trigger on mentions
-  of: ruff, lint, linting, format, formatter, auto-fix, lint errors, E/F/I/UP/B
-  codes, isort, or any request to fix or configure Python linting.
+  Fix Python lint and format violations using ruff: configuration, error codes, auto-fix
+  workflows, CI ordering, and per-file-ignores. Use this skill when fixing lint violations,
+  configuring ruff rules, or understanding lint error codes. Trigger on mentions of: ruff,
+  lint, linting, format, formatter, auto-fix, lint errors, E/F/I/UP/B codes, isort, or any
+  request to fix or configure Python linting.
 model: haiku
 ---
 
@@ -61,6 +61,12 @@ See `references/ruff.md` for the complete configuration and every rule set.
 - Never add `# noqa` without a specific code: `# noqa: E501`
 - Always include a comment explaining why: `# noqa: B008 — FastAPI Depends()`
 - Prefer fixing over suppressing
+
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** combine multiple linting configuration changes into a single Edit call.
+- **Parallel calls:** run `just fix`, `just fmt`, and `just lint` in one message if checking multiple files.
+- **Read before edit:** read `pyproject.toml` or `.ruff.toml` once, note all changes, then apply in one Edit call.
 
 ## Quick reference: where to go deeper
 

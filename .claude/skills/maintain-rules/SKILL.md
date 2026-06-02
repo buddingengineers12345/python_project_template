@@ -322,6 +322,14 @@ Symlinks are resolved and loaded normally; circular symlinks are handled gracefu
 
 ---
 
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** combine multiple rule additions/changes into a single Edit call.
+- **Parallel checks:** validate rule syntax and constraints in one message.
+- **Read before edit:** read CLAUDE.md and all rule files once, plan all changes, then apply in one Edit call.
+
+---
+
 ## Quick reference: where to go deeper
 
 | Topic                                              | Reference file                                           |

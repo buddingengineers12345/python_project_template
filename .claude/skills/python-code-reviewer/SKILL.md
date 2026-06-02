@@ -187,6 +187,14 @@ When the author submits a revision:
 
 ---
 
+## Efficiency: batch edits and parallel calls
+
+- **Batch edits:** combine multiple code suggestions into a single Edit call.
+- **Parallel checks:** run style, type, and security checks in one message.
+- **Read before edit:** read the full diff once, categorize all issues by severity, then apply fixes in one Edit call.
+
+---
+
 ## Quick reference: where to go deeper
 
 | Topic                              | Reference file                                                           |

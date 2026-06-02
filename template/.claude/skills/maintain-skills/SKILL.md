@@ -268,15 +268,12 @@ itself, so simple tasks require **zero** reference file loads.
   at the **start of the stage that needs them**, not all upfront. Each stage's load
   instruction is itself a conditional.
 
-**Check:**
+**Check:** (The verification searches for unconditional reference links in skill documentation)
 ```bash
 for f in "$SKILLS_DIR"/*/SKILL.md; do
     skill=$(basename "$(dirname "$f")")
-    # Find unconditional "load/read" instructions for reference files
-    hits=$(grep -n -iE '(^[0-9]+\.|^- ).*\b(load|read)\b.*references/' "$f" \
-        | grep -viE '(if |when |for |only|conditional)' || true)
-    [ -n "$hits" ] && echo "  $skill: unconditional reference loads found:" \
-        && echo "$hits"
+    # Find instruction verbs followed by 'references/' without condition keywords
+    awk '/^([-0-9]|[ ]*[-])/ && /references\// && !/(if |when |for |only|conditional)/ {print NR": "$0}' "$f"
 done
 ```
 Ideally returns empty — all reference loads are conditional.
