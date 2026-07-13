@@ -3,8 +3,8 @@
   "color": "red",
   "green": 44,
   "label": "freshness",
-  "message": "391 stale",
+  "message": "393 stale",
   "metric": "commits",
-  "red": 391,
-  "yellow": 60
+  "red": 393,
+  "yellow": 58
 }
