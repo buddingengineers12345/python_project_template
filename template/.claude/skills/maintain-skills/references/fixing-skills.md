@@ -6,7 +6,7 @@ Complete procedures for standardizing and auditing individual skills and entire 
 
 Follow these steps exactly. Do not skip any step.
 
-### Step 1 — Inventory
+### Step 1 - Inventory
 
 ```bash
 SKILLS_DIR="${SKILLS_DIR:-.claude/skills}"
@@ -21,23 +21,23 @@ for sub in references scripts templates assets; do
 done
 ```
 
-### Step 2 — Read SKILL.md and note violations
+### Step 2 - Read SKILL.md and note violations
 
 Read the full SKILL.md. Check each dimension against the rules in the main skill. Write down every violation found.
 
-### Step 3 — Fix frontmatter (dimension 1)
+### Step 3 - Fix frontmatter (dimension 1)
 
 If the description uses a quoted string or `>` instead of `>-`, replace it.
 
-### Step 4 — Fix title (dimension 2)
+### Step 4 - Fix title (dimension 2)
 
 If the H1 heading does not end with ` Skill`, fix it. Remove version numbers, subtitles, and parenthetical notes. Move that information into the intro paragraph.
 
-### Step 5 — Fix reference table (dimension 3)
+### Step 5 - Fix reference table (dimension 3)
 
 Replace any non-standard reference section with the exact header `## Quick reference: where to go deeper` and a two-column pipe table (`Topic | Reference file`) using Markdown links.
 
-### Step 6 — Fix file and folder names (dimension 4)
+### Step 6 - Fix file and folder names (dimension 4)
 
 Rename anything non-kebab-case across the folder, `references/`, `templates/`, and `assets/`. This includes numbered prefixes, underscores, and uppercase.
 
@@ -53,13 +53,13 @@ git mv claude_hooks claude-hooks    # or plain mv if not in git
 
 After renaming, update ALL links in SKILL.md (and any cross-linking reference files) that point at the old names. Also update the `name:` frontmatter field so it matches the new folder name.
 
-### Step 7 — Fix reference H1 headings (dimension 5)
+### Step 7 - Fix reference H1 headings (dimension 5)
 
 Read line 1 of each reference file. If not sentence case, fix it.
 
 **Before:**
 ```markdown
-# Python Review Checklist — Full Detail (Python 3.11+)
+# Python Review Checklist - Full Detail (Python 3.11+)
 ```
 
 **After:**
@@ -69,21 +69,21 @@ Read line 1 of each reference file. If not sentence case, fix it.
 
 Rules for sentence case: capitalize first word and proper nouns (Python, Django, FastAPI, GitHub, etc.) only. Everything else is lowercase.
 
-### Step 8 — Fix line count (dimension 6)
+### Step 8 - Fix line count (dimension 6)
 
 If SKILL.md exceeds 400 lines, identify sections that are:
-- Detailed reference material (not needed on every invocation) — move to `references/`
-- Long code example blocks — move to `references/patterns.md` (or similar)
-- Copy-paste starter files — move to `templates/` or `assets/templates/`
-- Extended checklists or tables — move to `references/`
+- Detailed reference material (not needed on every invocation) - move to `references/`
+- Long code example blocks - move to `references/patterns.md` (or similar)
+- Copy-paste starter files - move to `templates/` or `assets/templates/`
+- Extended checklists or tables - move to `references/`
 
 Add a row to the quick-reference table for each new file.
 
-### Step 9 — Check asset layout (dimension 7)
+### Step 9 - Check asset layout (dimension 7)
 
 If the skill has both `templates/` (top-level) and `assets/templates/`, consolidate into one. Prefer `assets/templates/` when the skill also ships other asset categories (icons, fonts, settings starters); prefer top-level `templates/` for simple skills that only ship a handful of Markdown starters.
 
-### Step 10 — Fix lazy reference loading (dimension 8)
+### Step 10 - Fix lazy reference loading (dimension 8)
 
 Audit every line in SKILL.md that says "load", "read", or "consult" a reference file.
 Each must have a conditional trigger. Fix unconditional loads:
@@ -110,11 +110,11 @@ For skills with many references, create a **conditional loading table**:
 ```markdown
 ## When to load references
 
-| If the task involves…             | Load                            |
+| If the task involves...             | Load                            |
 |------------------------------------|---------------------------------|
 | <specific context A>               | `references/a.md`              |
 | <specific context B>               | `references/b.md`              |
-| Simple / default case              | No reference needed — use inline |
+| Simple / default case              | No reference needed - use inline |
 ```
 
 **Rules for the 80% case:** The most common use case must be covered by inline
@@ -125,7 +125,7 @@ For orchestrator skills (sdlc-workflow, tdd-workflow): ensure each stage loads i
 dependencies at the start of that stage, not all upfront. Each stage's load
 instruction must include "if entering this stage" as the condition.
 
-### Step 11 — Fix batch tool call guidance (dimension 9)
+### Step 11 - Fix batch tool call guidance (dimension 9)
 
 If the skill instructs the model to edit files or run commands, add a batch guidance
 section. Use the standard block or adapt it to the skill's domain:
@@ -145,13 +145,13 @@ section. Use the standard block or adapt it to the skill's domain:
 Place this section after the main workflow but before the "Quick reference" table.
 
 For skills that are read-only or purely informational (no file edits, no command
-runs), this dimension does not apply — skip it.
+runs), this dimension does not apply - skip it.
 
 For orchestrator skills: add batch guidance for within-agent edits. The Agent-level
-parallelism is already handled by multiple Agent calls — the batch guidance targets
+parallelism is already handled by multiple Agent calls - the batch guidance targets
 edits within each agent's scope.
 
-### Step 12 — Run verification
+### Step 12 - Run verification
 
 Run the full verification script from the main skill. ALL nine dimensions must pass.
 
@@ -211,9 +211,9 @@ When restructuring a SKILL.md, use this standard order:
 
 Apply these when editing any skill content:
 
-- **Sentence case headings** — capitalize first word and proper nouns only
-- **Imperative voice** — "Run this command" not "This command can be run"
-- **Short paragraphs** — 3-5 lines max; use tables for parallel items
-- **100-character line width** — wrap prose, not code blocks or tables
-- **No emoji in headings** — emoji are allowed in table cells for quick scanning
-- **Relative links** — use `[references/file.md](references/file.md)`, not absolute paths
+- **Sentence case headings** - capitalize first word and proper nouns only
+- **Imperative voice** - "Run this command" not "This command can be run"
+- **Short paragraphs** - 3-5 lines max; use tables for parallel items
+- **100-character line width** - wrap prose, not code blocks or tables
+- **No emoji in headings** - emoji are allowed in table cells for quick scanning
+- **Relative links** - use `[references/file.md](references/file.md)`, not absolute paths

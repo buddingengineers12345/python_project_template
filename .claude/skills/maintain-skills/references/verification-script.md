@@ -34,7 +34,7 @@ bad_folders=$(ls -d "$SKILLS_DIR"/*/ 2>/dev/null | grep -E '[_A-Z]' || true)
 bad_files=$(find "$SKILLS_DIR"/*/references "$SKILLS_DIR"/*/templates \
   "$SKILLS_DIR"/*/assets -type f \
   \( -name '[0-9]*' -o -name '*_*' -o -name '[A-Z]*' \) 2>/dev/null || true)
-[ -z "$bad_folders$bad_files" ] && echo "  None found ✓" \
+[ -z "$bad_folders$bad_files" ] && echo "  None found " \
   || { echo "  folders: $bad_folders"; echo "  files:   $bad_files"; }
 
 echo ""
@@ -94,7 +94,7 @@ ALL of these must be true:
 - Dimension 5: every H1 heading is sentence case
 - Dimension 6: every SKILL.md is under 400 lines
 - Dimension 7: no skill mixes top-level `templates/` with `assets/templates/`
-- Dimension 8: no unconditional reference loads — every "load/read reference"
+- Dimension 8: no unconditional reference loads - every "load/read reference"
   instruction has a conditional trigger
 - Dimension 9: every skill that edits files or runs commands has batch edit
   and/or parallel call guidance

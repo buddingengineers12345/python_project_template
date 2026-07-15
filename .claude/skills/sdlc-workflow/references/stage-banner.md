@@ -14,24 +14,24 @@ SDLC  ○DESIGN  ○RED  ○GREEN  ○REFACTOR  ○QUALITY  ○SECURE  ○DOCS  
 
 | Symbol | Meaning |
 |---|---|
-| `✓` | Stage completed successfully |
-| `●` | Stage currently active |
+| `` | Stage completed successfully |
+| `` | Stage currently active |
 | `○` | Stage not yet started |
-| `✗` | Stage failed |
+| `` | Stage failed |
 
 ## Examples
 
 Mid-cycle (GREEN active):
 ```
-SDLC  ✓DESIGN  ✓RED  ●GREEN  ○REFACTOR  ○QUALITY  ○SECURE  ○DOCS  ○COMMIT  ○PR
+SDLC  DESIGN  RED  GREEN  ○REFACTOR  ○QUALITY  ○SECURE  ○DOCS  ○COMMIT  ○PR
 ```
 
 Parallel stages active:
 ```
-SDLC  ✓DESIGN  ✓RED  ✓GREEN  ✓REFACTOR  ●QUALITY  ●SECURE  ●DOCS  ○COMMIT  ○PR
+SDLC  DESIGN  RED  GREEN  REFACTOR  QUALITY  SECURE  DOCS  ○COMMIT  ○PR
 ```
 
 Pipeline complete:
 ```
-SDLC  ✓DESIGN  ✓RED  ✓GREEN  ✓REFACTOR  ✓QUALITY  ✓SECURE  ✓DOCS  ✓COMMIT  ✓PR
+SDLC  DESIGN  RED  GREEN  REFACTOR  QUALITY  SECURE  DOCS  COMMIT  PR
 ```

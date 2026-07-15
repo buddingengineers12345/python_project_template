@@ -15,7 +15,7 @@ This skill orchestrates the full software development lifecycle from a task desc
 in `TASK.md` through to a pull request. It delegates to sub-skills and uses Agent tool
 calls with model overrides for mechanical stages.
 
-**Hard rules — never break these:**
+**Hard rules - never break these:**
 - No implementation code before a failing test exists.
 - No refactoring before GREEN is confirmed.
 - No commit before `just ci` exits 0.
@@ -26,7 +26,7 @@ calls with model overrides for mechanical stages.
 
 ## Stage banner
 
-Display this banner at the top of every response. Use `✓` for completed, `●` for
+Display this banner at the top of every response. Use `` for completed, `` for
 current, `○` for upcoming.
 
 ```
@@ -61,7 +61,7 @@ Conditional stages (2.5, 3.5) only activate when flagged in task YAML.
 
 ---
 
-## Stage 0 — DISCOVER: Read task YAML
+## Stage 0 - DISCOVER: Read task YAML
 
 1. Read `tasks/TASK_ID.yaml`. Parse: task_id, type, status, requirement,
    acceptance_criteria, constraints, files_affected, testing_strategy, and changelog entry.
@@ -76,7 +76,7 @@ Proceed automatically to Stage 0.5.
 
 ---
 
-## Stage 0.5 — PRE-FLIGHT: Automated checks
+## Stage 0.5 - PRE-FLIGHT: Automated checks
 
 1. Run `just preflight TASK_ID`.
 2. If any check fails, stop the pipeline and report the failure.
@@ -86,7 +86,7 @@ Gate: all pre-flight checks pass. No user approval needed.
 
 ---
 
-## Stage 1 — RED: Write failing tests
+## Stage 1 - RED: Write failing tests
 
 **Model:** Full (main model, interactive)
 
@@ -111,13 +111,13 @@ Gate: all pre-flight checks pass. No user approval needed.
    | `TypeError` (wrong signature) | Signature mismatch | Fix test first |
    | Unrelated exception | Regression | Investigate first |
 
-7. Confirm RED: *"RED confirmed — failing for the right reason."*
+7. Confirm RED: *"RED confirmed - failing for the right reason."*
 
 Do not proceed until RED is confirmed for all acceptance criteria.
 
 ---
 
-## Stage 2 — GREEN: Write minimal implementation
+## Stage 2 - GREEN: Write minimal implementation
 
 **Model:** Full (main model, interactive)
 
@@ -130,13 +130,13 @@ Do not proceed until RED is confirmed for all acceptance criteria.
 5. Check coverage: `just coverage`. New code should be fully covered.
    - If coverage below 85%, write targeted tests for the uncovered lines
      visible in the `just coverage` output.
-6. Confirm GREEN: *"GREEN confirmed — all tests pass."*
+6. Confirm GREEN: *"GREEN confirmed - all tests pass."*
 
 Do not proceed until GREEN is confirmed.
 
 ---
 
-## Stage 3 — REFACTOR: Improve code quality
+## Stage 3 - REFACTOR: Improve code quality
 
 **Model:** Sonnet (Agent call)
 
@@ -161,11 +161,11 @@ Gate: all tests must stay green. No behaviour change.
 
 ---
 
-## Stages 4, 5, 6 — Parallel quality checks
+## Stages 4, 5, 6 - Parallel quality checks
 
 Launch 3 Agent calls simultaneously with `model: "haiku"`:
 
-### Stage 4 — Code Quality Agent
+### Stage 4 - Code Quality Agent
 
 ```
 Load the linting skill (.claude/skills/linting/SKILL.md) and type-checking skill
@@ -178,7 +178,7 @@ Fix any remaining violations. Gate: both exit 0.
 Report: list of fixes applied.
 ```
 
-### Stage 5 — Security Agent
+### Stage 5 - Security Agent
 
 ```
 Load the security skill (.claude/skills/security/SKILL.md).
@@ -193,7 +193,7 @@ Fix findings or add justified suppressions with specific codes.
 Report: findings and fixes.
 ```
 
-### Stage 6 — Documentation Agent
+### Stage 6 - Documentation Agent
 
 ```
 Load the python-docstrings skill (.claude/skills/python-docstrings/SKILL.md)
@@ -213,7 +213,7 @@ Wait for all 3 agents to complete before proceeding.
 
 ---
 
-## Stage 7 — Git Commit
+## Stage 7 - Git Commit
 
 **Model:** Haiku (Agent call, sequential after stages 4-6)
 
@@ -241,7 +241,7 @@ Report: commit hash and message.
 
 ---
 
-## Stage 8 — Pull Request
+## Stage 8 - Pull Request
 
 **Model:** Haiku (Agent call, sequential after stage 7)
 
@@ -259,7 +259,7 @@ Report: PR URL and title.
 
 ---
 
-## Stage 9 — SUMMARY: Write task summary
+## Stage 9 - SUMMARY: Write task summary
 
 **Model:** Haiku (Agent call, sequential after stage 8)
 
@@ -313,7 +313,7 @@ Gate: file exists at `tasks_summary/TASK_ID_summary.md`.
 | 4-6 (parallel) | Each retries up to 3 times independently. Others continue. |
 | 7 (COMMIT) | CI fix loop, max 3 iterations. Then stop + report. |
 | 8 (PR) | Report error. Provide PR body for manual creation. |
-| 9 (SUMMARY) | Log warning. Do not fail the pipeline — PR is already merged. |
+| 9 (SUMMARY) | Log warning. Do not fail the pipeline - PR is already merged. |
 
 ---
 
@@ -351,9 +351,9 @@ When TASK.md has several acceptance criteria:
 
 These scripts live in `scripts/` within this skill and are invoked via `just`:
 
-- **`scripts/preflight.sh`** — run by `just preflight TASK_ID`. Checks that the task file
+- **`scripts/preflight.sh`** - run by `just preflight TASK_ID`. Checks that the task file
   exists, DoR is met, the working tree is clean, the base branch is up to date, and baseline
   CI passes.
-- **`scripts/validate_dor.py`** — run by `just dor-check TASK_ID`. Validates a task YAML
+- **`scripts/validate_dor.py`** - run by `just dor-check TASK_ID`. Validates a task YAML
   against the Definition of Ready schema (required fields, type/status enums, acceptance
   criteria, DoR flags).

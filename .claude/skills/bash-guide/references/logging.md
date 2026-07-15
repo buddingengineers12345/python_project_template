@@ -17,7 +17,7 @@ All scripts implement the **dual-context logging pattern**:
 
 ```bash
 #!/bin/bash
-# lib/logging.sh — portable structured logging for human and LLM contexts
+# lib/logging.sh - portable structured logging for human and LLM contexts
 # Source this file; do not execute directly.
 
 # ─── Config (read from environment, with defaults) ────────────────────────────
@@ -29,7 +29,7 @@ readonly _LOG_LLM_LEVEL="${LLM_LOG_LEVEL:-info}"
 [[ -n "${_LOGGING_LOADED:-}" ]] && return 0
 readonly _LOGGING_LOADED=1
 
-# ─── Level → numeric mapping ──────────────────────────────────────────────────
+# ─── Level - numeric mapping ──────────────────────────────────────────────────
 _log_level_value() {
   case "${1,,}" in   # lowercase comparison
     debug) printf '%d' 0 ;;

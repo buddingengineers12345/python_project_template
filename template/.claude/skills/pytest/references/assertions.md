@@ -1,7 +1,7 @@
 # Assertion patterns
 
 pytest rewrites `assert` statements to produce detailed failure messages. Plain `assert`
-is all you need — no `assertEqual`, `assertIn`, or other helper methods.
+is all you need - no `assertEqual`, `assertIn`, or other helper methods.
 
 ## Table of contents
 
@@ -47,13 +47,13 @@ messages.
 pytest shows detailed diffs for lists, dicts, and sets on failure.
 
 ```python
-# Lists — order matters
+# Lists - order matters
 assert sorted(result) == ["alice", "bob", "carol"]
 
-# Sets — order does not matter
+# Sets - order does not matter
 assert set(result) == {"alice", "bob", "carol"}
 
-# Dicts — shows which keys differ
+# Dicts - shows which keys differ
 assert response.json() == {
     "status": "ok",
     "count": 3,
@@ -65,7 +65,7 @@ assert response.json().items() >= {"status": "ok", "count": 3}.items()
 ```
 
 For large collections, consider asserting on specific properties rather than the entire
-structure — it makes failures easier to diagnose and tests less brittle:
+structure - it makes failures easier to diagnose and tests less brittle:
 
 ```python
 # Instead of asserting the entire response dict
@@ -113,15 +113,15 @@ for more detailed assertions.
 ### Testing that no exception is raised
 
 Do not write `pytest.raises` to assert that something does *not* raise. Just call the
-function — if it raises, the test fails automatically.
+function - if it raises, the test fails automatically.
 
 ```python
-# Correct — no special handling needed
+# Correct - no special handling needed
 def test_handles_empty_input_gracefully():
     result = process(input_data=[])
     assert result == []
 
-# Wrong — this is pointless
+# Wrong - this is pointless
 def test_does_not_raise():
     try:
         process(input_data=[])
@@ -187,7 +187,7 @@ assert response.status_code == 200, (
 )
 ```
 
-Use this sparingly — pytest's introspection is usually sufficient. Custom messages are
+Use this sparingly - pytest's introspection is usually sufficient. Custom messages are
 most useful when the assertion value alone does not explain *why* it failed.
 
 ## What to assert and what not to
@@ -228,7 +228,7 @@ with pytest.raises(ValueError, match="Invalid email"):
 ### Multiple related assertions are fine
 
 It is fine to have multiple assertions in one test when they verify different aspects
-of the same action. The one-assert-per-test rule is too strict — what matters is that
+of the same action. The one-assert-per-test rule is too strict - what matters is that
 each test verifies one *behaviour*.
 
 ```python

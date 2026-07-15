@@ -85,7 +85,7 @@ def test_endpoint_auth(client, method, auth):
         assert response.status_code in (200, 201)
 ```
 
-This generates 3 x 3 = 9 test cases. Use this sparingly — the combinatorial explosion
+This generates 3 x 3 = 9 test cases. Use this sparingly - the combinatorial explosion
 can make test suites slow. Prefer it when the two dimensions are genuinely independent.
 
 ## Fixture parametrization
@@ -140,13 +140,13 @@ Mark a test as *expected to fail*. The test still runs, but a failure is not rep
 as an error.
 
 ```python
-@pytest.mark.xfail(reason="Bug #789 — parser chokes on nested brackets")
+@pytest.mark.xfail(reason="Bug #789 - parser chokes on nested brackets")
 def test_nested_brackets():
     assert parse("[[a]]") == [["a"]]
 ```
 
 When the bug is fixed and the test starts passing, pytest reports it as `XPASS`
-(unexpected pass). Use `strict=True` to make an unexpected pass a hard failure — this
+(unexpected pass). Use `strict=True` to make an unexpected pass a hard failure - this
 catches the moment when a bug fix lands and you should remove the `xfail`.
 
 ```python

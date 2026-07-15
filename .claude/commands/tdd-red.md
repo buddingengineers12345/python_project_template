@@ -1,5 +1,5 @@
 ---
-description: Validate the RED phase of a TDD cycle — confirm a specific test fails for the right reason before implementation. Use when the user asks to "check RED", "verify RED phase", or after writing a new failing test.
+description: Validate the RED phase of a TDD cycle - confirm a specific test fails for the right reason before implementation. Use when the user asks to "check RED", "verify RED phase", or after writing a new failing test.
 argument-hint: [test-file-or-name]
 allowed-tools: Read Bash(just test:*) Bash(uv run pytest:*)
 ---
@@ -10,19 +10,19 @@ Run the test suite with `just test` (or the specific test file if the user provi
 
 Then analyse the output:
 
-1. **Identify the new/target test** — the user should tell you which test they expect to fail, or you should identify the most recently written test.
+1. **Identify the new/target test** - the user should tell you which test they expect to fail, or you should identify the most recently written test.
 
 2. **Classify the failure** using this table:
 
    | Failure type | Meaning | Verdict |
    |---|---|---|
-   | `AssertionError` | Function exists, wrong behaviour | ✅ Ideal RED — proceed to GREEN |
-   | `AttributeError` / `ImportError` | Module or function doesn't exist yet | ✅ Good RED — proceed to GREEN |
-   | `NameError` | Name not defined | ✅ Good RED — proceed to GREEN |
-   | `SyntaxError` / `IndentationError` | Test itself is broken | ❌ Fix the test first |
-   | `TypeError` (wrong signature) | Signature mismatch in test | ❌ Fix the test first |
-   | Test passes unexpectedly | Implementation already exists or test is wrong | ❌ Review the test |
-   | Unrelated test fails | Regression in existing code | ❌ Investigate before continuing |
+   | `AssertionError` | Function exists, wrong behaviour |  Ideal RED - proceed to GREEN |
+   | `AttributeError` / `ImportError` | Module or function doesn't exist yet |  Good RED - proceed to GREEN |
+   | `NameError` | Name not defined |  Good RED - proceed to GREEN |
+   | `SyntaxError` / `IndentationError` | Test itself is broken |  Fix the test first |
+   | `TypeError` (wrong signature) | Signature mismatch in test |  Fix the test first |
+   | Test passes unexpectedly | Implementation already exists or test is wrong |  Review the test |
+   | Unrelated test fails | Regression in existing code |  Investigate before continuing |
 
 3. **Report the result** in this format:
 
@@ -33,12 +33,12 @@ Then analyse the output:
 
    Test:     <test name>
    File:     <test file path>
-   Status:   FAIL ✅ (or PASS ❌ or ERROR ❌)
+   Status:   FAIL  (or PASS  or ERROR )
    Type:     <failure type from table>
    Message:  <first line of error message>
 
-   Verdict:  RED CONFIRMED — ready for GREEN
-             (or: FIX NEEDED — <what to fix>)
+   Verdict:  RED CONFIRMED - ready for GREEN
+             (or: FIX NEEDED - <what to fix>)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 

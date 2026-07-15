@@ -74,30 +74,30 @@ Lines 2-N   : File header comment block
 N+1         : set -euo pipefail
 N+2         : (blank line)
 
-SECTION 1 — Constants
+SECTION 1 - Constants
   All readonly globals
   EXECUTION_CONTEXT, HUMAN_LOG_LEVEL, LLM_LOG_LEVEL
   Exit code constants
 
-SECTION 2 — Sourced libraries
+SECTION 2 - Sourced libraries
   source "${SCRIPT_DIR}/lib/logging.sh"   (if external)
   source "${SCRIPT_DIR}/lib/utils.sh"
 
-SECTION 3 — Logging functions
+SECTION 3 - Logging functions
   _log_level_value()
   log()
   log_debug() log_info() log_warn() log_error()
 
-SECTION 4 — Utility / helper functions
+SECTION 4 - Utility / helper functions
   usage()
   die()
   cleanup_and_exit()
   check_dependencies()
 
-SECTION 5 — Core logic functions
+SECTION 5 - Core logic functions
   (named clearly, one responsibility each)
 
-SECTION 6 — main()
+SECTION 6 - main()
   Argument parsing (while/case)
   Dependency checks
   Core function calls
@@ -191,7 +191,7 @@ Library scripts (sourced, not executed):
 
 ```bash
 #!/bin/bash
-# lib/utils.sh — utility functions for <project>
+# lib/utils.sh - utility functions for <project>
 # Source this file; do not execute directly.
 
 # Guard against direct execution

@@ -31,7 +31,7 @@ readable, portable, accessible, and maintainable over time.
 
 ## When to load references
 
-| If the task involves…                     | Load                                       |
+| If the task involves...                     | Load                                       |
 |--------------------------------------------|--------------------------------------------|
 | Front matter, document skeleton, headings  | `references/document-structure.md`         |
 | Lists, emphasis, whitespace formatting     | `references/formatting-syntax.md`          |
@@ -40,7 +40,7 @@ readable, portable, accessible, and maintainable over time.
 | GFM features, callouts, task lists        | `references/extended-syntax.md`            |
 | Doc systems, multi-file docs, wikis       | `references/file-management.md`            |
 | Common mistakes quick reference           | `references/anti-patterns-cheatsheet.md`   |
-| Writing a basic README or doc (default)   | No reference needed — use inline guidance  |
+| Writing a basic README or doc (default)   | No reference needed - use inline guidance  |
 
 ---
 
@@ -55,11 +55,11 @@ practices from CommonMark, Markdown Guide, and the GitHub Flavored Markdown Spec
 
 Three goals govern every Markdown file:
 
-1. **Source text is readable and portable** — raw `.md` source should be legible as
+1. **Source text is readable and portable** - raw `.md` source should be legible as
    plain text without rendering.
-2. **The corpus is maintainable over time** — consistent conventions let any author
+2. **The corpus is maintainable over time** - consistent conventions let any author
    pick up where another left off.
-3. **Syntax is simple and memorable** — favour standard Markdown over HTML hacks or
+3. **Syntax is simple and memorable** - favour standard Markdown over HTML hacks or
    exotic extensions.
 
 ---
@@ -88,7 +88,7 @@ Content.
 - [Link to related resource](https://example.com)
 ```
 
-- Exactly one `# H1` per document — the page title.
+- Exactly one `# H1` per document - the page title.
 - 1-3 sentence introduction before any sections.
 - Start subsequent headings at `## H2`; never skip levels.
 - Sentence-case headings (capitalise first word and proper nouns only).
@@ -102,13 +102,13 @@ collisions.
 ### Line length
 
 80-character limit for body text. Exceptions: links, table cells, headings, and code
-blocks. Use a blank line to separate paragraphs — do not rely on trailing whitespace.
+blocks. Use a blank line to separate paragraphs - do not rely on trailing whitespace.
 
 ### Emphasis
 
 - `**bold**` for critical terms, UI labels, and warnings.
 - `*italic*` for introducing new terms and light emphasis.
-- Never bold or italicise entire paragraphs — overuse kills emphasis.
+- Never bold or italicise entire paragraphs - overuse kills emphasis.
 - Use `*asterisks*` not `_underscores_` for mid-word emphasis.
 
 ### Lists
@@ -154,7 +154,7 @@ directory. Prefer SVG for diagrams and PNG for screenshots.
 ### HTML
 
 Strongly prefer plain Markdown over HTML. Acceptable uses: `<br>`, `<details>`,
-`<sub>`/`<sup>` — only as a last resort.
+`<sub>`/`<sup>` - only as a last resort.
 
 ### Accessibility
 
@@ -169,7 +169,7 @@ Strongly prefer plain Markdown over HTML. Acceptable uses: `<br>`, `<details>`,
 
 | Anti-pattern                     | Fix                                    |
 |----------------------------------|----------------------------------------|
-| Multiple H1s                     | Keep exactly one — the page title       |
+| Multiple H1s                     | Keep exactly one - the page title       |
 | Skipping heading levels          | Follow strict hierarchy                 |
 | `[click here](url)`             | Write descriptive link text             |
 | 4-space indented code blocks     | Use fenced blocks with language tag     |

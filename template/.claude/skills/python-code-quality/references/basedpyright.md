@@ -7,7 +7,7 @@ It adds stricter defaults, clearer error messages, and additional rules over van
 
 ## What it does
 
-- Performs static type analysis — no code is executed
+- Performs static type analysis - no code is executed
 - Checks annotations, inferred types, call signatures, narrowing, exhaustiveness, and more
 - Reads `[tool.basedpyright]` from `pyproject.toml`
 
@@ -69,7 +69,7 @@ typeCheckingMode = "standard"
 |---|---|
 | `off` | Type checking disabled |
 | `basic` | Only obvious errors: undefined names, wrong argument counts |
-| `standard` | Full pyright checks — good default for most projects |
+| `standard` | Full pyright checks - good default for most projects |
 | `strict` | All checks; full annotation coverage required |
 | `all` | basedpyright-specific extras on top of `strict` (may have false positives) |
 
@@ -96,7 +96,7 @@ root = "scripts"
 typeCheckingMode = "standard"
 ```
 
-For a single line, use an inline ignore (last resort — prefer fixing the root cause):
+For a single line, use an inline ignore (last resort - prefer fixing the root cause):
 
 ```python
 result = some_untyped_library.call()  # type: ignore[no-untyped-call]
@@ -124,26 +124,26 @@ all errors on the line and makes the intent invisible to reviewers.
 
 ### Handling third-party libraries without type stubs
 
-**Option 1 — Install community stubs** (preferred when stubs exist):
+**Option 1 - Install community stubs** (preferred when stubs exist):
 
 ```bash
 pip install types-requests types-PyYAML types-python-dateutil
 ```
 
-**Option 2 — Suppress missing-stubs warnings project-wide** (when no stubs exist):
+**Option 2 - Suppress missing-stubs warnings project-wide** (when no stubs exist):
 
 ```toml
 [tool.basedpyright]
 reportMissingTypeStubs = "none"    # or "warning" to see it without failing CI
 ```
 
-**Option 3 — Suppress per import** (for one-off cases):
+**Option 3 - Suppress per import** (for one-off cases):
 
 ```python
 import untyped_lib  # type: ignore[import-untyped]
 ```
 
-**Option 4 — Generate a stub skeleton**:
+**Option 4 - Generate a stub skeleton**:
 
 ```bash
 basedpyright --createstub some_package   # writes a stub to typestubs/some_package/
@@ -163,10 +163,10 @@ basedpyright
 # Check a specific file:
 basedpyright src/mymodule.py
 
-# Verbose output — shows which config file was loaded, useful for debugging:
+# Verbose output - shows which config file was loaded, useful for debugging:
 basedpyright --verbose
 
-# JSON output — for tooling integration or counting errors:
+# JSON output - for tooling integration or counting errors:
 basedpyright --outputjson | python -c "import sys,json; d=json.load(sys.stdin); print(d['summary'])"
 
 # Count current errors (useful for tracking incremental adoption progress):
@@ -181,12 +181,12 @@ Exit codes: `0` = no errors, `1` = type errors found, `2` = fatal configuration 
 
 For an existing codebase with many type errors, adopt in stages:
 
-1. **`typeCheckingMode = "basic"`** — fix the small set of obvious errors first.
-2. **`typeCheckingMode = "standard"`** — fix errors, use `executionEnvironments` to
+1. **`typeCheckingMode = "basic"`** - fix the small set of obvious errors first.
+2. **`typeCheckingMode = "standard"`** - fix errors, use `executionEnvironments` to
    relax specific directories (tests, scripts, legacy modules) temporarily.
-3. **`typeCheckingMode = "strict"`** — requires full annotation coverage across `src/`.
+3. **`typeCheckingMode = "strict"`** - requires full annotation coverage across `src/`.
    Tackle module by module. Add `# type: ignore[<code>]` as a last resort.
-4. **`typeCheckingMode = "all"`** — evaluate locally; some rules may be too aggressive
+4. **`typeCheckingMode = "all"`** - evaluate locally; some rules may be too aggressive
    for production CI. Keep at `"strict"` in CI unless all `"all"` rules are clean.
 
 ---
@@ -204,7 +204,7 @@ For an existing codebase with many type errors, adopt in stages:
 
 basedpyright needs the project's dependencies installed so it can resolve third-party
 imports. If it reports `reportMissingImports` on every import, the venv is not being
-found — check that `venvPath` and `venv` in `pyproject.toml` match the actual venv path,
+found - check that `venvPath` and `venv` in `pyproject.toml` match the actual venv path,
 or that the CI runner has the packages on `PATH`.
 
 ---
@@ -231,7 +231,7 @@ In CI, install dependencies before running pre-commit (see `references/pre-commi
 
 ## Gotchas
 
-- **`venvPath` vs `venv` — a common confusion.** `venvPath` is the *directory that
+- **`venvPath` vs `venv` - a common confusion.** `venvPath` is the *directory that
   contains* the venv, and `venv` is the *name of the venv folder*. For a project at
   `/my/project` with a venv at `/my/project/.venv`, set `venvPath = "."` and
   `venv = ".venv"`. Setting `venvPath = ".venv"` is wrong.

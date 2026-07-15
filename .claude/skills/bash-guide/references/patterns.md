@@ -94,7 +94,7 @@ cp "${src_file}" "${dst_dir}/"
 [[ -r "${file}" ]]  || die 3 "Cannot read: ${file}"
 [[ -w "${dir}" ]]   || die 3 "Cannot write to: ${dir}"
 
-# Wildcard expansion — use explicit paths to avoid -flag filenames
+# Wildcard expansion - use explicit paths to avoid -flag filenames
 for f in ./*; do
   process_file "${f}"
 done
@@ -245,7 +245,7 @@ last_line="${lines[-1]}"
 ## Numeric Arithmetic
 
 ```bash
-# Use (( )) for integer math — never expr or $[ ]
+# Use (( )) for integer math - never expr or $[ ]
 (( total = count * price ))
 (( remainder = total % 7 ))
 (( i += 1 ))

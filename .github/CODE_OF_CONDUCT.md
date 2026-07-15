@@ -22,7 +22,7 @@ Examples of unacceptable behavior include:
 
 - Harassment, discrimination, or exclusionary behavior
 - Trolling, insulting or derogatory comments, and personal attacks
-- Publishing others’ private information without explicit permission
+- Publishing others' private information without explicit permission
 - Other conduct which could reasonably be considered inappropriate in a professional or community setting
 
 ---

@@ -6,7 +6,7 @@ Ready-to-use command examples organized by category. Copy, adapt, and drop into 
 
 ## Git Workflows
 
-### `/commit` — Smart commit message generator
+### `/commit` - Smart commit message generator
 
 ```markdown
 ---
@@ -35,7 +35,7 @@ Rules:
 Output only the commit message, nothing else.
 ```
 
-### `/pr` — PR description writer
+### `/pr` - PR description writer
 
 ```markdown
 ---
@@ -68,7 +68,7 @@ How was this tested? What should reviewers verify?
 Keep it factual and concise. No fluff.
 ```
 
-### `/changelog` — Changelog entry from commits
+### `/changelog` - Changelog entry from commits
 
 ```markdown
 ---
@@ -86,11 +86,11 @@ allowed-tools: Bash(git log:*) Bash(git tag:*)
 Generate a changelog entry in Keep a Changelog format (https://keepachangelog.com).
 
 Group commits under:
-- **Added** — new features
-- **Changed** — changes to existing functionality
-- **Fixed** — bug fixes
-- **Removed** — removed features
-- **Security** — security fixes
+- **Added** - new features
+- **Changed** - changes to existing functionality
+- **Fixed** - bug fixes
+- **Removed** - removed features
+- **Security** - security fixes
 
 Skip chore/ci/style commits. Use user-facing language, not technical jargon.
 ```
@@ -99,7 +99,7 @@ Skip chore/ci/style commits. Use user-facing language, not technical jargon.
 
 ## Code Quality
 
-### `/review` — In-depth code review
+### `/review` - In-depth code review
 
 ```markdown
 ---
@@ -113,21 +113,21 @@ model: claude-opus-4-6
 Review the code at @$ARGUMENTS
 
 Focus areas (in priority order):
-1. **Correctness** — Does the logic match the intent? Any edge cases missed?
-2. **Security** — Input validation, auth checks, injection risks, exposed data
-3. **Error handling** — Unhandled exceptions, missing null checks, silent failures
-4. **Performance** — Unnecessary work, blocking calls, memory leaks
-5. **Readability** — Is the intent clear without over-commenting?
+1. **Correctness** - Does the logic match the intent? Any edge cases missed?
+2. **Security** - Input validation, auth checks, injection risks, exposed data
+3. **Error handling** - Unhandled exceptions, missing null checks, silent failures
+4. **Performance** - Unnecessary work, blocking calls, memory leaks
+5. **Readability** - Is the intent clear without over-commenting?
 
 For each issue found:
 - Cite the exact line(s)
 - Explain the problem
 - Suggest the fix
 
-Skip pure style issues (naming conventions, formatting) — those belong in linting config.
+Skip pure style issues (naming conventions, formatting) - those belong in linting config.
 ```
 
-### `/refactor` — Targeted refactor
+### `/refactor` - Targeted refactor
 
 ```markdown
 ---
@@ -151,7 +151,7 @@ Do NOT: change algorithms, rename public exports, or add new features.
 Show a summary of what you changed and why.
 ```
 
-### `/test-gen` — Generate missing tests
+### `/test-gen` - Generate missing tests
 
 ```markdown
 ---
@@ -180,7 +180,7 @@ Place tests in the appropriate file/directory for this project.
 
 ## Debugging
 
-### `/trace` — Trace an error to its root
+### `/trace` - Trace an error to its root
 
 ```markdown
 ---
@@ -201,7 +201,7 @@ Investigation steps:
 Be systematic. Show your reasoning. If multiple causes are possible, rank them.
 ```
 
-### `/explain-error` — Plain-language error explanation
+### `/explain-error` - Plain-language error explanation
 
 ```markdown
 ---
@@ -228,7 +228,7 @@ Assume I understand the language but may not know this specific error.
 
 ## Project Management
 
-### `/standup` — Generate standup notes
+### `/standup` - Generate standup notes
 
 ```markdown
 ---
@@ -250,11 +250,11 @@ Format:
 **Today**: What I plan to work on
 **Blockers**: Anything blocking me (say "None" if nothing)
 
-Keep it brief — 2-3 bullet points per section max.
+Keep it brief - 2-3 bullet points per section max.
 Use natural language, not commit message syntax.
 ```
 
-### `/estimate` — Task size estimation
+### `/estimate` - Task size estimation
 
 ```markdown
 ---
@@ -277,7 +277,7 @@ Be honest about uncertainty. If you need to see specific files to estimate, ask.
 
 ## Documentation
 
-### `/doc-gen` — Generate JSDoc / docstrings
+### `/doc-gen` - Generate JSDoc / docstrings
 
 ```markdown
 ---
@@ -293,11 +293,11 @@ Rules:
 - Document every exported function, class, and type
 - Each doc must include: description, @param (with types), @returns, @throws (if applicable)
 - For complex functions, add a one-line @example
-- Do NOT document obvious internal helpers — only public API surfaces
+- Do NOT document obvious internal helpers - only public API surfaces
 - Preserve all existing code exactly; only add/modify comments
 ```
 
-### `/readme-update` — Sync README with codebase
+### `/readme-update` - Sync README with codebase
 
 ```markdown
 ---
@@ -325,7 +325,7 @@ Flag any sections you're unsure about rather than guessing.
 
 ## Onboarding & Navigation
 
-### `/architecture` — Explain project structure
+### `/architecture` - Explain project structure
 
 ```markdown
 ---
@@ -339,15 +339,15 @@ Cover:
 1. **Purpose**: What does this project do?
 2. **Structure**: Major directories and what lives in each
 3. **Entry points**: Where does execution begin? (main file, API routes, etc.)
-4. **Key layers**: How is the code layered? (e.g., API → service → repository)
+4. **Key layers**: How is the code layered? (e.g., API - service - repository)
 5. **Data flow**: How does a typical request/operation flow through the system?
 6. **External dependencies**: Key libraries, databases, services
 
 Draw an ASCII diagram showing how components relate.
-Flag anything unusual or that took you a moment to understand — that's what new devs will also find confusing.
+Flag anything unusual or that took you a moment to understand - that's what new devs will also find confusing.
 ```
 
-### `/find` — Find where something is implemented
+### `/find` - Find where something is implemented
 
 ```markdown
 ---
@@ -374,7 +374,7 @@ Report:
 
 ## Security
 
-### `/security-scan` — Vulnerability audit
+### `/security-scan` - Vulnerability audit
 
 ```markdown
 ---
@@ -388,13 +388,13 @@ context: fork
 Perform a security audit of this codebase.
 
 Check for:
-1. **Secrets/credentials** — hardcoded API keys, passwords, tokens
-2. **Injection risks** — SQL, command, template injection
-3. **Auth gaps** — unprotected endpoints, missing authorization checks
-4. **Input validation** — untrusted data used without sanitization
-5. **Dependency risks** — check package.json for known vulnerable patterns
-6. **XSS** (if web app) — unescaped user content rendered as HTML
-7. **CORS/CSP misconfiguration** — overly permissive origins
+1. **Secrets/credentials** - hardcoded API keys, passwords, tokens
+2. **Injection risks** - SQL, command, template injection
+3. **Auth gaps** - unprotected endpoints, missing authorization checks
+4. **Input validation** - untrusted data used without sanitization
+5. **Dependency risks** - check package.json for known vulnerable patterns
+6. **XSS** (if web app) - unescaped user content rendered as HTML
+7. **CORS/CSP misconfiguration** - overly permissive origins
 
 For each finding:
 - Severity: Critical / High / Medium / Low
@@ -421,9 +421,9 @@ disable-model-invocation: true
 
 Run the complete ship workflow:
 
-1. **Lint**: `npm run lint` — fix any errors, warn about warnings
-2. **Test**: `npm test` — do not proceed if tests fail
-3. **Build**: `npm run build` — confirm it compiles cleanly
+1. **Lint**: `npm run lint` - fix any errors, warn about warnings
+2. **Test**: `npm test` - do not proceed if tests fail
+3. **Build**: `npm run build` - confirm it compiles cleanly
 4. **Commit**: Generate and apply a conventional commit for staged changes
 5. **Push**: `git push origin HEAD`
 6. **PR**: Summarize what's in this branch for a PR description

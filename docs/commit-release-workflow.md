@@ -30,7 +30,7 @@ User commits code
        ↓
 .gitmessage (template reminder)
        ↓
-git commit → commitizen pre-commit hook (validates format)
+git commit - commitizen pre-commit hook (validates format)
        ↓
 Commit stored with conventional format (feat:, fix:, etc.)
        ↓
@@ -77,7 +77,7 @@ https://github.com/orhun/git-cliff
 
 ## Three Tools & Their Roles
 
-### 1. `.gitmessage` — Commit Template (Developer Convenience)
+### 1. `.gitmessage` - Commit Template (Developer Convenience)
 
 **File:** `.gitmessage`
 
@@ -113,9 +113,9 @@ Closes #42
 
 ---
 
-### 2. Commitizen — Validation & Interactive Commits
+### 2. Commitizen - Validation & Interactive Commits
 
-**Config:** `pyproject.toml` → `[tool.commitizen]`
+**Config:** `pyproject.toml` - `[tool.commitizen]`
 
 ```toml
 [tool.commitizen]
@@ -134,17 +134,17 @@ tag_format = "v$version"                # Create tags like v0.0.8
 **Option A: Guided (Recommended for beginners)**
 ```bash
 just cz-commit
-# → Interactive prompts for type, scope, description, body
-# → Automatically formats message
-# → Enforces conventional commit syntax
+# - Interactive prompts for type, scope, description, body
+# - Automatically formats message
+# - Enforces conventional commit syntax
 ```
 
 **Option B: Manual (For experienced users)**
 ```bash
 git commit
-# → Editor opens with .gitmessage template
-# → Commitizen pre-commit hook validates format
-# → Accepts or rejects based on conventional commit rules
+# - Editor opens with .gitmessage template
+# - Commitizen pre-commit hook validates format
+# - Accepts or rejects based on conventional commit rules
 ```
 
 **Validation Hook (automatic):**
@@ -160,13 +160,13 @@ This hook runs **after** you write your commit message but **before** it's store
 
 ---
 
-### 3. `cliff.toml` — Changelog Generation (Release Time)
+### 3. `cliff.toml` - Changelog Generation (Release Time)
 
 **File:** `cliff.toml`
 
 **What it does:**
 - Parses commits since the last version tag
-- Groups commits by type (feat → ✨ Features, fix → 🐛 Bug Fixes, etc.)
+- Groups commits by type (feat -  Features, fix -  Bug Fixes, etc.)
 - Generates a formatted `CHANGELOG.md`
 
 **Key config:**
@@ -178,25 +178,25 @@ tag_pattern = "v[0-9]*"          # Match tags like v0.0.8
 ```
 
 **Commit groups (examples):**
-- `feat` → ✨ Features
-- `fix` → 🐛 Bug Fixes
-- `perf` → ⚡ Performance
-- `refactor` → ♻️ Refactoring
-- `docs` → 📚 Documentation
+- `feat` -  Features
+- `fix` -  Bug Fixes
+- `perf` -  Performance
+- `refactor` - ️ Refactoring
+- `docs` -  Documentation
 
 **Output format (CHANGELOG.md):**
 ```markdown
 ## v0.1.0 - 2026-04-15
 
-### ✨ Features
+###  Features
 * Add OAuth login flow
 * Support custom themes
 
-### 🐛 Bug Fixes
+###  Bug Fixes
 * Fix null pointer in parser
 * Prevent race condition in cache
 
-### ⚡ Performance
+###  Performance
 * Optimize database queries
 ```
 
@@ -218,11 +218,11 @@ git pull origin main
 git status                          # Should be "nothing to commit"
 
 # 3. Run the release pipeline
-just release patch                  # Patch: v0.0.8 → v0.0.9
+just release patch                  # Patch: v0.0.8 - v0.0.9
 # OR
-just release minor                  # Minor: v0.0.8 → v0.1.0
+just release minor                  # Minor: v0.0.8 - v0.1.0
 # OR
-just release major                  # Major: v0.0.8 → v1.0.0
+just release major                  # Major: v0.0.8 - v1.0.0
 ```
 
 ### What `just release` Does
@@ -249,10 +249,10 @@ git add .
 
 # 3. Commit with Commitizen (guided)
 just cz-commit
-# → Prompts: Type? (select "feat")
-# → Prompts: Scope? ("user")
-# → Prompts: Description? ("Add user profile page")
-# → Prompts: Body? (describe WHY)
+# - Prompts: Type? (select "feat")
+# - Prompts: Scope? ("user")
+# - Prompts: Description? ("Add user profile page")
+# - Prompts: Body? (describe WHY)
 
 # 4. Commit message created:
 # feat(user): add user profile page
@@ -275,9 +275,9 @@ git add .
 
 # 3. Commit (using template)
 git commit
-# → .gitmessage template shown
-# → Manual typing (or use `just cz-commit` for guidance)
-# → Commitizen hook validates format
+# - .gitmessage template shown
+# - Manual typing (or use `just cz-commit` for guidance)
+# - Commitizen hook validates format
 
 # 4. Example commit:
 # fix: prevent null pointer in parser when input is empty
@@ -294,12 +294,12 @@ git push origin fix/null-pointer-error
 
 # 3. Start release
 just release minor
-# → Validates clean state
-# → Runs all CI tests
-# → Updates [project].version from 0.0.8 to 0.1.0
-# → Generates CHANGELOG.md (groups commits by type)
-# → Creates tag v0.1.0
-# → Pushes to main with --tags
+# - Validates clean state
+# - Runs all CI tests
+# - Updates [project].version from 0.0.8 to 0.1.0
+# - Generates CHANGELOG.md (groups commits by type)
+# - Creates tag v0.1.0
+# - Pushes to main with --tags
 
 # 4. Verify tag was created
 git describe --tags --abbrev=0    # Shows v0.1.0
@@ -308,7 +308,7 @@ git describe --tags --abbrev=0    # Shows v0.1.0
 cat CHANGELOG.md
 # ## v0.1.0 - 2026-04-15
 #
-# ### ✨ Features
+# ###  Features
 # * Add user profile page (user)
 # * Add OAuth login flow (auth)
 ```
@@ -367,7 +367,7 @@ just precommit-install   # Re-runs the config step
 - **Setup:** `just precommit-install` configures git to use it
 - **Edit:** Safe to customize with additional hints
 
-### `pyproject.toml` → `[tool.commitizen]`
+### `pyproject.toml` - `[tool.commitizen]`
 ```toml
 [tool.commitizen]
 name = "cz_conventional_commits"
@@ -386,11 +386,11 @@ tag_format = "v$version"        # ← tag format for git-cliff
 ### `cliff.toml`
 - **Purpose:** Changelog generation config
 - **Key settings:**
-  - `conventional_commits = true` — only parse compliant commits
-  - `tag_pattern = "v[0-9]*"` — match version tags
-  - Commit parsers define emoji groups (feat → ✨, fix → 🐛, etc.)
+  - `conventional_commits = true` - only parse compliant commits
+  - `tag_pattern = "v[0-9]*"` - match version tags
+  - Commit parsers define emoji groups (feat - , fix - , etc.)
 
-### `justfile` → `release` task
+### `justfile` - `release` task
 ```bash
 just release patch       # Calls all three tools in sequence
 just release minor
@@ -403,9 +403,9 @@ just release major
 
 Releases use **Semantic Versioning** (MAJOR.MINOR.PATCH):
 
-- **PATCH (0.0.x):** Bug fixes only — `just release patch`
-- **MINOR (0.x.0):** New features + bug fixes — `just release minor`
-- **MAJOR (x.0.0):** Breaking changes + everything — `just release major`
+- **PATCH (0.0.x):** Bug fixes only - `just release patch`
+- **MINOR (0.x.0):** New features + bug fixes - `just release minor`
+- **MAJOR (x.0.0):** Breaking changes + everything - `just release major`
 
 **Breaking change indicator:** Use `!` in commit message:
 ```
@@ -426,4 +426,4 @@ Use /api/v2/users instead.
 | `cliff.toml` | Changelog generation | `just release` | CHANGELOG.md grouped by type |
 | `justfile` release task | Orchestration | `just release patch/minor/major` | Full release workflow |
 
-**Result:** Clean, machine-readable commit history → automated, well-organized changelogs → semantic versions.
+**Result:** Clean, machine-readable commit history - automated, well-organized changelogs - semantic versions.

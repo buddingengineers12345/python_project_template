@@ -46,7 +46,7 @@ templates/
 
 **Key conventions:**
 - Prefix partial/include files with `_` to signal they are never rendered as standalone pages
-- Group macros into topical files inside `macros/` — never scatter macros across page templates
+- Group macros into topical files inside `macros/` - never scatter macros across page templates
 - Group page templates by feature/section, not by template level
 - Use `.j2` extension for non-HTML Jinja files (configs, SQL, YAML, etc.)
 
@@ -57,7 +57,7 @@ templates/
 ### 1. Keep Logic in Python, Not Templates
 Templates should **transform** data, not **compute** it.
 
-❌ **Wrong — complex computation in template:**
+ **Wrong - complex computation in template:**
 ```jinja
 {% set total = 0 %}
 {% for item in cart %}
@@ -66,14 +66,14 @@ Templates should **transform** data, not **compute** it.
 Total: {{ total }}
 ```
 
-✅ **Right — pass computed data from Python:**
+ **Right - pass computed data from Python:**
 ```python
 total = sum(item.price * item.quantity for item in cart)
 return render_template("cart.html", cart=cart, total=total)
 ```
 
-### 2. DRY — Extract Repetition
-If you copy-paste 3+ lines of Jinja into two or more templates → create a macro.
+### 2. DRY - Extract Repetition
+If you copy-paste 3+ lines of Jinja into two or more templates - create a macro.
 
 ### 3. Single Responsibility Blocks
 Each `{% block %}` should do one thing. Don't put entire pages in a single `content` block.
@@ -126,10 +126,10 @@ Jinja does not support multiple inheritance. If you need shared behavior across 
 Overusing whitespace stripping makes templates unreadable. Only strip when the rendered output has unwanted blank lines.
 
 ```jinja
-{# BAD — hard to read, strips everything #}
+{# BAD - hard to read, strips everything #}
 {%- if x -%}{%- for y in x -%}{{ y }}{%- endfor -%}{%- endif -%}
 
-{# GOOD — strip only the newline after block tags #}
+{# GOOD - strip only the newline after block tags #}
 {% if x %}
   {% for item in x %}
   {{ item }}
@@ -139,11 +139,11 @@ Overusing whitespace stripping makes templates unreadable. Only strip when the r
 
 ### Rule: Always Close Blocks Explicitly
 ```jinja
-{% endfor %}        ✓
-{% endblock %}      ✓
-{% endblock content %}  ✓ (preferred for long blocks)
-{% endif %}         ✓
-{% endmacro %}      ✓
+{% endfor %}        
+{% endblock %}      
+{% endblock content %}   (preferred for long blocks)
+{% endif %}         
+{% endmacro %}      
 ```
 
 ---
@@ -152,10 +152,10 @@ Overusing whitespace stripping makes templates unreadable. Only strip when the r
 
 ### Rule 1: Never Use `| safe` on User Data
 ```jinja
-{# DANGEROUS — XSS vulnerability #}
+{# DANGEROUS - XSS vulnerability #}
 {{ request.args.get('message') | safe }}
 
-{# SAFE — escape user input #}
+{# SAFE - escape user input #}
 {{ request.args.get('message') | e }}
 ```
 
@@ -166,10 +166,10 @@ env = Environment(autoescape=select_autoescape(['html', 'xml']))
 
 ### Rule 3: Use `| tojson` for Embedding Data in `<script>` Tags
 ```jinja
-{# SAFE — tojson escapes for JavaScript context #}
+{# SAFE - tojson escapes for JavaScript context #}
 <script>var config = {{ app_config | tojson }};</script>
 
-{# DANGEROUS — raw dict output is not JS-safe #}
+{# DANGEROUS - raw dict output is not JS-safe #}
 <script>var config = {{ app_config }};</script>
 ```
 
@@ -196,12 +196,12 @@ env = Environment(loader=..., bytecode_cache=bc)
 
 ### Avoid Expensive Operations Inside Loops
 ```jinja
-{# BAD — calling an expensive function N times #}
+{# BAD - calling an expensive function N times #}
 {% for item in items %}
   {{ item | expensive_custom_filter }}
 {% endfor %}
 
-{# GOOD — pre-process in Python, pass clean data #}
+{# GOOD - pre-process in Python, pass clean data #}
 {# In Python: items = [process(i) for i in raw_items] #}
 {% for item in items %}
   {{ item.processed_value }}
@@ -238,17 +238,17 @@ Create a layout layer (`_layout/two-column.html`) when:
 
 ### Updating a Template Without Breaking Children
 
-1. **Adding a new block to a base template:** Safe — children that don't override it inherit the default content
-2. **Renaming a block:** Breaking change — update all child templates before renaming
-3. **Removing a block:** Breaking change — check all child templates for overrides first
-4. **Changing a macro signature (adding required arg):** Breaking change — add a default value to avoid breaking callers
+1. **Adding a new block to a base template:** Safe - children that don't override it inherit the default content
+2. **Renaming a block:** Breaking change - update all child templates before renaming
+3. **Removing a block:** Breaking change - check all child templates for overrides first
+4. **Changing a macro signature (adding required arg):** Breaking change - add a default value to avoid breaking callers
 5. **Changing a macro signature (adding optional arg with default):** Safe
 
 ### Template Auditing Checklist (for existing templates)
 - [ ] Does every child template's `{% extends %}` still point to the correct base?
 - [ ] Are there blocks defined in children that no longer exist in the parent?
 - [ ] Are macros imported but unused (dead imports)?
-- [ ] Are there `| safe` usages? Audit each one — is it truly safe content?
+- [ ] Are there `| safe` usages? Audit each one - is it truly safe content?
 - [ ] Are there undefined-variable risks? Add `| default()` guards.
 - [ ] Is whitespace control consistent throughout the file?
 
@@ -280,8 +280,8 @@ Better: add this to any template during debugging:
 | `UndefinedError: 'X' is undefined` | Variable missing from context | Add `| default()` or pass variable from Python |
 | `TemplateSyntaxError: unexpected '}'` | Delimiter mismatch | Check for unclosed `{{` or `{%` |
 | Block content not appearing | Wrong block name in child | Verify name matches exactly (case-sensitive) |
-| `super()` renders nothing | `super()` called in a block that has no parent content | Expected behavior — parent block is empty |
-| Loop variable scope issue | `{% set %}` inside loop not visible outside | Use `namespace()` — see `references/syntax.md` |
+| `super()` renders nothing | `super()` called in a block that has no parent content | Expected behavior - parent block is empty |
+| Loop variable scope issue | `{% set %}` inside loop not visible outside | Use `namespace()` - see `references/syntax.md` |
 | Double-escaped output `&amp;lt;` | `| safe` + autoescape conflict | Remove redundant `| safe` or `| escape` |
 | Included template can't access variable | Variable set after `{% include %}` | Set variables before include, or use macros instead |
 
@@ -315,13 +315,13 @@ Better: add this to any template during debugging:
 Ansible uses Jinja2 for variable interpolation in playbooks and templates (`.j2` config files).
 
 ```jinja
-{# ansible.cfg.j2 — typical config template #}
+{# ansible.cfg.j2 - typical config template #}
 [defaults]
 inventory = {{ ansible_inventory_path }}
 remote_user = {{ ansible_user | default('ansible') }}
 private_key_file = {{ ssh_key_path }}
 
-{# Use 'is defined' guards — Ansible variables are often optional #}
+{# Use 'is defined' guards - Ansible variables are often optional #}
 {% if nginx_worker_processes is defined %}
 worker_processes {{ nginx_worker_processes }};
 {% else %}
@@ -336,9 +336,9 @@ worker_processes auto;
 ```
 
 **Ansible-specific rules:**
-- Always guard optional variables with `| default()` or `is defined` — Ansible contexts are variable by host
+- Always guard optional variables with `| default()` or `is defined` - Ansible contexts are variable by host
 - Use `| mandatory` on required variables to get clear errors instead of silent empty values
-- Never use `| safe` in Ansible templates — output goes to config files, not HTML
+- Never use `| safe` in Ansible templates - output goes to config files, not HTML
 - Prefer `{%- -%}` whitespace stripping for config file templates where blank lines matter
 
 ### dbt (SQL Macros)
@@ -377,7 +377,7 @@ join customers c on o.customer_id = c.id
 ```
 
 **dbt-specific rules:**
-- Always use `{%- -%}` (strip all whitespace) in SQL macros — extra whitespace can break SQL formatting
+- Always use `{%- -%}` (strip all whitespace) in SQL macros - extra whitespace can break SQL formatting
 - Use `ref()` for model references; never hard-code table names
 - Use `{{ this }}` only inside incremental models
 - Keep macro files in `macros/` directory at project root

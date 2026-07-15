@@ -6,9 +6,9 @@ description: >-
   "fix my docstrings", "are my docstrings correct", "write docs for this code", "missing
   docstrings", "docstring format", "Google style docs", "update docstrings", "check pydoc",
   or any task involving __doc__ or inline Python documentation. Always load this skill
-  before writing any Python docstring — it contains all rules, templates, and reference
+  before writing any Python docstring - it contains all rules, templates, and reference
   pointers needed to produce correct, complete, Google-style documentation.
-  Do NOT use for user-facing documentation or README writing — use markdown skill for those.
+  Do NOT use for user-facing documentation or README writing - use markdown skill for those.
 ---
 
 # Python Docstrings Skill
@@ -17,7 +17,7 @@ Based on [Google Python Style Guide §3.8](https://google.github.io/styleguide/p
 
 ---
 
-## Step 1 — Identify What Needs Documenting → Load the Right Reference
+## Step 1 - Identify What Needs Documenting - Load the Right Reference
 
 Read the task, identify the construct(s) involved, then **load only the relevant reference(s)** before writing anything.
 
@@ -36,12 +36,12 @@ Read the task, identify the construct(s) involved, then **load only the relevant
 
 ---
 
-## Step 2 — Universal Rules (apply to everything)
+## Step 2 - Universal Rules (apply to everything)
 
 These rules apply to every docstring regardless of construct. Internalize them before reading any reference file.
 
 ### Format
-- Always use **triple double-quotes** `"""` — never `'''`, never `"`.
+- Always use **triple double-quotes** `"""` - never `'''`, never `"`.
 - **Summary line**: one physical line, ≤ 80 characters, ends with `.`, `?`, or `!`.
 - **If body follows**: blank line after summary, then body at same indentation as the opening `"""`.
 - **No blank line** between a `def` / `class` line and its docstring.
@@ -55,28 +55,28 @@ Pick **one style** per file and use it everywhere:
 Do not mix styles within a file.
 
 ### Types in docstrings
-- **Type annotations present** → do NOT repeat types in `Args:` or `Returns:`. The signature carries them.
-- **No type annotations** → include types inline in the description: `param (list[str]): …`
+- **Type annotations present** - do NOT repeat types in `Args:` or `Returns:`. The signature carries them.
+- **No type annotations** - include types inline in the description: `param (list[str]): ...`
 
 ### Punctuation, spelling, grammar
-Docstrings are narrative text. Use proper capitalization, punctuation, and complete sentences. Reviewers will flag grammar issues — treat docstrings like prose, not code comments.
+Docstrings are narrative text. Use proper capitalization, punctuation, and complete sentences. Reviewers will flag grammar issues - treat docstrings like prose, not code comments.
 
 ---
 
-## Step 3 — Common Mistakes at a Glance
+## Step 3 - Common Mistakes at a Glance
 
-| ❌ Wrong | ✅ Fix |
+|  Wrong |  Fix |
 |---|---|
 | `'''` instead of `"""` | Always `"""` for docstrings |
 | Summary line > 80 chars | Move detail to body after blank line |
 | No period/punct at end of summary | Add `.`, `?`, or `!` |
 | `Returns:` in a generator | Change to `Yields:` |
-| `@property` says "Returns the …" | Attribute style: "The …" |
-| Class docstring says "Class that …" | Remove "Class that" — describe the concept |
-| Exception docstring says "Raised when …" | Describe what it *represents*, not the trigger |
+| `@property` says "Returns the ..." | Attribute style: "The ..." |
+| Class docstring says "Class that ..." | Remove "Class that" - describe the concept |
+| Exception docstring says "Raised when ..." | Describe what it *represents*, not the trigger |
 | Blank line between `def` and `"""` | Remove it |
-| Tuple return documented as multiple values | Document as "A tuple (a, b), where …" |
-| Documenting exceptions from API misuse | Remove — only document interface-level exceptions |
+| Tuple return documented as multiple values | Document as "A tuple (a, b), where ..." |
+| Documenting exceptions from API misuse | Remove - only document interface-level exceptions |
 | Types duplicated when annotations exist | Remove from docstring; annotation already has them |
 
 ---

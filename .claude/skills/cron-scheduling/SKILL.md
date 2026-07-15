@@ -30,31 +30,31 @@ description: >-
 
 ---
 
-## Quick-decision tree — what does the user need?
+## Quick-decision tree - what does the user need?
 
 ```
-User asks about cron…
+User asks about cron...
 │
-├── If asking "What does */5 * * * * mean?" / "How do I write a schedule for…"
-│   → When: for syntax help, load references/syntax-reference.md
+├── If asking "What does */5 * * * * mean?" / "How do I write a schedule for..."
+│   - When: for syntax help, load references/syntax-reference.md
 │
 ├── If asking about "Set up / create a cron job"
-│   → When: for non-Linux environments, load references/environments.md
+│   - When: for non-Linux environments, load references/environments.md
 │
 ├── If asking about "Update / change / edit a cron job"
-│   → When: for job updates, load references/managing-jobs.md §Updating
+│   - When: for job updates, load references/managing-jobs.md §Updating
 │
 ├── If asking about "Pause / disable / stop / delete a cron job"
-│   → When: for stopping jobs, load references/managing-jobs.md §Stopping & disabling
+│   - When: for stopping jobs, load references/managing-jobs.md §Stopping & disabling
 │
 ├── If asking "My cron job isn't running" / "How do I debug?"
-│   → When: for debugging, load references/monitoring.md §Debugging
+│   - When: for debugging, load references/monitoring.md §Debugging
 │
 ├── If asking to "Monitor / see logs / alert on failures"
-│   → When: for monitoring, load references/monitoring.md
+│   - When: for monitoring, load references/monitoring.md
 │
 └── For non-Linux environment questions
-    → When: for non-Linux, load references/environments.md
+    - When: for non-Linux, load references/environments.md
 ```
 
 ---
@@ -64,31 +64,31 @@ User asks about cron…
 ### Cron syntax at a glance
 
 ```
- ┌──────── minute        0–59
- │  ┌───── hour          0–23
- │  │  ┌── day-of-month  1–31
- │  │  │  ┌─ month       1–12
- │  │  │  │  ┌ day-of-week  0–7  (0 and 7 both = Sunday)
+ ┌──────── minute        0-59
+ │  ┌───── hour          0-23
+ │  │  ┌── day-of-month  1-31
+ │  │  │  ┌─ month       1-12
+ │  │  │  │  ┌ day-of-week  0-7  (0 and 7 both = Sunday)
  │  │  │  │  │
  *  *  *  *  *   command
 ```
 
 | Symbol | Meaning | Example |
 |--------|---------|---------|
-| `*` | Every value | `* * * * *` → every minute |
-| `,` | List | `0,30 * * * *` → :00 and :30 |
-| `-` | Range | `0 9-17 * * *` → every hour 9 AM–5 PM |
-| `/` | Step | `*/15 * * * *` → every 15 min |
+| `*` | Every value | `* * * * *` - every minute |
+| `,` | List | `0,30 * * * *` - :00 and :30 |
+| `-` | Range | `0 9-17 * * *` - every hour 9 AM-5 PM |
+| `/` | Step | `*/15 * * * *` - every 15 min |
 | `@daily` | Shorthand | = `0 0 * * *` |
 | `@reboot` | At boot | runs once on startup |
 
 ### The #1 rule: cron's environment is minimal
 
-Cron runs with a stripped-down `PATH=/usr/bin:/bin` — no `.bashrc`, no `.zshrc`, no exports.
+Cron runs with a stripped-down `PATH=/usr/bin:/bin` - no `.bashrc`, no `.zshrc`, no exports.
 **Always use absolute paths** for both the interpreter and the script.
 
 ```bash
-# Wrong — relies on your PATH
+# Wrong - relies on your PATH
 0 2 * * * python3 backup.py
 
 # Correct
@@ -99,7 +99,7 @@ Cron runs with a stripped-down `PATH=/usr/bin:/bin` — no `.bashrc`, no `.zshrc
 
 ## Setup workflow (Linux/macOS cron)
 
-### Step 1 — Write and test the script
+### Step 1 - Write and test the script
 
 ```bash
 #!/usr/bin/env bash
@@ -120,9 +120,9 @@ env -i HOME=/home/youruser SHELL=/bin/bash PATH=/usr/bin:/bin \
     bash /opt/scripts/myjob.sh
 ```
 
-If it fails here → fix it before adding to cron.
+If it fails here - fix it before adding to cron.
 
-### Step 2 — Open the crontab
+### Step 2 - Open the crontab
 
 ```bash
 crontab -e                        # Your own jobs
@@ -130,7 +130,7 @@ sudo crontab -u www-data -e       # Another user's jobs (as root)
 sudo nano /etc/cron.d/myapp       # System-wide jobs (needs username field)
 ```
 
-### Step 3 — Write a complete entry
+### Step 3 - Write a complete entry
 
 ```bash
 # ── Environment (set at top of crontab, once) ──────────────────
@@ -154,7 +154,7 @@ MAILTO=""          # "" = suppress email; or admin@example.com
 > `>> /var/log/file.log 2>&1` captures both stdout and stderr.
 > Omit it and output vanishes (or goes to root's mailbox).
 
-### Step 4 — Verify
+### Step 4 - Verify
 
 ```bash
 crontab -l                                          # List installed jobs
@@ -164,7 +164,7 @@ sudo tail -f /var/log/syslog | grep CRON            # Watch live execution
 sudo journalctl -u cron --since "1 hour ago"        # Recent activity
 ```
 
-### Step 5 — System-wide jobs (`/etc/cron.d/`)
+### Step 5 - System-wide jobs (`/etc/cron.d/`)
 
 Files in `/etc/cron.d/` need a username field and must be owned by root, mode 644:
 
@@ -222,7 +222,7 @@ log "INFO: Finished in $(( $(date +%s) - START ))s"
 
 ---
 
-## Quick reference — crontab commands
+## Quick reference - crontab commands
 
 ```bash
 crontab -e               # Edit your crontab

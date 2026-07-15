@@ -44,8 +44,8 @@
   added `T20` ruff rule, full hooks table, full slash-commands table, expanded directory structure
 - Fixed `template/CLAUDE.md.jinja`: corrected basedpyright mode from "strict" to "standard",
   added `/release` slash command entry
-- Added `CLAUDE.md` in `template/` — explains Jinja2 source layout, Copier variables, dual `.claude/` hierarchy
-- Added `CLAUDE.md` in `tests/` — explains test patterns, helpers, categories, and how to add new tests
-- Added `CLAUDE.md` in `scripts/` — documents each script, CLI flags, outputs, and CI integration
+- Added `CLAUDE.md` in `template/` - explains Jinja2 source layout, Copier variables, dual `.claude/` hierarchy
+- Added `CLAUDE.md` in `tests/` - explains test patterns, helpers, categories, and how to add new tests
+- Added `CLAUDE.md` in `scripts/` - documents each script, CLI flags, outputs, and CI integration
 - Documented hooks and rules in `.claude/hooks/README.md` and `.claude/rules/README.md` (dual hierarchy with `template/.claude/`)
-- Added `CLAUDE.md` in `.github/` — documents all meta-repo workflows and design principles
+- Added `CLAUDE.md` in `.github/` - documents all meta-repo workflows and design principles

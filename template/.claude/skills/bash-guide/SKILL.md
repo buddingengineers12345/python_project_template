@@ -67,15 +67,15 @@ For the rationale, header format, and function-comment convention, see
 
 ### 3. Pick the right logging mode
 
-**`EXECUTION_CONTEXT=human` (default)** — colorized, human-friendly messages to
+**`EXECUTION_CONTEXT=human` (default)** - colorized, human-friendly messages to
 STDERR with ISO-8601 timestamps:
 
 ```
 [2026-04-15T10:23:01Z] [INFO ] Starting deploy.sh v2.1.0
-[2026-04-15T10:23:02Z] [WARN ] Config file not found — using defaults
+[2026-04-15T10:23:02Z] [WARN ] Config file not found - using defaults
 ```
 
-**`EXECUTION_CONTEXT=llm`** — structured key=value lines to STDERR. No color
+**`EXECUTION_CONTEXT=llm`** - structured key=value lines to STDERR. No color
 codes (they corrupt LLM parsing). One event per line. Machine-parseable:
 
 ```
@@ -83,7 +83,7 @@ codes (they corrupt LLM parsing). One event per line. Machine-parseable:
 [2026-04-15T10:23:02Z] LEVEL=WARN SCRIPT=deploy.sh MSG="Config file not found"
 ```
 
-Rules for LLM mode (critical — violations break downstream agents):
+Rules for LLM mode (critical - violations break downstream agents):
 
 - No ANSI escape codes
 - All log output to STDERR; script data/payload output to STDOUT only
@@ -102,7 +102,7 @@ For the full logging library (rotation, JSON mode, structured fields), see
 | Local variables | `snake_case`            | `local file_path`              |
 | Constants / env | `UPPER_SNAKE_CASE`      | `readonly MAX_RETRIES=3`       |
 | Source files    | `lowercase_with_unders` | `deploy_helpers.sh`            |
-| Indentation     | 2 spaces, no tabs       | —                              |
+| Indentation     | 2 spaces, no tabs       | -                              |
 | Line length     | ≤ 80 chars              | (URLs/paths exempt)            |
 | Variable expand | `"${var}"` always       | `"${array[@]}"` for arrays     |
 | Numeric compare | `(( ))`                 | `(( count > threshold ))`      |
@@ -113,9 +113,9 @@ Control-flow layout: `; then` and `; do` on the same line as `if`/`for`/`while`.
 
 `set -euo pipefail` goes at the top of every script:
 
-- `-e` — exit on unhandled non-zero return
-- `-u` — error on unset variable references
-- `-o pipefail` — a pipeline fails if any segment fails
+- `-e` - exit on unhandled non-zero return
+- `-u` - error on unset variable references
+- `-o pipefail` - a pipeline fails if any segment fails
 
 Prefer inline checks for critical operations:
 
@@ -135,12 +135,12 @@ if (( pipe_status[0] != 0 || pipe_status[1] != 0 )); then
 fi
 ```
 
-Document exit codes as constants (`EXIT_OK`, `EXIT_USAGE`, `EXIT_IO`, …) so LLM
+Document exit codes as constants (`EXIT_OK`, `EXIT_USAGE`, `EXIT_IO`, ...) so LLM
 callers can branch on them. For LLM-executable scripts, emit a final structured
 line containing `EXIT_CODE=<n> REASON="..."` before `exit`.
 
 For arg-parsing patterns (`getopts` vs. manual), `trap` cleanup, array idioms,
-heredocs, and retry loops — for the full pattern library, refer to [references/patterns.md](references/patterns.md). Most scripts use inline patterns without loading extra files.
+heredocs, and retry loops - for the full pattern library, refer to [references/patterns.md](references/patterns.md). Most scripts use inline patterns without loading extra files.
 
 ### 6. LLM-agent readability checklist
 
@@ -159,11 +159,11 @@ When a script will be invoked or parsed by an LLM agent, verify:
 
 When asked to modify an existing script:
 
-1. **Read fully first** — understand existing style, logging approach, and
+1. **Read fully first** - understand existing style, logging approach, and
    variable names before editing.
-2. **Preserve style** — if the script uses 4-space indent, keep it. Don't
+2. **Preserve style** - if the script uses 4-space indent, keep it. Don't
    impose new style on partial edits.
-3. **Locate insertion points** — add functions near existing ones of the same
+3. **Locate insertion points** - add functions near existing ones of the same
    type; never insert executable code between function definitions.
 4. **Update the version string** if present in the header.
 5. **Mark incomplete work** with `# TODO(agent): <reason>`.
@@ -200,13 +200,13 @@ For the full pattern library and advanced patterns, if you need them, load [refe
 
 ## When to load references
 
-| If the task involves…                      | Load                            |
+| If the task involves...                      | Load                            |
 |---------------------------------------------|---------------------------------|
 | Script headers, `main()` layout, comments  | `references/structure.md`       |
 | Dual-mode logging, JSON log output         | `references/logging.md`         |
 | Arg parsing, traps, arrays, retries        | `references/patterns.md`        |
 | Starting a new script from scratch         | `templates/script-skeleton.sh`  |
-| Simple script edit or small function       | No reference needed — use inline |
+| Simple script edit or small function       | No reference needed - use inline |
 
 ## Efficiency: batch edits and parallel calls
 

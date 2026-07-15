@@ -14,7 +14,7 @@
 
 ---
 
-## ITCSS — Inverted Triangle CSS
+## ITCSS - Inverted Triangle CSS
 
 Organizes CSS from least to most specific. Rules lower in the triangle affect fewer elements but with more specificity.
 
@@ -32,12 +32,12 @@ Organizes CSS from least to most specific. Rules lower in the triangle affect fe
     ██████████████████████████████████
     Components
    ████████████████████████████████████
-   Utilities (narrowest — highest specificity)
+   Utilities (narrowest - highest specificity)
 ```
 
 ### Layer Descriptions
 
-**1. Settings** — Global variables, design tokens, configuration
+**1. Settings** - Global variables, design tokens, configuration
 ```css
 /* _settings.css */
 :root {
@@ -46,42 +46,42 @@ Organizes CSS from least to most specific. Rules lower in the triangle affect fe
 }
 ```
 
-**2. Tools** — Mixins, functions (Sass only; skip for plain CSS)
+**2. Tools** - Mixins, functions (Sass only; skip for plain CSS)
 ```scss
 // _tools.scss
 @mixin respond-to($breakpoint) { ... }
 @function rem($px) { ... }
 ```
 
-**3. Generic** — Resets, normalize. Affects broad HTML elements.
+**3. Generic** - Resets, normalize. Affects broad HTML elements.
 ```css
 /* _generic.css */
 *, *::before, *::after { box-sizing: border-box; }
 body { margin: 0; }
 ```
 
-**4. Elements** — Unclassed HTML element defaults
+**4. Elements** - Unclassed HTML element defaults
 ```css
 /* _elements.css */
 a { color: var(--color-primary); }
 img { max-width: 100%; display: block; }
 ```
 
-**5. Objects** — Class-based layout patterns. No cosmetics.
+**5. Objects** - Class-based layout patterns. No cosmetics.
 ```css
 /* _objects.css */
 .container { width: min(100%, 1200px); margin-inline: auto; }
 .grid { display: grid; }
 ```
 
-**6. Components** — Discrete UI components. The bulk of your CSS.
+**6. Components** - Discrete UI components. The bulk of your CSS.
 ```css
 /* _button.css */
 .btn { ... }
 .btn--primary { ... }
 ```
 
-**7. Utilities** — Single-purpose, often `!important`. Overrides.
+**7. Utilities** - Single-purpose, often `!important`. Overrides.
 ```css
 /* _utilities.css */
 .visually-hidden { position: absolute !important; ... }
@@ -90,7 +90,7 @@ img { max-width: 100%; display: block; }
 
 ---
 
-## BEM — Block Element Modifier
+## BEM - Block Element Modifier
 
 ### Full Rules
 
@@ -115,7 +115,7 @@ img { max-width: 100%; display: block; }
 **Modifiers** are variants or states of a block or element:
 - Named: `.block--modifier` or `.block__element--modifier`
 - Double hyphen separator
-- Never use alone — always combined with base class
+- Never use alone - always combined with base class
 
 ```html
 <!-- WRONG -->
@@ -152,15 +152,15 @@ Instead of super-long BEM chains, use a context modifier on the parent:
 
 ---
 
-## SMACSS — Scalable and Modular Architecture for CSS
+## SMACSS - Scalable and Modular Architecture for CSS
 
 Five categories:
 
-1. **Base** — Element defaults (like ITCSS Elements)
-2. **Layout** — Major page sections, prefixed `.l-`
-3. **Module** — Reusable UI components (no prefix or `.m-`)
-4. **State** — State rules, prefixed `.is-`
-5. **Theme** — Theme variations
+1. **Base** - Element defaults (like ITCSS Elements)
+2. **Layout** - Major page sections, prefixed `.l-`
+3. **Module** - Reusable UI components (no prefix or `.m-`)
+4. **State** - State rules, prefixed `.is-`
+5. **Theme** - Theme variations
 
 ```css
 /* Layout */
@@ -179,7 +179,7 @@ Five categories:
 
 ---
 
-## CSS Cascade Layers (Modern CSS — 2023+)
+## CSS Cascade Layers (Modern CSS - 2023+)
 
 Layers explicitly control the order of the cascade, eliminating specificity wars.
 
@@ -205,7 +205,7 @@ Layers explicitly control the order of the cascade, eliminating specificity wars
 }
 
 @layer utilities {
-  /* !important not needed — utilities layer wins via layer order */
+  /* !important not needed - utilities layer wins via layer order */
   .hidden { display: none; }
 }
 ```
@@ -240,7 +240,7 @@ When you need to override a style and can't change the source:
 /* Original */
 .btn { color: red; }
 
-/* Override — add another class for context */
+/* Override - add another class for context */
 .modal .btn { color: blue; }
 ```
 
@@ -256,6 +256,6 @@ When you need to override a style and can't change the source:
 /* Base component uses a variable */
 .btn { color: var(--btn-color, var(--color-primary)); }
 
-/* Override in specific context — no specificity issue */
+/* Override in specific context - no specificity issue */
 .modal { --btn-color: white; }
 ```

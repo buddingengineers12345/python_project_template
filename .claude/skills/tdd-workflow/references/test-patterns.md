@@ -83,7 +83,7 @@ def test_writes_output(tmp_path):
     assert out.read_text() == "expected"
 ```
 
-`tmp_path` is a built-in pytest fixture — prefer it over `tempfile`.
+`tmp_path` is a built-in pytest fixture - prefer it over `tempfile`.
 
 ---
 
@@ -134,4 +134,4 @@ The new code should appear with 100% (or close) coverage. If not, a test is miss
 - No test should depend on the execution order of other tests.
 - No shared mutable state at module level (use fixtures instead).
 - Each test sets up its own data and tears it down (or uses `tmp_path` / fixtures with appropriate scope).
-- Avoid `time.sleep` — use mocks or `freezegun` for time-dependent code.
+- Avoid `time.sleep` - use mocks or `freezegun` for time-dependent code.

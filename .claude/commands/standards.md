@@ -9,19 +9,19 @@ This is the "am I ready to merge?" command. It runs all checks and aggregates re
 
 ## Checks to run (execute concurrently where possible)
 
-1. **Static analysis** — `just lint` + `just type`
+1. **Static analysis** - `just lint` + `just type`
    - ruff: all configured rules (E, F, I, UP, B, SIM, C4, RUF, D, TCH, PGH, PT, ARG, C90, PERF)
    - basedpyright: `standard` mode type checking
 
-2. **Docstring coverage** — `just docs-check`
+2. **Docstring coverage** - `just docs-check`
    - All public symbols in `src/my_library/` have Google-style docstrings
    - All modules have module-level docstrings
 
-3. **Test coverage** — `just coverage`
+3. **Test coverage** - `just coverage`
    - Target: ≥ 85 % (enforced by `[tool.coverage.report] fail_under = 85`)
    - Report any module below threshold with its percentage
 
-4. **Definition-of-done checklist** — for every function or class added/modified:
+4. **Definition-of-done checklist** - for every function or class added/modified:
    - [ ] Code passes lint + type check
    - [ ] Google-style docstring present
    - [ ] All parameters and return type annotated
@@ -31,15 +31,15 @@ This is the "am I ready to merge?" command. It runs all checks and aggregates re
 ## Output format
 
 ```
-## Standards Report — My Library — <YYYY-MM-DD>
+## Standards Report - My Library - <YYYY-MM-DD>
 
-### ✓/✗ Static Analysis (ruff + basedpyright)
+### / Static Analysis (ruff + basedpyright)
 [errors or "All clean"]
 
-### ✓/✗ Docstring Coverage
+### / Docstring Coverage
 [violations or "All public symbols documented"]
 
-### ✓/✗ Test Coverage
+### / Test Coverage
 [modules below 85% or "All modules ≥ 85%"]
 Overall: X%
 
@@ -47,7 +47,7 @@ Overall: X%
 [any unchecked items or "All items complete"]
 
 ---
-[✓ All standards checks passed — ready to merge.]
+[ All standards checks passed - ready to merge.]
 [OR]
-[✗ N issue(s) must be resolved before merging. See action items above.]
+[ N issue(s) must be resolved before merging. See action items above.]
 ```

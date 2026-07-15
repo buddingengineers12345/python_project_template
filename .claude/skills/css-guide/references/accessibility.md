@@ -51,7 +51,7 @@ provide a static alternative.
   }
 }
 
-/* Global safety net — near-zero duration for anything animated */
+/* Global safety net - near-zero duration for anything animated */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -66,7 +66,7 @@ provide a static alternative.
 
 ## Dark mode
 
-Two patterns — pick one per project.
+Two patterns - pick one per project.
 
 ```css
 /* 1. System-driven */
@@ -79,7 +79,7 @@ Two patterns — pick one per project.
   }
 }
 
-/* 2. User-toggled — attribute on <html> or <body> */
+/* 2. User-toggled - attribute on <html> or <body> */
 [data-theme="dark"] {
   --color-text:       var(--color-neutral-50);
   --color-background: #0f172a;
@@ -156,5 +156,5 @@ Allows keyboard users to bypass repeated navigation.
 - UI components (borders, icons): **3:1** ratio
 - Verify with https://webaim.org/resources/contrastchecker/
 
-When a color token fails the check, adjust the token value — never patch a
+When a color token fails the check, adjust the token value - never patch a
 single rule. The whole token system flips with it.

@@ -1,7 +1,7 @@
 # Output format templates
 
 > Always load this file in Phase 3. Choose the template that matches the review scope.
-> Templates are shown as live Markdown — copy and fill in the placeholders.
+> Templates are shown as live Markdown - copy and fill in the placeholders.
 
 ---
 
@@ -10,7 +10,7 @@
 | Situation | Verdict |
 |-----------|---------|
 | No CRITICAL or HIGH issues | **APPROVE** |
-| 1–2 HIGH issues, no CRITICAL | **REQUEST CHANGES** |
+| 1-2 HIGH issues, no CRITICAL | **REQUEST CHANGES** |
 | Any CRITICAL issue | **BLOCK** |
 | New logic has no tests and project requires them | **REQUEST CHANGES** |
 | Only LOW / nit issues remain | **APPROVE** (list nits as optional) |
@@ -18,7 +18,7 @@
 
 ---
 
-## Template A — Snippet / Function / Module Review
+## Template A - Snippet / Function / Module Review
 
 Use for: a pasted function, a single file, or a module-level review.
 
@@ -28,7 +28,7 @@ Use for: a pasted function, a single file, or a module-level review.
 
 **Mode**: Quick / Standard / Deep
 **Python version**: 3.11
-**Tools run**: mypy, ruff, black, bandit, pytest — OR — Manual review only (tools not available)
+**Tools run**: mypy, ruff, black, bandit, pytest - OR - Manual review only (tools not available)
 
 > *Assumptions (fill in if context was absent):*
 > e.g. "Treating this as a utility module, not a web handler."
@@ -91,7 +91,7 @@ Use for: a pasted function, a single file, or a module-level review.
 #### [Nit] Title
 
 **Location**: `path/to/file.py:5`
-**Note**: Optional — not required to fix. e.g. "Could rename `d` to `user_data` for clarity."
+**Note**: Optional - not required to fix. e.g. "Could rename `d` to `user_data` for clarity."
 
 ---
 
@@ -114,19 +114,19 @@ Use for: a pasted function, a single file, or a module-level review.
 
 ---
 
-## Template B — PR / Diff Review
+## Template B - PR / Diff Review
 
 Use for: a GitHub/GitLab PR, a git diff, or a branch comparison.
 
 ---
 
-## PR Review: #NUMBER — TITLE
+## PR Review: #NUMBER - TITLE
 
 **Reviewed**: DATE
 **Author**: AUTHOR
-**Branch**: `head-branch` → `base-branch`
+**Branch**: `head-branch` - `base-branch`
 **Scope**: +N / -N lines across N files
-**Tools run**: mypy, ruff, black, bandit, pytest — OR — Manual only
+**Tools run**: mypy, ruff, black, bandit, pytest - OR - Manual only
 
 ---
 
@@ -150,7 +150,7 @@ e.g. "Two HIGH issues in error handling should be resolved before merge."
 
 ### Findings
 
-(Use the same finding format as Template A — Location / Issue / Before+After)
+(Use the same finding format as Template A - Location / Issue / Before+After)
 
 ---
 
@@ -190,7 +190,7 @@ Design observations that do not block merge but are worth discussing async:
 
 ---
 
-## Template C — Module / Codebase Audit
+## Template C - Module / Codebase Audit
 
 Use for: Deep mode reviews of an entire module or unfamiliar codebase.
 
@@ -207,7 +207,7 @@ Use for: Deep mode reviews of an entire module or unfamiliar codebase.
 
 ### Executive Summary
 
-2–3 sentences: overall health, most critical areas, and the top recommendation.
+2-3 sentences: overall health, most critical areas, and the top recommendation.
 
 ---
 
@@ -232,7 +232,7 @@ Use for: Deep mode reviews of an entire module or unfamiliar codebase.
 
 ...
 
-### Recommended Improvements (medium / low — prioritised)
+### Recommended Improvements (medium / low - prioritised)
 
 1. ...
 2. ...
@@ -255,8 +255,8 @@ Use for: Deep mode reviews of an entire module or unfamiliar codebase.
 
 **Use:**
 - "This could be simplified by..."
-- "Consider using X here — it makes the intent clearer."
-- "Nice use of dataclasses for the config object — exactly the right pattern."
+- "Consider using X here - it makes the intent clearer."
+- "Nice use of dataclasses for the config object - exactly the right pattern."
 - "[Nit] Could rename `d` to `user_data` for clarity."
 - "Would it make sense to extract this into a helper to separate concerns?"
 

@@ -8,7 +8,7 @@ description: >-
   triggers for phrases like "write HTML", "build a page", "update the markup",
   "fix the HTML", "make this accessible", or any request mentioning .html
   files. Apply this skill even for partial HTML snippets, email templates,
-  and component markup — not just full pages.
+  and component markup - not just full pages.
 ---
 
 # HTML Guide Skill
@@ -51,8 +51,8 @@ Minimal structure:
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Page description for SEO (150–160 chars)">
-    <title>Page Title – Site Name</title>
+    <meta name="description" content="Page description for SEO (150-160 chars)">
+    <title>Page Title - Site Name</title>
     <link rel="stylesheet" href="styles/main.css">
   </head>
   <body>
@@ -70,7 +70,7 @@ Minimal structure:
 ```
 
 Head rules: `charset` FIRST, always include `viewport`, use the pattern
-`Page Name – Site Name` for titles, load CSS in `<head>` and scripts at the end
+`Page Name - Site Name` for titles, load CSS in `<head>` and scripts at the end
 of `<body>` (or with `defer`), use HTTPS for externals, omit `type="text/css"`
 and `type="text/javascript"` (HTML5 defaults apply).
 
@@ -83,9 +83,9 @@ screen reader hints, and document structure for free.
 |-------------------------------|--------------------------------------------------|
 | `<header>` / `<footer>`       | Page or section header/footer                    |
 | `<nav>`                       | Navigation links (`aria-label` when multiple)    |
-| `<main>`                      | Primary content — only one per page              |
+| `<main>`                      | Primary content - only one per page              |
 | `<article>`                   | Self-contained: blog post, card, news story      |
-| `<section>`                   | Thematic grouping — should have a heading        |
+| `<section>`                   | Thematic grouping - should have a heading        |
 | `<aside>`                     | Complementary: sidebars, pull-quotes, ads        |
 | `<figure>` + `<figcaption>`   | Images/diagrams with captions                    |
 | `<address>`                   | Contact info for nearest `<article>` / `<body>`  |
@@ -101,7 +101,7 @@ screen reader hints, and document structure for free.
 <!-- WRONG: div as button -->
 <div class="btn" onclick="submitForm()">Submit</div>
 
-<!-- RIGHT: native button — keyboard accessible by default -->
+<!-- RIGHT: native button - keyboard accessible by default -->
 <button type="submit">Submit</button>
 ```
 
@@ -111,7 +111,7 @@ Full element cheat-sheet with use cases in
 ### 3. Respect heading hierarchy
 
 Only one `<h1>` per page (the page topic). Don't skip levels. Headings describe
-structure, not visual size — control appearance in CSS.
+structure, not visual size - control appearance in CSS.
 
 ```html
 <!-- WRONG: skipped heading -->
@@ -128,8 +128,8 @@ structure, not visual size — control appearance in CSS.
 ### 4. Use lists and tables correctly
 
 ```html
-<ul><li>Unordered — no sequence</li></ul>
-<ol><li>Ordered — sequence matters</li></ol>
+<ul><li>Unordered - no sequence</li></ul>
+<ol><li>Ordered - sequence matters</li></ol>
 <dl><dt>Term</dt><dd>Definition</dd></dl>
 
 <!-- Tables ONLY for tabular data -->
@@ -176,7 +176,7 @@ Key patterns every page needs:
 <p>The French say <span lang="fr">bonjour</span>.</p>
 ```
 
-ARIA is a last resort — native elements already carry role, state, and
+ARIA is a last resort - native elements already carry role, state, and
 keyboard behavior. Reach for ARIA only for custom widgets with no semantic
 equivalent (tabs, combobox, dialog, live regions).
 
@@ -209,12 +209,12 @@ Full WCAG 2.2 checklist, ARIA patterns, and screen-reader testing notes in
 
 ### 7. Attribute hygiene
 
-- **Boolean attributes**: no value needed — `<input required>`, `<button disabled>`
+- **Boolean attributes**: no value needed - `<input required>`, `<button disabled>`
 - **IDs**: hyphenated, unique per page, avoid when a class will do. Use
   `id="user-profile"` not `userProfile` (the camelCase form leaks as a global
   in JS)
 - **Data attributes**: `data-*` for scripting hooks, not styling
-- **Type attributes**: omit `type="text/javascript"` and `type="text/css"` —
+- **Type attributes**: omit `type="text/javascript"` and `type="text/css"` -
   HTML5 assumes them
 
 ## Maintaining existing HTML
@@ -224,16 +224,16 @@ Full WCAG 2.2 checklist, ARIA patterns, and screen-reader testing notes in
 1. Match existing indentation even if it's not 2-space (consistency beats
    preference for partial edits).
 2. Identify the doctype and HTML version.
-3. Note any templating syntax (`{{ }}`, `{% %}`, `<% %>`) — preserve it.
+3. Note any templating syntax (`{{ }}`, `{% %}`, `<% %>`) - preserve it.
 4. Scan for existing IDs/classes your new code must integrate with.
-5. Check the linked CSS — new class names must align.
+5. Check the linked CSS - new class names must align.
 
 ### While editing
 
-- Change only what is necessary — don't reformat unrelated code.
+- Change only what is necessary - don't reformat unrelated code.
 - Preserve existing comments and TODO markers.
 - If fixing a bug, add a comment explaining what was wrong and why.
-- Never silently remove markup you don't understand — ask first.
+- Never silently remove markup you don't understand - ask first.
 
 ### After editing
 
@@ -252,13 +252,13 @@ introduced, heading hierarchy still intact.
 <!-- BEFORE -->
 <div class="top-bar">
   <div class="logo-wrap"><img src="logo.png"></div>
-  <div class="menu">…</div>
+  <div class="menu">...</div>
 </div>
 
 <!-- AFTER -->
 <header>
-  <a href="/"><img src="logo.png" alt="Acme Co – Home"></a>
-  <nav aria-label="Primary">…</nav>
+  <a href="/"><img src="logo.png" alt="Acme Co - Home"></a>
+  <nav aria-label="Primary">...</nav>
 </header>
 ```
 
@@ -287,12 +287,12 @@ Recommended `.htmlhintrc`:
 
 ## When to load references
 
-| If the task involves…                      | Load                               |
+| If the task involves...                      | Load                               |
 |---------------------------------------------|------------------------------------|
 | Choosing semantic elements (article, nav)   | `references/semantic-elements.md`  |
 | WCAG compliance, ARIA, focus management    | `references/accessibility.md`      |
 | Starting a new HTML page                   | `templates/html-template.html`     |
-| Simple HTML edits (default)                | No reference needed — use inline   |
+| Simple HTML edits (default)                | No reference needed - use inline   |
 
 ## Efficiency: batch edits and parallel calls
 

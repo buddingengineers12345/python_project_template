@@ -33,7 +33,7 @@ def test_delete_user():
 ```
 
 **Why it breaks:** Tests may run in any order (especially under `pytest-xdist`). The
-dependency is invisible — nothing in `test_delete_user` says it needs `test_create_user`.
+dependency is invisible - nothing in `test_delete_user` says it needs `test_create_user`.
 
 **Fix:** Use fixtures for setup. Each test manages its own preconditions.
 
@@ -101,7 +101,7 @@ def test_process_order(mocker):
     mocker.patch("myapp.orders.send_confirmation")
 
     result = process_order(order_id=1)
-    assert result is True  # of course it is — everything is mocked!
+    assert result is True  # of course it is - everything is mocked!
 ```
 
 **Fix:** Only mock external boundaries. Let internal logic run for real.
@@ -129,7 +129,7 @@ def test_caching(mocker):
     spy = mocker.spy(myapp.cache, "_write_to_disk")
     get_data(key="x")
     get_data(key="x")  # should hit cache
-    assert spy.call_count == 1  # fragile — tied to caching mechanism
+    assert spy.call_count == 1  # fragile - tied to caching mechanism
 ```
 
 **Fix:** Assert on the observable effect of caching.
@@ -160,14 +160,14 @@ def test_caching_is_faster_on_second_call():
 | Time-dependent logic           | Use `freezegun` or mock `datetime.now()`           |
 | Random ordering                | Ensure tests are order-independent                 |
 | Network calls                  | Mock HTTP calls or use `responses`/`httpx_mock`    |
-| Race conditions                | Avoid `time.sleep()` — use events or polling       |
+| Race conditions                | Avoid `time.sleep()` - use events or polling       |
 | Floating-point comparisons     | Use `pytest.approx()`                              |
 | File system timing             | Use `tmp_path`, not shared directories             |
 
 **Temporary mitigation** while investigating:
 
 ```python
-@pytest.mark.xfail(strict=False, reason="Flaky — investigating #456")
+@pytest.mark.xfail(strict=False, reason="Flaky - investigating #456")
 def test_sometimes_fails():
     ...
 ```
@@ -180,7 +180,7 @@ Do not leave `xfail` markers indefinitely. Track them as issues and fix the root
 pytest --reruns 3 --reruns-delay 1
 ```
 
-This retries failed tests up to 3 times. It masks the problem — use it only in CI while
+This retries failed tests up to 3 times. It masks the problem - use it only in CI while
 the root cause is being investigated.
 
 ## Giant test functions
@@ -254,7 +254,7 @@ def test_processes_data():
         result = process(bad_input)
         assert False, "should have raised"
     except Exception:
-        pass  # "it raised, so it works" — but which exception?
+        pass  # "it raised, so it works" - but which exception?
 ```
 
 **Fix:** Use `pytest.raises` to assert on the specific exception.

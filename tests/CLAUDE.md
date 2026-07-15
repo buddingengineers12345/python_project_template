@@ -1,4 +1,4 @@
-# tests/ — Template Test Suite
+# tests/ - Template Test Suite
 
 This directory contains pytest tests for the **Copier template meta-repo**. Tests validate
 that the template renders correctly, that generated files have the right content, and that
@@ -54,14 +54,14 @@ optional features are gated properly.
   are not overwritten on `copier update` when they already exist with custom content.
 
 ### Optional features
-- `include_docs=true/false` — MkDocs files appear/absent; `docs-serve`/`docs-build` in justfile.
-- `include_cli=true/false` — `cli.py` appears; Typer dep in `pyproject.toml`.
-- `include_git_cliff=true/false` — `cliff.toml` appears; `just changelog` in justfile.
-- `include_pandas_support=true/false` — pandas in `pyproject.toml` dependencies.
-- `include_numpy=true/false` — NumPy in `pyproject.toml` dependencies.
-- `include_release_workflow=true/false` — `release.yml` workflow present/absent.
-- `include_pypi_publish=true/false` — PyPI OIDC publish step in `release.yml`.
-- `include_security_scanning=true/false` — `security.yml` + `dependency-review.yml` present/absent.
+- `include_docs=true/false` - MkDocs files appear/absent; `docs-serve`/`docs-build` in justfile.
+- `include_cli=true/false` - `cli.py` appears; Typer dep in `pyproject.toml`.
+- `include_git_cliff=true/false` - `cliff.toml` appears; `just changelog` in justfile.
+- `include_pandas_support=true/false` - pandas in `pyproject.toml` dependencies.
+- `include_numpy=true/false` - NumPy in `pyproject.toml` dependencies.
+- `include_release_workflow=true/false` - `release.yml` workflow present/absent.
+- `include_pypi_publish=true/false` - PyPI OIDC publish step in `release.yml`.
+- `include_security_scanning=true/false` - `security.yml` + `dependency-review.yml` present/absent.
 
 ### License
 - Parametrized over all five license options: MIT, Apache-2.0, BSD-3-Clause, GPL-3.0, Proprietary.
@@ -108,7 +108,7 @@ RUN_TEMPLATE_INTEGRATION=1 just test   # include slow integration tests
 - **Unit tests** that load `scripts/*.py` should import **`REPO_ROOT`** from **`tests.script_imports`**
   (see `tests/unit/test_*.py`).
 - **Integration tests** (for example `integration/test_template.py`) define **`REPO_ROOT`**,
-  **`TEMPLATE_ROOT`**, and **`COPIER_YAML`** at the top of the file — do not add a separate
+  **`TEMPLATE_ROOT`**, and **`COPIER_YAML`** at the top of the file - do not add a separate
   `constants.py` module for these; keep paths next to the tests that use them.
 
 ## Adding a new test

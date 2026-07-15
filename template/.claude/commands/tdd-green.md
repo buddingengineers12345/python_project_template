@@ -1,5 +1,5 @@
 ---
-description: Validate the GREEN phase of a TDD cycle — confirm the target test now passes and no regressions were introduced. Use when the user asks to "check GREEN", "verify GREEN phase", or after implementing code to make a failing test pass.
+description: Validate the GREEN phase of a TDD cycle - confirm the target test now passes and no regressions were introduced. Use when the user asks to "check GREEN", "verify GREEN phase", or after implementing code to make a failing test pass.
 allowed-tools: Read Bash(just test:*) Bash(uv run pytest:*) Bash(echo *)
 ---
 
@@ -9,7 +9,7 @@ Run the full test suite with `just test`.
 
 Then analyse the output:
 
-1. **Identify the target test** — the test that was RED in the previous phase.
+1. **Identify the target test** - the test that was RED in the previous phase.
 
 2. **Check three conditions:**
    - The target test now PASSES
@@ -24,13 +24,13 @@ Then analyse the output:
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
    Target test:  <test name>
-   Status:       PASS ✅ (or FAIL ❌)
+   Status:       PASS  (or FAIL )
 
    Full suite:   X passed, Y failed, Z skipped
    Regressions:  None (or: <list of newly failing tests>)
 
-   Verdict:      GREEN CONFIRMED — ready for REFACTOR
-                 (or: NOT GREEN — <what to fix>)
+   Verdict:      GREEN CONFIRMED - ready for REFACTOR
+                 (or: NOT GREEN - <what to fix>)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
 
@@ -45,7 +45,7 @@ Then analyse the output:
 6. If GREEN is not confirmed:
    - If the target test still fails: the implementation is incomplete. Show the error.
    - If other tests regressed: the implementation broke existing behaviour. List the regressions.
-   - Advise fixing without over-engineering — GREEN means minimal, not perfect.
+   - Advise fixing without over-engineering - GREEN means minimal, not perfect.
 
 7. Reset the refactor edit counter if it exists:
    ```bash

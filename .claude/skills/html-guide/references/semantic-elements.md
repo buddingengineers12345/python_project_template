@@ -18,7 +18,7 @@
 
 ```html
 <header>
-  <a href="/"><img src="logo.svg" alt="Brand – Home"></a>
+  <a href="/"><img src="logo.svg" alt="Brand - Home"></a>
   <nav aria-label="Primary">...</nav>
 </header>
 ```
@@ -45,14 +45,14 @@
 ```
 
 ### `<main>`
-- **One per page** — the dominant unique content
+- **One per page** - the dominant unique content
 - Skip links should point here
 - Do NOT nest inside `<article>`, `<aside>`, `<header>`, `<footer>`, or `<nav>`
 
 ### `<article>`
 - Self-contained, independently distributable content
 - Examples: blog post, news story, product card, comment, widget
-- Should have a heading (`h1`–`h6`)
+- Should have a heading (`h1`-`h6`)
 
 ```html
 <article>
@@ -69,7 +69,7 @@
 
 ### `<section>`
 - Thematic grouping of content within a document
-- Should have a heading — if it doesn't, use `<div>` instead
+- Should have a heading - if it doesn't, use `<div>` instead
 - Different from `<article>`: a section is part of something larger
 
 ```html
@@ -146,7 +146,7 @@
 ```html
 <figure>
   <img src="chart.png" alt="Chart showing 30% growth year over year">
-  <figcaption>Figure 1: Annual revenue growth 2020–2024. Source: Finance Report.</figcaption>
+  <figcaption>Figure 1: Annual revenue growth 2020-2024. Source: Finance Report.</figcaption>
 </figure>
 ```
 
@@ -213,7 +213,7 @@
 <input type="email">       <!-- Email (validates format, mobile keyboard) -->
 <input type="tel">         <!-- Phone number (numeric mobile keyboard) -->
 <input type="url">         <!-- URL -->
-<input type="number">      <!-- Numeric (use sparingly — type="text" + inputmode often better) -->
+<input type="number">      <!-- Numeric (use sparingly - type="text" + inputmode often better) -->
 <input type="password">    <!-- Hidden text -->
 <input type="search">      <!-- Search (adds clear button in some browsers) -->
 <input type="date">        <!-- Date picker -->
@@ -260,10 +260,10 @@
   <!-- Required -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Page Title – Site Name</title>
+  <title>Page Title - Site Name</title>
 
   <!-- SEO -->
-  <meta name="description" content="150–160 char page description">
+  <meta name="description" content="150-160 char page description">
   <link rel="canonical" href="https://example.com/page">
 
   <!-- Social / Open Graph -->

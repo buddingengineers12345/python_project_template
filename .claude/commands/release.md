@@ -1,5 +1,5 @@
 ---
-description: Orchestrate a new release — verify CI, bump version, tag, and push to origin. Use when the user asks to "release", "cut a release", "ship a version", or "tag and publish".
+description: Orchestrate a new release - verify CI, bump version, tag, and push to origin. Use when the user asks to "release", "cut a release", "ship a version", or "tag and publish".
 argument-hint: [patch|minor|major|X.Y.Z]
 allowed-tools: Read Edit Bash(git *) Bash(just ci:*) Bash(uv version:*) Bash(grep *)
 disable-model-invocation: true
@@ -27,14 +27,14 @@ This command automates the release workflow for My Library.
    ```bash
    just ci
    ```
-   This runs: fix → fmt → lint → type → docs-check → test → pre-commit.
+   This runs: fix - fmt - lint - type - docs-check - test - pre-commit.
    If any step fails, fix the issue and re-run. Do not proceed until all steps pass.
 
 3. **Determine the version bump**
    Ask the user: "What type of bump? (patch/minor/major) or specify explicit version (X.Y.Z)?"
-   - `patch` — bug fixes, no new features (0.1.0 → 0.1.1)
-   - `minor` — new features, backwards compatible (0.1.0 → 0.2.0)
-   - `major` — breaking changes (0.1.0 → 1.0.0)
+   - `patch` - bug fixes, no new features (0.1.0 to 0.1.1)
+   - `minor` - new features, backwards compatible (0.1.0 to 0.2.0)
+   - `major` - breaking changes (0.1.0 to 1.0.0)
 
 4. **Bump the version** in `pyproject.toml`
    ```bash
@@ -81,7 +81,7 @@ This command automates the release workflow for My Library.
 
 Report to the user:
 ```
-✓ Release vX.Y.Z created successfully
+ Release vX.Y.Z created successfully
 
 Release page: https://github.com/yourusername/my-library/releases/tag/vX.Y.Z
 

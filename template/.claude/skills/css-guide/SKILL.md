@@ -25,7 +25,7 @@ Before handing off any CSS, confirm:
 
 - [ ] Custom properties (`--var-name`) used for all repeated values
 - [ ] No `!important` (except utility overrides with a clear comment)
-- [ ] No ID selectors (`#selector`) — use classes
+- [ ] No ID selectors (`#selector`) - use classes
 - [ ] No inline styles or `style=""` pushed from CSS
 - [ ] Class names are semantic and hyphen-delimited (BEM preferred)
 - [ ] `0` values have no units (`margin: 0`, not `0px`)
@@ -41,7 +41,7 @@ Before handing off any CSS, confirm:
 
 ### 1. Start from a tokenized foundation
 
-All design decisions — color, type, spacing, radius, shadow, motion, z-index —
+All design decisions - color, type, spacing, radius, shadow, motion, z-index -
 belong in CSS custom properties at `:root`. Never sprinkle hard-coded values
 through components.
 
@@ -65,7 +65,7 @@ Minimal token example:
 }
 ```
 
-Dark mode and high-contrast adjustments override tokens — the rest of the
+Dark mode and high-contrast adjustments override tokens - the rest of the
 stylesheet doesn't change. See
 [references/accessibility.md](references/accessibility.md) for the patterns.
 
@@ -76,22 +76,22 @@ stylesheet doesn't change. See
 appearance.
 
 ```css
-.card { … }                /* Block */
-.card__header { … }        /* Element */
-.card__title { … }
-.card--featured { … }      /* Modifier */
-.card__title--large { … }
+.card { ... }                /* Block */
+.card__header { ... }        /* Element */
+.card__title { ... }
+.card--featured { ... }      /* Modifier */
+.card__title--large { ... }
 ```
 
 Avoid presentational names (`.blue-button`, `.left-column`). Avoid
-over-abbreviation (`.nav-lnk`). Target by class — not by tag, not by id.
+over-abbreviation (`.nav-lnk`). Target by class - not by tag, not by id.
 
 ### 3. Follow the architecture that matches project size
 
 ```
 Small:    styles/main.css
 Medium:   styles/{base,layout,components,utilities}/_*.css + main.css imports
-Large:    ITCSS — 1-settings/ 2-tools/ 3-generic/ 4-elements/
+Large:    ITCSS - 1-settings/ 2-tools/ 3-generic/ 4-elements/
                    5-objects/ 6-components/ 7-utilities/
 ```
 
@@ -99,8 +99,8 @@ Modern projects benefit from cascade layers:
 
 ```css
 @layer reset, base, layout, components, utilities;
-@layer components { .card { … } }
-@layer utilities { .visually-hidden { … } }
+@layer components { .card { ... } }
+@layer utilities { .visually-hidden { ... } }
 ```
 
 Layers give you a deterministic cascade independent of source order or
@@ -127,8 +127,8 @@ h2,
 h3 { font-weight: 700; }
 ```
 
-Declaration order: alphabetical (Google default) or grouped (positioning → box
-model → typography → visual → interaction). Pick one per codebase and stick
+Declaration order: alphabetical (Google default) or grouped (positioning - box
+model - typography - visual - interaction). Pick one per codebase and stick
 with it.
 
 Values: `0` without units, leading zero on decimals, 3-char hex when possible,
@@ -136,22 +136,22 @@ single quotes for strings (`font-family: 'Inter', sans-serif;`).
 
 ### 5. Control specificity
 
-Specificity ranks low→high: type (0,0,1) < class/attr/pseudo (0,1,0) < id
+Specificity ranks low-high: type (0,0,1) < class/attr/pseudo (0,1,0) < id
 (1,0,0) < inline (1,0,0,0) < `!important`.
 
 ```css
 /* AVOID: id selectors (hard to override) */
-#header { … }
+#header { ... }
 
 /* AVOID: over-qualifying with tag */
-ul.nav { … }
-div.card { … }
+ul.nav { ... }
+div.card { ... }
 
-/* AVOID: deep descendant chains — brittle and slow */
-.page .sidebar .widget .widget__title a { … }
+/* AVOID: deep descendant chains - brittle and slow */
+.page .sidebar .widget .widget__title a { ... }
 
 /* PREFER: flat BEM */
-.widget__title-link { … }
+.widget__title-link { ... }
 ```
 
 `!important` is acceptable only in utility classes (`.visually-hidden`) where
@@ -163,14 +163,14 @@ Style all interactive states together: `:hover`, `:focus-visible`, `:active`,
 ### 6. Layout with Grid and Flexbox
 
 ```css
-/* 2D — Grid */
+/* 2D - Grid */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-6);
 }
 
-/* 1D — Flexbox */
+/* 1D - Flexbox */
 .nav__list {
   display: flex;
   align-items: center;
@@ -204,19 +204,19 @@ Complete patterns (skip links, dark mode, high-contrast boost) are in
 
 ### Before editing
 
-1. Identify the architecture — BEM? SMACSS? utility-first? no pattern?
-2. Scan for existing custom properties — reuse them, don't redefine.
+1. Identify the architecture - BEM? SMACSS? utility-first? no pattern?
+2. Scan for existing custom properties - reuse them, don't redefine.
 3. Find ALL rules for the component you're modifying.
-4. Check specificity of existing selectors — match or beat appropriately.
+4. Check specificity of existing selectors - match or beat appropriately.
 5. Search for `!important` and understand why before adding more.
 
 ### While editing
 
 - Match existing indentation (2-space, 4-space, or tab) and declaration order.
 - Match selector and comment style.
-- Edit only what's required — don't reformat unrelated rules.
+- Edit only what's required - don't reformat unrelated rules.
 - Add new rules AFTER existing rules for the same component.
-- Never silently delete rules you don't understand — comment them out with
+- Never silently delete rules you don't understand - comment them out with
   an explanation and ask the user.
 
 ### After editing
@@ -228,7 +228,7 @@ Complete patterns (skip links, dark mode, high-contrast boost) are in
 ### Common update patterns
 
 ```css
-/* New modifier — added below existing rules */
+/* New modifier - added below existing rules */
 .btn--danger { background: var(--color-error); }
 .btn--large  { font-size: var(--text-lg); padding: var(--space-3) var(--space-6); }
 
@@ -255,13 +255,13 @@ Recommended stylelint rules: `color-named: "never"`, `color-no-invalid-hex`,
 
 ## When to load references
 
-| If the task involves…                   | Load                                |
+| If the task involves...                   | Load                                |
 |------------------------------------------|-------------------------------------|
 | ITCSS layers, CSS architecture design   | `references/css-architecture.md`    |
 | ARIA, focus styles, a11y compliance     | `references/accessibility.md`       |
 | Grid, flexbox, responsive breakpoints   | `references/layout-responsive.md`   |
 | Starting a new project from scratch     | `templates/css-tokens.css` + `templates/css-reset.css` |
-| Simple CSS edits (default)              | No reference needed — use inline    |
+| Simple CSS edits (default)              | No reference needed - use inline    |
 
 ## Efficiency: batch edits and parallel calls
 
@@ -277,6 +277,6 @@ Recommended stylelint rules: `color-named: "never"`, `color-no-invalid-hex`,
 | ITCSS, BEM, SMACSS, and cascade-layer architecture       | [references/css-architecture.md](references/css-architecture.md)       |
 | Focus, reduced motion, dark mode, sr-only, contrast      | [references/accessibility.md](references/accessibility.md)             |
 | Grid, Flexbox, mobile-first, fluid type, container queries | [references/layout-responsive.md](references/layout-responsive.md)   |
-| Design token system — copy into projects                 | [templates/css-tokens.css](templates/css-tokens.css)                   |
+| Design token system - copy into projects                 | [templates/css-tokens.css](templates/css-tokens.css)                   |
 | Modern CSS reset                                         | [templates/css-reset.css](templates/css-reset.css)                     |
 | Common component patterns (button, card, form, nav, modal) | [templates/css-patterns.css](templates/css-patterns.css)             |

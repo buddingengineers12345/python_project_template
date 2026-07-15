@@ -1,4 +1,4 @@
-# AGENTS.md — Python Project Template
+# AGENTS.md - Python Project Template
 
 > Canonical, model-agnostic agent guide. CLAUDE.md / GEMINI.md / CURSOR.md are thin wrappers that
 > point here. Edit shared knowledge in THIS file only.
@@ -17,17 +17,17 @@ destination folder.
 
 Bias toward caution over speed; use judgment on trivial tasks.
 
-- **Think before coding** — state assumptions; surface multiple interpretations instead of silently picking one; ask when unclear.
-- **Simplicity first** — minimum code that solves the problem; nothing speculative.
-- **Surgical changes** — touch only what the task requires; match existing style; don't refactor what isn't broken.
-- **Goal-driven execution** — define a verifiable success check before starting; loop until it passes.
+- **Think before coding** - state assumptions; surface multiple interpretations instead of silently picking one; ask when unclear.
+- **Simplicity first** - minimum code that solves the problem; nothing speculative.
+- **Surgical changes** - touch only what the task requires; match existing style; don't refactor what isn't broken.
+- **Goal-driven execution** - define a verifiable success check before starting; loop until it passes.
 
 ## Context loading (progressive disclosure)
 
 1. Read this file first.
 2. Load a deeper reference ONLY when the task touches its area:
 
-| When the task involves… | Read |
+| When the task involves... | Read |
 |---|---|
 | Directory structure, project layout | `scripts/CLAUDE.md`, `tests/CLAUDE.md`, `.github/CLAUDE.md`, `template/CLAUDE.md` |
 | Development setup, just recipes, CI | `.claude/references/dev-setup.md`, `.claude/references/justfile-recipes.md`, `.claude/references/ci-pipeline.md` |
@@ -44,9 +44,9 @@ Bias toward caution over speed; use judgment on trivial tasks.
 | GitHub workflows | `.github/CLAUDE.md` |
 | Template structure | `template/CLAUDE.md` |
 
-3. Do not bulk-load all references — avoid context flooding.
+3. Do not bulk-load all references - avoid context flooding.
 
-## Memory — AgentMemory only
+## Memory - AgentMemory only
 
 This repo uses AgentMemory (MCP server `localhost:3111`, project-scoped TEAM_ID `python_project_template`).
 
@@ -57,7 +57,7 @@ This repo uses AgentMemory (MCP server `localhost:3111`, project-scoped TEAM_ID 
 
 ## Repo-specific guidance
 
-Detailed how-tos live in `.claude/references/` (load per the table above). Rules and enforcement hooks are under `.claude/rules/` and `.claude/hooks/` — referenced in `.claude/rules/README.md` and `.claude/hooks/README.md`.
+Detailed how-tos live in `.claude/references/` (load per the table above). Rules and enforcement hooks are under `.claude/rules/` and `.claude/hooks/` - referenced in `.claude/rules/README.md` and `.claude/hooks/README.md`.
 
 ## AgentMemory Insights (snapshot 2026-05-21)
 

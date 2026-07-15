@@ -4,7 +4,7 @@ Covers: emphasis (bold, italic, strikethrough), lists (ordered, unordered, neste
 task), blockquotes, horizontal rules, and line-break handling.
 
 **Primary sources:** [Google Markdown Style Guide](https://google.github.io/styleguide/docguide/style.html),
-[Markdown Guide — Basic Syntax](https://www.markdownguide.org/basic-syntax/)
+[Markdown Guide - Basic Syntax](https://www.markdownguide.org/basic-syntax/)
 
 ---
 
@@ -60,15 +60,15 @@ Price: ~~$99~~ $79
   words across parsers (e.g., `some_variable_name` may render incorrectly):
 
   ```markdown
-  # ✅ Use asterisks
+  #  Use asterisks
   *italic*   **bold**   ***bold italic***
 
-  # ❌ Avoid underscores (unreliable mid-word)
+  #  Avoid underscores (unreliable mid-word)
   _italic_   __bold__
   ```
 
 - **Never bold or italicise entire paragraphs.** Overuse destroys emphasis.
-- Use emphasis **sparingly** — every additional use dilutes the impact of all others.
+- Use emphasis **sparingly** - every additional use dilutes the impact of all others.
 - Do not use emphasis for purely decorative formatting.
 
 ---
@@ -78,7 +78,7 @@ Price: ~~$99~~ $79
 ### When to Use Lists
 
 Use lists for genuinely enumerable or sequential items. Do **not** fragment flowing
-prose into bullets — write prose instead. If all list items are a single short
+prose into bullets - write prose instead. If all list items are a single short
 phrase, a list is appropriate. If items need full sentences of context, consider
 prose with subheadings.
 
@@ -118,7 +118,7 @@ For **short, stable** lists, use explicit sequential numbers (more readable in s
 3. Third step
 ```
 
-For **long or frequently changing** lists, use **lazy numbering** — Markdown renumbers
+For **long or frequently changing** lists, use **lazy numbering** - Markdown renumbers
 automatically, so you never have to renumber after inserting or removing an item:
 
 ```markdown
@@ -131,7 +131,7 @@ automatically, so you never have to renumber after inserting or removing an item
 For ordered list items with wrapped text, use 2 spaces after the number:
 
 ```markdown
-1.  First item — text starts at column 5 (4-space total indent).
+1.  First item - text starts at column 5 (4-space total indent).
     Wrapped text also aligns here.
 2.  Second item.
 ```
@@ -154,10 +154,10 @@ Use a **4-space indent** for both bullet and numbered nested lists:
 -   Back to parent level.
 ```
 
-**Do not mix inconsistent indentation** — it produces unpredictable rendering:
+**Do not mix inconsistent indentation** - it produces unpredictable rendering:
 
 ```markdown
-# ❌ Messy — avoid
+#  Messy - avoid
 * One space,
 with no indent for wrapped text.
      1. Irregular nesting.
@@ -221,7 +221,7 @@ Blockquotes can contain any Markdown:
 ### Blockquote Usage Rules
 
 - Use to highlight important side-notes, warnings, and external quotations.
-- Use **moderately** — overuse dilutes their visual effect.
+- Use **moderately** - overuse dilutes their visual effect.
 - Do not use for generic indentation or visual styling.
 - For formal callouts (Notes, Warnings, Tips), prefer GFM alert syntax when available
   (see `05-extended-syntax.md`).
@@ -241,16 +241,16 @@ ___
 ### Usage Rules
 
 - Use `---` as the consistent choice (matches YAML front matter delimiters; distinctive).
-- Use **sparingly** — only at **major structural transitions** (e.g., between an
+- Use **sparingly** - only at **major structural transitions** (e.g., between an
   introduction block and the main body).
-- Do **not** use to separate every section — headings are the correct separator.
+- Do **not** use to separate every section - headings are the correct separator.
 - Ensure a blank line before and after to avoid the `---` being parsed as a Setext H2.
 
 ---
 
 ## Highlight, Subscript, Superscript
 
-These are extended syntax — not supported by all parsers. Always verify support
+These are extended syntax - not supported by all parsers. Always verify support
 before using them.
 
 ### Highlight

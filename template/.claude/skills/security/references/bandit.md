@@ -10,7 +10,7 @@ using a set of AST-based plugins, each targeting a specific vulnerability class.
 - Statically analyses Python AST for security anti-patterns
 - Reports each finding with a severity (LOW / MEDIUM / HIGH) and a confidence
   (LOW / MEDIUM / HIGH) so you can filter by signal strength
-- Does **not** execute code — pure static analysis
+- Does **not** execute code - pure static analysis
 
 ---
 
@@ -30,7 +30,7 @@ bandit --version
 ## pyproject.toml config (annotated)
 
 Bandit reads a limited set of keys from `[tool.bandit]`. Note that severity/confidence
-thresholds must be passed as **CLI flags** — they are not supported as pyproject.toml
+thresholds must be passed as **CLI flags** - they are not supported as pyproject.toml
 keys.
 
 ```toml
@@ -38,9 +38,9 @@ keys.
 # Directories or files to scan (passed to -r).
 targets = ["src"]
 
-# Test IDs to skip project-wide. Use sparingly — prefer per-line nosec.
+# Test IDs to skip project-wide. Use sparingly - prefer per-line nosec.
 # B101 = assert statement (valid in tests; exclude tests dir instead of skipping globally)
-# B104 = binding to 0.0.0.0 (acceptable in containerised services — document the reason)
+# B104 = binding to 0.0.0.0 (acceptable in containerised services - document the reason)
 skips = ["B101"]
 
 # Paths to exclude from scanning (regex matched against file path).
@@ -73,11 +73,11 @@ bandit -c pyproject.toml -r src/ -ll -ii
 | Code | Issue | Fix |
 |---|---|---|
 | `B101` | `assert` statement | Use explicit `if`/`raise` for runtime validation |
-| `B105` | Hardcoded password — string literal | Load from env var or secrets manager |
-| `B106` | Hardcoded password — function argument default | Use `None` default; load at runtime |
-| `B107` | Hardcoded password — function argument | Same as B106 |
+| `B105` | Hardcoded password - string literal | Load from env var or secrets manager |
+| `B106` | Hardcoded password - function argument default | Use `None` default; load at runtime |
+| `B107` | Hardcoded password - function argument | Same as B106 |
 | `B108` | Probable insecure temp file | Use `tempfile.mkstemp()` or `tempfile.TemporaryFile()` |
-| `B110` | `try/except/pass` — silenced exception | Log or handle the exception explicitly |
+| `B110` | `try/except/pass` - silenced exception | Log or handle the exception explicitly |
 | `B201` | Flask debug mode in production | Never set `debug=True` outside local dev |
 | `B301` | `pickle` on untrusted data | Use `json` or `msgpack` for untrusted sources |
 | `B303` | MD5 / SHA1 for cryptography | Use `hashlib.sha256()` or better |
@@ -86,7 +86,7 @@ bandit -c pyproject.toml -r src/ -ll -ii
 | `B501` | SSL certificate verification disabled | Remove `verify=False` |
 | `B601` | `shell=True` in subprocess | Pass a list of args; never interpolate user input |
 | `B602` | `subprocess` with shell injection risk | Same as B601 |
-| `B608` | SQL string formatting — injection risk | Use parameterised queries |
+| `B608` | SQL string formatting - injection risk | Use parameterised queries |
 
 ### Suppressing a finding inline
 
@@ -98,7 +98,7 @@ Always include the specific code in `# nosec`. A bare `# nosec` suppresses every
 on the line and makes the reasoning invisible to reviewers.
 
 To suppress a finding project-wide, add it to `skips` in `pyproject.toml` with a comment
-explaining why — e.g. `skips = ["B104"]  # service runs in a container; 0.0.0.0 is correct`.
+explaining why - e.g. `skips = ["B104"]  # service runs in a container; 0.0.0.0 is correct`.
 
 ---
 
@@ -108,7 +108,7 @@ explaining why — e.g. `skips = ["B104"]  # service runs in a container; 0.0.0.
 # Basic scan using pyproject.toml config:
 bandit -c pyproject.toml -r src/
 
-# Recommended CI mode — MEDIUM severity and confidence minimum:
+# Recommended CI mode - MEDIUM severity and confidence minimum:
 bandit -c pyproject.toml -r src/ -ll -ii
 
 # JSON output for downstream tooling or artefact storage:
@@ -144,7 +144,7 @@ See `SKILL.md` for the full CI ordering across all tools.
   hooks:
     - id: bandit
       args: ["-c", "pyproject.toml", "-ll", "-ii"]
-      # Scope to src/ only — test code legitimately uses assert, subprocess, etc.
+      # Scope to src/ only - test code legitimately uses assert, subprocess, etc.
       files: ^src/
 ```
 
@@ -156,7 +156,7 @@ See `SKILL.md` for the full CI ordering across all tools.
   subprocess calls, and sometimes intentionally insecure patterns in fixtures. Add
   `tests` to `exclude_dirs` in `[tool.bandit]` rather than globally skipping B101.
 - **Severity thresholds are CLI-only.** You cannot set `severity = "MEDIUM"` in
-  `[tool.bandit]` — bandit ignores unknown keys. Pass `-ll -ii` on the command line
+  `[tool.bandit]` - bandit ignores unknown keys. Pass `-ll -ii` on the command line
   (or in the pre-commit `args`).
 - **`# nosec` without a code is an anti-pattern.** Always write `# nosec B601` so
   reviewers know exactly which finding is being suppressed and why.
@@ -167,5 +167,5 @@ See `SKILL.md` for the full CI ordering across all tools.
   anti-patterns but misses logic-level vulnerabilities, dependency CVEs (use `pip-audit`
   for those), and runtime issues.
 - **Overlap with semgrep.** Both tools flag issues like `eval`, insecure hashes, and SQL
-  injection. The overlap is intentional — each catches slightly different forms of the
+  injection. The overlap is intentional - each catches slightly different forms of the
   same pattern. Do not remove bandit in favour of semgrep.

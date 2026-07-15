@@ -3,7 +3,7 @@
 > **Audience:** A junior model (Haiku) executing the steps below.
 > **Source repo:** `/Users/kzqr495/Documents/workspace/python_project_template`
 > **Goal:** Prevent AI agents from modifying stable files without explicit user intent.
-> **Approach:** Defense in depth using only Claude Code's native mechanisms — no external
+> **Approach:** Defense in depth using only Claude Code's native mechanisms - no external
 > tools, no git pre-receive hooks, no CODEOWNERS automation.
 
 ## How to use this document
@@ -12,35 +12,35 @@
 2. Execute the phases in order. Each phase is independently committable.
 3. After every phase, run the validation block. If validation fails, STOP and report.
 4. Conventional Commit format for every commit.
-5. Do not skip Phase 0 (manifest) — every later phase depends on it.
+5. Do not skip Phase 0 (manifest) - every later phase depends on it.
 
-## Conceptual model — what we are building
+## Conceptual model - what we are building
 
 Three layers of protection backed by **one manifest**:
 
 ```
 .claude/locked-files.txt          ← single source of truth (one path/glob per line)
         │
-        ├── consumed by hook   →  .claude/hooks/pre-write-locked-files.sh   (Write|Edit|MultiEdit)
-        ├── consumed by hook   →  .claude/hooks/pre-bash-locked-files.sh    (Bash redirects)
-        ├── synced into        →  .claude/settings.json  permissions.deny   (hard block)
-        └── documented in      →  CLAUDE.md  "Locked files" section          (model-side guidance)
+        ├── consumed by hook   -  .claude/hooks/pre-write-locked-files.sh   (Write|Edit|MultiEdit)
+        ├── consumed by hook   -  .claude/hooks/pre-bash-locked-files.sh    (Bash redirects)
+        ├── synced into        -  .claude/settings.json  permissions.deny   (hard block)
+        └── documented in      -  CLAUDE.md  "Locked files" section          (model-side guidance)
 ```
 
 Bypass protocol: setting the environment variable `CLAUDE_UNLOCK=<path-or-glob>` before
 the session disables the hooks for that path only. The `permissions.deny` layer is
-intentionally NOT bypassable by env var — those paths require editing `settings.json`.
+intentionally NOT bypassable by env var - those paths require editing `settings.json`.
 
 Tiers:
 
-- **Tier 1 (HARD LOCK):** in manifest with prefix `!` → blocked by both hook and `permissions.deny`.
-- **Tier 2 (SOFT LOCK):** in manifest without prefix → hook warns + may block on weakening
+- **Tier 1 (HARD LOCK):** in manifest with prefix `!` - blocked by both hook and `permissions.deny`.
+- **Tier 2 (SOFT LOCK):** in manifest without prefix - hook warns + may block on weakening
   patterns; not in `permissions.deny`.
 - **Tier 3 (FREE):** not in manifest at all.
 
 ---
 
-## Phase 0 — Working branch and manifest
+## Phase 0 - Working branch and manifest
 
 ### 0.1 Branch
 
@@ -128,7 +128,7 @@ grep -cv '^#\|^!\|^$' .claude/locked-files.txt  # expect ~10 soft locks
 
 ---
 
-## Phase 1 — The Tier-1 + Tier-2 hook (Write/Edit/MultiEdit)
+## Phase 1 - The Tier-1 + Tier-2 hook (Write/Edit/MultiEdit)
 
 ### 1.1 Create `.claude/hooks/pre-write-locked-files.sh`
 
@@ -143,8 +143,8 @@ Write this exact content:
 # PreToolUse hook for Write|Edit|MultiEdit. Blocks edits to locked paths.
 #
 # Manifest: .claude/locked-files.txt
-#   !path  → block (Tier 1)
-#   path   → warn  (Tier 2)
+#   !path  - block (Tier 1)
+#   path   - warn  (Tier 2)
 #
 # Bypass: CLAUDE_UNLOCK=<exact-path-or-glob> allows that single entry through.
 # Tier 1 entries can also be bypassed via the env var, but should normally
@@ -164,7 +164,7 @@ except Exception:
 PYEOF
 ) || { echo "$INPUT"; exit 0; }
 
-# No path → nothing to check → pass through.
+# No path - nothing to check - pass through.
 if [[ -z "$FILE_PATH" ]]; then
     echo "$INPUT"
     exit 0
@@ -181,7 +181,7 @@ REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 REL_PATH="${FILE_PATH#$REPO_ROOT/}"
 
 match_glob() {
-    # $1 = glob pattern, $2 = path → 0 if match, 1 if not
+    # $1 = glob pattern, $2 = path - 0 if match, 1 if not
     local pattern="$1" path="$2"
     case "$path" in
         $pattern) return 0 ;;
@@ -220,16 +220,16 @@ while IFS= read -r line; do
             echo "│    1. Confirm the change is intentional with the user." >&2
             echo "│    2. Re-run with CLAUDE_UNLOCK='$pattern' set in the environment." >&2
             echo "│    3. Or remove/edit the entry in .claude/locked-files.txt" >&2
-            echo "│       (which is itself locked — requires CLAUDE_UNLOCK)." >&2
-            echo "└─ ✗ Edit blocked" >&2
+            echo "│       (which is itself locked - requires CLAUDE_UNLOCK)." >&2
+            echo "└─  Edit blocked" >&2
             exit 2
         else
-            # Tier 2 — warn but allow.
+            # Tier 2 - warn but allow.
             echo "┌─ Locked-file WARN: $REL_PATH" >&2
             echo "│  Matched Tier 2 entry: $line" >&2
             echo "│  This file is semi-stable. Confirm the change is intentional." >&2
             echo "│  Set CLAUDE_UNLOCK='$pattern' to silence this warning." >&2
-            echo "└─ ⚠ Proceeding with warning" >&2
+            echo "└─  Proceeding with warning" >&2
             echo "$INPUT"
             exit 0
         fi
@@ -287,12 +287,12 @@ CLAUDE_UNLOCK='LICENSE' bash -c '
 ```
 
 If any of the four cases above behaves differently, fix the hook before continuing. Most
-likely cause: shell glob matching is locale-sensitive — make sure `shopt -s extglob` is
+likely cause: shell glob matching is locale-sensitive - make sure `shopt -s extglob` is
 not required. The script uses POSIX `case` matching on purpose.
 
 ---
 
-## Phase 2 — The Bash redirect hook
+## Phase 2 - The Bash redirect hook
 
 ### 2.1 Why a second hook
 
@@ -348,7 +348,7 @@ MANIFEST=".claude/locked-files.txt"
 UNLOCK="${CLAUDE_UNLOCK:-}"
 
 # Extract candidate target paths from the command string.
-# Heuristics — broad matches; we err on the side of catching too much, then check manifest.
+# Heuristics - broad matches; we err on the side of catching too much, then check manifest.
 targets=$(printf '%s\n' "$CMD" | python3 - <<'PYEOF'
 import re, sys
 
@@ -395,20 +395,20 @@ while IFS= read -r raw_target; do
 
         if match_glob "$pattern" "$target"; then
             if [[ -n "$UNLOCK" ]] && match_glob "$UNLOCK" "$target"; then
-                continue 2  # bypass — try next target
+                continue 2  # bypass - try next target
             fi
             if [[ "$tier" == "hard" ]]; then
                 echo "┌─ Bash locked-file BLOCK" >&2
                 echo "│  Command attempts to write: $target" >&2
                 echo "│  Matched Tier 1 entry: $line" >&2
                 echo "│  Set CLAUDE_UNLOCK='$pattern' to override." >&2
-                echo "└─ ✗ Command blocked" >&2
+                echo "└─  Command blocked" >&2
                 exit 2
             else
                 echo "┌─ Bash locked-file WARN" >&2
                 echo "│  Command writes to Tier 2 path: $target" >&2
                 echo "│  Matched: $line" >&2
-                echo "└─ ⚠ Proceeding with warning" >&2
+                echo "└─  Proceeding with warning" >&2
             fi
         fi
     done < "$MANIFEST"
@@ -425,31 +425,31 @@ chmod +x .claude/hooks/pre-bash-locked-files.sh
 ### 2.3 Smoke test
 
 ```bash
-# Tier 1 redirect → block
+# Tier 1 redirect - block
 echo '{"tool_input": {"command": "echo x > LICENSE"}}' \
   | bash .claude/hooks/pre-bash-locked-files.sh
 echo "exit=$?"   # expect 2
 
-# Innocent command → pass
+# Innocent command - pass
 echo '{"tool_input": {"command": "ls -la"}}' \
   | bash .claude/hooks/pre-bash-locked-files.sh
 echo "exit=$?"   # expect 0
 
-# sed -i on workflow → block
+# sed -i on workflow - block
 echo '{"tool_input": {"command": "sed -i s/foo/bar/ .github/workflows/lint.yml"}}' \
   | bash .claude/hooks/pre-bash-locked-files.sh
 echo "exit=$?"   # expect 2
 ```
 
 If a smoke test fails (especially on macOS where BSD sed differs), inspect the regex
-output and adjust. Do NOT loosen the patterns to make tests pass — instead add the
+output and adjust. Do NOT loosen the patterns to make tests pass - instead add the
 specific failing case to the regex set.
 
 ---
 
-## Phase 3 — Register both hooks in `settings.json`
+## Phase 3 - Register both hooks in `settings.json`
 
-`.claude/settings.json` is itself Tier 1 — the very first edit will trigger your hook
+`.claude/settings.json` is itself Tier 1 - the very first edit will trigger your hook
 before it is even registered. Use the bypass:
 
 ```bash
@@ -515,12 +515,12 @@ Paste the output into the `deny` array. Result for `LICENSE` should look like:
 ]
 ```
 
-JSON validity: run `python3 -m json.tool .claude/settings.json > /dev/null` — must exit 0.
+JSON validity: run `python3 -m json.tool .claude/settings.json > /dev/null` - must exit 0.
 
 ### 3.3 Mirror to `template/.claude/settings.json`
 
 Generated projects also need protection. Repeat 3.1 and 3.2 for
-`template/.claude/settings.json`, but use a TRIMMED manifest list — generated projects
+`template/.claude/settings.json`, but use a TRIMMED manifest list - generated projects
 do not have `template/`, `copier.yml`, or meta-only paths. Use only:
 
 - `LICENSE`
@@ -532,7 +532,7 @@ do not have `template/`, `copier.yml`, or meta-only paths. Use only:
 - `.github/workflows/**`
 - `.github/dependabot.yml`
 - `.claude/settings.json`
-- `.claude/locked-files.txt` (the file itself will be created in template too — see Phase 5)
+- `.claude/locked-files.txt` (the file itself will be created in template too - see Phase 5)
 - `.claude/hooks/pre-write-locked-files.sh`
 - `.claude/hooks/pre-bash-locked-files.sh`
 
@@ -554,13 +554,13 @@ git commit -m "feat(claude): add file-locking via manifest, hooks, and permissio
 
 ---
 
-## Phase 4 — `just lock-sync` recipe
+## Phase 4 - `just lock-sync` recipe
 
 Hand-syncing `permissions.deny` against the manifest will drift. Add a justfile recipe.
 
 ### 4.1 Edit `justfile`
 
-`justfile` is Tier 2 — you will get a warning, not a block. Append at the end:
+`justfile` is Tier 2 - you will get a warning, not a block. Append at the end:
 
 ```makefile
 # -------------------------------------------------------------------------
@@ -629,7 +629,7 @@ def desired_deny_entries(paths: list[str]) -> list[str]:
 
 
 def main() -> int:
-    """Entry point — diff or apply the lock manifest sync."""
+    """Entry point - diff or apply the lock manifest sync."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apply", action="store_true", help="Write changes to settings.json")
     args = parser.parse_args()
@@ -675,11 +675,11 @@ if __name__ == "__main__":
 
 ### 4.3 Add a corresponding test
 
-`tests/test_sync_lock_manifest.py` (per the strict-TDD convention — write the test first
+`tests/test_sync_lock_manifest.py` (per the strict-TDD convention - write the test first
 in real practice; here you are retrofitting). Cover:
 
-- Manifest with no Tier-1 entries → no deny additions.
-- Manifest with one Tier-1 entry → three deny additions (Edit/Write/MultiEdit).
+- Manifest with no Tier-1 entries - no deny additions.
+- Manifest with one Tier-1 entry - three deny additions (Edit/Write/MultiEdit).
 - Existing non-lock deny entries (e.g. `Bash(git push:*)`) are preserved.
 - `--apply` writes valid JSON; without `--apply` does not modify the file.
 
@@ -687,7 +687,7 @@ in real practice; here you are retrofitting). Cover:
 
 ```bash
 just lock-list                # prints all locked entries with [T1]/[T2] prefix
-just lock-sync                # diff only — should print "already in sync" after Phase 3
+just lock-sync                # diff only - should print "already in sync" after Phase 3
 just test                     # all tests pass
 ```
 
@@ -700,7 +700,7 @@ git commit -m "feat(lock): add just lock-sync and lock-list recipes"
 
 ---
 
-## Phase 5 — Mirror to template/
+## Phase 5 - Mirror to template/
 
 Generated projects need their own copies of the hooks and a starter manifest. Mirror:
 
@@ -763,14 +763,14 @@ git commit -m "feat(template): mirror file-locking into generated projects"
 
 ---
 
-## Phase 6 — CLAUDE.md documentation
+## Phase 6 - CLAUDE.md documentation
 
 Hooks and `permissions.deny` are enforcement; documentation is so the model never tries.
 Add a "Locked files" section to root `CLAUDE.md` and `template/CLAUDE.md.jinja`.
 
 ### 6.1 Root `CLAUDE.md`
 
-CLAUDE.md is NOT in the Tier-2 list (intentional — it evolves). Add this section after
+CLAUDE.md is NOT in the Tier-2 list (intentional - it evolves). Add this section after
 "Files you should never modify directly":
 
 ```markdown
@@ -779,7 +779,7 @@ CLAUDE.md is NOT in the Tier-2 list (intentional — it evolves). Add this secti
 This repository uses a manifest-driven file-locking system to prevent agents from
 modifying stable files without explicit user intent.
 
-- **Manifest:** `.claude/locked-files.txt` — single source of truth.
+- **Manifest:** `.claude/locked-files.txt` - single source of truth.
 - **Tier 1 (hard lock, prefix `!`):** blocked by both a PreToolUse hook AND
   `permissions.deny`. Editing requires the user to set `CLAUDE_UNLOCK=<path>` in the
   environment AND (for `permissions.deny` overrides) edit `settings.json` directly.
@@ -826,7 +826,7 @@ git commit -m "docs: document file-locking system in CLAUDE.md (root + template)
 
 ---
 
-## Phase 7 — End-to-end verification
+## Phase 7 - End-to-end verification
 
 ### 7.1 Live test of the full stack
 
@@ -851,7 +851,7 @@ With `CLAUDE_UNLOCK='LICENSE'` set:
 This second behaviour is intentional. `permissions.deny` is the strongest layer because
 it requires an interactive UI confirmation; `CLAUDE_UNLOCK` is the relief valve for
 hook-only enforcement. To edit a Tier-1 file via the Edit tool, the user must edit
-`settings.json` to remove the deny entry — which itself requires `CLAUDE_UNLOCK` set on
+`settings.json` to remove the deny entry - which itself requires `CLAUDE_UNLOCK` set on
 `.claude/settings.json`. This is the meta-lock by design.
 
 ### 7.2 Full CI
@@ -900,7 +900,7 @@ Implements manifest-driven file locking for Claude Code agents.
 
 ---
 
-## Anti-goals — what NOT to do
+## Anti-goals - what NOT to do
 
 - **Do NOT** add Tier-1 entries for files the project actively edits (e.g. `README.md`,
   `CLAUDE.md`, anything under `docs/`, any `tests/` or `scripts/` file). This will quickly
@@ -912,7 +912,7 @@ Implements manifest-driven file locking for Claude Code agents.
   the lock hooks). Without these, an agent can simply edit the manifest to remove its
   own restrictions.
 - **Do NOT** add file-locking to git pre-commit hooks. This document is scoped to Claude
-  Code only — git-level enforcement is a separate problem.
+  Code only - git-level enforcement is a separate problem.
 - **Do NOT** widen the Bash-redirect regex to catch every conceivable shell trick.
   Determined adversarial bypass is out of scope; the goal is to prevent accidental
   modification, not to be a security boundary.
@@ -921,7 +921,7 @@ Implements manifest-driven file locking for Claude Code agents.
 
 ---
 
-## Quick reference — final expected state
+## Quick reference - final expected state
 
 | Artefact | Location |
 |---|---|
@@ -943,7 +943,7 @@ Bypass mechanisms:
 |---|---|
 | `permissions.deny` (Tier 1) | User edits `.claude/settings.json` (which itself requires bypass) |
 | Hooks (Tier 1 + Tier 2) | `CLAUDE_UNLOCK=<path-or-glob>` env var |
-| `CLAUDE.md` guidance | None — soft layer, model-side only |
+| `CLAUDE.md` guidance | None - soft layer, model-side only |
 
 If any row in this section is not satisfied at the end of execution, the plan is not
 complete.

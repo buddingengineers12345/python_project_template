@@ -22,7 +22,7 @@ library and integrates with pytest's collection and reporting.
 ### Running coverage
 
 ```bash
-just coverage          # project recipe — runs pytest with coverage
+just coverage          # project recipe - runs pytest with coverage
 pytest --cov=src --cov-report=term-missing
 ```
 
@@ -123,7 +123,7 @@ was never taken.
 
 - **During development:** use `pytest -x` (stop on first failure) for fast feedback.
 - **In CI:** run the full suite to catch all failures in one pass.
-- **Compromise:** `pytest --maxfail=5` — stop after 5 failures to save time on
+- **Compromise:** `pytest --maxfail=5` - stop after 5 failures to save time on
   catastrophic breaks.
 
 ## Useful pytest plugins
@@ -142,7 +142,7 @@ was never taken.
 | `responses`             | Mock `requests` library HTTP calls                 |
 | `freezegun`             | Freeze time for deterministic datetime testing     |
 | `factory-boy`           | Generate test data with factories                  |
-| `hypothesis`            | Property-based testing — generates edge-case inputs|
+| `hypothesis`            | Property-based testing - generates edge-case inputs|
 | `pyfakefs`              | Fake filesystem for testing file operations        |
 
 ### Plugin selection guidance
@@ -170,9 +170,9 @@ pytest -n 4             # use exactly 4 workers
 
 **Caveats:**
 
-- Tests must be truly isolated — no shared files, databases, or global state.
+- Tests must be truly isolated - no shared files, databases, or global state.
 - Fixtures with `session` scope are created once per worker, not once total.
-- Output is interleaved — use `--dist loadscope` to group by module.
+- Output is interleaved - use `--dist loadscope` to group by module.
 - Some fixtures (like database connections) need per-worker isolation.
 
 ### Speeding up tests without parallelism
@@ -184,7 +184,7 @@ pytest -n 4             # use exactly 4 workers
 - **Use `pytest -k`** to run a subset matching a keyword.
 - **Profile with `--durations=10`** to find the slowest tests and fixtures.
 - **Use `monkeypatch` instead of real I/O** where possible.
-- **Mark and skip slow tests** during development — see below.
+- **Mark and skip slow tests** during development - see below.
 
 ### Automated slow-test detection
 
@@ -210,7 +210,7 @@ present. Use `--dry-run` on the marker script to preview changes first.
 **Split fast and slow runs in CI:**
 
 ```yaml
-# GitHub Actions — two parallel jobs
+# GitHub Actions - two parallel jobs
 jobs:
   fast-tests:
     runs-on: ubuntu-latest

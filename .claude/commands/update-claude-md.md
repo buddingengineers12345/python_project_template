@@ -12,18 +12,18 @@ CLAUDE.md is the project's living standards contract. It must stay in sync with
 ## Steps
 
 1. **Read the source-of-truth files**:
-   - `pyproject.toml` — extract:
+   - `pyproject.toml` - extract:
      - Active ruff rules (`[tool.ruff.lint]` select + ignore)
      - Pydocstyle convention
      - BasedPyright mode and key settings
      - pytest addopts and markers
-   - `justfile` — extract all public recipe names (non-`_` prefixed) and their
+   - `justfile` - extract all public recipe names (non-`_` prefixed) and their
      one-line description comment (the `# ...` line directly above each recipe)
-   - `copier.yml` — extract all prompt variable names and `_skip_if_exists` paths
+   - `copier.yml` - extract all prompt variable names and `_skip_if_exists` paths
 
 2. **Read CLAUDE.md** and identify every section that references configuration:
-   - "Code style" section — ruff rules, line length, pydocstyle convention
-   - "Common development commands" table — just recipes
+   - "Code style" section - ruff rules, line length, pydocstyle convention
+   - "Common development commands" table - just recipes
    - Any mention of specific tool versions or settings
 
 3. **Compare and identify drift**:
@@ -40,11 +40,11 @@ CLAUDE.md is the project's living standards contract. It must stay in sync with
    - Add a new bullet to "Recent improvements" summarising what changed today
      (use today's date from `date +%Y-%m-%d`)
 
-5. **Report** what was changed (or "CLAUDE.md is already in sync — no changes needed").
+5. **Report** what was changed (or "CLAUDE.md is already in sync - no changes needed").
 
 ## Important
 
 - Do not rewrite the whole file; make surgical edits to keep existing prose intact.
 - Preserve the document structure and heading hierarchy.
-- Do not fabricate descriptions — if a recipe's purpose is unclear, read the justfile
+- Do not fabricate descriptions - if a recipe's purpose is unclear, read the justfile
   recipe body to infer it.

@@ -1,4 +1,4 @@
-# Just Recipes — Common Commands
+# Just Recipes - Common Commands
 
 | Task | Command |
 |---|---|
@@ -15,7 +15,7 @@
 | Re-run last failed tests (max verbosity) | `just test-failed-verbose` |
 | Stop on first test failure | `just test-first-fail` |
 | CI-style tests + coverage XML (3.11 only) | `just test-ci` |
-| Full tests.yml Python matrix (3.11–3.13) | `just test-ci-matrix` |
+| Full tests.yml Python matrix (3.11-3.13) | `just test-ci-matrix` |
 | Coverage report | `just coverage` |
 | Lint | `just lint` |
 | Lint changed files only | `just lint-changed` |
@@ -26,7 +26,7 @@
 | Docstring check | `just docs-check` |
 | MkDocs recipes (generated projects only) | `just docs-help` |
 | Pre-merge review (fix + lint + type + docs) | `just review` |
-| Full CI locally (fix → check) | `just ci` |
+| Full CI locally (fix - check) | `just ci` |
 | Read-only CI check (no auto-fix) | `just check` |
 | Run pre-commit on all files | `just precommit` |
 | Register git hooks | `just precommit-install` |
@@ -47,5 +47,5 @@
 | Validate built distribution | `just check-dist` |
 | Publish package | `just publish` |
 
-**Always use `just` recipes.** Do not call `uv run ruff`, `pytest`, etc. directly —
+**Always use `just` recipes.** Do not call `uv run ruff`, `pytest`, etc. directly -
 the justfile handles the correct flags and order.

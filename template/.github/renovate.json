@@ -10,7 +10,7 @@
     "dependencies"
   ],
   "dependencyDashboard": true,
-  "dependencyDashboardTitle": "🤖 Dependency Updates",
+  "dependencyDashboardTitle": " Dependency Updates",
   "commitMessagePrefix": "chore(deps):",
   "commitMessageAction": "update",
   "prHourlyLimit": 2,

@@ -4,7 +4,7 @@ Modern CSS layout patterns (Grid, Flexbox, container) and mobile-first
 responsive techniques. Load this file when you're laying out pages, building
 responsive components, or deciding between Grid and Flexbox.
 
-## CSS Grid — use for 2D layout
+## CSS Grid - use for 2D layout
 
 ```css
 /* Page layout: header / main / footer */
@@ -21,7 +21,7 @@ responsive components, or deciding between Grid and Flexbox.
   grid-template-columns: 1fr min(65ch, 100%) 1fr;
 }
 
-/* Card grid — responsive without media queries */
+/* Card grid - responsive without media queries */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -32,7 +32,7 @@ responsive components, or deciding between Grid and Flexbox.
 `auto-fill` + `minmax()` eliminates most breakpoints for card layouts: tracks
 grow/shrink automatically.
 
-## Flexbox — use for 1D layout
+## Flexbox - use for 1D layout
 
 ```css
 /* Navigation row */
@@ -72,7 +72,7 @@ If you're controlling rows AND columns, reach for Grid.
 ```
 
 `min()` gives you a fluid-then-capped container with one line. `margin-inline`
-is the logical equivalent of `margin-left` and `margin-right` — it works in
+is the logical equivalent of `margin-left` and `margin-right` - it works in
 right-to-left languages too.
 
 ## Mobile-first media queries
@@ -145,8 +145,8 @@ into unknown layouts (sidebars, modals, embedded widgets).
 ## Performance notes for layout
 
 - Avoid the universal selector in component rules: `* { box-sizing: border-box; }`
-  is fine in the reset, but `.card * { … }` invalidates more of the layout tree.
-- Don't chain deep descendants (`.nav .list .item .link span`) — target classes
+  is fine in the reset, but `.card * { ... }` invalidates more of the layout tree.
+- Don't chain deep descendants (`.nav .list .item .link span`) - target classes
   directly. It's faster and less coupled.
 - Use `contain: layout paint` on isolated widgets (modals, cards with complex
   internals) so style/layout work doesn't cascade to the whole page.

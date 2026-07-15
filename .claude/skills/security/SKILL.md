@@ -6,7 +6,7 @@ description: >-
   security. Use this skill when scanning for vulnerabilities, understanding security errors, or
   fixing security issues. Trigger on mentions of: security, vulnerability, bandit, semgrep, secret,
   API key, injection, SQL injection, command injection, or any request to audit code for security.
-  Do NOT use for general code review — use python-code-reviewer for full code audit.
+  Do NOT use for general code review - use python-code-reviewer for full code audit.
 model: haiku
 ---
 

@@ -7,18 +7,18 @@ whether existing docstrings follow Google style.
 
 ## Audit Workflow
 
-1. **Scan the file top to bottom** in this order: module → classes → functions/methods
+1. **Scan the file top to bottom** in this order: module - classes - functions/methods
 2. **For each construct**, run through the relevant checklist below
-3. **Collect all issues** before making edits — don't fix one thing and miss others
+3. **Collect all issues** before making edits - don't fix one thing and miss others
 4. **Load the specific reference** for each issue type before rewriting
 
 Reference files to load as needed:
-- Module issues → `references/modules.md`
-- Function/method issues → `references/functions.md`
-- Class issues → `references/classes.md`
-- Generator issues → `references/generators.md`
-- Property issues → `references/properties.md`
-- Override issues → `references/overrides.md`
+- Module issues - `references/modules.md`
+- Function/method issues - `references/functions.md`
+- Class issues - `references/classes.md`
+- Generator issues - `references/generators.md`
+- Property issues - `references/properties.md`
+- Override issues - `references/overrides.md`
 
 ---
 
@@ -47,25 +47,25 @@ For each function or method:
 - [ ] **Yields vs Returns**: Generator functions use `Yields:`, not `Returns:`
 - [ ] **Raises section**: Present if exceptions are part of the interface contract
 - [ ] **Raises content**: No API-misuse exceptions documented
-- [ ] **Style**: Descriptive or imperative — consistent across the file
+- [ ] **Style**: Descriptive or imperative - consistent across the file
 
 ---
 
 ## Class Checklist
 
 - [ ] Class docstring present
-- [ ] Describes what the **instance represents** (not "Class that …")
+- [ ] Describes what the **instance represents** (not "Class that ...")
 - [ ] Summary ≤ 80 chars, ends with punctuation
 - [ ] `Attributes:` section present for public instance attributes
 - [ ] `Attributes:` does NOT include `@property` attributes (those self-document)
 - [ ] `__init__` has its own docstring with `Args:` if parameters are non-obvious
-- [ ] Exception subclasses: summary describes what it IS, not "Raised when …"
+- [ ] Exception subclasses: summary describes what it IS, not "Raised when ..."
 
 ---
 
 ## Property Checklist
 
-- [ ] Uses attribute style: `"""The X."""` — not `"""Returns the X."""`
+- [ ] Uses attribute style: `"""The X."""` - not `"""Returns the X."""`
 - [ ] Not listed in class `Attributes:` section
 
 ---
@@ -86,9 +86,9 @@ For each function or method:
 
 ---
 
-## Complete Before/After Example — Full Module Audit
+## Complete Before/After Example - Full Module Audit
 
-### ❌ Before (10 issues present)
+###  Before (10 issues present)
 
 ```python
 import re
@@ -112,7 +112,7 @@ def stream_names(contact_str):
 
 
 class ContactBook:
-    """Class for storing contact information."""     # issue 3: "Class for …" anti-pattern
+    """Class for storing contact information."""     # issue 3: "Class for ..." anti-pattern
                                                      # issue 4: no Attributes: section
     def __init__(self, owner):                       # issue 5: no __init__ docstring
         self.owner = owner
@@ -132,11 +132,11 @@ class ContactBook:
         return [c for c in self.contacts if query.lower() in c['name'].lower()]
 ```
 
-**Plus**: issue 9 — no module docstring; issue 10 — `parse_names` has no `Args:` or `Returns:` and missing type annotations
+**Plus**: issue 9 - no module docstring; issue 10 - `parse_names` has no `Args:` or `Returns:` and missing type annotations
 
 ---
 
-### ✅ After (all issues resolved)
+###  After (all issues resolved)
 
 ```python
 """Utilities for parsing and managing contact information.
@@ -227,7 +227,7 @@ class ContactBook:
 |---|---|---|
 | 1 | `'''`, lowercase summary, no period | Replaced with `"""`, capitalized, added `.` |
 | 2 | `Returns:` in generator | Changed to `Yields:` |
-| 3 | "Class for …" anti-pattern | Rewritten to describe the instance |
+| 3 | "Class for ..." anti-pattern | Rewritten to describe the instance |
 | 4 | No `Attributes:` section | Added `owner` and `contacts` |
 | 5 | No `__init__` docstring | Added with `Args:` |
 | 6 | `@property` used "Returns" style | Changed to attribute style |

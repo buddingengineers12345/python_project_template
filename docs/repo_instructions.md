@@ -1,4 +1,4 @@
-# Repo Instructions — Step-by-Step Sync Guide
+# Repo Instructions - Step-by-Step Sync Guide
 
 Purpose: A deterministic, task-by-task runbook for keeping the meta-repo root and the
 `template/` tree in sync. Each TASK covers one folder or one logical group of files. Work
@@ -39,7 +39,7 @@ Always skip these paths, regardless of where they appear:
 
 ---
 
-## TASK 1 — Align root-level toolchain configs
+## TASK 1 - Align root-level toolchain configs
 
 **Scope:** Three files whose template counterparts use Jinja templating and therefore
 cannot be byte-identical.
@@ -68,7 +68,7 @@ cliff drift.
 
 ---
 
-## TASK 2 — Copy root git and commit configs
+## TASK 2 - Copy root git and commit configs
 
 **Scope:** Plain-text config files that must be byte-identical across both trees.
 
@@ -105,7 +105,7 @@ Each diff must print nothing.
 
 ---
 
-## TASK 3 — Copy env.example into Jinja envelope
+## TASK 3 - Copy env.example into Jinja envelope
 
 **Scope:** `env.example` has a Jinja-wrapped counterpart; payload must match.
 
@@ -133,7 +133,7 @@ Only Jinja-specific lines may differ.
 
 ---
 
-## TASK 4 — Copy `.vscode/` editor settings
+## TASK 4 - Copy `.vscode/` editor settings
 
 **Scope:** VS Code workspace configuration.
 
@@ -166,7 +166,7 @@ Output must be empty.
 
 ---
 
-## TASK 5 — Ignore root meta-only files
+## TASK 5 - Ignore root meta-only files
 
 **Scope:** Files that exist only to run the meta-repo. They have template-side equivalents
 produced independently through Jinja.
@@ -193,7 +193,7 @@ produced independently through Jinja.
 
 ---
 
-## TASK 6 — Align `.github/workflows/` Jinja workflow pairs
+## TASK 6 - Align `.github/workflows/` Jinja workflow pairs
 
 **Scope:** GitHub Actions workflows that exist in root as `.yml` and in template as
 `.yml.jinja`. These have Jinja conditionals and cannot be byte-identical.
@@ -221,7 +221,7 @@ produced independently through Jinja.
 
 ---
 
-## TASK 7 — Copy `.github/workflows/` plain workflow pairs
+## TASK 7 - Copy `.github/workflows/` plain workflow pairs
 
 **Scope:** Workflows with identical filenames in both trees; no Jinja.
 
@@ -258,7 +258,7 @@ All diffs must be empty.
 
 ---
 
-## TASK 8 — Ignore `.github/workflows/` meta-only and template-only files
+## TASK 8 - Ignore `.github/workflows/` meta-only and template-only files
 
 **Scope:** Workflows that intentionally live in only one tree.
 
@@ -278,11 +278,11 @@ All diffs must be empty.
 
 ---
 
-## TASK 9 — Align `.github/` top-level metadata files
+## TASK 9 - Align `.github/` top-level metadata files
 
 **Scope:** Files at `.github/` root (not `workflows/`, not `ISSUE_TEMPLATE/`).
 
-**Action:** Mixed — see table.
+**Action:** Mixed - see table.
 
 **File table:**
 
@@ -313,7 +313,7 @@ Jinja-related differences.
 
 ---
 
-## TASK 10 — Align `.github/ISSUE_TEMPLATE/`
+## TASK 10 - Align `.github/ISSUE_TEMPLATE/`
 
 **Scope:** Issue template forms.
 
@@ -340,7 +340,7 @@ cp -f .github/ISSUE_TEMPLATE/feature_request.md template/.github/ISSUE_TEMPLATE/
 
 ---
 
-## TASK 11 — Align `.claude/settings.json`
+## TASK 11 - Align `.claude/settings.json`
 
 **Scope:** Claude Code settings file.
 
@@ -364,7 +364,7 @@ and the template equivalent exit 0).
 
 ---
 
-## TASK 12 — Copy shared `.claude/commands/`
+## TASK 12 - Copy shared `.claude/commands/`
 
 **Scope:** Slash commands present in **both** trees.
 
@@ -412,7 +412,7 @@ All diffs must be empty.
 
 ---
 
-## TASK 13 — Ignore template-only `.claude/commands/`
+## TASK 13 - Ignore template-only `.claude/commands/`
 
 **Scope:** Commands that exist only on the template side.
 
@@ -431,7 +431,7 @@ All diffs must be empty.
 
 ---
 
-## TASK 14 — Copy shared `.claude/hooks/`
+## TASK 14 - Copy shared `.claude/hooks/`
 
 **Scope:** Hooks that appear in both trees. Enforced by `shared_hook_parity` check in
 `assets/root-template-sync-map.yaml`.
@@ -493,7 +493,7 @@ done
 
 ---
 
-## TASK 15 — Ignore meta-only `.claude/hooks/` and state files
+## TASK 15 - Ignore meta-only `.claude/hooks/` and state files
 
 **Scope:** Hooks that only apply to the meta-repo, plus local state.
 
@@ -518,7 +518,7 @@ done
 
 ---
 
-## TASK 16 — Copy shared `.claude/rules/`
+## TASK 16 - Copy shared `.claude/rules/`
 
 **Scope:** All rule files that exist in both trees.
 
@@ -558,7 +558,7 @@ All outputs must be empty.
 
 ---
 
-## TASK 17 — Ignore meta-only `.claude/rules/copier/`
+## TASK 17 - Ignore meta-only `.claude/rules/copier/`
 
 **Scope:** Copier-specific rules only relevant to the meta-repo.
 
@@ -576,7 +576,7 @@ All outputs must be empty.
 
 ---
 
-## TASK 18 — Copy shared `.claude/skills/` directories
+## TASK 18 - Copy shared `.claude/skills/` directories
 
 **Scope:** Each skill directory below exists in both trees and must be mirrored in full
 (including `SKILL.md`, `references/`, `templates/`, `assets/`, `scripts/`, and any `.skill`
@@ -641,7 +641,7 @@ All outputs must be empty.
 
 ---
 
-## TASK 19 — Align `scripts/` shared Python scripts
+## TASK 19 - Align `scripts/` shared Python scripts
 
 **Scope:** Scripts that exist in both trees but may diverge (template versions often log
 through `logging_manager`).
@@ -657,9 +657,9 @@ through `logging_manager`).
 
 **Steps:**
 
-1. `diff -u scripts/bump_version.py template/scripts/bump_version.py` — reconcile public
+1. `diff -u scripts/bump_version.py template/scripts/bump_version.py` - reconcile public
    API, CLI flags, and PEP 440 logic.
-2. `diff -u scripts/pr_commit_policy.py template/scripts/pr_commit_policy.py` — reconcile
+2. `diff -u scripts/pr_commit_policy.py template/scripts/pr_commit_policy.py` - reconcile
    commit-type lists, regex patterns, and exit codes.
 
 **Verification:** `python -c "import ast; ast.parse(open('scripts/bump_version.py').read())"`
@@ -667,7 +667,7 @@ plus the equivalent for every file passes (syntax check).
 
 ---
 
-## TASK 20 — Ignore meta-only `scripts/`
+## TASK 20 - Ignore meta-only `scripts/`
 
 **Scope:** Scripts that only belong in the meta-repo.
 
@@ -688,7 +688,7 @@ plus the equivalent for every file passes (syntax check).
 
 ---
 
-## TASK 21 — Ignore `tests/` on both sides
+## TASK 21 - Ignore `tests/` on both sides
 
 **Scope:** The meta-repo `tests/` suite and the template's `template/tests/` tree test
 different code (meta logic vs. generated project). They are not mirrors.
@@ -708,7 +708,7 @@ different code (meta logic vs. generated project). They are not mirrors.
 
 ---
 
-## TASK 22 — Ignore `docs/` and `assets/` on both sides
+## TASK 22 - Ignore `docs/` and `assets/` on both sides
 
 **Scope:** User-customised documentation and generated artefacts.
 
@@ -729,7 +729,7 @@ different code (meta logic vs. generated project). They are not mirrors.
 
 ---
 
-## TASK 23 — Ignore template-only scaffolding
+## TASK 23 - Ignore template-only scaffolding
 
 **Scope:** Files that only exist on the template side because they render into a generated
 project. They have no root counterpart.
@@ -756,7 +756,7 @@ project. They have no root counterpart.
 
 ---
 
-## TASK 24 — Align `template/{% if include_git_cliff %}cliff.toml{% endif %}.jinja`
+## TASK 24 - Align `template/{% if include_git_cliff %}cliff.toml{% endif %}.jinja`
 
 **Scope:** Final cross-check for the Jinja-wrapped cliff.toml (already handled in TASK 1;
 repeated here as a standalone verification step).
@@ -780,7 +780,7 @@ repeated here as a standalone verification step).
 
 ---
 
-## TASK 25 — Verify commitizen / cliff / gitmessage compatibility
+## TASK 25 - Verify commitizen / cliff / gitmessage compatibility
 
 **Scope:** The three files that define conventional-commit behaviour must agree on commit
 types and subject rules.
@@ -804,7 +804,7 @@ types and subject rules.
 
 ---
 
-## TASK 26 — Final validation
+## TASK 26 - Final validation
 
 **Scope:** End-to-end verification that every preceding TASK was applied correctly.
 

@@ -11,7 +11,7 @@ rules.
 
 - Matches structural code patterns without executing code
 - Ships with curated rule registries (`p/python`, `p/owasp-top-ten`, `p/security-audit`)
-- Supports custom rules written in YAML — the main value-add over bandit
+- Supports custom rules written in YAML - the main value-add over bandit
 - Reports findings with severity, rule ID, file, and line number
 
 ---
@@ -22,7 +22,7 @@ rules.
 pip install semgrep     # or: uv add --dev semgrep
 ```
 
-The PyPI package bundles the semgrep engine — no separate binary needed.
+The PyPI package bundles the semgrep engine - no separate binary needed.
 
 Verify:
 ```bash
@@ -41,9 +41,9 @@ Semgrep does **not** read `pyproject.toml`. All configuration lives in `.semgrep
 ## .semgrep.yml (annotated)
 
 ```yaml
-# .semgrep.yml — rule configuration file at the project root.
+# .semgrep.yml - rule configuration file at the project root.
 #
-# Registry packs (p/python etc.) cannot be embedded directly in this file —
+# Registry packs (p/python etc.) cannot be embedded directly in this file -
 # they must be passed via --config on the CLI or in pre-commit args.
 # This file is for LOCAL custom rules only.
 #
@@ -79,7 +79,7 @@ rules:
     message: Use the logging module instead of print() in production code.
     languages: [python]
     severity: WARNING
-    # Only enforce this in src/, not tests — pass `files: ^src/` in pre-commit.
+    # Only enforce this in src/, not tests - pass `files: ^src/` in pre-commit.
 ```
 
 ### Structuring custom rules
@@ -206,7 +206,7 @@ See `SKILL.md` for the full CI ordering across all tools.
 ## Gotchas
 
 - **Registry packs are CLI flags, not YAML rule entries.** You cannot write `- p/python`
-  inside a `rules:` block in `.semgrep.yml` — that syntax is invalid. Pass registries
+  inside a `rules:` block in `.semgrep.yml` - that syntax is invalid. Pass registries
   with `--config p/python` on the command line or in the pre-commit `args`.
 - **Registry rules require internet access on first run.** Rules are cached in
   `~/.semgrep/cache`. In an air-gapped CI environment, vendor the rules locally by

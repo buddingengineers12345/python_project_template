@@ -1,6 +1,6 @@
 # Standards Enforcement
 
-Standards are enforced at four layers — during development, at commit, in review, and in CI.
+Standards are enforced at four layers - during development, at commit, in review, and in CI.
 
 ## Tooling layer (always active)
 
@@ -53,7 +53,7 @@ See `.claude/hooks/README.md` for full details on exit codes, JSON input format,
 | `/review` | Full pre-merge checklist: lint + types + docstrings + test coverage + symbol scan |
 | `/coverage` | Run coverage, identify gaps, write missing tests |
 | `/docs-check` | Audit and repair Google-style docstrings across all source files |
-| `/standards` | Consolidated pass/fail report across all checks — the "ready to merge?" gate |
+| `/standards` | Consolidated pass/fail report across all checks - the "ready to merge?" gate |
 | `/update-claude-md` | Sync CLAUDE.md against pyproject.toml + justfile to prevent drift |
 | `/generate` | Generate a test project from the template into `/tmp/test-output` |
 | `/release` | Orchestrate a new release: verify CI, bump version, tag, push |

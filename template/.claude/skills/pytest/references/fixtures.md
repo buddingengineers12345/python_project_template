@@ -32,7 +32,7 @@ def test_user_has_email(sample_user):
 ```
 
 The test declares its dependency by including `sample_user` as a parameter. pytest
-resolves it automatically — no imports, no manual calls.
+resolves it automatically - no imports, no manual calls.
 
 ## Yield fixtures for teardown
 
@@ -58,10 +58,10 @@ Scopes control how often a fixture is created and destroyed.
 
 | Scope      | Lifecycle                                             | Use when                                    |
 |------------|-------------------------------------------------------|---------------------------------------------|
-| `function` | Created fresh for each test (default)                 | Most fixtures — ensures isolation            |
+| `function` | Created fresh for each test (default)                 | Most fixtures - ensures isolation            |
 | `class`    | Shared across all tests in a `Test` class             | Grouping related tests with shared state     |
 | `module`   | Shared across all tests in a `.py` file               | Expensive setup (e.g. loading test data)     |
-| `package`  | Shared across all tests in a directory                | Rare — shared service for a test package     |
+| `package`  | Shared across all tests in a directory                | Rare - shared service for a test package     |
 | `session`  | Created once for the entire test run                  | Very expensive (e.g. Docker container, DB)   |
 
 ```python
@@ -92,7 +92,7 @@ def reset_caches():
     cache.clear()
 ```
 
-Use autouse sparingly — it creates invisible dependencies. If only some tests need the
+Use autouse sparingly - it creates invisible dependencies. If only some tests need the
 fixture, require them to request it explicitly so the dependency is visible.
 
 Good uses for autouse:
@@ -172,7 +172,7 @@ Rules:
 
 - A fixture in `tests/conftest.py` is available everywhere under `tests/`.
 - A fixture in `tests/unit/conftest.py` is available only to `tests/unit/` tests.
-- You do not need to import `conftest.py` — pytest discovers it automatically.
+- You do not need to import `conftest.py` - pytest discovers it automatically.
 - Avoid putting test functions in `conftest.py`; it is for fixtures and hooks only.
 
 ## Built-in fixtures worth knowing
@@ -183,7 +183,7 @@ pytest provides several fixtures out of the box.
 |--------------------|-----------------------------------------------------------|
 | `tmp_path`         | A fresh `pathlib.Path` temporary directory per test       |
 | `tmp_path_factory` | Factory to create multiple temp directories (wider scope) |
-| `monkeypatch`      | Safely modify objects, dicts, env vars — auto-reverted    |
+| `monkeypatch`      | Safely modify objects, dicts, env vars - auto-reverted    |
 | `capsys`           | Capture `stdout`/`stderr` output                         |
 | `caplog`           | Capture log records                                       |
 | `request`          | Access to the test's metadata (markers, params, etc.)     |

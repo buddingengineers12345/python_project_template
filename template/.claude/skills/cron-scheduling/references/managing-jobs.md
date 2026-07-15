@@ -1,6 +1,6 @@
 # Cron job management reference
 
-_Read this file when: the user wants to update, edit, pause, resume, stop, delete, or manage the execution behaviour of existing cron jobs — including preventing overlaps, managing environment variables, running as specific users, or chaining jobs._
+_Read this file when: the user wants to update, edit, pause, resume, stop, delete, or manage the execution behaviour of existing cron jobs - including preventing overlaps, managing environment variables, running as specific users, or chaining jobs._
 
 ---
 
@@ -20,15 +20,15 @@ _Read this file when: the user wants to update, edit, pause, resume, stop, delet
 
 ## 1. Updating a cron job
 
-### Method 1 — Interactive edit (best for one-off changes)
+### Method 1 - Interactive edit (best for one-off changes)
 
 ```bash
 crontab -e
 # Find the line, edit it, save and quit
-# crontab reloads automatically on save — no daemon restart needed
+# crontab reloads automatically on save - no daemon restart needed
 ```
 
-### Method 2 — Programmatic sed update (best for scripts and CI/CD)
+### Method 2 - Programmatic sed update (best for scripts and CI/CD)
 
 ```bash
 # Change backup time from 2 AM to 3 AM
@@ -41,7 +41,7 @@ crontab -l | sed "s|$OLD|$NEW|" | crontab -
 crontab -l
 ```
 
-### Method 3 — Full file replacement (best for config management / Ansible / Terraform)
+### Method 3 - Full file replacement (best for config management / Ansible / Terraform)
 
 ```bash
 # Write a complete new crontab from a managed file
@@ -50,7 +50,7 @@ SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 MAILTO=""
 
-# v2.4.0 — updated 2024-01-20
+# v2.4.0 - updated 2024-01-20
 0 3 * * *    /bin/bash /opt/scripts/backup.sh >> /var/log/backup.log 2>&1
 0 */4 * * *  /usr/bin/python3 /opt/app/sync.py >> /var/log/sync.log 2>&1
 EOF
@@ -60,16 +60,16 @@ rm /tmp/managed-crontab
 crontab -l   # Verify
 ```
 
-### Method 4 — Append a new job without touching existing ones
+### Method 4 - Append a new job without touching existing ones
 
 ```bash
-# Safe append — preserves current crontab
+# Safe append - preserves current crontab
 (crontab -l 2>/dev/null; echo "*/10 * * * * /opt/scripts/newjob.sh >> /var/log/newjob.log 2>&1") | crontab -
 ```
 
 ### Updating `/etc/cron.d/` files
 
-Just overwrite the file — crond polls `/etc/cron.d/` and picks up changes automatically (no reload needed):
+Just overwrite the file - crond polls `/etc/cron.d/` and picks up changes automatically (no reload needed):
 
 ```bash
 sudo tee /etc/cron.d/myapp > /dev/null << 'EOF'
@@ -88,13 +88,13 @@ sudo chown root:root /etc/cron.d/myapp
 
 ## 2. Stopping and disabling jobs
 
-### Temporarily disable — comment out
+### Temporarily disable - comment out
 
 ```bash
-# Manual — open editor and add # at start of line
+# Manual - open editor and add # at start of line
 crontab -e
 
-# Programmatic — tag with marker so you can re-enable later
+# Programmatic - tag with marker so you can re-enable later
 TARGET="/opt/scripts/backup.sh"
 crontab -l | sed "/$TARGET/s/^/#DISABLED /" | crontab -
 
@@ -102,7 +102,7 @@ crontab -l | sed "/$TARGET/s/^/#DISABLED /" | crontab -
 crontab -l | sed "s/^#DISABLED \(.*$TARGET.*\)/\1/" | crontab -
 ```
 
-### Temporarily disable — use a flag file
+### Temporarily disable - use a flag file
 
 Add this guard at the top of your script. Gives you instant on/off without touching crontab:
 
@@ -125,7 +125,7 @@ touch /opt/scripts/.backup.disabled
 rm /opt/scripts/.backup.disabled
 ```
 
-### Temporarily disable — stop the cron daemon (disables ALL jobs)
+### Temporarily disable - stop the cron daemon (disables ALL jobs)
 
 ```bash
 sudo systemctl stop cron     # Ubuntu/Debian
@@ -144,7 +144,7 @@ sudo systemctl start cron    # Resume all jobs
 # Manual
 crontab -e   # Delete the line, save
 
-# Programmatic — match on command string
+# Programmatic - match on command string
 TARGET="/opt/scripts/backup.sh"
 crontab -l | grep -v "$TARGET" | crontab -
 
@@ -180,12 +180,12 @@ sudo rm /etc/cron.d/myapp
 
 When a job takes longer than its scheduled interval, multiple instances pile up. Choose the right prevention strategy:
 
-### Strategy A — `flock` (recommended for most jobs)
+### Strategy A - `flock` (recommended for most jobs)
 
 `flock` is part of `util-linux` (pre-installed on all major Linux distros):
 
 ```bash
-# In crontab — non-blocking: skip if already running
+# In crontab - non-blocking: skip if already running
 */5 * * * * /usr/bin/flock -n /tmp/myjob.lock /opt/scripts/myjob.sh >> /var/log/myjob.log 2>&1
 #                            │  └── lock file     └── your command
 #                            └── -n = non-blocking (exit code 1 if locked, don't queue)
@@ -194,7 +194,7 @@ When a job takes longer than its scheduled interval, multiple instances pile up.
 */5 * * * * /usr/bin/flock -w 30 /tmp/myjob.lock /opt/scripts/myjob.sh >> /var/log/myjob.log 2>&1
 ```
 
-### Strategy B — PID file inside the script
+### Strategy B - PID file inside the script
 
 ```bash
 #!/usr/bin/env bash
@@ -215,7 +215,7 @@ trap 'rm -f "$PIDFILE"; exit' INT TERM EXIT
 rm -f "$PIDFILE"
 ```
 
-### Strategy C — `timeout` (kill if job runs too long)
+### Strategy C - `timeout` (kill if job runs too long)
 
 ```bash
 # Kill the job if it hasn't finished within 4 minutes
@@ -227,7 +227,7 @@ rm -f "$PIDFILE"
 */5 * * * * /usr/bin/timeout --kill-after=10 240 /opt/scripts/myjob.sh >> /var/log/myjob.log 2>&1
 ```
 
-### Strategy D — combine flock + timeout (most robust)
+### Strategy D - combine flock + timeout (most robust)
 
 ```bash
 */5 * * * * /usr/bin/flock -n /tmp/myjob.lock /usr/bin/timeout 240 /opt/scripts/myjob.sh >> /var/log/myjob.log 2>&1
@@ -239,7 +239,7 @@ rm -f "$PIDFILE"
 
 Cron runs with `PATH=/usr/bin:/bin` and no shell profile loaded. Three safe patterns:
 
-### Pattern 1 — Set variables in the crontab header
+### Pattern 1 - Set variables in the crontab header
 
 ```bash
 # At the top of crontab, before any job entries
@@ -253,7 +253,7 @@ API_ENV=production
 
 Limitation: no `$(...)` substitution, no `source`, no arrays. Simple key=value only.
 
-### Pattern 2 — Source an env file inside the script
+### Pattern 2 - Source an env file inside the script
 
 ```bash
 #!/usr/bin/env bash
@@ -266,11 +266,11 @@ set +a
 /opt/app/run.sh
 ```
 
-### Pattern 3 — Wrapper script that sources env and execs
+### Pattern 3 - Wrapper script that sources env and execs
 
 ```bash
 #!/usr/bin/env bash
-# /opt/scripts/with-env.sh — reusable env wrapper
+# /opt/scripts/with-env.sh - reusable env wrapper
 set -a
 source /opt/app/.env
 set +a
@@ -278,12 +278,12 @@ exec "$@"
 ```
 
 ```bash
-# In crontab — clean, reusable pattern
+# In crontab - clean, reusable pattern
 0 2 * * * /opt/scripts/with-env.sh /opt/app/backup.py >> /var/log/backup.log 2>&1
 0 8 * * 1-5 /opt/scripts/with-env.sh /opt/app/report.py >> /var/log/report.log 2>&1
 ```
 
-### Pattern 4 — Inline env vars per job
+### Pattern 4 - Inline env vars per job
 
 ```bash
 # Set vars inline (simple cases)
@@ -345,7 +345,7 @@ www-data ALL=(root) NOPASSWD: /opt/scripts/specific_privileged_script.sh
 
 ## 7. Job chaining and dependencies
 
-### Sequential — job B runs after job A finishes (in the same crontab entry)
+### Sequential - job B runs after job A finishes (in the same crontab entry)
 
 ```bash
 # Run B only if A succeeds (&&)
@@ -358,7 +358,7 @@ www-data ALL=(root) NOPASSWD: /opt/scripts/specific_privileged_script.sh
 0 2 * * * /opt/scripts/primary.sh || /opt/scripts/fallback.sh >> /var/log/chain.log 2>&1
 ```
 
-### Sequential — stagger with separate crontab entries
+### Sequential - stagger with separate crontab entries
 
 Use time offsets when tasks share a resource (DB, API) and you want them spread out:
 
@@ -368,7 +368,7 @@ Use time offsets when tasks share a resource (DB, API) and you want them spread 
 40 2 * * *   /opt/scripts/export_products.sh >> /var/log/export.log 2>&1
 ```
 
-### Parallel — all start at the same time
+### Parallel - all start at the same time
 
 ```bash
 0 2 * * *   /opt/scripts/job_a.sh >> /var/log/job_a.log 2>&1
@@ -380,7 +380,7 @@ Use time offsets when tasks share a resource (DB, API) and you want them spread 
 
 ```bash
 #!/usr/bin/env bash
-# job_b.sh — waits for job_a to complete
+# job_b.sh - waits for job_a to complete
 SENTINEL="/tmp/job_a.done"
 TIMEOUT=1800   # 30 minutes
 
@@ -396,7 +396,7 @@ rm -f "$SENTINEL"
 ```
 
 ```bash
-# job_a.sh — create sentinel on success
+# job_a.sh - create sentinel on success
 # ... main logic ...
 touch /tmp/job_a.done
 ```
@@ -410,10 +410,10 @@ touch /tmp/job_a.done
 pgrep -af "backup.sh"
 ps aux | grep backup.sh
 
-# Graceful kill (SIGTERM — lets script clean up)
+# Graceful kill (SIGTERM - lets script clean up)
 kill $(pgrep -f "backup.sh")
 
-# Force kill (SIGKILL — use if graceful kill doesn't work after ~10s)
+# Force kill (SIGKILL - use if graceful kill doesn't work after ~10s)
 kill -9 $(pgrep -f "backup.sh")
 
 # Kill process tree (also kills child processes spawned by the job)

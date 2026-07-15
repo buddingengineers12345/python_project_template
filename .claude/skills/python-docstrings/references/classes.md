@@ -27,13 +27,13 @@ class MyClass:
 
 ## What the Summary Line Must Describe
 
-The summary describes **what the instance represents** — not the class mechanism,
-not when to use it, not "Class that …".
+The summary describes **what the instance represents** - not the class mechanism,
+not when to use it, not "Class that ...".
 
 The rule: imagine describing a *single object* of this type. What *is* it?
 
 ```python
-# ✅ Describes the instance
+#  Describes the instance
 class CheeseShopAddress:
     """The address of a cheese shop."""
 
@@ -43,7 +43,7 @@ class UserSession:
 class RetryPolicy:
     """A configurable policy for retrying failed operations."""
 
-# ❌ Describes the class itself (wrong)
+#  Describes the class itself (wrong)
 class CheeseShopAddress:
     """Class that describes the address of a cheese shop."""
 
@@ -74,7 +74,7 @@ class SampleClass:
 ### Attributes section
 
 - Documents **public instance attributes**, set in `__init__` or elsewhere.
-- **Excludes** `@property` — properties get their own docstrings.
+- **Excludes** `@property` - properties get their own docstrings.
 - Uses the same format and hanging-indent rules as `Args:` in functions.
 - If all attributes are `@property` or the class has none, omit the section.
 
@@ -112,7 +112,7 @@ the constructor **parameters**, which may or may not match the `Attributes:` nam
 Rules:
 - Required if `__init__` has non-obvious parameters.
 - Use `Args:` for constructor parameters (not `Attributes:`).
-- No `Returns:` section — constructors don't return values.
+- No `Returns:` section - constructors don't return values.
 
 ```python
 def __init__(self, likes_spam: bool = False):
@@ -134,7 +134,7 @@ Exception subclasses follow the same rules as regular classes, with one addition
 **The summary must describe what the exception *represents*, not when it is raised.**
 
 ```python
-# ✅ Describes what it IS
+#  Describes what it IS
 class OutOfCheeseError(Exception):
     """No more cheese is available."""
 
@@ -144,7 +144,7 @@ class DatabaseConnectionError(Exception):
 class ValidationError(ValueError):
     """An invalid value was provided for a required field."""
 
-# ❌ Describes when it's raised (wrong)
+#  Describes when it's raised (wrong)
 class OutOfCheeseError(Exception):
     """Raised when no more cheese is available."""
 
@@ -245,9 +245,9 @@ class LoggingMixin:
 
 ---
 
-## Complete Example — Before and After
+## Complete Example - Before and After
 
-### ❌ Before
+###  Before
 ```python
 class ContactBook:
     """Class for storing contact information."""
@@ -258,11 +258,11 @@ class ContactBook:
 ```
 
 Problems:
-- "Class for …" anti-pattern
+- "Class for ..." anti-pattern
 - No `Attributes:` section
 - `__init__` has no docstring, `owner` has no type hint or explanation
 
-### ✅ After
+###  After
 ```python
 class ContactBook:
     """A named collection of contact entries owned by a single person.

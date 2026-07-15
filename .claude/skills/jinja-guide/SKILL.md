@@ -21,10 +21,10 @@ inheritance, safe escaping, predictable whitespace, and reusable macros.
 
 | Syntax                             | Purpose                                  |
 |------------------------------------|------------------------------------------|
-| `{{ expression }}`                 | Output — print a variable or expression  |
-| `{% statement %}`                  | Logic — control flow, assignments, blocks |
-| `{# comment #}`                    | Comment — stripped from output entirely  |
-| `{{- … -}}` / `{%- … -%}`          | Strip whitespace on that side            |
+| `{{ expression }}`                 | Output - print a variable or expression  |
+| `{% statement %}`                  | Logic - control flow, assignments, blocks |
+| `{# comment #}`                    | Comment - stripped from output entirely  |
+| `{{- ... -}}` / `{%- ... -%}`          | Strip whitespace on that side            |
 
 ## Workflow
 
@@ -32,15 +32,15 @@ inheritance, safe escaping, predictable whitespace, and reusable macros.
 
 Before writing or editing, decide which scenario applies:
 
-- **New standalone template** → variables, filters, control structures; no
+- **New standalone template** - variables, filters, control structures; no
   inheritance needed unless part of a larger project
-- **New template in a project** → check for a base template; use
+- **New template in a project** - check for a base template; use
   `{% extends %}` + `{% block %}`
-- **Editing an existing template** → read the file first; preserve existing
+- **Editing an existing template** - read the file first; preserve existing
   block structure and whitespace conventions
-- **Refactoring** → extract repetition into macros; flatten over-nested
+- **Refactoring** - extract repetition into macros; flatten over-nested
   logic; review whitespace control
-- **Debugging** → check for delimiter mismatches, undefined variables, scope
+- **Debugging** - check for delimiter mismatches, undefined variables, scope
   issues, block name conflicts
 
 ### 2. Use the core syntax
@@ -49,7 +49,7 @@ Before writing or editing, decide which scenario applies:
 
 ```jinja
 {{ user.name }}                         {# dot notation #}
-{{ user['name'] }}                      {# bracket — identical result #}
+{{ user['name'] }}                      {# bracket - identical result #}
 {{ users[0].email }}                    {# index then attribute #}
 {{ config.DEBUG | default(false) }}     {# safe default for optional vars #}
 ```
@@ -88,7 +88,7 @@ Loop variables: `loop.index` (1-based), `loop.index0`, `loop.revindex`,
 {% set items = ['a', 'b', 'c'] %}
 
 {% set navigation %}
-  <nav>…</nav>
+  <nav>...</nav>
 {% endset %}
 ```
 
@@ -102,7 +102,7 @@ Loop variables: `loop.index` (1-based), `loop.index0`, `loop.revindex`,
 {{ html_content | escape }}
 {{ trusted_html | safe }}            {# USE WITH CAUTION #}
 {{ names | join(', ') }}
-{{ dict_var | items }}               {# iterate key/value pairs — Jinja 3.1+ #}
+{{ dict_var | items }}               {# iterate key/value pairs - Jinja 3.1+ #}
 ```
 
 **Tests** use the `is` keyword:
@@ -116,7 +116,7 @@ Loop variables: `loop.index` (1-based), `loop.index0`, `loop.revindex`,
 
 For the complete operator list, literal syntax, global functions, and line
 statements, see [references/syntax.md](references/syntax.md). For the full
-A–Z filter list with signatures, see
+A-Z filter list with signatures, see
 [references/filters-reference.md](references/filters-reference.md).
 
 ### 3. Build on template inheritance
@@ -161,7 +161,7 @@ project.
 Rules to internalize:
 
 - `{% extends %}` MUST be the first tag in a child template
-- A child may have only ONE `{% extends %}` — no multiple inheritance
+- A child may have only ONE `{% extends %}` - no multiple inheritance
 - Call `{{ super() }}` inside a block to include the parent's content
 - Name end-tags for readability on long blocks: `{% endblock content %}`
 - Use `self.blockname()` to re-use a block's content elsewhere in the same template
@@ -171,7 +171,7 @@ macro scope) are in [references/inheritance.md](references/inheritance.md).
 
 ### 4. Extract repetition into macros
 
-Macros are template functions — define once, call many times.
+Macros are template functions - define once, call many times.
 
 ```jinja
 {# macros/forms.html #}
@@ -234,12 +234,12 @@ variable explicitly.
 Checklist to run before touching any `.j2` / `.jinja` file:
 
 1. **Read the file in full** before making changes
-2. **Identify the inheritance chain** — does it `{% extends %}` another file?
-3. **Locate all `{% block %}` definitions** — map parent vs. child overrides
-4. **Preserve whitespace conventions** — if the file uses `{%- -%}`, continue
-5. **Check macro imports** — find their source before changing signatures
-6. **Add blocks; don't remove them** — removing breaks child templates
-7. **Test undefined variable safety** — use `| default()` or
+2. **Identify the inheritance chain** - does it `{% extends %}` another file?
+3. **Locate all `{% block %}` definitions** - map parent vs. child overrides
+4. **Preserve whitespace conventions** - if the file uses `{%- -%}`, continue
+5. **Check macro imports** - find their source before changing signatures
+6. **Add blocks; don't remove them** - removing breaks child templates
+7. **Test undefined variable safety** - use `| default()` or
    `{% if var is defined %}` for optional context
 
 ## Framework notes
@@ -253,13 +253,13 @@ structure, and security defaults, see
 
 ## When to load references
 
-| If the task involves…                          | Load                              |
+| If the task involves...                          | Load                              |
 |-------------------------------------------------|-----------------------------------|
 | Operator syntax, literals, global functions    | `references/syntax.md`            |
 | Filter usage beyond basics (A-Z list)          | `references/filters-reference.md` |
 | Template inheritance, include, import, macros  | `references/inheritance.md`       |
 | Performance, security, testing best practices  | `references/best-practices.md`    |
-| Simple template edits (default)                | No reference needed — use inline  |
+| Simple template edits (default)                | No reference needed - use inline  |
 
 ## Efficiency: batch edits and parallel calls
 
@@ -274,5 +274,5 @@ structure, and security defaults, see
 |-----------------------------------------------------------------|--------------------------------------------------------------------------|
 | Operators, literals, expressions, globals, line statements      | [references/syntax.md](references/syntax.md)                             |
 | Inheritance, `include`, `import`, `call`, macro scope           | [references/inheritance.md](references/inheritance.md)                   |
-| Complete A–Z filter reference with signatures                   | [references/filters-reference.md](references/filters-reference.md)       |
+| Complete A-Z filter reference with signatures                   | [references/filters-reference.md](references/filters-reference.md)       |
 | Project structure, naming, security, Flask/Ansible/dbt patterns | [references/best-practices.md](references/best-practices.md)             |

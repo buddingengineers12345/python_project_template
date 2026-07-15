@@ -26,7 +26,7 @@ Tables are NOT appropriate when:
 **Example of data that should be a list, not a table (from the Google style guide):**
 
 ```markdown
-# ❌ Bad — this table has three specific problems
+#  Bad - this table has three specific problems
 Fruit  | Metrics      | Grows on | Acute curvature    | Attributes          | Notes
 ------ | ------------ | -------- | ------------------ | ------------------- | -----
 Apple  | Very popular | Trees    |                    | Juicy, Firm, Sweet  | Apples keep doctors away.
@@ -35,20 +35,20 @@ Banana | Very popular | Trees    | 16 degrees average | Convenient, Soft    | Mo
 
 The Google style guide names three specific table problems to watch for:
 
-1. **Poor distribution** — Several columns don't differ across rows, and some cells
+1. **Poor distribution** - Several columns don't differ across rows, and some cells
    are empty. This is usually a sign that the data may not benefit from tabular display.
 
-2. **Unbalanced dimensions** — There are very few rows relative to columns (or very
+2. **Unbalanced dimensions** - There are very few rows relative to columns (or very
    few columns relative to rows). When this ratio is unbalanced in either direction,
    a table becomes little more than an inflexible format for text.
 
-3. **Rambling prose in cells** — Tables should tell a succinct story at a glance.
+3. **Rambling prose in cells** - Tables should tell a succinct story at a glance.
    Long sentences or paragraphs inside cells defeat the purpose of a table.
 
 If any of these three problems apply, convert the table to a list with subheadings:
 
 ```markdown
-# ✅ Good — list form is more readable here
+#  Good - list form is more readable here
 ## Fruits
 
 Both are highly popular, sweet, and grow on trees.
@@ -94,18 +94,18 @@ Control alignment with colons in the separator row:
 | More text    |  More   |        100.00 |
 ```
 
-- `:---` — left align (default if no colon)
-- `:---:` — centre align
-- `---:` — right align (use for numeric columns)
+- `:---` - left align (default if no colon)
+- `:---:` - centre align
+- `---:` - right align (use for numeric columns)
 
 ### Keeping Tables Readable
 
-- **Keep cells short** — Markdown offers no line-break within table cells.
+- **Keep cells short** - Markdown offers no line-break within table cells.
 - **Use reference links** for any URL inside a cell (see `03-code-and-links.md`).
 - **Align pipe characters vertically** in source for readability:
 
   ```markdown
-  # ✅ Well-aligned source
+  #  Well-aligned source
   | Transport | Favored by   | Advantage          |
   |-----------|:-------------|:-------------------|
   | Bicycle   | Commuters    | Zero emissions     |
@@ -113,7 +113,7 @@ Control alignment with colons in the separator row:
   | Bus       | City riders  | Frequent stops     |
   ```
 
-- Cell widths in source don't need to match — Markdown renders them uniformly regardless:
+- Cell widths in source don't need to match - Markdown renders them uniformly regardless:
 
   ```markdown
   | Col | Col |
@@ -164,7 +164,7 @@ minimise cell content.
 Wrap an image in a link to make it clickable:
 
 ```markdown
-[![Django logo — click to open documentation](img/django.png)](https://docs.djangoproject.com/)
+[![Django logo - click to open documentation](img/django.png)](https://docs.djangoproject.com/)
 ```
 
 ### Alt Text Rules
@@ -177,12 +177,12 @@ Alt text is **mandatory for all meaningful images**. It is used by:
 **Writing good alt text:**
 
 ```markdown
-# ✅ Good — describes what the image shows and why it matters
+#  Good - describes what the image shows and why it matters
 ![Bar chart showing Q4 revenue up 23% compared to Q3](images/q4-revenue.png)
 ![Screenshot of the Settings > Privacy panel with Location toggle highlighted](images/privacy-settings.png)
-![Flowchart: user request → auth check → cache lookup → database → response](images/request-flow.png)
+![Flowchart: user request - auth check - cache lookup - database - response](images/request-flow.png)
 
-# ❌ Bad — uninformative
+#  Bad - uninformative
 ![image](images/q4-revenue.png)
 ![chart](images/chart1.png)
 ![screenshot](images/screen.png)
@@ -190,8 +190,8 @@ Alt text is **mandatory for all meaningful images**. It is used by:
 
 Guidelines for alt text:
 - Describe **what the image shows** and **why it is relevant** in that context.
-- Keep alt text concise — 1–2 sentences maximum.
-- Do not start with "Image of…" or "Picture of…" (screen readers already announce it's an image).
+- Keep alt text concise - 1-2 sentences maximum.
+- Do not start with "Image of..." or "Picture of..." (screen readers already announce it's an image).
 - For **purely decorative** images (dividers, backgrounds), use empty alt text: `![](...)`
   so screen readers skip them.
 - For **complex diagrams** (architecture diagrams, flowcharts), provide a caption or
@@ -211,7 +211,7 @@ Guidelines for alt text:
 
 - When it is genuinely **easier to show than to describe** (UI navigation, visual layouts).
 - Architecture diagrams, flowcharts, and data visualisations that would be verbose as text.
-- **Use sparingly** — excessive images distract, slow page load, and are inaccessible
+- **Use sparingly** - excessive images distract, slow page load, and are inaccessible
   without good alt text. When in doubt, write prose.
 
 ---
@@ -250,7 +250,7 @@ Collapsed content goes here. Full Markdown works inside.
 <!-- Keyboard key styling -->
 Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy.
 
-<!-- Inline colour — only on platforms that render it (e.g., GitHub) -->
+<!-- Inline colour - only on platforms that render it (e.g., GitHub) -->
 <span style="color:red">Warning text</span>
 ```
 
@@ -259,7 +259,7 @@ Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy.
 - Page layout or multi-column layouts
 - Font size, font family, or colour styling (except `<span>` for one-off critical warnings)
 - `<b>` or `<i>` instead of `**` and `*`
-- `<h1>`–`<h6>` instead of `#` syntax
+- `<h1>`-`<h6>` instead of `#` syntax
 - `<ul>`, `<ol>`, `<li>` instead of Markdown list syntax
 - `<a href>` instead of Markdown link syntax
 - `<img>` instead of `![]()` syntax

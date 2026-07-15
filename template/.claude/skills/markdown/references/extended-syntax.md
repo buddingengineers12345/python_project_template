@@ -5,7 +5,7 @@ definition lists, heading IDs, emoji, highlight, math (LaTeX), Mermaid diagrams,
 callout/alert blocks, automatic URLs, and platform compatibility notes.
 
 **Primary sources:** [GFM Spec](https://github.github.com/gfm/),
-[Markdown Guide — Extended Syntax](https://www.markdownguide.org/extended-syntax/),
+[Markdown Guide - Extended Syntax](https://www.markdownguide.org/extended-syntax/),
 [GitLab Flavored Markdown](https://docs.gitlab.com/user/markdown/)
 
 > **Important:** Extended syntax is not universally supported. Always verify that
@@ -24,8 +24,8 @@ GFM is the most widely used Markdown dialect. It extends CommonMark with:
 | Tables | Pipe syntax | Native table support |
 | Strikethrough | `~~text~~` | Double tildes |
 | Autolinks | Bare URLs | Auto-converted to links |
-| Disallowed raw HTML | — | Some HTML tags are sanitised |
-| Emoji shortcodes | `:emoji:` | `:rocket:` → 🚀 |
+| Disallowed raw HTML | - | Some HTML tags are sanitised |
+| Emoji shortcodes | `:emoji:` | `:rocket:` -  |
 | Footnotes | `[^1]` | Supported in newer GFM |
 | Math | `$` and `$$` | LaTeX, added 2022 |
 | Mermaid diagrams | ` ```mermaid ` | Flowcharts, sequences, etc. |
@@ -81,7 +81,7 @@ This statement has a named footnote.[^note]
 ### Footnote Rules
 
 - Identifiers can be numbers or words; no spaces or tabs.
-- Identifiers are for source management only — output is always sequential numbers.
+- Identifiers are for source management only - output is always sequential numbers.
 - Place footnote definitions at the end of the document or at the end of the section.
 - Indent continuation lines with 4 spaces to include multi-paragraph footnotes.
 
@@ -142,8 +142,8 @@ Second Term
 ```
 
 Rendered output:
-> **First Term** — Definition of the first term.
-> **Second Term** — First definition of the second term. / Second definition of the second term.
+> **First Term** - Definition of the first term.
+> **Second Term** - First definition of the second term. / Second definition of the second term.
 
 ---
 
@@ -242,9 +242,9 @@ erDiagram
 :rocket: :white_check_mark: :warning: :x: :bulb: :books:
 ```
 
-Renders as: 🚀 ✅ ⚠️ ❌ 💡 📚
+Renders as:   ️   
 
-Use emoji sparingly in technical documentation — they improve scannability for
+Use emoji sparingly in technical documentation - they improve scannability for
 status indicators but can appear unprofessional in formal docs. Never rely solely
 on emoji to convey meaning (accessibility concern).
 
@@ -258,7 +258,7 @@ Standard GFM with double tildes:
 ~~deleted text~~
 ```
 
-**Do not** use single tildes (`~text~`) for strikethrough — single tildes are for
+**Do not** use single tildes (`~text~`) for strikethrough - single tildes are for
 subscript in some parsers and strikethrough in others, causing inconsistent rendering.
 
 ---
@@ -294,19 +294,19 @@ Renders with green/red highlighting in GitLab. Not supported elsewhere.
 
 | Feature | CommonMark | GFM (GitHub) | GitLab | Pandoc | Kramdown | MkDocs |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
-| Tables | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Task lists | ❌ | ✅ | ✅ | ✅ | ✅ | ✅* |
-| Strikethrough | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Footnotes | ❌ | ✅ | ✅ | ✅ | ✅ | ✅* |
-| Definition lists | ❌ | ❌ | ✅ | ✅ | ✅ | ✅* |
-| Math (LaTeX) | ❌ | ✅ | ✅ | ✅ | ✅* | ✅* |
-| Mermaid | ❌ | ✅ | ✅ | ❌ | ❌ | ✅* |
-| GFM Alerts | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Custom heading IDs | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
-| Emoji shortcodes | ❌ | ✅ | ✅ | ✅* | ❌ | ✅* |
-| Highlight (`==`) | ❌ | ❌ | ❌ | ✅* | ✅* | ✅* |
-| Subscript (`~`) | ❌ | ❌ | ✅ | ✅* | ✅* | ✅* |
-| Superscript (`^`) | ❌ | ❌ | ✅ | ✅* | ✅* | ✅* |
+| Tables |  |  |  |  |  |  |
+| Task lists |  |  |  |  |  | * |
+| Strikethrough |  |  |  |  |  |  |
+| Footnotes |  |  |  |  |  | * |
+| Definition lists |  |  |  |  |  | * |
+| Math (LaTeX) |  |  |  |  | * | * |
+| Mermaid |  |  |  |  |  | * |
+| GFM Alerts |  |  |  |  |  |  |
+| Custom heading IDs |  |  |  |  |  |  |
+| Emoji shortcodes |  |  |  | * |  | * |
+| Highlight (`==`) |  |  |  | * | * | * |
+| Subscript (`~`) |  |  |  | * | * | * |
+| Superscript (`^`) |  |  |  | * | * | * |
 
 `*` = requires plugin/extension configuration
 
@@ -318,8 +318,8 @@ Renders with green/red highlighting in GitLab. Not supported elsewhere.
 Supports: headings, emphasis, lists, links, images, code blocks, blockquotes, horizontal rules.
 
 **Discord** supports: bold, italic, underline (`__text__`), strikethrough, inline code,
-code blocks with syntax highlighting, blockquotes, spoiler tags (`||text||`), H1–H3.
+code blocks with syntax highlighting, blockquotes, spoiler tags (`||text||`), H1-H3.
 Does not support: tables, images via Markdown, footnotes, task lists.
-Note: Discord uses `__text__` for **underline**, not bold — conflicts with standard Markdown.
+Note: Discord uses `__text__` for **underline**, not bold - conflicts with standard Markdown.
 
-**Slack** uses its own "mrkdwn" format — significantly different from standard Markdown.
+**Slack** uses its own "mrkdwn" format - significantly different from standard Markdown.

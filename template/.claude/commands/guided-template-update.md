@@ -35,7 +35,7 @@ changed, asking for confirmation at critical steps, and verifying the update wit
    ```bash
    copier check-update --quiet
    ```
-   Report result: "No updates available" OR "Update available from vX.Y.Z → vA.B.C"
+   Report result: "No updates available" OR "Update available from vX.Y.Z - vA.B.C"
 
 4. **If no update available, stop.** Report: "Project is already on the latest template version."
 
@@ -51,7 +51,7 @@ changed, asking for confirmation at critical steps, and verifying the update wit
    copier check-update --quiet --output-format json | jq '.available_version'
    ```
 
-   Show the user: "Ready to update from vX.Y.Z → vA.B.C"
+   Show the user: "Ready to update from vX.Y.Z - vA.B.C"
 
 6. **Preview the changes** (show summary)
 
@@ -87,7 +87,7 @@ changed, asking for confirmation at critical steps, and verifying the update wit
    If `.rej` files exist:
    - List them: `find . -name "*.rej"`
    - Show user: "Conflicts found. Review these files and manually apply the changes."
-   - Exit here — user must resolve conflicts before running CI.
+   - Exit here - user must resolve conflicts before running CI.
 
    If merge markers exist in any file:
    - Scan for `<<<<<<` and `>>>>>>`
@@ -100,12 +100,12 @@ changed, asking for confirmation at critical steps, and verifying the update wit
     ```
 
     If CI passes:
-    - ✓ Update successful and verified
-    - Commit the changes: `git add . && git commit -m "chore: update from template vX.Y.Z → vA.B.C"`
+    -  Update successful and verified
+    - Commit the changes: `git add . && git commit -m "chore: update from template vX.Y.Z - vA.B.C"`
     - Report success and next steps
 
     If CI fails:
-    - ✗ Update caused test/lint failures
+    -  Update caused test/lint failures
     - Show the failure details
     - User must fix issues (likely: new ruff rules apply, new test requirements, etc.)
     - Re-run `just ci` after fixes
@@ -115,19 +115,19 @@ changed, asking for confirmation at critical steps, and verifying the update wit
 ### Success (no conflicts, CI passes)
 
 ```
-## Template Update — My Library
+## Template Update - My Library
 
-✓ Update available: vX.Y.Z → vA.B.C
+ Update available: vX.Y.Z - vA.B.C
 
 Changes:
 - Updated: pyproject.toml, justfile, CLAUDE.md, .github/workflows/
 - Kept: README.md, your source code, docs/
 
-✓ Update applied successfully
-✓ No conflicts
-✓ CI passed (all tests, lint, types, docs)
+ Update applied successfully
+ No conflicts
+ CI passed (all tests, lint, types, docs)
 
-✓ Changes committed: git log --oneline -1
+ Changes committed: git log --oneline -1
 
 Next steps:
 - Review the changes: git show HEAD
@@ -140,12 +140,12 @@ Your project is now synced with the latest template!
 ### Conflicts Detected
 
 ```
-## Template Update — My Library
+## Template Update - My Library
 
-✓ Update available: vX.Y.Z → vA.B.C
-✓ Update applied
+ Update available: vX.Y.Z - vA.B.C
+ Update applied
 
-✗ Conflicts found in 2 files:
+ Conflicts found in 2 files:
   - src/my_library/core.py.rej
   - pyproject.toml.rej
 
@@ -160,11 +160,11 @@ Action required:
 ### CI Failures After Update
 
 ```
-## Template Update — My Library
+## Template Update - My Library
 
-✓ Update applied
-✓ No conflicts
-✗ CI failed at: ruff lint
+ Update applied
+ No conflicts
+ CI failed at: ruff lint
 
 Error:
   src/my_library/core.py:42: D100 Missing docstring in public module
@@ -181,6 +181,6 @@ Action required:
 
 - Always run this on main/master, not a feature branch
 - If conflicts occur, they're usually in `.github/`, not your code
-- New ruff rules from template updates are common — just run `/docs-check` or `just review` to fix
+- New ruff rules from template updates are common - just run `/docs-check` or `just review` to fix
 - If you customize files like `pyproject.toml`, mark them `_skip_if_exists` in `.copier-answers.yml` before the next update to preserve your changes
 - Keep a recent commit before running update, so you can `git revert HEAD` if needed

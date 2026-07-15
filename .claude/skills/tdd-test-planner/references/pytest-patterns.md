@@ -11,13 +11,13 @@
 
 ---
 
-## 1 — AAA Structure
+## 1 - AAA Structure
 
 Every test body uses three labelled sections. Never write bare `...`.
 
 ```python
 def test_transfer_debits_source(funded_account, empty_account):  # [A1]
-    """Transfer 50 from funded → source balance decreases by 50."""
+    """Transfer 50 from funded - source balance decreases by 50."""
     # Arrange
     initial_balance = funded_account.balance
 
@@ -32,7 +32,7 @@ For tests that just verify an exception is raised, the pattern still applies:
 
 ```python
 def test_transfer_raises_on_insufficient_funds(funded_account, empty_account):  # [B1]
-    """Amount exceeds balance → raises InsufficientFundsError."""
+    """Amount exceeds balance - raises InsufficientFundsError."""
     # Arrange
     amount = funded_account.balance + 0.01
 
@@ -43,7 +43,7 @@ def test_transfer_raises_on_insufficient_funds(funded_account, empty_account):  
 
 ---
 
-## 2 — parametrize with ids
+## 2 - parametrize with ids
 
 Always supply `ids=` so pytest output is readable.
 
@@ -57,7 +57,7 @@ Always supply `ids=` so pytest output is readable.
 @pytest.mark.unit
 def test_transfer_boundary_amounts(funded_account, empty_account,
                                    amount, should_succeed):  # [C1]
-    """Boundary amounts around balance → succeed or raise correctly."""
+    """Boundary amounts around balance - succeed or raise correctly."""
     # Arrange
     ...
     # Act
@@ -84,7 +84,7 @@ def test_parse_rejects_invalid_input(bad_input):  # [B1]
 
 ---
 
-## 3 — conftest.py layout
+## 3 - conftest.py layout
 
 ```
 tests/
@@ -132,7 +132,7 @@ def db_session(db_engine):
 
 @pytest.fixture
 def make_account():
-    """Factory fixture — creates Account objects with custom balance."""
+    """Factory fixture - creates Account objects with custom balance."""
     def _make(balance=100.00, account_id="acc-001"):
         return Account(id=account_id, balance=balance)
     return _make
@@ -140,10 +140,10 @@ def make_account():
 
 ---
 
-## 4 — Class-based grouping
+## 4 - Class-based grouping
 
 Use when a single subject has 8+ tests, or when you want to share fixtures
-via class-level setup. Classes must not inherit from `unittest.TestCase` —
+via class-level setup. Classes must not inherit from `unittest.TestCase` -
 they should be plain classes discovered by pytest.
 
 ```python
@@ -153,7 +153,7 @@ class TestTransferFunds:
     # ── Happy Path ────────────────────────────────────────────────────────
 
     def test_debits_source(self, funded_account, empty_account):  # [A1]
-        """Transfer 50 → source debited by 50."""
+        """Transfer 50 - source debited by 50."""
         # Arrange
         ...
         # Act
@@ -162,7 +162,7 @@ class TestTransferFunds:
         ...
 
     def test_credits_destination(self, funded_account, empty_account):  # [A2]
-        """Transfer 50 → destination credited by 50."""
+        """Transfer 50 - destination credited by 50."""
         ...
 
     # ── Error Paths ───────────────────────────────────────────────────────
@@ -171,12 +171,12 @@ class TestTransferFunds:
         ...
 ```
 
-Fixtures still come from conftest.py — class methods receive them as
+Fixtures still come from conftest.py - class methods receive them as
 parameters the same way plain functions do.
 
 ---
 
-## 5 — Async testing (pytest-asyncio)
+## 5 - Async testing (pytest-asyncio)
 
 Install: `pip install pytest-asyncio`
 
@@ -201,7 +201,7 @@ async def async_client():
 
 @pytest.mark.asyncio
 async def test_create_user_returns_201(async_client):  # [A1]
-    """POST /users with valid payload → 201 Created."""
+    """POST /users with valid payload - 201 Created."""
     # Arrange
     payload = {"email": "alice@example.com", "name": "Alice"}
     # Act
@@ -214,7 +214,7 @@ When the subject is `async def`, all tests that call it must also be `async`.
 
 ---
 
-## 6 — Marker registration
+## 6 - Marker registration
 
 Every custom marker must be registered or pytest emits `PytestUnknownMarkWarning`.
 
@@ -237,7 +237,7 @@ pytest -m "unit or regression"
 
 ---
 
-## 7 — Useful built-in fixtures
+## 7 - Useful built-in fixtures
 
 | Fixture | Use case |
 |---|---|

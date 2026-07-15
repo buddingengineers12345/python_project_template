@@ -30,16 +30,16 @@ description: >-
 
 ---
 
-## Quick-decision tree — what does the user need?
+## Quick-decision tree - what does the user need?
 
 ```
-User asks about cron…
+User asks about cron...
 │
-├── "What does */5 * * * * mean?" / "How do I write a schedule for…"
+├── "What does */5 * * * * mean?" / "How do I write a schedule for..."
 │   └── Read: references/syntax-reference.md
 │
 ├── "Set up / create a cron job"
-│   └── Follow: §Setup workflow below — no extra file needed for Linux basics
+│   └── Follow: §Setup workflow below - no extra file needed for Linux basics
 │       Platform-specific: for macOS / Windows / Docker / K8s / Node / Python, see [references/environments.md](references/environments.md)
 │
 ├── "Update / change / edit a cron job"
@@ -65,31 +65,31 @@ User asks about cron…
 ### Cron syntax at a glance
 
 ```
- ┌──────── minute        0–59
- │  ┌───── hour          0–23
- │  │  ┌── day-of-month  1–31
- │  │  │  ┌─ month       1–12
- │  │  │  │  ┌ day-of-week  0–7  (0 and 7 both = Sunday)
+ ┌──────── minute        0-59
+ │  ┌───── hour          0-23
+ │  │  ┌── day-of-month  1-31
+ │  │  │  ┌─ month       1-12
+ │  │  │  │  ┌ day-of-week  0-7  (0 and 7 both = Sunday)
  │  │  │  │  │
  *  *  *  *  *   command
 ```
 
 | Symbol | Meaning | Example |
 |--------|---------|---------|
-| `*` | Every value | `* * * * *` → every minute |
-| `,` | List | `0,30 * * * *` → :00 and :30 |
-| `-` | Range | `0 9-17 * * *` → every hour 9 AM–5 PM |
-| `/` | Step | `*/15 * * * *` → every 15 min |
+| `*` | Every value | `* * * * *` - every minute |
+| `,` | List | `0,30 * * * *` - :00 and :30 |
+| `-` | Range | `0 9-17 * * *` - every hour 9 AM-5 PM |
+| `/` | Step | `*/15 * * * *` - every 15 min |
 | `@daily` | Shorthand | = `0 0 * * *` |
 | `@reboot` | At boot | runs once on startup |
 
 ### The #1 rule: cron's environment is minimal
 
-Cron runs with a stripped-down `PATH=/usr/bin:/bin` — no `.bashrc`, no `.zshrc`, no exports.
+Cron runs with a stripped-down `PATH=/usr/bin:/bin` - no `.bashrc`, no `.zshrc`, no exports.
 **Always use absolute paths** for both the interpreter and the script.
 
 ```bash
-# Wrong — relies on your PATH
+# Wrong - relies on your PATH
 0 2 * * * python3 backup.py
 
 # Correct
@@ -100,7 +100,7 @@ Cron runs with a stripped-down `PATH=/usr/bin:/bin` — no `.bashrc`, no `.zshrc
 
 ## Setup workflow (Linux/macOS cron)
 
-### Step 1 — Write and test the script
+### Step 1 - Write and test the script
 
 ```bash
 #!/usr/bin/env bash
@@ -121,9 +121,9 @@ env -i HOME=/home/youruser SHELL=/bin/bash PATH=/usr/bin:/bin \
     bash /opt/scripts/myjob.sh
 ```
 
-If it fails here → fix it before adding to cron.
+If it fails here - fix it before adding to cron.
 
-### Step 2 — Open the crontab
+### Step 2 - Open the crontab
 
 ```bash
 crontab -e                        # Your own jobs
@@ -131,7 +131,7 @@ sudo crontab -u www-data -e       # Another user's jobs (as root)
 sudo nano /etc/cron.d/myapp       # System-wide jobs (needs username field)
 ```
 
-### Step 3 — Write a complete entry
+### Step 3 - Write a complete entry
 
 ```bash
 # ── Environment (set at top of crontab, once) ──────────────────
@@ -155,7 +155,7 @@ MAILTO=""          # "" = suppress email; or admin@example.com
 > `>> /var/log/file.log 2>&1` captures both stdout and stderr.
 > Omit it and output vanishes (or goes to root's mailbox).
 
-### Step 4 — Verify
+### Step 4 - Verify
 
 ```bash
 crontab -l                                          # List installed jobs
@@ -165,7 +165,7 @@ sudo tail -f /var/log/syslog | grep CRON            # Watch live execution
 sudo journalctl -u cron --since "1 hour ago"        # Recent activity
 ```
 
-### Step 5 — System-wide jobs (`/etc/cron.d/`)
+### Step 5 - System-wide jobs (`/etc/cron.d/`)
 
 Files in `/etc/cron.d/` need a username field and must be owned by root, mode 644:
 
@@ -223,7 +223,7 @@ log "INFO: Finished in $(( $(date +%s) - START ))s"
 
 ---
 
-## Quick reference — crontab commands
+## Quick reference - crontab commands
 
 ```bash
 crontab -e               # Edit your crontab

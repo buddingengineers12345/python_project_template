@@ -24,7 +24,7 @@ Files with `.env` extension are excluded by default.
 
 #### Using Inline Code as an Escape Mechanism
 
-Wrap anything that should **not** be parsed as Markdown in backticks — fake paths,
+Wrap anything that should **not** be parsed as Markdown in backticks - fake paths,
 example URLs with query strings, template variables:
 
 ```markdown
@@ -110,7 +110,7 @@ ORDER BY created_at DESC;
 ```
 ````
 
-Specifying no language disables syntax highlighting — only do this for plain-text
+Specifying no language disables syntax highlighting - only do this for plain-text
 output or when no language applies:
 
 ````markdown
@@ -185,11 +185,11 @@ Write the sentence naturally first, then wrap the most descriptive phrase as the
 link text. Link text should describe the destination, not the act of clicking:
 
 ```markdown
-# ✅ Good — descriptive link text
+#  Good - descriptive link text
 See the [Markdown style guide](https://google.github.io/styleguide/docguide/style.html) for details.
 Read the [contributing guide](CONTRIBUTING.md) before opening a PR.
 
-# ❌ Bad — uninformative link text
+#  Bad - uninformative link text
 See the style guide [here](https://google.github.io/styleguide/docguide/style.html).
 For more info, click [this link](https://example.com).
 Check out [https://example.com/foo/bar](https://example.com/foo/bar).
@@ -202,22 +202,22 @@ Never use "click here", "here", "link", "this", or bare URLs as link text.
 Use root-relative paths (not full URLs) for internal Markdown links:
 
 ```markdown
-# ✅ Root-relative path
+#  Root-relative path
 [Contributing Guide](/docs/CONTRIBUTING.md)
 [API Reference](/docs/api/README.md)
 
-# ✅ Same-directory relative link
+#  Same-directory relative link
 [See also](other-page-in-same-dir.md)
 
-# ❌ Full URL for an internal doc
+#  Full URL for an internal doc
 [Contributing Guide](https://github.com/org/repo/blob/main/docs/CONTRIBUTING.md)
 ```
 
-Avoid `../` relative paths across directory levels — they break when files are
+Avoid `../` relative paths across directory levels - they break when files are
 moved or the doc tree is restructured:
 
 ```markdown
-# ❌ Fragile cross-directory relative path
+#  Fragile cross-directory relative path
 [Config Reference](../../bad/path/to/config.md)
 ```
 
@@ -228,7 +228,7 @@ moved or the doc tree is restructured:
 [See the Configuration section](#configuration-options)
 ```
 
-Anchors are auto-generated: lowercase, spaces → hyphens, punctuation removed.
+Anchors are auto-generated: lowercase, spaces - hyphens, punctuation removed.
 
 ### Reference-Style Links
 
@@ -252,12 +252,12 @@ disrupt the flow of the text. Adding reference syntax for a short URL adds noise
 without benefit:
 
 ```markdown
-# ❌ Unnecessary — URL is short, inline is cleaner
+#  Unnecessary - URL is short, inline is cleaner
 The [style guide][style_guide] says not to over-use reference links.
 
 [style_guide]: https://google.com/markdown-style
 
-# ✅ Just inline it
+#  Just inline it
 The [style guide](https://google.com/markdown-style) says not to over-use reference links.
 ```
 
@@ -270,7 +270,7 @@ Define reference link definitions **just before the next heading** after their f
 use (treat them like footnotes anchored to the current section).
 
 > **Note:** If your editor has its own opinion about where reference links should go,
-> don't fight it — **the tools always win.** The goal is consistency; let your
+> don't fight it - **the tools always win.** The goal is consistency; let your
 > tooling enforce placement automatically.
 
 ```markdown
@@ -292,10 +292,10 @@ to avoid dangling links when sections are moved or restructured.
 
 #### Reference Links in Tables
 
-Always use reference links inside table cells — inline URLs make tables unreadable:
+Always use reference links inside table cells - inline URLs make tables unreadable:
 
 ```markdown
-# ✅ Readable table with reference links
+#  Readable table with reference links
 | Site    | Description             |
 |---------|-------------------------|
 | [MDN]   | Web platform reference  |
@@ -304,7 +304,7 @@ Always use reference links inside table cells — inline URLs make tables unread
 [MDN]: https://developer.mozilla.org
 [devdocs]: https://devdocs.io
 
-# ❌ Unreadable table with inline links
+#  Unreadable table with inline links
 | Site                                    | Description             |
 |-----------------------------------------|-------------------------|
 | [MDN](https://developer.mozilla.org)   | Web platform reference  |

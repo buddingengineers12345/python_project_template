@@ -13,7 +13,7 @@ but serve very different purposes:
 
 | Tree | Purpose | Who consumes it |
 |---|---|---|
-| **Root** (`./justfile`, `./pyproject.toml`, `./.claude/...`, `./.github/workflows/...`, `./scripts/...`) | The meta-repo's **own** project — it is "self-hosting." The root files are what lint, test, and release *this* repo. | Maintainers of the template itself. |
+| **Root** (`./justfile`, `./pyproject.toml`, `./.claude/...`, `./.github/workflows/...`, `./scripts/...`) | The meta-repo's **own** project - it is "self-hosting." The root files are what lint, test, and release *this* repo. | Maintainers of the template itself. |
 | **`template/`** (`template/justfile.jinja`, `template/pyproject.toml.jinja`, `template/.claude/...`, `template/.github/workflows/*.jinja`, `template/scripts/*.jinja`) | Jinja2 source files that Copier renders into a **new** Python project. | Downstream users who run `copier copy`. |
 
 Many of those files are 90%+ identical because the meta-repo "eats its own dog food":
@@ -52,7 +52,7 @@ These are shell hooks and other plain files copied verbatim into `template/`:
 - `.claude/hooks/post-edit-markdown.sh` ↔ same
 - `.claude/hooks/post-edit-refactor-test-guard.sh` ↔ same
 
-These are the ones that bite hardest when they drift — fixing a bug in one and
+These are the ones that bite hardest when they drift - fixing a bug in one and
 forgetting the other is the single most common regression.
 
 ### 2.2 "Same content, different skin" pairs (Jinja-rendered)
@@ -76,7 +76,7 @@ suffix:
 - `.github/workflows/labeler.yml` ↔ same.jinja.
 - `scripts/pr_commit_policy.py` ↔ `template/scripts/pr_commit_policy.py.jinja`.
 
-These can't be byte-equal, but they must agree on *structural* invariants — the same
+These can't be byte-equal, but they must agree on *structural* invariants - the same
 action pins, the same ruff rule codes, the same justfile recipe names, the same CI
 job IDs.
 
@@ -115,7 +115,7 @@ These don't need to be kept in sync at all; the sync tooling must know to skip t
 No single mechanism covers all three classes cleanly, so the strategy is layered.
 Each layer is cheap, and each one catches a different class of drift.
 
-### Layer 1 — Declarative sync map (source of truth)
+### Layer 1 - Declarative sync map (source of truth)
 
 The file that enumerates "these pairs must agree" is
 [`assets/root-template-sync-map.yaml`](../assets/root-template-sync-map.yaml). It's already
@@ -130,15 +130,15 @@ partially populated. It supports three kinds of check (implemented in
 
 **Action item:** grow the map to cover every pair listed in §2.1 and §2.2. Any file
 that is *intentionally* divergent should be added to an `exclusions` block with a
-comment explaining why — this turns tribal knowledge into a reviewable artifact.
+comment explaining why - this turns tribal knowledge into a reviewable artifact.
 
-### Layer 2 — Local verifier (`just sync-check`)
+### Layer 2 - Local verifier (`just sync-check`)
 
-Already wired up (`justfile` target `sync-check` → `scripts/check_root_template_sync.py`).
+Already wired up (`justfile` target `sync-check` - `scripts/check_root_template_sync.py`).
 It's fast (<1s), has zero dependencies, and returns a non-zero exit code on drift.
 This is the canonical local command engineers run before pushing.
 
-### Layer 3 — Pre-commit hook
+### Layer 3 - Pre-commit hook
 
 Add `sync-check` to `.pre-commit-config.yaml` as a `local` hook that runs only when
 files under `.claude/hooks/**`, `template/**`, `.github/workflows/**`, `justfile*`,
@@ -157,11 +157,11 @@ files under `.claude/hooks/**`, `template/**`, `.github/workflows/**`, `justfile
 
 This catches drift at commit time without slowing down unrelated commits.
 
-### Layer 4 — CI required check on every PR
+### Layer 4 - CI required check on every PR
 
 Add a job to `.github/workflows/lint.yml` (or a dedicated `sync.yml`) that runs
 `just sync-check`. Mark it **required** in branch protection so a PR that drifts the
-two trees cannot be merged — this is the only layer that enforces against contributors
+two trees cannot be merged - this is the only layer that enforces against contributors
 who bypass pre-commit locally.
 
 ```yaml
@@ -174,12 +174,12 @@ sync-map:
     - run: just sync-check
 ```
 
-### Layer 5 — Scheduled drift audit (weekly)
+### Layer 5 - Scheduled drift audit (weekly)
 
 Even with required checks, pairs can drift when only one side is edited in a way
 that still parses. A weekly cron workflow runs `sync-check` against `main` and opens
 an issue (via `peter-evans/create-issue-from-file`) if it fails. This catches
-slow-burn regressions — e.g. someone added a new ruff rule to root `pyproject.toml`
+slow-burn regressions - e.g. someone added a new ruff rule to root `pyproject.toml`
 six months ago and no one noticed it never landed in the template.
 
 ```yaml
@@ -189,7 +189,7 @@ on:
   workflow_dispatch:
 ```
 
-### Layer 6 — CODEOWNERS + PR template nudge
+### Layer 6 - CODEOWNERS + PR template nudge
 
 Create `.github/CODEOWNERS` entries that require a second reviewer on cross-tree
 changes, and add a PR template checklist item:
@@ -200,9 +200,9 @@ changes, and add a PR template checklist item:
 
 This turns the invariant into a social contract on top of the mechanical check.
 
-### Layer 7 — Single-source tactics (advanced, optional)
+### Layer 7 - Single-source tactics (advanced, optional)
 
-For the hardest-hit files — the §2.1 exact-parity hooks — you can eliminate
+For the hardest-hit files - the §2.1 exact-parity hooks - you can eliminate
 duplication entirely. Two low-risk options:
 
 1. **Generate at render time.** Keep only `.claude/hooks/*.sh` in root. Add a
@@ -220,17 +220,17 @@ visibility. The added complexity is a single mirror script that sync-check can a
 run in `--fix` mode.
 
 For class 2.2 files (Jinja-rendered), single-sourcing is harder and usually not
-worth it — the template copy diverges in small but meaningful ways. Stick with
+worth it - the template copy diverges in small but meaningful ways. Stick with
 invariant-level checks (workflow actions, pyproject sections, justfile recipe names)
 rather than trying to single-source them.
 
-### Layer 8 — Per-class helper scripts
+### Layer 8 - Per-class helper scripts
 
 Two small, high-leverage additions to `scripts/`:
 
 - `scripts/diff_root_template.py`: print a side-by-side diff of every mapped pair,
   ignoring known Jinja tokens. Useful during a release to eyeball drift at a glance.
-- `scripts/mirror_exact_pairs.py`: apply the §2.1 rule mechanically —
+- `scripts/mirror_exact_pairs.py`: apply the §2.1 rule mechanically -
   `cp .claude/hooks/X template/.claude/hooks/X` for every pair in the map. Run by
   the Layer 7 option 2 pre-commit hook.
 
@@ -268,5 +268,5 @@ me if I forget." Everything else in this guide is scaffolding around that one ha
 | On release | maintainer | Run `just sync-diff` (Layer 8) to eyeball drift across every mapped pair. |
 
 With those six checkpoints in place, a file can't cross the main-branch gate in only
-one tree — and the two trees stop drifting for reasons other than deliberate,
+one tree - and the two trees stop drifting for reasons other than deliberate,
 reviewed divergence.

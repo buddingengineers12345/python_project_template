@@ -17,7 +17,7 @@ before each commit, blocking the commit if any check fails.
 
 ```bash
 pip install pre-commit     # or: uv add --dev pre-commit
-pre-commit install         # installs the git hook — run once per clone
+pre-commit install         # installs the git hook - run once per clone
 ```
 
 Verify the hook was installed:
@@ -55,7 +55,7 @@ repos:
     hooks:
       - id: bandit
         args: ["-c", "pyproject.toml"]
-        # Scope to src/ only — test code legitimately uses assert, subprocess, etc.
+        # Scope to src/ only - test code legitimately uses assert, subprocess, etc.
         files: ^src/
 
   # ── Semgrep: pattern-based security scan ─────────────────────────────────
@@ -98,7 +98,7 @@ Hooks run in the order listed. Fast, auto-fixing hooks go first so the developer
 clean output; slow analysis hooks (basedpyright) go last.
 
 ```
-ruff (fix + format)  →  bandit  →  semgrep  →  basedpyright  →  hygiene
+ruff (fix + format)  -  bandit  -  semgrep  -  basedpyright  -  hygiene
 ```
 
 ---
@@ -126,7 +126,7 @@ pre-commit run --files src/mymodule.py
 
 ## Skipping hooks
 
-**Skip all hooks for one commit** (use very rarely — e.g. emergency hotfix):
+**Skip all hooks for one commit** (use very rarely - e.g. emergency hotfix):
 ```bash
 git commit --no-verify -m "emergency: revert broken deploy"
 ```
@@ -163,7 +163,7 @@ After updating, run `pre-commit run --all-files` to confirm nothing broke.
 
 ## CI integration (GitHub Actions)
 
-Use the dedicated action — it caches hook environments automatically:
+Use the dedicated action - it caches hook environments automatically:
 
 ```yaml
 - name: Run pre-commit
@@ -177,14 +177,14 @@ This caches `~/.cache/pre-commit` keyed on the hash of `.pre-commit-config.yaml`
 
 ```yaml
 - name: Install Python dependencies
-  run: pip install -r requirements.txt   # or: uv sync — must include basedpyright
+  run: pip install -r requirements.txt   # or: uv sync - must include basedpyright
 
 - name: Run pre-commit
   uses: pre-commit/action@v3.0.1
 ```
 
 If you run individual tool steps (ruff, basedpyright, etc.) as separate CI jobs, the
-pre-commit job is optional but still useful as a final gate — it catches hooks that
+pre-commit job is optional but still useful as a final gate - it catches hooks that
 aren't individually tested.
 
 ---
@@ -195,7 +195,7 @@ aren't individually tested.
    the tool's own docs.
 2. Add a `- repo:` block to `.pre-commit-config.yaml` in the appropriate position
    (fast/auto-fixing hooks first, slow analysis hooks last).
-3. Pin `rev:` to a tagged release — never `HEAD` or a branch name.
+3. Pin `rev:` to a tagged release - never `HEAD` or a branch name.
 4. Run `pre-commit run --all-files` to validate.
 5. Add the tool to the table in `SKILL.md` and create `references/<toolname>.md`.
 6. Copy the updated full config to `references/complete-configs.md`.
@@ -216,6 +216,6 @@ aren't individually tested.
 - **`pass_filenames: false` is required for whole-project tools.** basedpyright resolves
   the full import graph; passing individual filenames breaks cross-module type inference.
   Semgrep's per-file mode (`pass_filenames: true`) is fine for single-file rules but
-  won't catch cross-file taint flows — run those in CI without pre-commit.
+  won't catch cross-file taint flows - run those in CI without pre-commit.
 - **`rev` must be a tag.** pre-commit warns if you use a branch; tags guarantee
   reproducibility across machines and CI runs.

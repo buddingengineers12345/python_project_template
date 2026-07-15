@@ -8,11 +8,11 @@ Using the wrong kind of double leads to tests that are either too brittle
 
 ```
 Does the test need to verify that a specific call was made?
-├── YES → Mock  (or Spy if wrapping a real object)
+├── YES - Mock  (or Spy if wrapping a real object)
 └── NO
     ├── Does the collaborator have complex behaviour that needs to work?
-    │   ├── YES → Fake
-    │   └── NO → Stub (simplest; just return canned data)
+    │   ├── YES - Fake
+    │   └── NO - Stub (simplest; just return canned data)
 ```
 
 ---
@@ -45,7 +45,7 @@ published, DB write attempted).
 
 ```python
 def test_transfer_publishes_event_on_success(mocker, funded_account, empty_account):  # [E1]
-    """Successful transfer → audit event published exactly once."""
+    """Successful transfer - audit event published exactly once."""
     # Arrange
     mock_publish = mocker.patch("myapp.events.publish")
 
@@ -61,7 +61,7 @@ def test_transfer_publishes_event_on_success(mocker, funded_account, empty_accou
     )
 ```
 
-`assert_called_once_with` is strict — prefer it over `assert_called` when
+`assert_called_once_with` is strict - prefer it over `assert_called` when
 the exact arguments matter. Use `assert_called_once` (no args) when you only
 care that the call happened.
 
@@ -74,7 +74,7 @@ Use when: multiple tests need the collaborator to behave realistically (e.g.
 an in-memory repository that supports find/save/delete).
 
 ```python
-# Fake — lives in tests/fakes.py or conftest.py
+# Fake - lives in tests/fakes.py or conftest.py
 class FakeAccountRepository:
     def __init__(self):
         self._store: dict[str, Account] = {}
@@ -113,8 +113,8 @@ Use when: you want to verify interactions but still execute the real logic
 
 ```python
 def test_transfer_logs_on_success(mocker, funded_account, empty_account):  # [D1]
-    """Successful transfer → INFO log entry emitted."""
-    # Arrange — spy on the real logger, don't suppress it
+    """Successful transfer - INFO log entry emitted."""
+    # Arrange - spy on the real logger, don't suppress it
     spy = mocker.spy(logging, "info")
 
     # Act

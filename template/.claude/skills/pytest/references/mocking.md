@@ -20,23 +20,23 @@ deep inside the implementation.
 
 Mock when the real dependency would make the test slow, flaky, or non-deterministic:
 
-- **Network calls** — HTTP APIs, email sending, webhooks.
-- **Databases** — when you need pure unit isolation (integration tests use the real DB).
-- **Filesystem** — though `tmp_path` is often better than mocking.
-- **Time** — `datetime.now()`, `time.sleep()` for deterministic testing.
-- **External services** — payment processors, cloud APIs, third-party SDKs.
+- **Network calls** - HTTP APIs, email sending, webhooks.
+- **Databases** - when you need pure unit isolation (integration tests use the real DB).
+- **Filesystem** - though `tmp_path` is often better than mocking.
+- **Time** - `datetime.now()`, `time.sleep()` for deterministic testing.
+- **External services** - payment processors, cloud APIs, third-party SDKs.
 
 ## When not to mock
 
 Mocking too much makes tests pass even when the real code is broken. Avoid mocking:
 
-- **The code under test** — you are testing *it*, not a mock of it.
-- **Internal helpers** — mock the external boundary, not the private function that
+- **The code under test** - you are testing *it*, not a mock of it.
+- **Internal helpers** - mock the external boundary, not the private function that
   calls it. If you mock `_parse_response()` instead of the HTTP call, the test passes
   even if `_parse_response()` has a bug.
-- **Data structures and value objects** — use real objects. Mocking a dataclass or
+- **Data structures and value objects** - use real objects. Mocking a dataclass or
   dict is more confusing than using the real thing.
-- **In integration tests** — the whole point is exercising real interactions.
+- **In integration tests** - the whole point is exercising real interactions.
 
 ## monkeypatch (built-in)
 
@@ -132,7 +132,7 @@ The rule: if `orders.py` does `from myapp.email import send_email`, the name
 `send_email` lives in the `myapp.orders` namespace. Patch `myapp.orders.send_email`.
 
 If `orders.py` does `import myapp.email` and calls `myapp.email.send_email()`, then
-patch `myapp.email.send_email` — the lookup goes through the module object.
+patch `myapp.email.send_email` - the lookup goes through the module object.
 
 ## Common mock patterns
 
@@ -167,7 +167,7 @@ mock_fetch.side_effect = [
 spy = mocker.spy(myapp.cache, "invalidate")
 do_something_that_invalidates_cache()
 spy.assert_called_once_with(key="user:42")
-# The real invalidate() was called — spy just observed it
+# The real invalidate() was called - spy just observed it
 ```
 
 ### Context managers
@@ -191,7 +191,7 @@ mock.assert_called_once()
 mock.assert_called_with(42, key="value")
 mock.assert_called_once_with(42, key="value")
 
-# Called multiple times — check each call
+# Called multiple times - check each call
 assert mock.call_args_list == [
     mocker.call(1),
     mocker.call(2),
@@ -202,5 +202,5 @@ assert mock.call_args_list == [
 mock.assert_not_called()
 ```
 
-Prefer `assert_called_once_with` over `assert_called_with` — the latter only checks
+Prefer `assert_called_once_with` over `assert_called_with` - the latter only checks
 the *most recent* call and silently ignores extra calls, which can mask bugs.

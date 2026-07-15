@@ -91,7 +91,7 @@ name the test descriptively, you may not be clear on what behaviour you are test
 
 ### Test classes
 
-Use classes to group related tests. No `__init__` method — pytest skips classes with one.
+Use classes to group related tests. No `__init__` method - pytest skips classes with one.
 
 ```python
 class TestUserRegistration:
@@ -101,7 +101,7 @@ class TestUserRegistration:
     def test_sends_welcome_email(self, mocker): ...
 ```
 
-Classes are optional — flat functions work well for most projects. Use classes when a
+Classes are optional - flat functions work well for most projects. Use classes when a
 group of tests shares a logical context or when you want class-scoped fixtures.
 
 ### Fixture naming
@@ -122,7 +122,7 @@ def populated_cart(): ...       # a cart with items already in it
 def make_invoice(): ...         # a factory for creating invoices
 ```
 
-Avoid naming fixtures after actions (`setup_database`, `create_user`) — that describes
+Avoid naming fixtures after actions (`setup_database`, `create_user`) - that describes
 the implementation rather than the value the test receives.
 
 ## Separating test types
@@ -130,9 +130,9 @@ the implementation rather than the value the test receives.
 Tests are organised by type into subdirectories under `tests/`:
 
 ```
-tests/unit/           → pytest tests/unit
-tests/integration/    → pytest tests/integration
-tests/e2e/            → pytest tests/e2e
+tests/unit/           - pytest tests/unit
+tests/integration/    - pytest tests/integration
+tests/e2e/            - pytest tests/e2e
 ```
 
 Additionally, use markers for cross-cutting concerns and for running subsets by marker:
@@ -150,7 +150,7 @@ pytest -m unit                # run only unit tests
 pytest -m "not integration"   # skip integration tests
 ```
 
-Set `pytestmark` at module level in every test file — typically matching the directory
+Set `pytestmark` at module level in every test file - typically matching the directory
 the file lives in (e.g. `pytestmark = pytest.mark.unit` for files in `tests/unit/`).
 
 ## conftest.py hierarchy
@@ -161,24 +161,24 @@ to tests deeper in the tree.
 ```
 tests/
     conftest.py              # Available to ALL tests
-        → db_engine, make_user, app_config
+        - db_engine, make_user, app_config
     unit/
         conftest.py          # Available to tests/unit/ only
-            → mock_db, isolated_config
+            - mock_db, isolated_config
         common/
             conftest.py      # Available to tests/unit/common/ only
     integration/
         conftest.py          # Available to tests/integration/ only
-            → real_db_session, test_server
+            - real_db_session, test_server
     e2e/
         conftest.py          # Available to tests/e2e/ only
 ```
 
 Rules:
 
-- Keep root `conftest.py` lean — only truly shared fixtures.
+- Keep root `conftest.py` lean - only truly shared fixtures.
 - Move fixtures down to the most specific directory that uses them.
-- Do not import from `conftest.py` — pytest handles discovery automatically.
+- Do not import from `conftest.py` - pytest handles discovery automatically.
 - If a fixture is only used by one test file, define it in that file.
 
 ## pytest configuration
@@ -206,8 +206,8 @@ filterwarnings = [
 
 Key settings:
 
-- `testpaths` — where pytest looks for tests. Speeds up collection.
-- `strict_markers` — unregistered markers cause an error (catches typos).
-- `strict_config` — invalid config keys cause an error.
-- `addopts` — default CLI flags applied to every run.
-- `filterwarnings` — treat warnings as errors to catch issues early.
+- `testpaths` - where pytest looks for tests. Speeds up collection.
+- `strict_markers` - unregistered markers cause an error (catches typos).
+- `strict_config` - invalid config keys cause an error.
+- `addopts` - default CLI flags applied to every run.
+- `filterwarnings` - treat warnings as errors to catch issues early.

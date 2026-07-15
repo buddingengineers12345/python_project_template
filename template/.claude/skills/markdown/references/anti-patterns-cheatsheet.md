@@ -5,15 +5,15 @@ plus a complete syntax cheat sheet for quick reference.
 
 ---
 
-## Anti-Patterns — Common Mistakes and Fixes
+## Anti-Patterns - Common Mistakes and Fixes
 
 ### Structure Anti-Patterns
 
 | Anti-pattern | Why it's wrong | Fix |
 |---|---|---|
 | Multiple `# H1` headings | Only one H1 per doc (page title rule) | Use H2+ for all sections after the title |
-| Skipping heading levels (H2 → H4) | Breaks logical hierarchy; accessibility issue | Follow strict H1 → H2 → H3 → H4 order |
-| No introduction before first section | Reader has no context | Add 1–3 sentence overview before first H2 |
+| Skipping heading levels (H2 - H4) | Breaks logical hierarchy; accessibility issue | Follow strict H1 - H2 - H3 - H4 order |
+| No introduction before first section | Reader has no context | Add 1-3 sentence overview before first H2 |
 | `[TOC]` at top before introduction | Screen readers miss the introduction | Place `[TOC]` after introduction, before H2 |
 | Generic headings: `### Summary` under multiple H2s | Anchor link collisions | Use unique, descriptive names: `### Foo Summary` |
 | Giant monolithic document (1000+ lines) | Hard to navigate and maintain | Split into focused sub-documents with an index |
@@ -63,7 +63,7 @@ The Google style guide names three specific table problems to diagnose before wr
 
 | Named problem | Signs | Fix |
 |---|---|---|
-| **Poor distribution** | Columns don't differ across rows; cells are empty | The data doesn't need a table — use a list |
+| **Poor distribution** | Columns don't differ across rows; cells are empty | The data doesn't need a table - use a list |
 | **Unbalanced dimensions** | Very few rows vs. many columns (or vice versa) | Use a list with subheadings |
 | **Rambling prose in cells** | Long sentences or paragraphs inside cells | Move prose out of the table |
 
@@ -114,7 +114,7 @@ date: "2024-01-15"
 
 # Document Title
 
-Short introduction (1–3 sentences).
+Short introduction (1-3 sentences).
 
 [TOC]
 
@@ -134,7 +134,7 @@ Content.
 ### Headings
 
 ```markdown
-# H1 — one per document
+# H1 - one per document
 ## H2
 ### H3
 #### H4
@@ -173,7 +173,7 @@ Content.
 `inline code`
 
 ```python
-# Fenced block — always declare language
+# Fenced block - always declare language
 def foo():
     pass
 ```
@@ -277,7 +277,7 @@ Use this when reviewing or finalising any Markdown file:
 
 **Structure**
 - [ ] Exactly one `# H1` heading
-- [ ] 1–3 sentence introduction before first section
+- [ ] 1-3 sentence introduction before first section
 - [ ] No skipped heading levels
 - [ ] Heading names are unique and descriptive
 - [ ] `[TOC]` placed after introduction (if used)

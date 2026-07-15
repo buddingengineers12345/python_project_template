@@ -7,8 +7,8 @@ and black in a single tool.
 
 ## What it does
 
-- **`ruff check`** — lints: enforces rules (unused imports, style, complexity, bugs, etc.)
-- **`ruff format`** — formats: opinionated code formatter (Black-compatible output)
+- **`ruff check`** - lints: enforces rules (unused imports, style, complexity, bugs, etc.)
+- **`ruff format`** - formats: opinionated code formatter (Black-compatible output)
 
 Both read from `[tool.ruff]` in `pyproject.toml`.
 
@@ -31,7 +31,7 @@ ruff --version
 
 ```toml
 [tool.ruff]
-# Target Python version — affects which syntax is valid and which rules apply.
+# Target Python version - affects which syntax is valid and which rules apply.
 # Keep in sync with the minimum Python version the project supports.
 target-version = "py311"
 
@@ -49,25 +49,25 @@ exclude = [
 # Rule sets to enable. Add a prefix letter to enable the entire ruleset.
 # E/W = pycodestyle errors/warnings
 # F   = pyflakes (undefined names, unused imports)
-# I   = isort (import order) — replaces standalone isort
+# I   = isort (import order) - replaces standalone isort
 # UP  = pyupgrade (modernise syntax for target Python version)
 # B   = flake8-bugbear (likely bugs and design issues)
 # SIM = flake8-simplify (suggest simpler expressions)
-# S   = flake8-bandit (security — lightweight overlap with bandit)
+# S   = flake8-bandit (security - lightweight overlap with bandit)
 select = ["E", "W", "F", "I", "UP", "B", "SIM"]
 
 # Rules to ignore project-wide.
-# E501 = line too long — controlled by the formatter, not the linter.
+# E501 = line too long - controlled by the formatter, not the linter.
 ignore = ["E501"]
 
 # Allow autofix for all enabled rules when running `ruff check --fix`.
 fixable = ["ALL"]
 unfixable = []
 
-# Per-file rule overrides. Use sparingly — prefer fixing the root cause.
+# Per-file rule overrides. Use sparingly - prefer fixing the root cause.
 [tool.ruff.lint.per-file-ignores]
 # Test files: assert is valid (pytest), magic values are fine, fixtures look unused.
-# S101 requires the S ruleset to be in `select` above — add "S" if you want it.
+# S101 requires the S ruleset to be in `select` above - add "S" if you want it.
 "tests/**/*.py" = ["PLR2004", "F401"]
 # __init__.py: re-exports don't need to be explicitly used.
 "**/__init__.py" = ["F401"]
@@ -121,7 +121,7 @@ import os  # noqa              ← suppress all rules on this line (avoid)
 ```
 
 Prefer adding an entry to `per-file-ignores` in `pyproject.toml` over scattering
-`# noqa` across files — it keeps suppression decisions visible and reviewable.
+`# noqa` across files - it keeps suppression decisions visible and reviewable.
 
 ---
 
@@ -140,7 +140,7 @@ ruff check --statistics .
 # Format (rewrites files in place):
 ruff format .
 
-# Format check — CI mode: no changes, exits non-zero if formatting needed:
+# Format check - CI mode: no changes, exits non-zero if formatting needed:
 ruff format --check .
 
 # Show exactly what the formatter would change without writing:
@@ -158,14 +158,14 @@ ruff check src/mymodule.py
 - name: Install ruff
   run: pip install ruff
 
-- name: Ruff — format check
+- name: Ruff - format check
   run: ruff format --check .
 
-- name: Ruff — lint
+- name: Ruff - lint
   run: ruff check .
 ```
 
-Always run `ruff format --check` before `ruff check` — formatting failures surface
+Always run `ruff format --check` before `ruff check` - formatting failures surface
 first without wasting time on lint output.
 
 With `cache: 'pip'` on `actions/setup-python`, repeated installs are fast.
@@ -193,7 +193,7 @@ With `cache: 'pip'` on `actions/setup-python`, repeated installs are fast.
   the pipeline appears to pass but the rewrite never gets committed. Use check mode in CI.
 - **`target-version` drives UP rules.** `UP006` (drop `List`/`Dict`) only fires at
   `py39+`. Keep `target-version` in sync with your actual minimum Python.
-- **isort is built in via the `I` ruleset.** Do not also run standalone isort — they will
+- **isort is built in via the `I` ruleset.** Do not also run standalone isort - they will
   conflict on import ordering decisions.
 - **`S` ruleset (flake8-bandit) overlaps with bandit.** If you add `"S"` to `select`,
   expect duplicate findings. Either add it and accept overlap, or omit it and rely on

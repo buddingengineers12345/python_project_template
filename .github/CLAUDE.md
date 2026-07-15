@@ -1,4 +1,4 @@
-# .github/ — GitHub Actions Workflows (Meta-Repo)
+# .github/ - GitHub Actions Workflows (Meta-Repo)
 
 This directory contains GitHub Actions workflows and community health files for
 **this Copier template repository** (the meta-repo). These workflows test and maintain
@@ -12,7 +12,7 @@ the template itself, not the projects generated from it.
 
 | File | Trigger | Purpose |
 |---|---|---|
-| `tests.yml` | push/PR to main, manual | Full pytest suite across Python 3.11–3.13 matrix; uploads coverage |
+| `tests.yml` | push/PR to main, manual | Full pytest suite across Python 3.11-3.13 matrix; uploads coverage |
 | `lint.yml` | push/PR to main | Ruff + basedpyright + root/template sync script + pre-commit (all files); docstrings via Ruff `D` in pyproject (same coverage as `just docs-check`) |
 | `security.yml` | push/PR to main, weekly schedule | CodeQL + pip-audit (same invocation as `just audit`: `uv run --with pip-audit pip-audit`) |
 | `dependency-review.yml` | PR | Review dependency changes for security issues |
@@ -28,25 +28,25 @@ the template itself, not the projects generated from it.
 
 All workflows follow these conventions:
 
-- **Least-privilege permissions** — each workflow requests only the minimum `GITHUB_TOKEN`
+- **Least-privilege permissions** - each workflow requests only the minimum `GITHUB_TOKEN`
   scopes it needs (typically `contents: read`; `contents: write` only for release/update workflows).
-- **Concurrency cancellation** — `cancel-in-progress: true` prevents redundant runs on the
+- **Concurrency cancellation** - `cancel-in-progress: true` prevents redundant runs on the
   same branch/PR.
-- **`uv` for Python** — all Python steps use `uv` for fast, reproducible installs
+- **`uv` for Python** - all Python steps use `uv` for fast, reproducible installs
   (`uv sync --frozen --extra dev`).
-- **No pinned Python interpreter conflicts** — workflows use `uv`'s managed Python, not
+- **No pinned Python interpreter conflicts** - workflows use `uv`'s managed Python, not
   the GitHub-hosted runner's system Python.
 
 ## Release workflow (`release.yml`)
 
 The release workflow can be triggered two ways:
 
-1. **Manually** via `workflow_dispatch` — choose a bump type (`patch`/`minor`/`major`) or
+1. **Manually** via `workflow_dispatch` - choose a bump type (`patch`/`minor`/`major`) or
    supply an explicit `X.Y.Z` version. The workflow calls `scripts/bump_version.py`, commits
    the version change, creates a tag, and publishes a GitHub Release. (Generated projects use
    `src/<package>/common/bump_version.py` instead; both print the new version on stdout.)
 
-2. **On tag push** (`v*`) — skips the bump step and publishes a release for the existing tag.
+2. **On tag push** (`v*`) - skips the bump step and publishes a release for the existing tag.
    Use this when you create a tag manually (e.g. via the `/release` Claude command).
 
 The `/release` and `/validate-release` Claude slash commands orchestrate this flow locally
@@ -56,12 +56,12 @@ before pushing a tag.
 
 | Meta-repo (here) | Generated projects (`template/.github/workflows/`) |
 |---|---|
-| `tests.yml` — tests the template rendering | `ci.yml` — lint, typecheck, pre-commit, and pytest matrix for generated projects (aligns with `just ci`) |
-| `lint.yml` — lints meta-repo Python/tests | `lint.yml` — fast Ruff-only check; full gate is `ci.yml` (lint, types, pre-commit, tests) |
-| `security.yml` — audits meta-repo deps | `security.yml` — audits generated project deps (conditional) |
-| `release.yml` — releases the template | `release.yml` — releases the generated project (conditional) |
-| `file-freshness.yml` — tracks template file age | _(no equivalent)_ |
-| `sync-skip-if-exists.yml` — syncs copier.yml | _(no equivalent)_ |
+| `tests.yml` - tests the template rendering | `ci.yml` - lint, typecheck, pre-commit, and pytest matrix for generated projects (aligns with `just ci`) |
+| `lint.yml` - lints meta-repo Python/tests | `lint.yml` - fast Ruff-only check; full gate is `ci.yml` (lint, types, pre-commit, tests) |
+| `security.yml` - audits meta-repo deps | `security.yml` - audits generated project deps (conditional) |
+| `release.yml` - releases the template | `release.yml` - releases the generated project (conditional) |
+| `file-freshness.yml` - tracks template file age | _(no equivalent)_ |
+| `sync-skip-if-exists.yml` - syncs copier.yml | _(no equivalent)_ |
 
 ## GitHub.com settings (maintainers)
 
@@ -82,7 +82,7 @@ projects receive the same document under `docs/` from the template.
 
 ## Modifying workflows
 
-- Run `just ci` before pushing — CI must pass locally before merging.
+- Run `just ci` before pushing - CI must pass locally before merging.
 - After changing a workflow, check that the `sync-skip-if-exists.yml` does not need to be
   updated (it reads `copier.yml` `_skip_if_exists`).
 - When bumping GitHub Actions versions (e.g. `actions/checkout@v6`), also update the

@@ -3,7 +3,7 @@
 ## WCAG 2.2 Compliance Checklist
 
 WCAG 2.2 (W3C Recommendation, October 2023) is the current baseline standard.
-Levels: A (minimum) → AA (standard target) → AAA (enhanced).
+Levels: A (minimum) - AA (standard target) - AAA (enhanced).
 
 ---
 
@@ -36,7 +36,7 @@ Levels: A (minimum) → AA (standard target) → AAA (enhanced).
 - [ ] Large text (≥18pt or ≥14pt bold): minimum 3:1 contrast ratio (AA)
 - [ ] Audio plays for ≤3 seconds or can be paused/stopped
 - [ ] Text can be resized up to 200% without loss of functionality
-- [ ] Images of text avoided — use real text with CSS styling
+- [ ] Images of text avoided - use real text with CSS styling
 - [ ] Non-text contrast (UI components, focus indicators): 3:1 minimum (AA)
 - [ ] Line spacing: at least 1.5x font size; letter spacing: 0.12em; word spacing: 0.16em (AA)
 - [ ] Content not clipped or overlapped when text spacing is adjusted (AA)
@@ -63,15 +63,15 @@ Levels: A (minimum) → AA (standard target) → AAA (enhanced).
 - [ ] Skip navigation link is the first focusable element
 - [ ] Every page has a descriptive, unique `<title>`
 - [ ] Focus order preserves meaning and operability
-- [ ] All link text is descriptive — no "click here" or "read more" without context
+- [ ] All link text is descriptive - no "click here" or "read more" without context
 - [ ] Multiple ways to find pages: search, site map, related links (AA)
 - [ ] Headings and labels are descriptive (AA)
 - [ ] Keyboard focus is always visible (AA)
 
-### Input Modalities (2.5) — WCAG 2.2 New
+### Input Modalities (2.5) - WCAG 2.2 New
 - [ ] All functionality using dragging has a single-pointer alternative
 - [ ] Target size minimum: 24×24 CSS pixels (some exceptions apply) (AA)
-- [ ] No accidental activation on pointer down — use `pointerup`/`click`
+- [ ] No accidental activation on pointer down - use `pointerup`/`click`
 - [ ] Labels match accessible names for inputs (to support voice input)
 - [ ] Motion-actuated functionality has UI alternative and can be disabled
 
@@ -155,7 +155,7 @@ Use ARIA ONLY when:
 <a href="/about" aria-current="page">About</a>
 
 <!-- Hidden from assistive tech -->
-<span aria-hidden="true">→</span>
+<span aria-hidden="true">-</span>
 ```
 
 ---
@@ -214,7 +214,7 @@ Recommended testing combinations:
 | TalkBack | Chrome | Android |
 
 ### Manual Test Checklist
-- [ ] Navigate with Tab only — all interactive content reachable
+- [ ] Navigate with Tab only - all interactive content reachable
 - [ ] All images announced with appropriate descriptions
 - [ ] Form errors announced automatically or on focus
 - [ ] Modals trap focus and return it on close

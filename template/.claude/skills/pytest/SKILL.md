@@ -2,7 +2,7 @@
 name: pytest
 description: >-
   Comprehensive guide for writing pytest test cases in Python projects. Use this skill
-  whenever you need to write, review, refactor, or improve tests — including unit tests,
+  whenever you need to write, review, refactor, or improve tests - including unit tests,
   integration tests, fixtures, parametrized tests, mocking, and test organization. Also
   use when the user asks about test coverage, flaky tests, test structure, or any pytest
   feature. Trigger on mentions of: pytest, test cases, test coverage, fixtures, mocking,
@@ -29,7 +29,7 @@ topic.
 | Anti-patterns and fixes        | [references/anti-patterns.md](references/anti-patterns.md)         |
 | CI, coverage, and plugins      | [references/ci-and-plugins.md](references/ci-and-plugins.md)       |
 
-**Bundled scripts** (in `scripts/` — run directly, no need to read them into context):
+**Bundled scripts** (in `scripts/` - run directly, no need to read them into context):
 
 | Script                 | What it does                                             |
 |------------------------|----------------------------------------------------------|
@@ -38,7 +38,7 @@ topic.
 
 ## When to load references
 
-| If the task involves…                   | Load                                            |
+| If the task involves...                   | Load                                            |
 |------------------------------------------|-------------------------------------------------|
 | Fixture scopes, yield, DI, factories    | `references/fixtures.md`                        |
 | Parametrize, custom markers, xfail      | `references/parametrize-and-markers.md`         |
@@ -48,7 +48,7 @@ topic.
 | Project layout, naming, conftest        | `references/test-organization.md`               |
 | Debugging flaky tests, common mistakes  | `references/anti-patterns.md`                   |
 | CI config, coverage, plugins            | `references/ci-and-plugins.md`                  |
-| Simple test writing (default)           | No reference needed — use inline guidance below |
+| Simple test writing (default)           | No reference needed - use inline guidance below |
 
 ---
 
@@ -71,7 +71,7 @@ def test_cart_applies_discount_for_premium_user(premium_user, empty_cart):
     assert total == 90.0  # 10% premium discount
 ```
 
-Put heavy setup into fixtures so the test body stays short — ideally just the Act and
+Put heavy setup into fixtures so the test body stays short - ideally just the Act and
 Assert phases are visible.
 
 ### Name tests as sentences
@@ -80,12 +80,12 @@ A test name should read like a specification. Someone scanning the test file sho
 understand *what the system does* without reading the body.
 
 ```python
-# Good — reads as a behaviour spec
+# Good - reads as a behaviour spec
 def test_returns_empty_list_when_no_results_match(): ...
 def test_raises_value_error_for_negative_quantity(): ...
 def test_sends_welcome_email_after_registration(): ...
 
-# Bad — vague, no intent
+# Bad - vague, no intent
 def test_search(): ...
 def test_1(): ...
 def test_edge_case(): ...
@@ -144,7 +144,7 @@ Key rules for fixtures:
 - Put shared fixtures in `conftest.py` (per-directory or at the test root).
 - Use `function` scope (the default) unless the fixture is expensive and safe to share.
 - Use `yield` for setup + teardown in a single function.
-- Use `tmp_path` for filesystem operations — never hardcode `/tmp` paths.
+- Use `tmp_path` for filesystem operations - never hardcode `/tmp` paths.
 
 For advanced fixture patterns, read [references/fixtures.md](references/fixtures.md) for scopes, autouse, factory
 fixtures, and advanced patterns.
@@ -172,7 +172,7 @@ advanced parametrization and custom markers.
 ### Mock at the boundary
 
 When a test needs to isolate from external systems (network, database, filesystem,
-clock), mock the outermost I/O call — not internal helpers.
+clock), mock the outermost I/O call - not internal helpers.
 
 ```python
 def test_sends_notification_on_order(mocker):
@@ -210,7 +210,7 @@ for environment variables. Reset any global state in teardown.
 3. **Run it and confirm it fails** for the right reason.
 4. **Write the minimal implementation** to make it pass.
 5. **Refactor** both the code and the test for clarity.
-6. **Check coverage** — aim for the project threshold (85%).
+6. **Check coverage** - aim for the project threshold (85%).
 
 When adding tests to existing code (not TDD), still follow steps 1 and 5. Focus on
 observable behaviour, not implementation details.
@@ -238,9 +238,9 @@ tests/
         test_*.py
 ```
 
-- File names: `test_<module>.py` — mirrors the source module being tested.
-- Function names: `test_<behaviour_description>` — snake_case, descriptive.
-- Class names: `TestClassName` — group related tests, no `__init__`.
+- File names: `test_<module>.py` - mirrors the source module being tested.
+- Function names: `test_<behaviour_description>` - snake_case, descriptive.
+- Class names: `TestClassName` - group related tests, no `__init__`.
 - Fixture names: descriptive nouns (`db_connection`, `sample_user`, `tmp_config_file`).
 
 Read [references/test-organization.md](references/test-organization.md) for the full
@@ -286,10 +286,10 @@ python <skill-path>/scripts/find_slow_tests.py --threshold 1.0
 
 Options:
 
-- `--threshold 0.5` — flag tests slower than 500ms.
-- `--top 10` — only show the 10 slowest.
-- `--test-path tests/integration/` — limit to a specific directory.
-- `--json-only` — machine-readable JSON on stdout only.
+- `--threshold 0.5` - flag tests slower than 500ms.
+- `--top 10` - only show the 10 slowest.
+- `--test-path tests/integration/` - limit to a specific directory.
+- `--json-only` - machine-readable JSON on stdout only.
 
 The output is a JSON array on stdout (for piping) plus a human summary on stderr.
 Both scripts use the standard library `logging` module (stderr for messages; a dedicated
@@ -330,7 +330,7 @@ Run the full suite (including slow tests) before opening a PR or in CI.
 - After adding integration or E2E tests that touch real databases, networks, or
   large datasets.
 - When `pytest --durations=10` shows tests taking more than a second.
-- During CI optimisation — split fast and slow test runs into separate jobs.
+- During CI optimisation - split fast and slow test runs into separate jobs.
 
 Read [references/parametrize-and-markers.md](references/parametrize-and-markers.md)
 for more on custom markers and [references/ci-and-plugins.md](references/ci-and-plugins.md)

@@ -26,7 +26,7 @@ name: deploy-prod
 
 The primary text Claude reads to decide whether to auto-invoke this skill. Also shown in `/help` listings and autocomplete.
 
-- Front-load the key use case — descriptions are truncated at ~1,536 chars in the skill listing
+- Front-load the key use case - descriptions are truncated at ~1,536 chars in the skill listing
 - Be specific about *when* to use it, not just *what* it does
 - For `disable-model-invocation: true` commands, you can be terser since Claude never auto-triggers it
 
@@ -57,17 +57,17 @@ when_to_use: |
 **Type**: string
 **Default**: none
 
-Hint shown in the autocomplete dropdown describing expected arguments. Purely cosmetic — does not validate or parse arguments.
+Hint shown in the autocomplete dropdown describing expected arguments. Purely cosmetic - does not validate or parse arguments.
 
 ```yaml
 argument-hint: <filepath> [--strict]
 ```
 
 Common conventions:
-- `<required>` — required positional argument
-- `[optional]` — optional argument
-- `...` — variadic (multiple values)
-- `<key>=<value>` — key-value pair
+- `<required>` - required positional argument
+- `[optional]` - optional argument
+- `...` - variadic (multiple values)
+- `<key>=<value>` - key-value pair
 
 ---
 
@@ -76,7 +76,7 @@ Common conventions:
 **Type**: space-separated string
 **Default**: none (uses session permissions)
 
-Pre-approves specific tools so Claude can use them without per-call confirmation when this command is active. This does NOT grant tools not already available in the session — it only pre-approves prompts for tools that are available.
+Pre-approves specific tools so Claude can use them without per-call confirmation when this command is active. This does NOT grant tools not already available in the session - it only pre-approves prompts for tools that are available.
 
 ### Tool identifiers
 
@@ -90,7 +90,7 @@ allowed-tools: Grep Glob
 # Combined
 allowed-tools: Read Grep Glob
 
-# Bash — ALWAYS scope with a pattern
+# Bash - ALWAYS scope with a pattern
 allowed-tools: Bash(git *)          # All git subcommands
 allowed-tools: Bash(npm run:*)      # Only npm run scripts
 allowed-tools: Bash(pytest *)       # Only pytest
@@ -99,9 +99,9 @@ allowed-tools: Bash(git log:*) Bash(git diff:*)  # Multiple bash patterns
 
 ### Bash scoping patterns
 
-`Bash(command *)` — all arguments to `command`
-`Bash(command subcommand:*)` — only `command subcommand` and its args
-`Bash(command subcommand flag)` — exact command only
+`Bash(command *)` - all arguments to `command`
+`Bash(command subcommand:*)` - only `command subcommand` and its args
+`Bash(command subcommand flag)` - exact command only
 
 **Best practice**: never use bare `Bash` without a scope pattern for production commands. It grants unrestricted shell access.
 
@@ -162,7 +162,7 @@ context: fork   # Good for long-running analysis you want isolated
 context: agent  # Good for clean-slate tasks (security scan, full review)
 ```
 
-`fork` is the right choice for most complex commands — the subagent can do deep work without polluting your conversation context.
+`fork` is the right choice for most complex commands - the subagent can do deep work without polluting your conversation context.
 
 ---
 
@@ -193,12 +193,12 @@ when_to_use: |
 !`git diff $ARGUMENTS..HEAD 2>/dev/null || git diff --cached`
 
 Review the diff above. Prioritize:
-1. **Correctness** — logic errors, off-by-ones, missing edge cases
-2. **Security** — injection risks, exposed secrets, auth bypasses
-3. **Error handling** — unhandled exceptions, missing null checks
-4. **Performance** — N+1 queries, unnecessary re-renders, blocking calls
+1. **Correctness** - logic errors, off-by-ones, missing edge cases
+2. **Security** - injection risks, exposed secrets, auth bypasses
+3. **Error handling** - unhandled exceptions, missing null checks
+4. **Performance** - N+1 queries, unnecessary re-renders, blocking calls
 
-Skip style comments — linting handles those. Be specific and actionable.
+Skip style comments - linting handles those. Be specific and actionable.
 Group findings by file, severity first.
 ```
 
@@ -216,4 +216,4 @@ Analyze this codebase and explain its architecture:
 4. Highlight any unusual patterns or technical debt
 ```
 
-Save as `.claude/commands/architecture.md` → `/architecture`
+Save as `.claude/commands/architecture.md` - `/architecture`

@@ -11,12 +11,12 @@
 
 ---
 
-## Filters A–Z
+## Filters A-Z
 
 ### `abs`
 Absolute value of a number.
 ```jinja
-{{ -5 | abs }}  → 5
+{{ -5 | abs }}  - 5
 ```
 
 ### `attr(name)`
@@ -36,13 +36,13 @@ Split an iterable into chunks of `linecount`. Optionally pad last row with `fill
 ### `capitalize`
 First character uppercase, rest lowercase.
 ```jinja
-{{ "hello world" | capitalize }}  → Hello world
+{{ "hello world" | capitalize }}  - Hello world
 ```
 
 ### `center(width=80)`
 Center a string in a field of given width.
 
-### `count` — alias for `length`
+### `count` - alias for `length`
 
 ### `d` / `default(value='', boolean=False)`
 Return `value` if the variable is undefined. If `boolean=True`, also triggers on falsy values.
@@ -59,7 +59,7 @@ Sort a dict and yield (key, value) pairs.
 ```
 
 ### `e` / `escape`
-HTML-escape a string: `&`, `<`, `>`, `"`, `'` → entities.
+HTML-escape a string: `&`, `<`, `>`, `"`, `'` - entities.
 ```jinja
 {{ user_input | e }}
 ```
@@ -67,8 +67,8 @@ HTML-escape a string: `&`, `<`, `>`, `"`, `'` → entities.
 ### `filesizeformat(binary=False)`
 Format a byte count as human-readable file size.
 ```jinja
-{{ 1000000 | filesizeformat }}          → 1.0 MB
-{{ 1048576 | filesizeformat(binary=True) }} → 1.0 MiB
+{{ 1000000 | filesizeformat }}          - 1.0 MB
+{{ 1048576 | filesizeformat(binary=True) }} - 1.0 MiB
 ```
 
 ### `first`
@@ -80,7 +80,7 @@ Return first item of a sequence.
 ### `float(default=0.0)`
 Convert to float. Returns `default` on failure.
 ```jinja
-{{ "3.14" | float }}  → 3.14
+{{ "3.14" | float }}  - 3.14
 ```
 
 ### `forceescape`
@@ -92,7 +92,7 @@ HTML-escape and mark result as safe (bypasses auto-escape). Use when the value i
 ### `format(*args, **kwargs)`
 Apply Python string formatting.
 ```jinja
-{{ "%s is %s" | format("Jinja", "great") }}  → Jinja is great
+{{ "%s is %s" | format("Jinja", "great") }}  - Jinja is great
 ```
 
 ### `groupby(attribute, default=None)`
@@ -113,8 +113,8 @@ Indent each line. `first=True` also indents the first line. `blank=True` indents
 ### `int(default=0, base=10)`
 Convert to integer. Returns `default` on failure.
 ```jinja
-{{ "42" | int }}       → 42
-{{ "0xff" | int(base=16) }} → 255
+{{ "42" | int }}       - 42
+{{ "0xff" | int(base=16) }} - 255
 ```
 
 ### `items` *(v3.1+)*
@@ -145,13 +145,13 @@ Return the number of items in a sequence or string.
 ### `list`
 Convert the value to a list.
 ```jinja
-{{ "hello" | list }}  → ['h', 'e', 'l', 'l', 'o']
+{{ "hello" | list }}  - ['h', 'e', 'l', 'l', 'o']
 ```
 
 ### `lower`
 Convert to lowercase.
 ```jinja
-{{ "HELLO" | lower }}  → hello
+{{ "HELLO" | lower }}  - hello
 ```
 
 ### `map(attribute=None, *args, **kwargs)` or `map(filter_name, ...)`
@@ -187,7 +187,7 @@ Return a random item from a sequence.
 ```
 
 ### `reject(test, *args, **kwargs)`
-Filter items where the test is **true** (keep items that fail the test — opposite of `select`).
+Filter items where the test is **true** (keep items that fail the test - opposite of `select`).
 ```jinja
 {{ numbers | reject('odd') | list }}   {# keeps even numbers #}
 ```
@@ -201,30 +201,30 @@ Filter objects where `object.attr` passes the test.
 ### `replace(old, new, count=None)`
 Replace occurrences of `old` with `new`.
 ```jinja
-{{ "Hello World" | replace("World", "Jinja") }}  → Hello Jinja
+{{ "Hello World" | replace("World", "Jinja") }}  - Hello Jinja
 ```
 
 ### `reverse`
 Reverse a string or sequence.
 ```jinja
-{{ "abcde" | reverse }}  → edcba
+{{ "abcde" | reverse }}  - edcba
 {{ items | reverse | list }}
 ```
 
 ### `round(precision=0, method='common')`
 Round a number. Methods: `'common'` (rounds half up), `'ceil'`, `'floor'`.
 ```jinja
-{{ 3.7 | round }}              → 4.0
-{{ 3.14159 | round(2) }}       → 3.14
-{{ 3.5 | round(method='floor') }} → 3.0
+{{ 3.7 | round }}              - 4.0
+{{ 3.14159 | round(2) }}       - 3.14
+{{ 3.5 | round(method='floor') }} - 3.0
 ```
 
 ### `safe`
-Mark the value as safe HTML — Jinja will not auto-escape it.
+Mark the value as safe HTML - Jinja will not auto-escape it.
 ```jinja
 {{ trusted_html_string | safe }}
 ```
-⚠️ **Never use on user-supplied input.**
+️ **Never use on user-supplied input.**
 
 ### `select(test, *args, **kwargs)`
 Keep only items where the test is **true**.
@@ -259,26 +259,26 @@ Sort a sequence.
 ### `string`
 Convert the value to a string.
 ```jinja
-{{ 42 | string }}  → "42"
+{{ 42 | string }}  - "42"
 ```
 
 ### `striptags`
 Strip HTML/XML tags, normalize whitespace.
 ```jinja
-{{ "<b>Hello</b> <i>World</i>" | striptags }}  → Hello World
+{{ "<b>Hello</b> <i>World</i>" | striptags }}  - Hello World
 ```
 
 ### `sum(attribute=None, start=0)`
 Sum items in a sequence. Optionally sum by attribute.
 ```jinja
-{{ [1, 2, 3, 4] | sum }}               → 10
+{{ [1, 2, 3, 4] | sum }}               - 10
 {{ cart_items | sum(attribute='price') }}
 ```
 
 ### `title`
 Title-case a string (first letter of each word capitalized).
 ```jinja
-{{ "hello world" | title }}  → Hello World
+{{ "hello world" | title }}  - Hello World
 ```
 
 ### `tojson(indent=None)`
@@ -290,7 +290,7 @@ Serialize to JSON string and mark as safe (for embedding in `<script>` tags).
 ### `trim(chars=None)`
 Strip leading/trailing whitespace (or `chars`).
 ```jinja
-{{ "  hello  " | trim }}  → "hello"
+{{ "  hello  " | trim }}  - "hello"
 ```
 
 ### `truncate(length=255, killwords=False, end='...', leeway=0)`
@@ -310,14 +310,14 @@ Remove duplicates from a sequence.
 ### `upper`
 Convert to uppercase.
 ```jinja
-{{ "hello" | upper }}  → HELLO
+{{ "hello" | upper }}  - HELLO
 ```
 
 ### `urlencode`
 Encode a string or dict as URL query parameters (percent-encoding).
 ```jinja
-{{ "hello world" | urlencode }}  → hello+world
-{{ {'page': 2, 'q': 'jinja'} | urlencode }}  → page=2&q=jinja
+{{ "hello world" | urlencode }}  - hello+world
+{{ {'page': 2, 'q': 'jinja'} | urlencode }}  - page=2&q=jinja
 ```
 
 ### `urlize(trim_url_limit=None, nofollow=False, target=None, rel=None, extra_schemes=None)`
@@ -339,7 +339,7 @@ Wrap text at word boundaries.
 Build an HTML/XML attribute string from a dict, filtering out `None` values.
 ```jinja
 <ul {{ {'class': 'my-list', 'id': list_id} | xmlattr }}>
-{# → <ul class="my-list" id="main"> #}
+{# - <ul class="my-list" id="main"> #}
 ```
 
 ---

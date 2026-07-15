@@ -22,7 +22,7 @@ Use consistently when labelling issues:
 
 ---
 
-## Area 1 — Frontmatter quality
+## Area 1 - Frontmatter quality
 
 Read the YAML frontmatter at the top of SKILL.md.
 
@@ -38,7 +38,7 @@ Read the YAML frontmatter at the top of SKILL.md.
 | Imperative phrasing | "Use this skill whenever..." | "This skill can be used..." |
 | Word count | 80-150 words | < 30 or > 200 |
 
-**Collision check** — compare descriptions across skills for overlapping triggers:
+**Collision check** - compare descriptions across skills for overlapping triggers:
 
 ```bash
 grep -A5 "^description:" template/.claude/skills/*/SKILL.md
@@ -48,13 +48,13 @@ If two skills claim the same trigger, both need NOT clauses naming the other.
 
 ---
 
-## Area 2 — Structure and navigation
+## Area 2 - Structure and navigation
 
-- **Clear intro** — 1-3 lines after the title explaining what the skill does
-- **Logical headers** — H2 for major sections, H3 for subsections, no skipped levels
-- **Under 400 lines** — if longer, move content to `references/`
-- **Reference table present** — `## Quick reference: where to go deeper` with table
-- **No dangling references** — every linked file actually exists
+- **Clear intro** - 1-3 lines after the title explaining what the skill does
+- **Logical headers** - H2 for major sections, H3 for subsections, no skipped levels
+- **Under 400 lines** - if longer, move content to `references/`
+- **Reference table present** - `## Quick reference: where to go deeper` with table
+- **No dangling references** - every linked file actually exists
 
 ```bash
 SKILL_DIR="template/.claude/skills/<skill-name>"
@@ -68,13 +68,13 @@ grep -oP 'references/[a-z0-9-]+\.md' "$SKILL_DIR/SKILL.md" | while read ref; do
 done
 ```
 
-**Writing style** — instructions use imperative form ("Run this command", "Set the
+**Writing style** - instructions use imperative form ("Run this command", "Set the
 page size"), not passive ("This command can be run", "The page size should be set").
 Flag skills that mix tenses or are mostly passive.
 
 ---
 
-## Area 3 — Technical accuracy
+## Area 3 - Technical accuracy
 
 The most perishable part of any skill.
 
@@ -89,17 +89,17 @@ npm view <package-name> version
 
 Flag when a skill pins an old major version and the new version has breaking changes.
 
-**Script paths** — verify every script reference exists:
+**Script paths** - verify every script reference exists:
 ```bash
 ls template/.claude/skills/<skill-name>/scripts/ 2>/dev/null
 ```
 
-**API/syntax accuracy** — spot-check 2-3 code examples against the current library
+**API/syntax accuracy** - spot-check 2-3 code examples against the current library
 API. Flag method renames, removed parameters, or changed import paths.
 
 ---
 
-## Area 4 — Script quality
+## Area 4 - Script quality
 
 For skills with a `scripts/` directory:
 
@@ -108,7 +108,7 @@ For skills with a `scripts/` directory:
 python template/.claude/skills/<skill>/scripts/<script>.py --help 2>&1 | head -5
 ```
 
-**Error handling** — scripts should fail with clear messages, not Python tracebacks.
+**Error handling** - scripts should fail with clear messages, not Python tracebacks.
 
 **Undocumented dependencies:**
 ```bash
@@ -119,11 +119,11 @@ grep -E "^import|^from" template/.claude/skills/<skill>/scripts/*.py \
 Every non-stdlib import must be mentioned in the skill's documentation or have a
 try/import guard with an install instruction.
 
-**pip convention** — scripts that install packages must use `--break-system-packages`.
+**pip convention** - scripts that install packages must use `--break-system-packages`.
 
 ---
 
-## Area 5 — Cross-skill consistency
+## Area 5 - Cross-skill consistency
 
 Skills sometimes reference each other. Stale cross-references cause wrong routing.
 
@@ -137,7 +137,7 @@ descriptions and reference tables on the same day.
 
 ---
 
-## Area 6 — Progressive disclosure compliance
+## Area 6 - Progressive disclosure compliance
 
 | Layer | Location | Target size | Check |
 |-------|----------|-------------|-------|
@@ -154,7 +154,7 @@ descriptions and reference tables on the same day.
 
 ---
 
-## Area 7 — Critical rules and pitfall coverage
+## Area 7 - Critical rules and pitfall coverage
 
 Every practical skill should have a section surfacing 5-10 non-obvious gotchas.
 
@@ -167,7 +167,7 @@ ACTIONABLE: "After saving, load the file back with openpyxl and check for #REF! 
 
 ---
 
-## Area 8 — Output and validation
+## Area 8 - Output and validation
 
 For skills that produce files or modify code:
 
@@ -186,9 +186,9 @@ If validation fails: [specific recovery steps]
 
 ---
 
-## Area 9 — Security review
+## Area 9 - Security review
 
-Quick pass — flag anything surprising for human review:
+Quick pass - flag anything surprising for human review:
 
 - Bash commands that send data to external servers
 - Code that accesses credentials or sensitive files
@@ -197,7 +197,7 @@ Quick pass — flag anything surprising for human review:
 
 ---
 
-## Area 10 — Lazy reference loading (dimension 8)
+## Area 10 - Lazy reference loading (dimension 8)
 
 Verify that reference files are loaded on demand, not eagerly.
 
@@ -213,13 +213,13 @@ grep -n -iE '\b(load|read|consult)\b.*references/' "$SKILL_DIR/SKILL.md"
 grep -n -iE '\b(load|read|consult)\b.*references/' "$SKILL_DIR/SKILL.md" \
     | grep -viE '(if |when |for |only|conditional)'
 ```
-Any remaining lines are unconditional loads — flag as MED severity.
+Any remaining lines are unconditional loads - flag as MED severity.
 
 3. Check for a conditional loading table or decision tree:
 ```bash
 grep -c 'If the task involves\|When to load\|Reference loading' "$SKILL_DIR/SKILL.md"
 ```
-If zero, flag as MED — skill needs a conditional loading table.
+If zero, flag as MED - skill needs a conditional loading table.
 
 4. Verify the 80% case is covered inline. Read the SKILL.md body content:
    - Does it contain enough guidance to handle the most common task without
@@ -227,14 +227,14 @@ If zero, flag as MED — skill needs a conditional loading table.
    - Or does every workflow step require reading a reference first?
 
 **Red flags:**
-- "Always load X before starting" — should be "If doing X, load…"
+- "Always load X before starting" - should be "If doing X, load..."
 - Stage 1 of an orchestrator loading all sub-skills upfront
 - Reference table exists but no conditional loading guidance above it
 - All reference files are mentioned as mandatory reads in the workflow
 
 ---
 
-## Area 11 — Batch tool call guidance (dimension 9)
+## Area 11 - Batch tool call guidance (dimension 9)
 
 Verify that skills which edit files include batch edit guidance.
 
@@ -245,23 +245,23 @@ Verify that skills which edit files include batch edit guidance.
 grep -cilE '(edit|write|fix|apply|create file|modify|run |execute)' \
     "$SKILL_DIR/SKILL.md"
 ```
-If zero, this dimension does not apply — skill is read-only/informational.
+If zero, this dimension does not apply - skill is read-only/informational.
 
 2. Check for batch guidance:
 ```bash
 grep -cilE '(batch edit|parallel call|single edit|minimize.*call|combine.*edit)' \
     "$SKILL_DIR/SKILL.md"
 ```
-If zero and step 1 matched, flag as MED — skill needs batch guidance.
+If zero and step 1 matched, flag as MED - skill needs batch guidance.
 
 3. If present, verify the guidance covers all three aspects:
-   - **Batch edits** — combining changes to the same file
-   - **Parallel calls** — independent commands in one message
-   - **Read before edit** — plan all changes first
+   - **Batch edits** - combining changes to the same file
+   - **Parallel calls** - independent commands in one message
+   - **Read before edit** - plan all changes first
 
 **Red flags:**
-- Skill has step-by-step instructions that say "edit line X… now edit line Y…
-  now edit line Z…" for the same file
+- Skill has step-by-step instructions that say "edit line X... now edit line Y...
+  now edit line Z..." for the same file
 - Multiple sequential independent commands with no mention of parallelism
 - No "read the file first" instruction before a series of edits
 
@@ -297,7 +297,7 @@ After completing all 11 areas:
 For repo-wide audits, lead with a summary:
 
 ```markdown
-## Repo health summary — <date>
+## Repo health summary - <date>
 | Skill | Health | High | Med | Low | Top issue |
 |-------|--------|------|-----|-----|-----------|
 | pytest | Good | 0 | 0 | 1 | Minor heading case |

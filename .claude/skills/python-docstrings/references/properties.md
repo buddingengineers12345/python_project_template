@@ -6,16 +6,16 @@ Covers: `@property` getters, setters, deleters, and cached properties.
 
 ## The Core Rule
 
-A `@property` docstring uses **attribute style** — it describes what the
+A `@property` docstring uses **attribute style** - it describes what the
 property *is*, not what it *returns*.
 
 ```python
-# ❌ Wrong — "Returns" phrasing
+#  Wrong - "Returns" phrasing
 @property
 def butter_sticks(self) -> int:
     """Returns the number of butter sticks we have."""
 
-# ✅ Correct — attribute style
+#  Correct - attribute style
 @property
 def butter_sticks(self) -> int:
     """The number of butter sticks we have."""
@@ -81,7 +81,7 @@ def timeout(self) -> float:
 
 @timeout.setter
 def timeout(self, value: float) -> None:
-    # No docstring needed — getter already documents the property
+    # No docstring needed - getter already documents the property
     if value <= 0:
         raise ValueError(f'Timeout must be positive, got {value}.')
     self._timeout = value
@@ -111,7 +111,7 @@ def timeout(self, value: float) -> None:
 
 ## Cached Properties
 
-Document like a regular `@property` — attribute style, describing what the
+Document like a regular `@property` - attribute style, describing what the
 value is. Mention that the value is cached if that's non-obvious:
 
 ```python
@@ -156,8 +156,8 @@ class Document:
 
 | Pattern | Rule |
 |---|---|
-| Getter | Attribute-style: `"""The X."""` — never `"""Returns the X."""` |
+| Getter | Attribute-style: `"""The X."""` - never `"""Returns the X."""` |
 | Setter | No docstring needed unless it has notable side effects or validation |
 | Deleter | No docstring needed unless behavior is non-obvious |
 | Cached property | Attribute style; mention caching if non-obvious |
-| In `Attributes:` section | Do NOT list `@property` attributes there — they document themselves |
+| In `Attributes:` section | Do NOT list `@property` attributes there - they document themselves |

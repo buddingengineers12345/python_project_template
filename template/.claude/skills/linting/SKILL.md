@@ -52,14 +52,14 @@ See `references/ruff.md` for the complete configuration and every rule set.
 
 ## Per-file ignores
 
-- `tests/**` — `ARG`, `T20` ignored (unused args OK, print OK)
-- `scripts/**` — `T20` ignored (print OK in CLI scripts)
+- `tests/**` - `ARG`, `T20` ignored (unused args OK, print OK)
+- `scripts/**` - `T20` ignored (print OK in CLI scripts)
 - Docstrings (`D` rules) are enforced in tests.
 
 ## Suppression rules
 
 - Never add `# noqa` without a specific code: `# noqa: E501`
-- Always include a comment explaining why: `# noqa: B008 — FastAPI Depends()`
+- Always include a comment explaining why: `# noqa: B008 - FastAPI Depends()`
 - Prefer fixing over suppressing
 
 ## Efficiency: batch edit and parallel calls

@@ -6,14 +6,14 @@ labels: enhancement
 assignees: ""
 ---
 
-## ✨ Feature Summary
+##  Feature Summary
 
 Provide a **clear and concise** description of the feature you are requesting.
 Summarize the idea in one or two sentences.
 
 ---
 
-## ❓ Problem Statement
+##  Problem Statement
 
 Is this feature request related to a problem or limitation in the current project?
 
@@ -24,7 +24,7 @@ Describe:
 
 ---
 
-## 💡 Proposed Solution
+##  Proposed Solution
 
 Describe the solution you would like to see implemented.
 
@@ -37,7 +37,7 @@ If applicable, explain how this fits into the Copier template or generated proje
 
 ---
 
-## 🔁 Alternatives Considered
+##  Alternatives Considered
 
 Describe any alternative solutions or approaches you have considered, including:
 
@@ -47,7 +47,7 @@ Describe any alternative solutions or approaches you have considered, including:
 
 ---
 
-## 📦 Scope and Impact (Optional)
+##  Scope and Impact (Optional)
 
 If known, describe the expected impact of this feature:
 
@@ -58,7 +58,7 @@ If known, describe the expected impact of this feature:
 
 ---
 
-## 📎 Additional Context
+##  Additional Context
 
 Add any additional information that may help evaluate the request, such as:
 
@@ -69,7 +69,7 @@ Add any additional information that may help evaluate the request, such as:
 
 ---
 
-## ✔️ Checklist
+## ️ Checklist
 
 Before submitting, please confirm:
 
@@ -80,4 +80,4 @@ Before submitting, please confirm:
 
 ---
 
-Thank you for helping improve the project 🚀
+Thank you for helping improve the project 

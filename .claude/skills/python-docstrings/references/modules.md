@@ -7,10 +7,10 @@ Covers: regular modules, package `__init__.py` files, test modules, scripts.
 ## When Is a Module Docstring Required?
 
 **Every non-test `.py` file should have a module docstring.** The docstring
-appears as the very first statement in the file — before imports, before
+appears as the very first statement in the file - before imports, before
 constants, before anything else (after the optional shebang line).
 
-Test modules are an exception — see [Test Modules](#test-modules) below.
+Test modules are an exception - see [Test Modules](#test-modules) below.
 
 ---
 
@@ -22,7 +22,7 @@ Test modules are an exception — see [Test Modules](#test-modules) below.
 
 # Optional: license boilerplate comment (see below)
 
-"""Module docstring goes here — before imports."""
+"""Module docstring goes here - before imports."""
 
 import os
 import sys
@@ -54,7 +54,7 @@ Typical usage example:
 - One physical line
 - ≤ 80 characters
 - Ends with `.`, `?`, or `!`
-- Describes what the module *provides*, not what it *is* (not "This module…")
+- Describes what the module *provides*, not what it *is* (not "This module...")
 
 ### Extended description
 - Separate from summary by one blank line
@@ -64,7 +64,7 @@ Typical usage example:
 ### Usage examples
 - Show the most common usage pattern
 - Use 2-space indent inside the docstring
-- Keep examples short and realistic — they will appear in `pydoc` output
+- Keep examples short and realistic - they will appear in `pydoc` output
 
 ---
 
@@ -124,7 +124,7 @@ module to access the stable public interface:
 ## License Boilerplate
 
 Every file should contain a license header. This is a **comment block**, not
-a docstring — it appears before the module docstring and uses `#`:
+a docstring - it appears before the module docstring and uses `#`:
 
 ```python
 # Copyright 2024 MyCompany Inc.
@@ -137,7 +137,7 @@ a docstring — it appears before the module docstring and uses `#`:
 
 The specific boilerplate depends on the project's license (Apache 2.0, MIT,
 BSD, GPL, etc.). When adding docstrings to existing files, preserve any
-existing license header — never move or remove it.
+existing license header - never move or remove it.
 
 ---
 
@@ -179,10 +179,10 @@ Update golden files after intentional output changes:
 ### Do NOT include a test module docstring that adds no information
 
 ```python
-# ❌ Useless — omit this entirely
+#  Useless - omit this entirely
 """Tests for foo.bar."""
 
-# ❌ Useless
+#  Useless
 """Unit tests for the UserProfile class."""
 ```
 
@@ -194,7 +194,7 @@ If a test docstring would only restate what the filename already says, leave it 
 
 - [ ] Appears before all imports
 - [ ] Summary line is ≤ 80 chars and ends with punctuation
-- [ ] Describes what the module *provides* (not "This module…")
+- [ ] Describes what the module *provides* (not "This module...")
 - [ ] Usage example present (for modules intended to be imported and used)
 - [ ] License boilerplate present (as a `#` comment above the docstring)
 - [ ] If test module: only included when there's genuinely useful information

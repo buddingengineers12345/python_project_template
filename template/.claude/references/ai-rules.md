@@ -21,4 +21,4 @@ Jinja2 and broader Copier how-tos live under `.claude/skills/` (for example `jin
 as a separate `rules/jinja/` tree.
 
 The `template/.claude/rules/` tree mirrors this structure for generated projects
-(common, python, bash, markdown — no Jinja, yaml, or Copier-specific rules).
+(common, python, bash, markdown - no Jinja, yaml, or Copier-specific rules).

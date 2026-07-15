@@ -1,4 +1,4 @@
-# template/ — Jinja2 Template Source
+# template/ - Jinja2 Template Source
 
 This directory is the **Copier template subdirectory** (`_subdirectory: template` in `copier.yml`).
 Everything here is rendered by Copier into the destination project. Files with a `.jinja` suffix are
@@ -7,7 +7,7 @@ processed as Jinja2; files without it are copied verbatim. **`CLAUDE.md.jinja`**
 and **preferring `src/<package>/common/`** over duplicating utilities in other package modules.
 
 > [!IMPORTANT]
-> Do **not** run Python or shell tools directly inside this directory — it is source material,
+> Do **not** run Python or shell tools directly inside this directory - it is source material,
 > not executable code. To test rendering, use `copier copy . /tmp/test-output --trust --defaults --vcs-ref HEAD`.
 
 ## Directory layout
@@ -26,7 +26,7 @@ template/
 │       ├── logging_manager.py.jinja # structlog setup (HUMAN / LLM modes)
 │       └── utils.py.jinja           # Miscellaneous utilities
 │
-├── tests/                           # Generated test suite (all `*.py.jinja` → `*.py`)
+├── tests/                           # Generated test suite (all `*.py.jinja` - `*.py`)
 │   ├── __init__.py.jinja
 │   ├── conftest.py.jinja
 │   ├── test_imports.py.jinja        # Smoke test: package is importable
@@ -57,7 +57,7 @@ template/
 │
 ├── .github/
 │   ├── workflows/
-│   │   ├── ci.yml.jinja             # Main test matrix (Python 3.11–3.13)
+│   │   ├── ci.yml.jinja             # Main test matrix (Python 3.11-3.13)
 │   │   ├── lint.yml.jinja           # Ruff + basedpyright on PRs
 │   │   ├── docs.yml.jinja           # MkDocs deploy to gh-pages (conditional)
 │   │   ├── pre-commit-update.yml.jinja  # Weekly pre-commit autoupdate
@@ -74,7 +74,7 @@ template/
 │   └── renovate.json.jinja
 │
 ├── .claude/                         # Claude Code config for generated projects
-│   ├── settings.json                # Hooks + permissions (static — not .jinja)
+│   ├── settings.json                # Hooks + permissions (static - not .jinja)
 │   ├── hooks/                       # Shell hooks for generated project dev
 │   ├── commands/                    # Slash commands (.md and .md.jinja)
 │   ├── rules/                       # AI rules (common, python, bash, markdown)
@@ -122,7 +122,7 @@ template/
 ## Jinja2 conventions in this directory
 
 - Use `{{ variable_name }}` for substitution.
-- Use `{% if condition %}…{% endif %}` for conditional blocks.
+- Use `{% if condition %}...{% endif %}` for conditional blocks.
 - File names may themselves be Jinja expressions: `src/{{ package_name }}/__init__.py.jinja`.
 - The `jinja2_time.TimeExtension` (`{% now %}`), `jinja2.ext.do`, and `jinja2.ext.loopcontrols`
   extensions are enabled.

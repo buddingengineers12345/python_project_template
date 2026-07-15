@@ -21,8 +21,8 @@ Guidance for managing project-level configuration across the toolchain.
 | `justfile` | Task runner recipes (test, lint, fmt, ci, etc.) | Adding new workflows, modifying commands |
 | `.pre-commit-config.yaml` | Git pre-commit hooks (ruff, basedpyright) | Adding/updating hook repos |
 | `.github/workflows/ci.yml` | GitHub Actions CI pipeline | Modifying CI steps, adding jobs |
-| `.copier-answers.yml` | Copier template answers — **never edit manually** | Only via `copier update` |
-| `uv.lock` | Dependency lockfile — **never edit manually** | Only via `uv lock` or `just update` |
+| `.copier-answers.yml` | Copier template answers - **never edit manually** | Only via `copier update` |
+| `uv.lock` | Dependency lockfile - **never edit manually** | Only via `uv lock` or `just update` |
 
 ## pyproject.toml structure
 
@@ -73,17 +73,17 @@ just update        # or: uv lock && uv sync --extra dev --extra test --extra doc
 ## Pre-commit configuration
 
 Hooks run on `git commit`. Managed via `.pre-commit-config.yaml`:
-- **ruff** — lint + format check on staged `.py` files
-- **basedpyright** — type check on `src/`
+- **ruff** - lint + format check on staged `.py` files
+- **basedpyright** - type check on `src/`
 
 Run all hooks manually: `just precommit`
 
 ## Rules for config changes
 
-1. **Never weaken** ruff or basedpyright settings — the `pre-config-protection.sh` hook blocks this.
-2. **Never edit** `uv.lock` directly — the `pre-protect-uv-lock.sh` hook blocks this.
-3. **Never edit** `.copier-answers.yml` manually — use `copier update`.
-4. Keep `justfile` recipes simple — one concern per recipe.
+1. **Never weaken** ruff or basedpyright settings - the `pre-config-protection.sh` hook blocks this.
+2. **Never edit** `uv.lock` directly - the `pre-protect-uv-lock.sh` hook blocks this.
+3. **Never edit** `.copier-answers.yml` manually - use `copier update`.
+4. Keep `justfile` recipes simple - one concern per recipe.
 5. Pin all dependency versions in `pyproject.toml`.
 
 ## Efficiency: batch edits and parallel calls

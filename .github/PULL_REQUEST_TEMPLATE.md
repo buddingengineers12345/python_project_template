@@ -4,7 +4,7 @@ Please provide clear and complete information to help reviewers
 understand, review, and merge your changes efficiently.
 
 Tip: run `just pr-draft` from the repo root to print a Conventional-Commits title
-(e.g. chore/foo-bar → chore: foo bar) and a body with *Changes introduced* filled
+(e.g. chore/foo-bar - chore: foo bar) and a body with *Changes introduced* filled
 from `git log`. Use `gh pr edit` to apply, or copy into the GitHub UI.
 -->
 
@@ -53,8 +53,8 @@ Indicate whether documentation was affected:
 
 Link any related issues or discussions:
 
-- Closes #…
-- Related to #…
+- Closes #...
+- Related to #...
 
 ---
 

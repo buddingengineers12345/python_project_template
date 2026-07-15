@@ -35,8 +35,8 @@ Complete input schemas and decision control for all Claude Code hook events.
 `permission_mode` values: `default`, `plan`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`
 
 When running inside a subagent:
-- `agent_id` — unique subagent identifier
-- `agent_type` — agent name (e.g., `"Explore"`, `"security-reviewer"`)
+- `agent_id` - unique subagent identifier
+- `agent_type` - agent name (e.g., `"Explore"`, `"security-reviewer"`)
 
 ---
 
@@ -55,13 +55,13 @@ When running inside a subagent:
 ```
 
 **Output:**
-- stdout text → added to Claude's context
-- `hookSpecificOutput.additionalContext` → string added to context
-- `CLAUDE_ENV_FILE` — append `export VAR=value` lines to persist env vars to Bash
+- stdout text - added to Claude's context
+- `hookSpecificOutput.additionalContext` - string added to context
+- `CLAUDE_ENV_FILE` - append `export VAR=value` lines to persist env vars to Bash
 
 **Cannot block.** Use for context injection and environment setup.
 
-**Pattern — inject git context:**
+**Pattern - inject git context:**
 ```bash
 #!/usr/bin/env bash
 INPUT=$(cat)
@@ -95,7 +95,7 @@ echo "$RECENT"
 
 **When:** User submits a prompt, before Claude processes it.
 
-**No matcher support** — fires on every prompt.
+**No matcher support** - fires on every prompt.
 
 **Input:**
 ```json
@@ -105,10 +105,10 @@ echo "$RECENT"
 ```
 
 **Output:**
-- Plain stdout (non-JSON) → added as context visible to Claude
-- `hookSpecificOutput.additionalContext` → added more discretely
-- `hookSpecificOutput.sessionTitle` → renames the session
-- `decision: "block"` + `reason` → rejects the prompt
+- Plain stdout (non-JSON) - added as context visible to Claude
+- `hookSpecificOutput.additionalContext` - added more discretely
+- `hookSpecificOutput.sessionTitle` - renames the session
+- `decision: "block"` + `reason` - rejects the prompt
 
 **Block a prompt:**
 ```bash
@@ -172,14 +172,14 @@ exit 0
 ```
 
 `permissionDecision` values:
-- `"allow"` — skip permission prompt, proceed
-- `"deny"` — block the tool call (reason shown to Claude)
-- `"ask"` — show permission dialog to user (reason shown to user)
-- `"defer"` — pause for external input (non-interactive `-p` mode only)
+- `"allow"` - skip permission prompt, proceed
+- `"deny"` - block the tool call (reason shown to Claude)
+- `"ask"` - show permission dialog to user (reason shown to user)
+- `"defer"` - pause for external input (non-interactive `-p` mode only)
 
 **Precedence:** `deny > defer > ask > allow`
 
-**Pattern — block specific file paths:**
+**Pattern - block specific file paths:**
 ```bash
 INPUT=$(cat)
 FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
@@ -190,7 +190,7 @@ fi
 exit 0
 ```
 
-**Pattern — auto-approve safe git commands:**
+**Pattern - auto-approve safe git commands:**
 ```bash
 INPUT=$(cat)
 CMD=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
@@ -264,7 +264,7 @@ exit 0
 
 ## PostToolUse
 
-**When:** Tool completes successfully. Cannot undo — can only give Claude feedback.
+**When:** Tool completes successfully. Cannot undo - can only give Claude feedback.
 
 **Matcher values:** Same as PreToolUse tool names.
 
@@ -291,9 +291,9 @@ exit 0
 }
 ```
 
-`updatedMCPToolOutput` — replaces MCP tool response (MCP tools only).
+`updatedMCPToolOutput` - replaces MCP tool response (MCP tools only).
 
-**Pattern — run linter after file write:**
+**Pattern - run linter after file write:**
 ```bash
 INPUT=$(cat)
 FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
@@ -352,7 +352,7 @@ Cannot block (tool already failed). Use to inject diagnostic context for Claude.
 }
 ```
 
-**Output:** `hookSpecificOutput.additionalContext` — injected into subagent's context.
+**Output:** `hookSpecificOutput.additionalContext` - injected into subagent's context.
 
 ---
 
@@ -391,7 +391,7 @@ Uses the same decision control as [Stop](#stop).
 }
 ```
 
-⚠️ **Always check `stop_hook_active`** to avoid infinite loops when blocking.
+️ **Always check `stop_hook_active`** to avoid infinite loops when blocking.
 
 **Output:**
 ```json
@@ -401,7 +401,7 @@ Uses the same decision control as [Stop](#stop).
 }
 ```
 
-**Pattern — quality gate (safe):**
+**Pattern - quality gate (safe):**
 ```bash
 INPUT=$(cat)
 ACTIVE=$(echo "$INPUT" | jq -r '.stop_hook_active')
@@ -452,8 +452,8 @@ exit 0
 ```
 
 **Control:**
-- `exit 2` + stderr → teammate keeps working with your feedback
-- `{"continue": false, "stopReason": "..."}` → stops teammate entirely
+- `exit 2` + stderr - teammate keeps working with your feedback
+- `{"continue": false, "stopReason": "..."}` - stops teammate entirely
 
 ---
 
@@ -691,6 +691,6 @@ HTTP hooks: `hookSpecificOutput.worktreePath`.
 
 **Matcher values:** MCP server names.
 
-**Can block** (exit 2 → response becomes decline).
+**Can block** (exit 2 - response becomes decline).
 
-**Output:** Same schema as Elicitation output — can override user's response.
+**Output:** Same schema as Elicitation output - can override user's response.

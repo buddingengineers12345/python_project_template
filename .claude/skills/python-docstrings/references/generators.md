@@ -13,7 +13,7 @@ Document the **object yielded by each iteration** (what the caller gets from
 `next()`), not the generator object that the function call evaluates to.
 
 ```python
-# ❌ Wrong — using Returns: in a generator
+#  Wrong - using Returns: in a generator
 def stream_rows(table: Table) -> Iterator[Row]:
     """Streams rows from a table.
 
@@ -24,7 +24,7 @@ def stream_rows(table: Table) -> Iterator[Row]:
         yield row
 
 
-# ✅ Correct
+#  Correct
 def stream_rows(table: Table) -> Iterator[Row]:
     """Streams rows from a table one at a time.
 
@@ -64,7 +64,7 @@ Raises:
 
 Describe:
 - What type of object is yielded (if not obvious from the type annotation)
-- The semantics of each yielded value — what it represents
+- The semantics of each yielded value - what it represents
 - Ordering guarantees, if any
 - Whether the generator can yield `None`
 
@@ -153,7 +153,7 @@ def open_connection(host: str, port: int) -> Iterator[Connection]:
 ## `yield from` Functions
 
 Document the same way as a regular generator. Describe what is ultimately
-yielded to the caller — not the sub-generator internals.
+yielded to the caller - not the sub-generator internals.
 
 ```python
 def iter_all_records(tables: list[Table]) -> Iterator[Row]:

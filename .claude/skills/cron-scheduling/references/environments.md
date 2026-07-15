@@ -1,24 +1,24 @@
 # Cron environments reference
 
-_Read this file when: the user is on macOS, Windows, Docker, Kubernetes, GitHub Actions, Node.js, or Python — i.e., anything that isn't standard Linux cron._
+_Read this file when: the user is on macOS, Windows, Docker, Kubernetes, GitHub Actions, Node.js, or Python - i.e., anything that isn't standard Linux cron._
 
 ---
 
 ## Table of contents
 
-1. [macOS — launchd](#1-macos--launchd)
-2. [Windows — Task Scheduler & schtasks](#2-windows--task-scheduler)
+1. [macOS - launchd](#1-macos--launchd)
+2. [Windows - Task Scheduler & schtasks](#2-windows--task-scheduler)
 3. [Docker containers](#3-docker-containers)
 4. [Kubernetes CronJob](#4-kubernetes-cronjob)
 5. [AWS EventBridge + Lambda](#5-aws-eventbridge--lambda)
 6. [GitHub Actions scheduled workflows](#6-github-actions)
-7. [Node.js — node-cron](#7-nodejs--node-cron)
-8. [Python — APScheduler & schedule](#8-python)
+7. [Node.js - node-cron](#7-nodejs--node-cron)
+8. [Python - APScheduler & schedule](#8-python)
 9. [Environment comparison table](#9-comparison-table)
 
 ---
 
-## 1. macOS — launchd
+## 1. macOS - launchd
 
 macOS marks cron as legacy. The native scheduler is **launchd**, using XML plist files.
 
@@ -76,16 +76,16 @@ macOS marks cron as legacy. The native scheduler is **launchd**, using XML plist
 
 | Key | Values |
 |-----|--------|
-| `Minute` | 0–59 |
-| `Hour` | 0–23 |
-| `Day` | 1–31 |
-| `Month` | 1–12 |
-| `Weekday` | 0–7 (0 and 7 = Sunday) |
+| `Minute` | 0-59 |
+| `Hour` | 0-23 |
+| `Day` | 1-31 |
+| `Month` | 1-12 |
+| `Weekday` | 0-7 (0 and 7 = Sunday) |
 
 ### Management commands
 
 ```bash
-# Load (activate) — first time or after editing
+# Load (activate) - first time or after editing
 launchctl load ~/Library/LaunchAgents/com.myapp.backup.plist
 
 # Unload (deactivate)
@@ -107,18 +107,18 @@ launchctl bootout gui/$(id -u)/com.myapp.backup
 
 ---
 
-## 2. Windows — Task Scheduler
+## 2. Windows - Task Scheduler
 
 ### schtasks CLI (Command Prompt / PowerShell)
 
 ```powershell
-# Create — daily at 2 AM
+# Create - daily at 2 AM
 schtasks /create /tn "MyApp Backup" /tr "C:\Scripts\backup.bat" /sc daily /st 02:00 /ru SYSTEM /f
 
-# Create — every 5 minutes
+# Create - every 5 minutes
 schtasks /create /tn "MyApp Poll" /tr "C:\Scripts\poll.bat" /sc minute /mo 5 /ru SYSTEM /f
 
-# Update — change schedule time
+# Update - change schedule time
 schtasks /change /tn "MyApp Backup" /st 03:00
 
 # Enable / disable
@@ -138,7 +138,7 @@ schtasks /query /fo LIST /v
 schtasks /query /tn "MyApp Backup" /fo LIST /v
 ```
 
-### PowerShell — richer task creation
+### PowerShell - richer task creation
 
 ```powershell
 # Create a repeating daily task
@@ -167,7 +167,7 @@ Unregister-ScheduledTask -TaskName "MyApp Backup" -Confirm:$false
 
 ## 3. Docker containers
 
-### Approach A — cron inside the container (simple)
+### Approach A - cron inside the container (simple)
 
 ```dockerfile
 FROM ubuntu:22.04
@@ -182,7 +182,7 @@ CMD ["bash", "-c", "printenv > /etc/environment && cron -f"]
 ```
 
 ```bash
-# mycrontab (no username field — already installed via crontab command)
+# mycrontab (no username field - already installed via crontab command)
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
@@ -190,7 +190,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 0 2 * * * root /app/scripts/backup.sh >> /var/log/backup.log 2>&1
 ```
 
-### Approach B — host-level cron triggers container (recommended for production)
+### Approach B - host-level cron triggers container (recommended for production)
 
 Keep your host crontab clean and let it drive the container:
 
@@ -384,15 +384,15 @@ jobs:
 ```
 
 **GitHub Actions cron caveats:**
-- All times are UTC — there is no timezone support
+- All times are UTC - there is no timezone support
 - Minimum interval: 5 minutes
-- Heavily loaded repos may have 15–60 min delays during peak hours
+- Heavily loaded repos may have 15-60 min delays during peak hours
 - Scheduled workflows are disabled after 60 days of repo inactivity
 - Only runs on the default branch
 
 ---
 
-## 7. Node.js — node-cron
+## 7. Node.js - node-cron
 
 ```bash
 npm install node-cron
@@ -403,7 +403,7 @@ const cron = require('node-cron');
 
 // Basic usage
 cron.schedule('0 2 * * *', () => {
-  console.log('Running nightly backup…');
+  console.log('Running nightly backup...');
   runBackup();
 });
 
@@ -438,7 +438,7 @@ process.on('SIGTERM', () => {
 
 ## 8. Python
 
-### Option A — `schedule` (simple, synchronous)
+### Option A - `schedule` (simple, synchronous)
 
 ```bash
 pip install schedule
@@ -449,10 +449,10 @@ import schedule
 import time
 
 def backup():
-    print("Running backup…")
+    print("Running backup...")
 
 def report():
-    print("Sending weekly report…")
+    print("Sending weekly report...")
 
 # Human-readable scheduling DSL
 schedule.every().day.at("02:00").do(backup)
@@ -466,7 +466,7 @@ while True:
     time.sleep(30)          # Check every 30 seconds
 ```
 
-### Option B — APScheduler (production-grade, async-capable)
+### Option B - APScheduler (production-grade, async-capable)
 
 ```bash
 pip install apscheduler

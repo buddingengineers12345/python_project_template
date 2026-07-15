@@ -6,7 +6,7 @@ description: >-
   create a PR for a branch or commit, summarize changes as a PR, or fill in a PR template.
   Also trigger when the user says things like "make a PR for this", "write up the PR", "PR description for
   these changes", "help me open a PR", or pastes a diff/commit log and asks for a PR.
-  ALWAYS use this skill for any PR-related generation task — never freeform a PR description without it.
+  ALWAYS use this skill for any PR-related generation task - never freeform a PR description without it.
 ---
 
 # PR Template Skill
@@ -16,7 +16,7 @@ description: >-
 
 ---
 
-## STEP 1 — Get the template
+## STEP 1 - Get the template
 
 The PR template lives at `.github/PULL_REQUEST_TEMPLATE.md`. Obtain it in priority order:
 
@@ -28,11 +28,11 @@ The PR template lives at `.github/PULL_REQUEST_TEMPLATE.md`. Obtain it in priori
 
 Rules: Do NOT modify template headings, section order, or structure. Do NOT mix fallback with user-provided template.
 
-> ⚠️ Do not proceed to Step 2 until you have the template loaded.
+> ️ Do not proceed to Step 2 until you have the template loaded.
 
 ---
 
-## STEP 2 — Extract signals from the user's input
+## STEP 2 - Extract signals from the user's input
 
 Scan everything the user provided. Find these signals:
 
@@ -48,7 +48,7 @@ Scan everything the user provided. Find these signals:
 
 ---
 
-## STEP 3 — Fill each section
+## STEP 3 - Fill each section
 
 If the PR template has custom sections or you need exact fill rules for each
 section; for detailed section guidelines, load `references/section-rules.md`. For standard PRs with Summary,
@@ -62,7 +62,7 @@ Work through each section **one at a time, in template order**.
 
 ---
 
-## STEP 4 — Validate
+## STEP 4 - Validate
 
 Before outputting anything, check each item below. If a check fails, fix it first.
 
@@ -70,7 +70,7 @@ Before outputting anything, check each item below. If a check fails, fix it firs
 |---|---|---|
 | 1 | If the loaded template begins with `<!--`, your output must also begin with that same comment block | Copy the opening comment from the template to the top of your output |
 | 2 | All sections from the loaded template are present in original order | Add any missing section in the correct position |
-| 3 | No raw placeholder text remains (e.g. `Change 1`, `Closes #…`) | Replace with real content or the correct fallback string from `section-rules.md` |
+| 3 | No raw placeholder text remains (e.g. `Change 1`, `Closes #...`) | Replace with real content or the correct fallback string from `section-rules.md` |
 | 4 | Contributor checklist boxes are all unchecked (`- [ ]`) | Change any `- [x]` back to `- [ ]` |
 | 5 | Output ends with `Thank you for your contribution.` | Add it as the final line |
 | 6 | Entire output is wrapped in a ` ```markdown ``` ` code block | Wrap it |
@@ -79,11 +79,11 @@ Before outputting anything, check each item below. If a check fails, fix it firs
 
 ---
 
-## STEP 5 — Add a notice (only if needed)
+## STEP 5 - Add a notice (only if needed)
 
 After the code block:
-- **If any section contains `<!-- please verify`** → write a plain-text note listing each flagged section by name so the user knows what to fix before submitting.
-- **If no `<!-- please verify` markers exist** → output nothing after the code block.
+- **If any section contains `<!-- please verify`** - write a plain-text note listing each flagged section by name so the user knows what to fix before submitting.
+- **If no `<!-- please verify` markers exist** - output nothing after the code block.
 
 ---
 

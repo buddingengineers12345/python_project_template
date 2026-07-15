@@ -37,7 +37,7 @@ When the summary line starts with "Returns", "Return", "Yields", or "Yield" **an
 ```python
 def get_username(user_id: int) -> str:
     """Returns the display name for the given user ID."""
-    # No Returns: section needed — the summary covers it completely
+    # No Returns: section needed - the summary covers it completely
 ```
 
 ---
@@ -48,7 +48,7 @@ Use when parameters, return value, or exceptions need explanation beyond the sig
 
 ### Structure
 ```
-"""Summary line — one line, ≤ 80 chars, ends with punctuation.
+"""Summary line - one line, ≤ 80 chars, ends with punctuation.
 
 Optional extended description. Can be multiple paragraphs. Explains
 semantics, not implementation, unless implementation details affect usage
@@ -126,7 +126,7 @@ Args:
 
 **Be consistent**: pick 2-space or 4-space hanging indent and use it throughout the file.
 
-### Alternative style — name on its own line (also valid)
+### Alternative style - name on its own line (also valid)
 
 ```
 Args:
@@ -180,7 +180,7 @@ Args:
 
 ### Optional parameters with semantic meaning to their default
 
-Don't just repeat the default value — explain what it *means*:
+Don't just repeat the default value - explain what it *means*:
 
 ```
 Args:
@@ -209,15 +209,15 @@ Returns:
     not just the type (the annotation already has the type).
 ```
 
-### Tuple returns — NEVER document as multiple separate values
+### Tuple returns - NEVER document as multiple separate values
 
 ```python
-# ❌ Wrong (NumPy-style, do not use):
+#  Wrong (NumPy-style, do not use):
 # Returns:
 #     mat_a: The left singular vectors.
 #     mat_b: The right singular vectors.
 
-# ✅ Correct:
+#  Correct:
 # Returns:
 #     A tuple (mat_a, mat_b), where mat_a is the left singular vectors
 #     matrix and mat_b is the right singular vectors matrix.
@@ -240,7 +240,7 @@ Returns:
 
 ### What to document
 
-List exceptions that are **part of the function's interface contract** — things a reasonable caller should know about and potentially handle.
+List exceptions that are **part of the function's interface contract** - things a reasonable caller should know about and potentially handle.
 
 ```
 Raises:
@@ -287,21 +287,21 @@ Both are valid. **Pick one per file.**
 | Descriptive | `"""Fetches rows from a Bigtable."""` |
 | Imperative | `"""Fetch rows from a Bigtable."""` |
 
-The docstring for a `@property` always uses **attribute style** regardless of the file's convention — see `properties.md`.
+The docstring for a `@property` always uses **attribute style** regardless of the file's convention - see `properties.md`.
 
 ---
 
 ## Implementation Details in Docstrings
 
-The docstring should describe **what** a function does and **how to call it** — not **how it's implemented**, unless those details affect the caller.
+The docstring should describe **what** a function does and **how to call it** - not **how it's implemented**, unless those details affect the caller.
 
-✅ Worth documenting in docstring:
+ Worth documenting in docstring:
 - Side effects (mutates an argument, writes to disk, emits a log)
 - Performance characteristics a caller should factor in
 - Behavior under specific edge cases (empty input, None, boundary values)
 
-❌ Keep out of docstring (put in inline comments instead):
-- Internal algorithm choice ("we use a weighted dict search…")
+ Keep out of docstring (put in inline comments instead):
+- Internal algorithm choice ("we use a weighted dict search...")
 - Implementation-specific data structures
 - Optimization decisions that don't affect API behavior
 
@@ -320,7 +320,7 @@ def log_event(event: str, level: str = 'INFO') -> None:
           'WARNING', or 'ERROR'. Defaults to 'INFO'.
     """
 ```
-No `Returns:` section — function returns `None`.
+No `Returns:` section - function returns `None`.
 
 ### Function that returns self for chaining
 ```python

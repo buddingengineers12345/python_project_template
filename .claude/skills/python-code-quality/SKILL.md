@@ -8,7 +8,7 @@ description: >-
   lint/type/security errors, writing or updating pyproject.toml quality sections, CI pipeline steps for code quality,
   or questions like "how do I enforce formatting", "why is ruff complaining", "pre-commit isn't running", "type error
   I don't understand", or "security finding I need to suppress". Also use proactively when writing new Python files.
-  Do NOT use for individual language-specific skills — use type-checking for basedpyright focus, security for bandit/semgrep focus.
+  Do NOT use for individual language-specific skills - use type-checking for basedpyright focus, security for bandit/semgrep focus.
 ---
 
 # Python Code Quality Skill
@@ -18,9 +18,9 @@ This project enforces code quality through five tools:
 | Tool | Role | Config location |
 |---|---|---|
 | **ruff** | Lint + format (replaces flake8 / isort / black) | `[tool.ruff]` in `pyproject.toml` |
-| **pre-commit** | Git hook runner — gates every commit | `.pre-commit-config.yaml` |
+| **pre-commit** | Git hook runner - gates every commit | `.pre-commit-config.yaml` |
 | **basedpyright** | Static type checker (strict pyright fork) | `[tool.basedpyright]` in `pyproject.toml` |
-| **bandit** | Security linter — fixed Python vulnerability patterns | `[tool.bandit]` in `pyproject.toml` |
+| **bandit** | Security linter - fixed Python vulnerability patterns | `[tool.bandit]` in `pyproject.toml` |
 | **semgrep** | Pattern-based scanner + custom rules | `.semgrep.yml` |
 
 ---
@@ -58,23 +58,23 @@ semgrep --config .semgrep.yml src/  # pattern scan
 Run cheapest checks first so failures surface quickly without wasting time on later stages:
 
 ```
-ruff format --check  →  ruff check  →  bandit  →  semgrep  →  basedpyright  →  pytest
+ruff format --check  -  ruff check  -  bandit  -  semgrep  -  basedpyright  -  pytest
 ```
 
 | Stage | Why here |
 |---|---|
-| `ruff format --check` | Instant — no point type-checking badly formatted code |
-| `ruff check` | Fast Rust linter — catches style and logic issues cheaply |
-| `bandit` | Fast fixed-rule security scan — pure AST analysis |
+| `ruff format --check` | Instant - no point type-checking badly formatted code |
+| `ruff check` | Fast Rust linter - catches style and logic issues cheaply |
+| `bandit` | Fast fixed-rule security scan - pure AST analysis |
 | `semgrep` | Slower than bandit (fetches registry rules); runs after fast checks |
-| `basedpyright` | Needs full import graph resolved — slower, but before tests |
-| `pytest` | Most expensive — only run when everything above passes |
+| `basedpyright` | Needs full import graph resolved - slower, but before tests |
+| `pytest` | Most expensive - only run when everything above passes |
 
 ---
 
 ## When to load references
 
-| If the task involves…                 | Load                              |
+| If the task involves...                 | Load                              |
 |----------------------------------------|-----------------------------------|
 | Configuring or debugging ruff          | `references/ruff.md`              |
 | Setting up or fixing pre-commit hooks  | `references/pre-commit.md`        |
@@ -82,7 +82,7 @@ ruff format --check  →  ruff check  →  bandit  →  semgrep  →  basedpyrig
 | Security scan findings (bandit)        | `references/bandit.md`            |
 | Custom semgrep rules                   | `references/semgrep.md`           |
 | Complete config file examples          | `references/complete-configs.md`  |
-| Running `just lint`/`just fix` (default) | No reference needed — use inline |
+| Running `just lint`/`just fix` (default) | No reference needed - use inline |
 
 ## Quick reference: where to go deeper
 
@@ -106,8 +106,8 @@ or CI integration specifics:
   `bandit`) in parallel as separate tool calls in a single message.
 - **Batch edits:** When fixing multiple lint violations in the same file, combine
   all fixes into a single Edit tool call.
-- **CI ordering:** Follow the fast-fail order (format → lint → bandit → semgrep →
-  type → test) but run independent stages in parallel where possible.
+- **CI ordering:** Follow the fast-fail order (format - lint - bandit - semgrep -
+  type - test) but run independent stages in parallel where possible.
 
 ## Adding a new tool
 

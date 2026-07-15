@@ -44,7 +44,7 @@
 ### Secrets & Auth
 - [ ] API keys, passwords, or tokens hardcoded in source?
 - [ ] Secrets in committed config files instead of `.env` or a secrets manager?
-- [ ] `MD5` or `SHA1` used for security (passwords, tokens) — not just checksums?
+- [ ] `MD5` or `SHA1` used for security (passwords, tokens) - not just checksums?
 - [ ] `random` module used for security tokens? (Use `secrets` module)
 - [ ] JWT decoded with `algorithm=None` or `options={"verify_signature": False}`?
 - [ ] `hashlib.pbkdf2_hmac` with too few iterations (< 600 000 for PBKDF2-SHA256)?
@@ -61,13 +61,13 @@
 ## 2. Correctness & Bugs
 
 ### Python-Specific Traps
-- [ ] Mutable default argument: `def f(items=[])` — use `None` + guard
+- [ ] Mutable default argument: `def f(items=[])` - use `None` + guard
 - [ ] Late-binding closure: `lambda: x` inside a loop captures loop variable by reference
 - [ ] Integer vs float: `5 / 2 == 2.5`; use `//` if integer result intended
 - [ ] `is` vs `==`: `is` for identity (None, True, False only); `==` for value equality
-- [ ] String concatenation in a loop (`s += chunk`) — O(n²); use `"".join()`
+- [ ] String concatenation in a loop (`s += chunk`) - O(n²); use `"".join()`
 - [ ] `dict.keys()` iterated while the dict is mutated
-- [ ] `datetime.datetime.utcnow()` deprecated in 3.12 — prefer `datetime.now(UTC)` now
+- [ ] `datetime.datetime.utcnow()` deprecated in 3.12 - prefer `datetime.now(UTC)` now
 
 ### Logic
 - [ ] Off-by-one errors in slices (`[:n]` vs `[:n+1]`) or `range()`
@@ -85,7 +85,7 @@
 
 ## 3. Type Safety (Python 3.11)
 
-- [ ] Use `X | Y` union syntax (3.10+) — not `Union[X, Y]` or `Optional[X]`
+- [ ] Use `X | Y` union syntax (3.10+) - not `Union[X, Y]` or `Optional[X]`
 - [ ] Use `Self` (from `typing`) for methods that return the instance type
 - [ ] Use `Never` for functions that always raise or never return
 - [ ] Use `TypeVarTuple` / `Unpack` for variadic generics
@@ -94,7 +94,7 @@
 - [ ] `Any` used where a more specific type is knowable
 - [ ] `Optional` result used at callsite without a `None` check
 - [ ] `cast()` used to silence mypy rather than fix a real type inconsistency
-- [ ] `# type: ignore` without an explanatory comment — is it justified?
+- [ ] `# type: ignore` without an explanatory comment - is it justified?
 - [ ] `isinstance()` used for runtime checks (correct); `type(x) ==` avoided
 - [ ] `dataclass`, `TypedDict`, or Pydantic `BaseModel` used for structured data
 - [ ] `@overload` used where the return type depends on argument type
@@ -122,7 +122,7 @@
 - [ ] `if x is None:` not `if x == None:`
 - [ ] `if not items:` not `if len(items) == 0:`
 - [ ] f-strings for interpolation (not `.format()` or `%`)
-- [ ] `with open(...) as f:` — not manual `f.open()` / `f.close()`
+- [ ] `with open(...) as f:` - not manual `f.open()` / `f.close()`
 - [ ] `enumerate()` instead of `range(len(...))`
 - [ ] `zip()` to iterate parallel sequences; `zip(..., strict=True)` (3.10+) to catch length mismatches
 - [ ] `pathlib.Path` over `os.path` string manipulation
@@ -131,7 +131,7 @@
 
 ### Code Style
 - [ ] 2 blank lines around top-level definitions; 1 blank line between methods
-- [ ] Imports: stdlib → third-party → local; one import per line
+- [ ] Imports: stdlib - third-party - local; one import per line
 - [ ] No wildcard imports (`from module import *`) except deliberate `__init__.py` re-exports
 - [ ] No semicolons combining multiple statements on one line
 
@@ -140,16 +140,16 @@
 ## 5. Design & Architecture
 
 ### Functions
-- [ ] Single responsibility — does each function do exactly one thing?
-- [ ] Functions > 30 lines — consider splitting
-- [ ] > 3–4 parameters without a dataclass/config object grouping them
-- [ ] Boolean flag parameter that switches behaviour — consider two separate functions
-- [ ] Deep nesting (> 3 levels) — can guard clauses / early returns flatten this?
+- [ ] Single responsibility - does each function do exactly one thing?
+- [ ] Functions > 30 lines - consider splitting
+- [ ] > 3-4 parameters without a dataclass/config object grouping them
+- [ ] Boolean flag parameter that switches behaviour - consider two separate functions
+- [ ] Deep nesting (> 3 levels) - can guard clauses / early returns flatten this?
 - [ ] Side effects (I/O, mutation) mixed with pure computation in the same function
 
 ### Classes
 - [ ] Is a class actually needed, or would module-level functions suffice?
-- [ ] `__init__` doing expensive work (I/O, network) — consider a factory `@classmethod`
+- [ ] `__init__` doing expensive work (I/O, network) - consider a factory `@classmethod`
 - [ ] Missing `__repr__` on data-holding classes
 - [ ] Inheritance used where composition would be simpler and more explicit
 - [ ] `@dataclass` / `NamedTuple` / Pydantic model for data-only classes
@@ -158,7 +158,7 @@
 ### Modules
 - [ ] Circular imports (A imports B imports A)?
 - [ ] Magic numbers that should be named constants
-- [ ] Configuration logic mixed with business logic — separate them
+- [ ] Configuration logic mixed with business logic - separate them
 - [ ] God module (> 500 lines doing several unrelated things)?
 - [ ] Missing `__all__` on a public module (controls what `import *` exposes)
 
@@ -166,10 +166,10 @@
 
 ## 6. Error Handling
 
-- [ ] Bare `except:` catches `KeyboardInterrupt`, `SystemExit` — always name the exception
+- [ ] Bare `except:` catches `KeyboardInterrupt`, `SystemExit` - always name the exception
 - [ ] `except Exception: pass` silently swallowing errors
-- [ ] Original exception lost: `raise RuntimeError(...)` inside except — use `raise X from e`
-- [ ] `try` block too wide — wrapping code that cannot realistically raise the caught exception
+- [ ] Original exception lost: `raise RuntimeError(...)` inside except - use `raise X from e`
+- [ ] `try` block too wide - wrapping code that cannot realistically raise the caught exception
 - [ ] Resource leak: `open()`, DB connection, socket not in a `with` block
 - [ ] Custom exceptions inheriting from a semantically appropriate base
   (`ValueError`, `RuntimeError`, `OSError`, etc.)
@@ -186,11 +186,11 @@
 - [ ] Tests assert behaviour (not just "no exception raised")
 - [ ] Mock / patch targets the right import path:
       `mymodule.requests.get`, not `requests.get`
-- [ ] No real I/O (filesystem, network, DB) in unit tests — mock or use fixtures
+- [ ] No real I/O (filesystem, network, DB) in unit tests - mock or use fixtures
 - [ ] Tests are isolated: no shared mutable state, no execution-order dependency
 - [ ] `@pytest.mark.parametrize` used for repeated cases instead of copy-paste tests
 - [ ] Fixtures reused via `conftest.py` instead of duplicated `setUp`-style code
-- [ ] Line coverage ≠ branch coverage ≠ behaviour coverage — check what is actually asserted
+- [ ] Line coverage ≠ branch coverage ≠ behaviour coverage - check what is actually asserted
 - [ ] `pytest-asyncio` used correctly for async tests
 
 ---
@@ -199,23 +199,23 @@
 
 > Flag only for hot paths, loops over large data, or when explicitly requested.
 
-- [ ] N+1 query: related objects fetched inside a loop — use `select_related` / `prefetch_related`
+- [ ] N+1 query: related objects fetched inside a loop - use `select_related` / `prefetch_related`
 - [ ] Expensive value re-computed inside a loop that could be hoisted before the loop
-- [ ] String concatenation in a loop — use `"".join()`
-- [ ] Reading an entire large file into memory — consider streaming / chunking
-- [ ] `for i in range(len(items)):` — use `enumerate` or iterate directly
+- [ ] String concatenation in a loop - use `"".join()`
+- [ ] Reading an entire large file into memory - consider streaming / chunking
+- [ ] `for i in range(len(items)):` - use `enumerate` or iterate directly
 - [ ] Unnecessary object creation in a tight inner loop
 
 ---
 
 ## 9. Concurrency & Async
 
-- [ ] Blocking I/O (`requests.get`, `time.sleep`) inside `async def` — use async alternatives
-- [ ] `asyncio.create_task()` result not stored — uncaught exceptions silently discarded
+- [ ] Blocking I/O (`requests.get`, `time.sleep`) inside `async def` - use async alternatives
+- [ ] `asyncio.create_task()` result not stored - uncaught exceptions silently discarded
 - [ ] `asyncio.sleep(0)` missing to yield control in CPU-bound `async` loops
 - [ ] Shared mutable state accessed from multiple threads without a lock
-- [ ] `threading.Thread` missing `daemon=True` or `join()` — may hang on exit
-- [ ] Race condition in `if not exists: create` — use atomic DB operations or a lock
+- [ ] `threading.Thread` missing `daemon=True` or `join()` - may hang on exit
+- [ ] Race condition in `if not exists: create` - use atomic DB operations or a lock
 - [ ] `asyncio.TaskGroup` (3.11) preferred over `asyncio.gather()` for structured concurrency
 - [ ] `timeout` parameter on `asyncio.wait_for()` to prevent hung tasks
 
@@ -250,7 +250,7 @@
 - [ ] `request.POST` / `request.GET` used without form or serializer validation?
 - [ ] Views missing `@login_required` or `permission_classes`?
 - [ ] Queryset accesses related object in a loop without `select_related`/`prefetch_related`?
-- [ ] `null=True` on a `CharField` — use `blank=True`; empty string is the Django convention
+- [ ] `null=True` on a `CharField` - use `blank=True`; empty string is the Django convention
 - [ ] `SECRET_KEY` or `DEBUG=True` committed to source?
 - [ ] Django signals used where an explicit service-layer call would be clearer?
 
@@ -273,10 +273,10 @@
 ## 13. Data Science (Pandas / NumPy / PyTorch)
 
 ### Pandas
-- [ ] Chained indexing `df[col][row]` — use `df.loc[row, col]`
+- [ ] Chained indexing `df[col][row]` - use `df.loc[row, col]`
 - [ ] `.iterrows()` for something that can be vectorised?
-- [ ] `inplace=True` — prefer explicit reassignment (`df = df.dropna()`)
-- [ ] Reading a large CSV fully into memory — consider chunking or Polars
+- [ ] `inplace=True` - prefer explicit reassignment (`df = df.dropna()`)
+- [ ] Reading a large CSV fully into memory - consider chunking or Polars
 
 ### NumPy
 - [ ] Python loop where vectorised NumPy operations would work?
@@ -288,4 +288,4 @@
 - [ ] Tensors not moved to the same device before operations?
 - [ ] No random seed set for reproducibility (`torch.manual_seed`, `numpy.random.seed`)?
 - [ ] `print()` debugging statements left in notebook or training script?
-- [ ] Data loading/preprocessing logic mixed with model logic — consider a `Dataset` class?
+- [ ] Data loading/preprocessing logic mixed with model logic - consider a `Dataset` class?

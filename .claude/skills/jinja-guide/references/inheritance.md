@@ -1,20 +1,20 @@
 # Jinja inheritance, includes, imports, and macros
 
 ## Table of Contents
-1. [Template Inheritance — Full Patterns](#template-inheritance--full-patterns)
+1. [Template Inheritance - Full Patterns](#template-inheritance--full-patterns)
 2. [Block Scoping & Nesting](#block-scoping--nesting)
-3. [super() — Preserve Parent Content](#super---preserve-parent-content)
+3. [super() - Preserve Parent Content](#super---preserve-parent-content)
 4. [Multi-Level Inheritance](#multi-level-inheritance)
 5. [Scoped Blocks](#scoped-blocks)
 6. [Include](#include)
 7. [Import](#import)
 8. [Import Context Behavior](#import-context-behavior)
-9. [Macros — Advanced Patterns](#macros--advanced-patterns)
+9. [Macros - Advanced Patterns](#macros--advanced-patterns)
 10. [Call Blocks](#call-blocks)
 
 ---
 
-## Template Inheritance — Full Patterns
+## Template Inheritance - Full Patterns
 
 ### Anatomy of a Well-Structured Base Template
 
@@ -25,7 +25,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}{% endblock %} — {{ site_name }}</title>
+  <title>{% block title %}{% endblock %} - {{ site_name }}</title>
   {% block meta %}{% endblock %}
   {% block styles %}
     <link rel="stylesheet" href="/static/css/main.css">
@@ -80,7 +80,7 @@ Blocks can be nested. Each block is independently overridable:
 ```jinja
 {# child.html #}
 {% extends "base.html" %}
-{% block inner %}Custom inner only — outer <div> is preserved{% endblock %}
+{% block inner %}Custom inner only - outer <div> is preserved{% endblock %}
 ```
 
 **Rule:** A block defined in a parent creates an override point. The child can override any block at any nesting level independently.
@@ -93,7 +93,7 @@ Blocks can be nested. Each block is independently overridable:
 
 ---
 
-## super() — Preserve Parent Content
+## super() - Preserve Parent Content
 
 `super()` renders the parent's block content, then you append/prepend:
 ```jinja
@@ -123,7 +123,7 @@ base.html
 ```
 
 ```jinja
-{# layout.html — intermediate layer #}
+{# layout.html - intermediate layer #}
 {% extends "base.html" %}
 
 {% block content %}
@@ -135,7 +135,7 @@ base.html
 ```
 
 ```jinja
-{# page.html — leaf template #}
+{# page.html - leaf template #}
 {% extends "layout.html" %}
 
 {% block title %}My Page{% endblock %}
@@ -181,8 +181,8 @@ Without `scoped`, `item` would not be accessible inside the block when it's over
 - Content that always uses the parent context unchanged
 
 **Do NOT use include when:**
-- The partial needs different data each call → use a macro instead
-- You're importing reusable logic/macros → use import instead
+- The partial needs different data each call - use a macro instead
+- You're importing reusable logic/macros - use import instead
 
 ---
 
@@ -196,13 +196,13 @@ Import loads a template for its **exported macros and variables** without render
 {{ ui.button('Save', type='submit') }}
 {{ ui.alert('Warning!', level='warn') }}
 
-{# Selective import — no namespace prefix #}
+{# Selective import - no namespace prefix #}
 {% from "macros/forms.html" import input, textarea, select %}
 {{ input('username', label='Username') }}
 ```
 
 **Import context behavior:**
-- By default, imported templates are **context-isolated** — they cannot access the current template's variables
+- By default, imported templates are **context-isolated** - they cannot access the current template's variables
 - This is intentional: macros should be self-contained
 - To share context explicitly (use sparingly):
 ```jinja
@@ -228,7 +228,7 @@ Understanding what is exported from an import target:
 
 ---
 
-## Macros — Advanced Patterns
+## Macros - Advanced Patterns
 
 ### Basic Macro with Defaults
 ```jinja
@@ -322,7 +322,7 @@ Understanding what is exported from an import target:
 {% endmacro %}
 
 {% call(item) render_list(products) %}
-  <strong>{{ item.name }}</strong> — ${{ item.price }}
+  <strong>{{ item.name }}</strong> - ${{ item.price }}
 {% endcall %}
 ```
 

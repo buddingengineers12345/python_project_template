@@ -12,7 +12,7 @@ description: >-
 
 # Claude Commands Skill
 
-This skill helps you write, manage, and organize custom slash commands for Claude Code. It covers both the legacy `.claude/commands/` format and the modern `.claude/skills/` system — both produce `/command-name` shortcuts.
+This skill helps you write, manage, and organize custom slash commands for Claude Code. It covers both the legacy `.claude/commands/` format and the modern `.claude/skills/` system - both produce `/command-name` shortcuts.
 
 ## Quick orientation
 
@@ -43,7 +43,7 @@ disable-model-invocation: true                # include only for side-effect com
 context: fork                                 # include only for long/isolated work
 ---
 
-<Action verb leads the first line — no preamble, no "You are a..." framing>
+<Action verb leads the first line - no preamble, no "You are a..." framing>
 
 ## <Optional section headings>
 
@@ -52,23 +52,23 @@ context: fork                                 # include only for long/isolated w
 
 ### Required fields
 
-- **`description`** — one sentence, starts with a verb, includes a "Use when ..." clause
+- **`description`** - one sentence, starts with a verb, includes a "Use when ..." clause
   so Claude knows when to auto-invoke. Keep under ~200 characters.
 
 ### Conditionally required fields
 
-- **`argument-hint`** — include whenever the command consumes `$ARGUMENTS`, `$1`, `$2`, etc.
-- **`allowed-tools`** — include when the command calls Bash, Read/Write/Edit, or search
+- **`argument-hint`** - include whenever the command consumes `$ARGUMENTS`, `$1`, `$2`, etc.
+- **`allowed-tools`** - include when the command calls Bash, Read/Write/Edit, or search
   tools. Always scope `Bash(...)` as narrowly as possible.
-- **`disable-model-invocation: true`** — include for any command with side effects
+- **`disable-model-invocation: true`** - include for any command with side effects
   (writes files, runs git mutations, deploys, sends data, mutates the project).
-- **`context: fork`** — include for long-running or autonomous workflows that benefit
+- **`context: fork`** - include for long-running or autonomous workflows that benefit
   from an isolated subagent (e.g., `/ci-fix`, `/review`, `/validate-release`).
 
 ### Body conventions
 
 1. First line is an imperative action statement ("Run X", "Fix Y", "Audit Z").
-2. Use `## Step 1 — ...` or `## Steps` headings for multi-stage work.
+2. Use `## Step 1 - ...` or `## Steps` headings for multi-stage work.
 3. Fenced code blocks (```bash ... ```) for every shell command so intent is explicit.
 4. Include an `## Output format` or `## Report format` section when the command
    produces a structured deliverable.
@@ -96,12 +96,12 @@ Every command is a Markdown file. The filename (without `.md`) becomes the slash
 
 ```
 .claude/commands/
-├── commit.md          → /commit
-├── review.md          → /review
-├── fix-issue.md       → /fix-issue
+├── commit.md          - /commit
+├── review.md          - /review
+├── fix-issue.md       - /fix-issue
 └── git/
-    ├── push.md        → /git:push
-    └── sync.md        → /git:sync
+    ├── push.md        - /git:push
+    └── sync.md        - /git:sync
 ```
 
 Subdirectories create namespaced commands using `:` as the separator. Use namespaces to group related commands and avoid collisions.
@@ -144,7 +144,7 @@ Create a new feature branch named `$ARGUMENTS` from main:
 3. Confirm the branch was created
 ```
 
-Invoked as: `/branch my-feature` → `$ARGUMENTS` = `"my-feature"`
+Invoked as: `/branch my-feature` - `$ARGUMENTS` = `"my-feature"`
 
 ### Positional arguments: `$1`, `$2`, ...
 
@@ -159,11 +159,11 @@ Fix GitHub issue #$1 with priority $2.
 4. Commit with message: "fix(#$1): [description] - priority $2"
 ```
 
-Invoked as: `/fix-issue 42 high` → `$1`=`"42"`, `$2`=`"high"`
+Invoked as: `/fix-issue 42 high` - `$1`=`"42"`, `$2`=`"high"`
 
 ### No arguments
 
-Some commands need no arguments at all — they operate on the current context (open file, git state, etc.).
+Some commands need no arguments at all - they operate on the current context (open file, git state, etc.).
 
 ```markdown
 Run a security audit of this codebase:
@@ -264,10 +264,10 @@ See `references/command-patterns.md` for full examples organized by category:
 Start with the verb. Claude reads the beginning first.
 
 ```markdown
-# ✓ Good — action is clear immediately
+#  Good - action is clear immediately
 Generate a commit message for the staged changes...
 
-# ✗ Weak — buries the action
+#  Weak - buries the action
 You are a helpful assistant. When the user runs this command, your job is to...
 ```
 
@@ -276,12 +276,12 @@ You are a helpful assistant. When the user runs this command, your job is to...
 Commands that explain reasoning are more robust than rigid checklists:
 
 ```markdown
-# ✓ Good — explains purpose
+#  Good - explains purpose
 Review this PR focusing on correctness and security. We care less about style
 (linting handles that) and more about logic errors, missing edge cases, and
 anything that could fail in production.
 
-# ✗ Brittle — mechanical list with no context
+#  Brittle - mechanical list with no context
 1. Check variable names
 2. Check function names
 3. Check comments
@@ -291,10 +291,10 @@ anything that could fail in production.
 ### 3. Scope `allowed-tools` tightly
 
 ```markdown
-# ✓ Tight — only git read commands
+#  Tight - only git read commands
 allowed-tools: Bash(git log:*) Bash(git diff:*) Bash(git show:*)
 
-# ✗ Wide — grants all bash
+#  Wide - grants all bash
 allowed-tools: Bash
 ```
 
@@ -319,12 +319,12 @@ One command, one job. Chain them at the call site (`/commit` then `/pr`), not in
 ```
 .claude/commands/
 ├── db/
-│   ├── migrate.md     → /db:migrate
-│   ├── seed.md        → /db:seed
-│   └── rollback.md    → /db:rollback
+│   ├── migrate.md     - /db:migrate
+│   ├── seed.md        - /db:seed
+│   └── rollback.md    - /db:rollback
 └── deploy/
-    ├── staging.md     → /deploy:staging
-    └── production.md  → /deploy:production
+    ├── staging.md     - /deploy:staging
+    └── production.md  - /deploy:production
 ```
 
 ---
@@ -333,12 +333,12 @@ One command, one job. Chain them at the call site (`/commit` then `/pr`), not in
 
 When asked to create commands for a project:
 
-1. **Audit the project** — check for existing `.claude/commands/`, `CLAUDE.md`, `package.json` scripts, common dev tasks
-2. **Identify repetitive workflows** — what does the developer run / explain repeatedly?
-3. **Choose scope** — project-level (`.claude/`) for team commands, personal (`~/.claude/`) for individual shortcuts
-4. **Write the commands** — start from the template in `templates/command-template.md`
-5. **Name deliberately** — short, verb-first, kebab-case: `gen-types`, `fix-lint`, `check-deps`
-6. **Test by invocation** — mentally trace what Claude will see after bash injection and argument substitution
+1. **Audit the project** - check for existing `.claude/commands/`, `CLAUDE.md`, `package.json` scripts, common dev tasks
+2. **Identify repetitive workflows** - what does the developer run / explain repeatedly?
+3. **Choose scope** - project-level (`.claude/`) for team commands, personal (`~/.claude/`) for individual shortcuts
+4. **Write the commands** - start from the template in `templates/command-template.md`
+5. **Name deliberately** - short, verb-first, kebab-case: `gen-types`, `fix-lint`, `check-deps`
+6. **Test by invocation** - mentally trace what Claude will see after bash injection and argument substitution
 
 ---
 
@@ -348,8 +348,8 @@ When asked to audit, reorganize, or improve existing commands:
 
 1. **Read all files** in `.claude/commands/` (and `~/.claude/commands/` if relevant)
 2. **Check for**: duplicate commands, overly broad `allowed-tools`, missing `description` fields, commands that should be namespaced
-3. **Suggest graduation** — commands that have grown complex enough for supporting files → migrate to `.claude/skills/`
-4. **Verify no conflicts** — if a skill and command share a name, the skill wins silently
+3. **Suggest graduation** - commands that have grown complex enough for supporting files - migrate to `.claude/skills/`
+4. **Verify no conflicts** - if a skill and command share a name, the skill wins silently
 5. **Update `CLAUDE.md`** to list available commands so Claude (and humans) know they exist
 
 ---

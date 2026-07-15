@@ -4,7 +4,7 @@ Copy-paste these templates into `.claude/rules/<category>.md` and adapt to your 
 
 ---
 
-## `code-style.md` — Code Style & Formatting
+## `code-style.md` - Code Style & Formatting
 
 ```markdown
 # Code Style
@@ -24,7 +24,7 @@ Copy-paste these templates into `.claude/rules/<category>.md` and adapt to your 
 
 ## Imports
 
-- Order: external packages → internal absolute → relative paths
+- Order: external packages - internal absolute - relative paths
 - Use path aliases (`@/`) for src-relative imports, not `../../`
 - No barrel imports from `index.ts` unless the module explicitly provides one
 - Group imports with a blank line between each group
@@ -32,7 +32,7 @@ Copy-paste these templates into `.claude/rules/<category>.md` and adapt to your 
 ## TypeScript
 
 - Prefer `interface` over `type` for object shapes
-- No `any` — use `unknown` and narrow, or `// eslint-disable` with justification comment
+- No `any` - use `unknown` and narrow, or `// eslint-disable` with justification comment
 - All exported functions must have explicit return types
 - Use strict null checks; handle `undefined` explicitly
 
@@ -44,7 +44,7 @@ Copy-paste these templates into `.claude/rules/<category>.md` and adapt to your 
 
 ---
 
-## `testing.md` — Testing Conventions
+## `testing.md` - Testing Conventions
 
 ```markdown
 # Testing
@@ -80,7 +80,7 @@ Copy-paste these templates into `.claude/rules/<category>.md` and adapt to your 
 
 ---
 
-## `security.md` — Security Requirements
+## `security.md` - Security Requirements
 
 ```markdown
 ---
@@ -93,7 +93,7 @@ paths:
 
 ## Secrets & Environment
 
-- Never hardcode secrets, API keys, or tokens — use `process.env.VARIABLE_NAME`
+- Never hardcode secrets, API keys, or tokens - use `process.env.VARIABLE_NAME`
 - All env vars must be documented in `.env.example` (with placeholder values)
 - Never log request bodies, headers containing auth tokens, or PII to console/logs
 - Use `logger.redact(['password', 'token', 'secret'])` config in `src/lib/logger.ts`
@@ -120,7 +120,7 @@ paths:
 
 ---
 
-## `git-workflow.md` — Git & PR Process
+## `git-workflow.md` - Git & PR Process
 
 ```markdown
 # Git Workflow
@@ -146,10 +146,10 @@ Example: `feat(auth): add OAuth2 Google login`
 
 ## Before Committing
 
-1. Run `npm run lint` — fix all errors
-2. Run `npm test` — all tests must pass
-3. Run `npm run format` — Prettier formatting
-4. Stage only related changes — one logical change per commit
+1. Run `npm run lint` - fix all errors
+2. Run `npm test` - all tests must pass
+3. Run `npm run format` - Prettier formatting
+4. Stage only related changes - one logical change per commit
 
 ## Pull Requests
 
@@ -161,7 +161,7 @@ Example: `feat(auth): add OAuth2 Google login`
 
 ---
 
-## `api-design.md` — API Conventions
+## `api-design.md` - API Conventions
 
 ```markdown
 ---
@@ -207,7 +207,7 @@ paths:
 
 ---
 
-## `architecture.md` — Architecture & Patterns
+## `architecture.md` - Architecture & Patterns
 
 ```markdown
 # Architecture
@@ -226,9 +226,9 @@ src/
 
 ## Dependency Rules
 
-- `api` → `services` → `repositories` (one direction only; no reverse imports)
+- `api` - `services` - `repositories` (one direction only; no reverse imports)
 - `lib` has no internal imports; only external packages
-- No circular dependencies — enforced by `eslint-plugin-import`
+- No circular dependencies - enforced by `eslint-plugin-import`
 - Use dependency injection; pass services as constructor params, not global singletons
 
 ## Patterns
@@ -249,7 +249,7 @@ src/
 
 ---
 
-## `documentation.md` — Documentation Standards
+## `documentation.md` - Documentation Standards
 
 ```markdown
 # Documentation
@@ -269,7 +269,7 @@ src/
 
 ## Comments in Code
 
-- Comment *why*, not *what* — the code shows what; explain intent and trade-offs
+- Comment *why*, not *what* - the code shows what; explain intent and trade-offs
 - Use `// TODO(name): description` for tracked items (link to ticket when possible)
 - Use `// NOTE:` for non-obvious behavior or important context
 - Delete commented-out code; use git history instead
@@ -282,7 +282,7 @@ src/
 
 ---
 
-## `performance.md` — Performance Rules
+## `performance.md` - Performance Rules
 
 ```markdown
 ---
@@ -316,7 +316,7 @@ paths:
 
 ---
 
-## `workflow.md` — Development Workflow
+## `workflow.md` - Development Workflow
 
 ```markdown
 # Development Workflow

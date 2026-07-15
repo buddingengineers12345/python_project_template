@@ -1,8 +1,8 @@
-# Claude Code Hooks — Developer Guide
+# Claude Code Hooks - Developer Guide
 
 This directory contains shell hooks that integrate with Claude Code's lifecycle
-events. Hooks let you enforce project standards deterministically — blocking
-dangerous operations, running linters after edits, or persisting session state —
+events. Hooks let you enforce project standards deterministically - blocking
+dangerous operations, running linters after edits, or persisting session state -
 without relying on Claude's non-deterministic instruction-following.
 
 ## How hooks are registered
@@ -27,10 +27,10 @@ Hooks are declared in `.claude/settings.json` under the `"hooks"` key:
 ```
 
 Each entry requires:
-- `matcher` — which tool(s) trigger this hook (see Matchers below)
-- `hooks[].type` — always `"command"` for shell hooks
-- `hooks[].command` — the shell command to run (relative to the project root)
-- `description` — shown in the UI; be specific about what the hook does
+- `matcher` - which tool(s) trigger this hook (see Matchers below)
+- `hooks[].type` - always `"command"` for shell hooks
+- `hooks[].command` - the shell command to run (relative to the project root)
+- `description` - shown in the UI; be specific about what the hook does
 
 ## Lifecycle events
 
@@ -74,7 +74,7 @@ the exit code is ignored; always exit `0` to avoid confusing output.
 
 Every hook receives a JSON object on **stdin**. Read it with `INPUT=$(cat)`.
 
-### PreToolUse / PostToolUse — tool call fields
+### PreToolUse / PostToolUse - tool call fields
 
 ```json
 {
@@ -137,13 +137,13 @@ All hooks in this project use box-drawing characters for visual structure:
 │  Informational content here
 │  More content
 │
-└─ Summary line (e.g. ✓ All checks passed  or  ✗ Fix before committing)
+└─ Summary line (e.g.  All checks passed  or   Fix before committing)
 ```
 
 **stdout vs stderr:**
-- `PostToolUse` / `SessionStart` / `Stop` — print to **stdout**; Claude reads it
-- `PreToolUse` blocking messages — print to **stderr**; shown on block
-- `PreToolUse` pass-through — echo `$INPUT` back to stdout (required for the
+- `PostToolUse` / `SessionStart` / `Stop` - print to **stdout**; Claude reads it
+- `PreToolUse` blocking messages - print to **stderr**; shown on block
+- `PreToolUse` pass-through - echo `$INPUT` back to stdout (required for the
   tool call to proceed with the original payload intact)
 
 ## File naming convention
@@ -167,11 +167,11 @@ All hooks in this project use box-drawing characters for visual structure:
 
 ## Shell script template
 
-### PreToolUse — blocking hook
+### PreToolUse - blocking hook
 
 ```bash
 #!/usr/bin/env bash
-# Claude PreToolUse hook — <Matcher>
+# Claude PreToolUse hook - <Matcher>
 # One-line description of what this hook does.
 #
 # Reference : <URL or "Custom">
@@ -200,11 +200,11 @@ fi
 echo "$INPUT"   # pass through: required for the tool call to proceed
 ```
 
-### PostToolUse — non-blocking feedback hook
+### PostToolUse - non-blocking feedback hook
 
 ```bash
 #!/usr/bin/env bash
-# Claude PostToolUse hook — Edit|Write
+# Claude PostToolUse hook - Edit|Write
 # One-line description of what this hook does.
 #
 # Reference : <URL or "Custom">
@@ -228,16 +228,16 @@ fi
 
 echo "┌─ Check: $FILE_PATH"
 # ... do work ...
-echo "└─ ✓ Done"
+echo "└─  Done"
 
 exit 0
 ```
 
-### Stop — async side-effect hook
+### Stop - async side-effect hook
 
 ```bash
 #!/usr/bin/env bash
-# Claude Stop hook — * (all events)
+# Claude Stop hook - * (all events)
 # One-line description.
 #
 # Reference : <URL or "Custom">
@@ -274,7 +274,7 @@ exit 0
 | `pre-config-protection.sh` | PreToolUse | Write\|Edit\|MultiEdit | Block weakening ruff/basedpyright config edits |
 | `pre-protect-uv-lock.sh` | PreToolUse | Write\|Edit | Block direct edits to `uv.lock` |
 | `pre-write-src-require-test.sh` | PreToolUse | Write\|Edit | Block if `tests/<pkg>/test_<module>.py` missing for top-level `src/<pkg>/<module>.py` (strict TDD) |
-| `pre-write-src-test-reminder.sh` | (optional) | Write\|Edit | Non-blocking alternative to `pre-write-src-require-test.sh` — **do not register both** |
+| `pre-write-src-test-reminder.sh` | (optional) | Write\|Edit | Non-blocking alternative to `pre-write-src-require-test.sh` - **do not register both** |
 | `pre-write-doc-file-warning.sh` | PreToolUse | Write | Block `.md` files outside `docs/` |
 | `pre-write-jinja-syntax.sh` | PreToolUse | Write | Validate Jinja2 syntax before writing |
 | `pre-suggest-compact.sh` | PreToolUse | Edit\|Write | Suggest `/compact` every 50 operations |
@@ -299,7 +299,7 @@ exit 0
      x bit is optional but conventional: `chmod +x`).
 
 2. **Register it** in `.claude/settings.json` under the correct lifecycle event.
-   - Add a `description` field — this is shown in the UI and helps during review.
+   - Add a `description` field - this is shown in the UI and helps during review.
 
 3. **Test it** by running the script manually with a representative JSON payload:
    ```bash
@@ -307,7 +307,7 @@ exit 0
      | bash .claude/hooks/post-edit-python.sh
    ```
 
-4. **Mirror if needed** — if the hook is also useful for generated projects,
+4. **Mirror if needed** - if the hook is also useful for generated projects,
    add it to `template/.claude/hooks/` and register it in
    `template/.claude/settings.json`.
 

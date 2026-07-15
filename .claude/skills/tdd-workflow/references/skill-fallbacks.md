@@ -51,7 +51,7 @@ def function_name(param: Type) -> ReturnType:
     Omit if the one-liner is sufficient.
 
     Args:
-        param: Description (omit type — it's in the annotation).
+        param: Description (omit type - it's in the annotation).
 
     Returns:
         Description of the return value.
@@ -74,11 +74,11 @@ Rules:
 When `just ci` (or equivalent) fails:
 
 1. Read the full failure output. Categorise the failure:
-   - **Test failure** → go back to GREEN stage with the failing test.
-   - **Lint failure** (ruff, flake8) → fix each reported line; re-run linter only.
-   - **Type error** (mypy) → add/fix annotations; re-run mypy only.
-   - **Import error** → check for missing `__init__.py`, wrong module path, or missing dependency.
-   - **Coverage below threshold** → write the missing test(s), return to RED.
+   - **Test failure** - go back to GREEN stage with the failing test.
+   - **Lint failure** (ruff, flake8) - fix each reported line; re-run linter only.
+   - **Type error** (mypy) - add/fix annotations; re-run mypy only.
+   - **Import error** - check for missing `__init__.py`, wrong module path, or missing dependency.
+   - **Coverage below threshold** - write the missing test(s), return to RED.
 2. Fix only the reported category. Do not make unrelated changes.
 3. Re-run the full CI after fixing each category.
 4. If stuck after two attempts, present the exact error to the user and ask for direction.

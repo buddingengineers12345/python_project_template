@@ -1,6 +1,6 @@
 # Git history size and maintenance
 
-This document records how we keep the meta-repository’s object store lean, how to measure it, and when history rewrite is appropriate.
+This document records how we keep the meta-repository's object store lean, how to measure it, and when history rewrite is appropriate.
 
 ## Baseline metrics (recorded 2026-04-10)
 
@@ -21,7 +21,7 @@ Snapshot on 2026-04-10 (this clone):
 - `git count-objects` pack/loose: ~5.2 MiB counted objects; `.git` ~7.9 MiB on disk
 - Largest historical blobs: repeated `uv.lock` revisions, `assets/file_freshness.json`, `tests/integration/test_template.py`
 
-Optional: install [git-sizer](https://github.com/github/git-sizer) for GitHub’s recommended complexity signals.
+Optional: install [git-sizer](https://github.com/github/git-sizer) for GitHub's recommended complexity signals.
 
 ## CI checkout depth
 
@@ -45,7 +45,7 @@ The file freshness workflow commits generated reports and JSON under `docs/` and
 
 ## Pull requests and branches
 
-- **GitHub merge and branch settings:** Use the single maintainer checklist [`github-repository-settings.md`](github-repository-settings.md) (squash merges, branch protection, required checks—not repeated here).
+- **GitHub merge and branch settings:** Use the single maintainer checklist [`github-repository-settings.md`](github-repository-settings.md) (squash merges, branch protection, required checks-not repeated here).
 - **Prune stale local refs:** `git fetch --prune`
 - **List merged local branches:** `git branch --merged main` (review then `git branch -d <branch>`)
 - **Remote branches:** delete defunct branches on the host after merge (GitHub UI or `git push origin --delete <branch>`).

@@ -2,10 +2,10 @@
 
 ## Table of Contents
 1. [Literals](#literals)
-2. [Operators — Math](#operators--math)
-3. [Operators — Comparison](#operators--comparison)
-4. [Operators — Logic](#operators--logic)
-5. [Operators — Other](#operators--other)
+2. [Operators - Math](#operators--math)
+3. [Operators - Comparison](#operators--comparison)
+4. [Operators - Logic](#operators--logic)
+5. [Operators - Other](#operators--other)
 6. [If Expressions (Ternary)](#if-expressions-ternary)
 7. [Tests (is keyword)](#tests-is-keyword)
 8. [Global Functions](#global-functions)
@@ -17,7 +17,7 @@
 ## Literals
 
 ```jinja
-"Hello"          {# string — double or single quotes #}
+"Hello"          {# string - double or single quotes #}
 42               {# integer #}
 42.5             {# float #}
 ['a', 'b', 'c']  {# list (tuple notation also works) #}
@@ -28,7 +28,7 @@ none             {# Python None #}
 
 ---
 
-## Operators — Math
+## Operators - Math
 
 | Operator | Meaning | Example | Result |
 |----------|---------|---------|--------|
@@ -41,11 +41,11 @@ none             {# Python None #}
 | `**` | Power | `{{ 2 ** 8 }}` | `256` |
 
 > **Note:** Do not use `+` for string concatenation. Use `~` instead:
-> `{{ "Hello" ~ " " ~ name }}` — the `~` operator converts operands to string first.
+> `{{ "Hello" ~ " " ~ name }}` - the `~` operator converts operands to string first.
 
 ---
 
-## Operators — Comparison
+## Operators - Comparison
 
 ```jinja
 ==   !=   <   >   <=   >=
@@ -55,7 +55,7 @@ All return `true` or `false`. Usable in `{% if %}` and filter expressions.
 
 ---
 
-## Operators — Logic
+## Operators - Logic
 
 ```jinja
 and   or   not
@@ -69,7 +69,7 @@ and   or   not
 
 ---
 
-## Operators — Other
+## Operators - Other
 
 | Operator | Purpose | Example |
 |----------|---------|---------|
@@ -84,7 +84,7 @@ and   or   not
 
 ## If Expressions (Ternary)
 
-Inline conditional — useful inside output tags or assignments:
+Inline conditional - useful inside output tags or assignments:
 ```jinja
 {{ "yes" if user.active else "no" }}
 
@@ -220,4 +220,4 @@ Jinja's default behavior renders `Undefined` silently as an empty string. Strict
 {{ user.bio if user.bio is defined else "No bio." }}
 ```
 
-**Never silently rely on undefined variables resolving to empty string** in production templates — use `default()` or explicit guards for all optional context values.
+**Never silently rely on undefined variables resolving to empty string** in production templates - use `default()` or explicit guards for all optional context values.

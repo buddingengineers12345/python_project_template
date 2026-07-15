@@ -13,13 +13,13 @@ Whether a docstring is required on an overriding method depends on two things:
 
 | `@override` present? | Contract changed? | Docstring required? |
 |---|---|---|
-| ✅ Yes | No | ❌ Not required |
-| ✅ Yes | Yes | ✅ Required (document *only the differences*) |
-| ❌ No | N/A | ✅ Always required |
+|  Yes | No |  Not required |
+|  Yes | Yes |  Required (document *only the differences*) |
+|  No | N/A |  Always required |
 
 ---
 
-## `@override` With No Contract Change — Omit the Docstring
+## `@override` With No Contract Change - Omit the Docstring
 
 When the method is explicitly decorated with `@override` and the behavior is
 identical to the base class contract, the docstring may be omitted entirely.
@@ -36,7 +36,7 @@ class Parent:
 class Child(Parent):
     @override
     def do_something(self) -> None:
-        pass  # ← No docstring needed — @override is sufficient
+        pass  # ← No docstring needed - @override is sufficient
 ```
 
 Importing `@override`: use `from typing_extensions import override` (Python < 3.12)
@@ -44,7 +44,7 @@ or `from typing import override` (Python 3.12+).
 
 ---
 
-## `@override` With Contract Change — Document the Differences
+## `@override` With Contract Change - Document the Differences
 
 If the overriding method refines the contract, adds side effects, or changes
 behavior in ways the caller must know about, provide a docstring that describes
@@ -78,30 +78,30 @@ class EncryptingChild(Parent):
 
 ---
 
-## Without `@override` — Docstring Always Required
+## Without `@override` - Docstring Always Required
 
 If the method does not carry `@override`, readers have no signal that the
 docstring lives elsewhere. A docstring is required.
 
 ```python
-# ❌ No @override, no docstring — reader doesn't know where to look
+#  No @override, no docstring - reader doesn't know where to look
 class Child(Parent):
     def do_something(self) -> None:
         pass
 
-# ✅ Option A: Add the @override decorator
+#  Option A: Add the @override decorator
 class Child(Parent):
     @override
     def do_something(self) -> None:
         pass  # Docstring now optional
 
-# ✅ Option B: Add a docstring
+#  Option B: Add a docstring
 class Child(Parent):
     def do_something(self) -> None:
         """Performs the standard operation. See base class for full docs."""
         pass
 
-# ✅ Option C: Minimal reference docstring (acceptable)
+#  Option C: Minimal reference docstring (acceptable)
 class Child(Parent):
     def do_something(self) -> None:
         """See base class."""
@@ -135,7 +135,7 @@ class DataStore(ABC):
 class RedisStore(DataStore):
     @override
     def read(self, key: str) -> bytes | None:
-        # No docstring needed — @override + unchanged contract
+        # No docstring needed - @override + unchanged contract
         return self._client.get(key)
 ```
 
@@ -168,7 +168,7 @@ class CachingRedisStore(DataStore):
 # Python 3.12+
 from typing import override
 
-# Python 3.8–3.11
+# Python 3.8-3.11
 from typing_extensions import override
 ```
 
@@ -179,8 +179,8 @@ from typing_extensions import override
 ```
 Does the method have @override?
 ├── YES
-│   ├── Contract unchanged → No docstring required
-│   └── Contract changed   → Docstring required (differences only)
+│   ├── Contract unchanged - No docstring required
+│   └── Contract changed   - Docstring required (differences only)
 └── NO
     └── Docstring always required
         ├── Full docstring if the method's behavior is non-trivial

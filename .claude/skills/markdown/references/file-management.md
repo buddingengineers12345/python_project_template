@@ -6,7 +6,7 @@ documentation system design, and maintenance.
 
 **Sources:** [Google Markdown Style Guide](https://google.github.io/styleguide/docguide/style.html),
 [Folder Structure Conventions](https://github.com/kriasoft/Folder-Structure-Conventions),
-[README — Wikipedia](https://en.wikipedia.org/wiki/README),
+[README - Wikipedia](https://en.wikipedia.org/wiki/README),
 [Building a Markdown-Based Documentation System](https://medium.com/@rosgluk/building-a-markdown-based-documentation-system-72bef3cb1db3)
 
 ---
@@ -15,7 +15,7 @@ documentation system design, and maintenance.
 
 ### Standard Repository Files (UPPERCASE)
 
-The following well-known files use UPPERCASE names by convention — this ensures
+The following well-known files use UPPERCASE names by convention - this ensures
 they sort near the top of ASCII-ordered directory listings and are immediately
 recognisable:
 
@@ -38,22 +38,22 @@ Any documentation that is not one of the standard files above should use
 **lowercase letters with hyphens** as word separators:
 
 ```
-docs/getting-started.md        ✅
-docs/api-reference.md          ✅
-docs/configuration-guide.md    ✅
-docs/myAdditionalDoc.md        ✅  (camelCase also acceptable for non-standard)
+docs/getting-started.md        
+docs/api-reference.md          
+docs/configuration-guide.md    
+docs/myAdditionalDoc.md          (camelCase also acceptable for non-standard)
 
-docs/Getting Started.md        ❌  (spaces break URLs)
-docs/API_Reference.md          ❌  (underscores less URL-friendly)
-docs/APIreference.md           ❌  (hard to read)
+docs/Getting Started.md          (spaces break URLs)
+docs/API_Reference.md            (underscores less URL-friendly)
+docs/APIreference.md             (hard to read)
 ```
 
 ### Naming Rules
 
 - Use only **lowercase letters, digits, and hyphens** in non-standard file names.
-- **No spaces** — spaces must be percent-encoded in URLs (`%20`) and break many tools.
+- **No spaces** - spaces must be percent-encoded in URLs (`%20`) and break many tools.
 - **No special characters**: `! @ # $ % ^ & * ( ) = + [ ] { } | \ ; ' " , < > ?`
-- Use **printable ASCII only** — URI paths are case-sensitive; some file systems are not.
+- Use **printable ASCII only** - URI paths are case-sensitive; some file systems are not.
 - Keep names **short and descriptive**: `getting-started.md` not `a-guide-to-getting-started-with-this-project.md`.
 - Prefer **nouns** for reference docs and **verb phrases** for guides:
   `configuration.md`, `deploy-to-production.md`.
@@ -193,7 +193,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - New feature description
 
-## [2.1.0] — 2024-01-15
+## [2.1.0] - 2024-01-15
 
 ### Added
 - User group management API
@@ -206,7 +206,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Resolved race condition in session handling (#123)
 
 ### Deprecated
-- `GET /api/v1/users` — use `GET /api/v2/users` instead
+- `GET /api/v1/users` - use `GET /api/v2/users` instead
 
 ### Removed
 - Legacy XML response format
@@ -214,7 +214,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Security
 - Updated dependency X to patch CVE-2024-XXXX
 
-## [2.0.0] — 2024-01-01
+## [2.0.0] - 2024-01-01
 
 ### Changed
 - **Breaking:** Refactored authentication API (see migration guide)
@@ -316,7 +316,7 @@ Mark version applicability inline in the document:
 ```markdown
 > **Available since v1.4.0**
 
-> **Deprecated in v2.0.0** — use `newMethod()` instead.
+> **Deprecated in v2.0.0** - use `newMethod()` instead.
 ```
 
 ### Changelog-Based (most projects)
@@ -338,10 +338,10 @@ docs/
 
 ## Documentation Maintenance Rules
 
-- **Delete stale content frequently** and in small batches — stale docs are worse than no docs.
-- **Audit links periodically** — broken links erode reader trust.
-- **Keep docs close to the code** they describe — co-located docs get updated when code changes.
+- **Delete stale content frequently** and in small batches - stale docs are worse than no docs.
+- **Audit links periodically** - broken links erode reader trust.
+- **Keep docs close to the code** they describe - co-located docs get updated when code changes.
 - **Split documents** that exceed ~500 lines into focused sub-documents with an index.
 - **Review documentation** as part of every pull request that changes behaviour.
-- **Test code examples** in your docs (use CI where possible) — outdated examples mislead users.
+- **Test code examples** in your docs (use CI where possible) - outdated examples mislead users.
 - For docs systems: use GitHub Actions or similar CI to build, lint, and check links automatically.

@@ -1,5 +1,5 @@
 ---
-description: Perform a thorough pre-merge code review of recently modified Python files — lint, types, docstrings, test coverage. Use when the user asks to "review", "code review", or "check my changes" before merging.
+description: Perform a thorough pre-merge code review of recently modified Python files - lint, types, docstrings, test coverage. Use when the user asks to "review", "code review", or "check my changes" before merging.
 allowed-tools: Read Grep Glob Bash(just *) Bash(git diff:*) Bash(git log:*)
 context: fork
 ---
@@ -8,18 +8,18 @@ Perform a thorough pre-merge code review of all recently modified Python files.
 
 ## Steps
 
-1. **Auto-fix and static analysis** — run `just review` which executes:
-   - `just fix` — auto-apply safe ruff fixes
-   - `just lint` — ruff lint check; report all violations with file + line + rule code
-   - `just type` — basedpyright type check; report all errors with file + line
-   - `just docs-check` — ruff `--select D` docstring check
+1. **Auto-fix and static analysis** - run `just review` which executes:
+   - `just fix` - auto-apply safe ruff fixes
+   - `just lint` - ruff lint check; report all violations with file + line + rule code
+   - `just type` - basedpyright type check; report all errors with file + line
+   - `just docs-check` - ruff `--select D` docstring check
 
    For detailed guidance on each tool, load the relevant skill:
    - Linting: `.claude/skills/linting/SKILL.md`
    - Type checking: `.claude/skills/type-checking/SKILL.md`
    - Docstrings: `.claude/skills/python-docstrings/SKILL.md`
 
-2. **Manual symbol scan** — for every `.py` file under `src/my_library/` that was
+2. **Manual symbol scan** - for every `.py` file under `src/my_library/` that was
    added or modified (use `git diff --name-only`):
    - Read the file
    - List every public function, class, and method (names not prefixed with `_`)
@@ -29,7 +29,7 @@ Perform a thorough pre-merge code review of all recently modified Python files.
      - No `TODO` or `FIXME` comments left uncommitted
      - No bare `type: ignore` without an explanatory inline comment
 
-3. **Test coverage sanity** — for each new function or class added, check that a corresponding
+3. **Test coverage sanity** - for each new function or class added, check that a corresponding
    test exists under `tests/`. If any new public symbol lacks a test, list it explicitly.
 
 ## Output format
@@ -37,20 +37,20 @@ Perform a thorough pre-merge code review of all recently modified Python files.
 ```
 ## Code Review Report
 
-### Static Analysis      ✓ PASS  |  ✗ FAIL
+### Static Analysis       PASS  |   FAIL
 [list errors if any]
 
-### Docstring Compliance  ✓ PASS  |  ✗ FAIL
+### Docstring Compliance   PASS  |   FAIL
 [list missing/malformed docstrings if any]
 
-### Type Annotations      ✓ PASS  |  ✗ FAIL
+### Type Annotations       PASS  |   FAIL
 [list unannotated symbols if any]
 
-### Test Coverage         ✓ PASS  |  ✗ FAIL
+### Test Coverage          PASS  |   FAIL
 [list untested public symbols if any]
 
 ### Action Items
 1. [must-fix items before merge]
 ```
 
-If everything passes, output: **✓ Review passed — ready to merge.**
+If everything passes, output: ** Review passed - ready to merge.**

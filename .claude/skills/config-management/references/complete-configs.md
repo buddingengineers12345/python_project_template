@@ -5,7 +5,7 @@ your project and adjust versions, paths, and rule selections as needed.
 
 ---
 
-## pyproject.toml — all tool sections
+## pyproject.toml - all tool sections
 
 ```toml
 # ── Ruff ────────────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ exclude_dirs = [".venv", "build", "dist", "tests"]
 
 ---
 
-## .pre-commit-config.yaml — all hooks
+## .pre-commit-config.yaml - all hooks
 
 ```yaml
 minimum_pre_commit_version: "3.0.0"
@@ -107,7 +107,7 @@ repos:
 
 ---
 
-## .semgrep.yml — local custom rules
+## .semgrep.yml - local custom rules
 
 ```yaml
 # .semgrep.yml
@@ -137,7 +137,7 @@ rules:
 
 ---
 
-## GitHub Actions workflow — full CI pipeline
+## GitHub Actions workflow - full CI pipeline
 
 ```yaml
 # .github/workflows/ci.yml
@@ -166,13 +166,13 @@ jobs:
       - name: Install quality tools
         run: pip install ruff bandit semgrep
 
-      - name: Ruff — format check
+      - name: Ruff - format check
         run: ruff format --check .
 
-      - name: Ruff — lint
+      - name: Ruff - lint
         run: ruff check .
 
-      - name: Bandit — security lint
+      - name: Bandit - security lint
         run: bandit -c pyproject.toml -r src/ -ll -ii
 
       - name: Cache semgrep rules
@@ -181,7 +181,7 @@ jobs:
           path: ~/.semgrep/cache
           key: semgrep-${{ hashFiles('.semgrep.yml') }}
 
-      - name: Semgrep — pattern scan
+      - name: Semgrep - pattern scan
         run: |
           semgrep --config p/python \
                   --config p/owasp-top-ten \
@@ -208,7 +208,7 @@ jobs:
         run: |
           pip install -r requirements.txt   # must include basedpyright
 
-      - name: basedpyright — type check
+      - name: basedpyright - type check
         run: basedpyright
 
   # ── Tests ────────────────────────────────────────────────────────────────
@@ -251,7 +251,7 @@ When updating tool versions, change them in all three places:
 | Tool | pyproject.toml | .pre-commit-config.yaml | requirements.txt / pyproject deps |
 |---|---|---|---|
 | ruff | `target-version` (Python, not ruff) | `rev: v0.9.0` | `ruff>=0.9.0` |
-| bandit | — | `rev: 1.8.3` | `bandit>=1.8.3` |
-| semgrep | — | `rev: v1.60.0` | `semgrep>=1.60.0` |
-| basedpyright | `pythonVersion` (Python, not tool) | (local hook — no rev) | `basedpyright>=1.x` |
-| pre-commit-hooks | — | `rev: v5.0.0` | — |
+| bandit | - | `rev: 1.8.3` | `bandit>=1.8.3` |
+| semgrep | - | `rev: v1.60.0` | `semgrep>=1.60.0` |
+| basedpyright | `pythonVersion` (Python, not tool) | (local hook - no rev) | `basedpyright>=1.x` |
+| pre-commit-hooks | - | `rev: v5.0.0` | - |

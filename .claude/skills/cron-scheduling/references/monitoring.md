@@ -11,7 +11,7 @@ _Read this file when: the user asks about logs, monitoring, alerting on cron fai
 3. [Dead man's switch (healthcheck monitoring)](#3-dead-mans-switch)
 4. [Exit-code monitoring and alerting](#4-exit-code-monitoring-and-alerting)
 5. [Prometheus + Grafana integration](#5-prometheus--grafana-integration)
-6. [Debugging — systematic process](#6-debugging--systematic-process)
+6. [Debugging - systematic process](#6-debugging--systematic-process)
 7. [Troubleshooting table](#7-troubleshooting-table)
 8. [Simulating cron's environment locally](#8-simulating-crons-environment)
 
@@ -22,14 +22,14 @@ _Read this file when: the user asks about logs, monitoring, alerting on cron fai
 ### System log (where crond writes job start/end events)
 
 ```bash
-# Ubuntu/Debian — systemd journal
+# Ubuntu/Debian - systemd journal
 sudo journalctl -u cron -f                          # Stream live
 sudo journalctl -u cron --since "today"             # Today only
 sudo journalctl -u cron --since "2 hours ago"       # Last 2 hours
 sudo journalctl -u cron -p err                      # Errors only
 sudo journalctl -u cron --since "today" | grep CMD  # Show commands run
 
-# Ubuntu/Debian — syslog (older systems)
+# Ubuntu/Debian - syslog (older systems)
 sudo tail -f /var/log/syslog | grep CRON
 sudo grep CRON /var/log/syslog | tail -50
 
@@ -76,7 +76,7 @@ grep "2024-01-15" /var/log/backup.log
 
 Add this boilerplate to every cron script for consistent, parseable logs:
 
-### Bash — simple timestamped log function
+### Bash - simple timestamped log function
 
 ```bash
 #!/usr/bin/env bash
@@ -141,7 +141,7 @@ log_json INFO "Completed in 142s"
 
 ## 3. Dead man's switch
 
-Standard log monitoring tells you when something goes wrong. A dead man's switch alerts you when a job *stops running* — which is invisible in logs.
+Standard log monitoring tells you when something goes wrong. A dead man's switch alerts you when a job *stops running* - which is invisible in logs.
 
 ### Healthchecks.io (free tier available)
 
@@ -149,14 +149,14 @@ Standard log monitoring tells you when something goes wrong. A dead man's switch
 HC_UUID="your-uuid-here"     # From healthchecks.io dashboard
 HC_URL="https://hc-ping.com/${HC_UUID}"
 
-# Pattern 1 — Ping start and success; auto-ping /fail if start was sent but success wasn't
+# Pattern 1 - Ping start and success; auto-ping /fail if start was sent but success wasn't
 0 2 * * * \
   /usr/bin/curl -fsS --retry 3 -o /dev/null "${HC_URL}/start" && \
   /opt/scripts/backup.sh >> /var/log/backup.log 2>&1 && \
   /usr/bin/curl -fsS --retry 3 -o /dev/null "${HC_URL}" \
   || /usr/bin/curl -fsS --retry 3 -o /dev/null "${HC_URL}/fail"
 
-# Pattern 2 — Simple ping on success (no start signal)
+# Pattern 2 - Simple ping on success (no start signal)
 0 2 * * * /opt/scripts/backup.sh >> /var/log/backup.log 2>&1 && \
   /usr/bin/curl -fsS --retry 3 -o /dev/null "${HC_URL}"
 ```
@@ -173,7 +173,7 @@ CRONITOR_KEY="your-monitor-key"
   || /usr/bin/curl -sm 5 "https://cronitor.link/${CRONITOR_KEY}/fail"
 ```
 
-### Wrapper script approach (DRY — reuse across all jobs)
+### Wrapper script approach (DRY - reuse across all jobs)
 
 ```bash
 #!/usr/bin/env bash
@@ -209,7 +209,7 @@ exit "$EXIT_CODE"
 
 ## 4. Exit-code monitoring and alerting
 
-### Email on failure (simple — uses system mail)
+### Email on failure (simple - uses system mail)
 
 ```bash
 #!/usr/bin/env bash
@@ -258,7 +258,7 @@ fi
 
 ```bash
 #!/usr/bin/env bash
-# /opt/scripts/alert-on-fail.sh — universal wrapper
+# /opt/scripts/alert-on-fail.sh - universal wrapper
 # Usage: alert-on-fail.sh "Job Name" /path/to/command [args...]
 JOB_NAME="$1"; shift
 
@@ -332,7 +332,7 @@ exit "$EXIT_CODE"
 ```
 
 ```bash
-# In crontab — clean one-liner
+# In crontab - clean one-liner
 0 2 * * * /opt/scripts/cron-wrapper.sh "db_backup" /opt/scripts/backup.sh >> /var/log/backup.log 2>&1
 ```
 
@@ -348,7 +348,7 @@ cron_job_last_exit_code != 0
 # Duration trend (last 7 days)
 cron_job_last_duration_seconds{job="db_backup"}
 
-# Alert rule — job failed
+# Alert rule - job failed
 ALERT CronJobFailed
   IF cron_job_last_exit_code != 0
   FOR 5m
@@ -361,7 +361,7 @@ ALERT CronJobFailed
 
 ---
 
-## 6. Debugging — systematic process
+## 6. Debugging - systematic process
 
 Work through these checks in order:
 
@@ -370,7 +370,7 @@ Job didn't run?
 │
 ├─ 1. Is crond running?
 │     systemctl status cron
-│     → If stopped: sudo systemctl start cron
+│     - If stopped: sudo systemctl start cron
 │
 ├─ 2. Is the schedule correct?
 │     crontab -l  (look for syntax errors)
@@ -384,19 +384,19 @@ Job didn't run?
 │
 ├─ 4. Did crond attempt to run it?
 │     sudo journalctl -u cron --since "1 hour ago" | grep CMD
-│     → If no entry: schedule isn't matching — re-check fields
+│     - If no entry: schedule isn't matching - re-check fields
 │
 ├─ 5. Can the script run in cron's environment?
 │     env -i HOME=/home/USER SHELL=/bin/bash PATH=/usr/bin:/bin bash /path/to/script.sh
-│     → If fails: fix PATH, absolute paths, env vars
+│     - If fails: fix PATH, absolute paths, env vars
 │
 ├─ 6. Does the script have execute permission?
 │     ls -la /path/to/script.sh
-│     → Fix: chmod +x /path/to/script.sh
+│     - Fix: chmod +x /path/to/script.sh
 │
 ├─ 7. Can the cron user read the script and its dependencies?
 │     sudo -u www-data bash /path/to/script.sh
-│     → Fix: chown/chmod as needed
+│     - Fix: chown/chmod as needed
 │
 └─ 8. Is output being captured?
       Add >> /tmp/debug.log 2>&1 to capture errors
@@ -434,7 +434,7 @@ Job didn't run?
 The most reliable way to reproduce a cron failure locally:
 
 ```bash
-# Full simulation — strips your entire environment
+# Full simulation - strips your entire environment
 env -i \
   HOME=/home/ubuntu \
   SHELL=/bin/bash \
@@ -465,7 +465,7 @@ sudo -u www-data env -i \
 Add this temporarily to catch environment issues:
 
 ```bash
-# In crontab — dumps cron's environment to a file for inspection
+# In crontab - dumps cron's environment to a file for inspection
 * * * * * env > /tmp/cron-env.txt && echo "---" >> /tmp/cron-env.txt
 ```
 

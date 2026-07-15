@@ -1,4 +1,4 @@
-# Migration Summary — 4-File Agent Guide Model
+# Migration Summary - 4-File Agent Guide Model
 
 **Date:** 2026-05-19  
 **Status:** Completed (root only; template/ deferred)
@@ -7,35 +7,35 @@
 
 Established the canonical 4-file model at the repository root:
 
-1. **AGENTS.md** (new, canonical) — all shared knowledge, behavioral guidelines, context loading table, memory protocol
-2. **CLAUDE.md** (replaced) — thin wrapper (~15 lines), Claude-specific notes only
-3. **GEMINI.md** (new) — thin wrapper (~10 lines), Gemini-specific notes only
-4. **CURSOR.md** (new) — thin wrapper (~10 lines), Cursor-specific notes only
+1. **AGENTS.md** (new, canonical) - all shared knowledge, behavioral guidelines, context loading table, memory protocol
+2. **CLAUDE.md** (replaced) - thin wrapper (~15 lines), Claude-specific notes only
+3. **GEMINI.md** (new) - thin wrapper (~10 lines), Gemini-specific notes only
+4. **CURSOR.md** (new) - thin wrapper (~10 lines), Cursor-specific notes only
 
 ## Long content moved to `.claude/references/`
 
 All substantive content extracted from the 439-line root `CLAUDE.md` into separate reference files (verbatim):
 
-- `.claude/references/directory-structure.md` — directory layout
-- `.claude/references/dev-setup.md` — Python 3.11+, uv, just prerequisites
-- `.claude/references/justfile-recipes.md` — complete just recipe table (all 50+ recipes)
-- `.claude/references/ci-pipeline.md` — `just ci`, pipeline description, merge gate
-- `.claude/references/copier-template.md` — copy vs update, conflict handling, migrations, release workflow
-- `.claude/references/testing.md` — pytest + copier integration test approach
-- `.claude/references/copier-variables.md` — Copier variable conventions, Jinja2 extensions
-- `.claude/references/code-style.md` — ruff rules, docstrings, complexity, type annotations
-- `.claude/references/ai-rules.md` — `.claude/rules/` structure, skills vs rules philosophy
-- `.claude/references/standards-enforcement.md` — tooling layer (ruff, basedpyright, pytest-cov), Claude hooks table, slash commands table, definition of done
-- `.claude/references/markdown-placement.md` — `docs/` placement rule + exceptions
-- `.claude/references/files-management.md` — do-not-edit list (uv.lock, .copier-answers.yml), clean artifacts
-- `.claude/references/recent-improvements.md` — April 2026 changes (standards, package structure, testing, CI/CD, docs, release automation, Claude docs)
+- `.claude/references/directory-structure.md` - directory layout
+- `.claude/references/dev-setup.md` - Python 3.11+, uv, just prerequisites
+- `.claude/references/justfile-recipes.md` - complete just recipe table (all 50+ recipes)
+- `.claude/references/ci-pipeline.md` - `just ci`, pipeline description, merge gate
+- `.claude/references/copier-template.md` - copy vs update, conflict handling, migrations, release workflow
+- `.claude/references/testing.md` - pytest + copier integration test approach
+- `.claude/references/copier-variables.md` - Copier variable conventions, Jinja2 extensions
+- `.claude/references/code-style.md` - ruff rules, docstrings, complexity, type annotations
+- `.claude/references/ai-rules.md` - `.claude/rules/` structure, skills vs rules philosophy
+- `.claude/references/standards-enforcement.md` - tooling layer (ruff, basedpyright, pytest-cov), Claude hooks table, slash commands table, definition of done
+- `.claude/references/markdown-placement.md` - `docs/` placement rule + exceptions
+- `.claude/references/files-management.md` - do-not-edit list (uv.lock, .copier-answers.yml), clean artifacts
+- `.claude/references/recent-improvements.md` - April 2026 changes (standards, package structure, testing, CI/CD, docs, release automation, Claude docs)
 
 ## Nested CLAUDE.md files (unchanged)
 
-- `scripts/CLAUDE.md` (139 lines) — documents each script, CLI flags, CI integration
-- `tests/CLAUDE.md` (136 lines) — test patterns, helpers, categories, how to add tests
-- `.github/CLAUDE.md` (89 lines) — meta-repo workflows and design principles
-- `template/CLAUDE.md` (156 lines) — Jinja2 source layout, Copier variables, dual `.claude/` hierarchy (this is source material for generated projects, NOT edited)
+- `scripts/CLAUDE.md` (139 lines) - documents each script, CLI flags, CI integration
+- `tests/CLAUDE.md` (136 lines) - test patterns, helpers, categories, how to add tests
+- `.github/CLAUDE.md` (89 lines) - meta-repo workflows and design principles
+- `template/CLAUDE.md` (156 lines) - Jinja2 source layout, Copier variables, dual `.claude/` hierarchy (this is source material for generated projects, NOT edited)
 
 These files are referenced from AGENTS.md via progressive disclosure and are NOT modified this pass.
 
@@ -47,19 +47,19 @@ Grep of all `.md` files shows zero references to `MEMORY.md` or `CONFLICTS.md`. 
 
 Read from `.agentmemory-project`: **`python_project_template`**
 
-## template/ subdir — completed 2026-05-21
+## template/ subdir - completed 2026-05-21
 
 See `template/.claude/migration-summary.md` for Copier-output 4-file model, references mirror, and `settings.json.jinja`.
 
-## template/ subdir — original deferred note (superseded)
+## template/ subdir - original deferred note (superseded)
 
 ### Finding: `copier.yml` structure
 
-- `_subdirectory: template` — Copier renders this subtree into generated projects
-- `_skip_if_exists:` — preserves user-edited files on update (includes `CLAUDE.md`)
-- `_exclude:` — files not copied (`.git`, `.venv`, `__pycache__`, `*.pyc`)
-- `.jinja` suffix — files with this are rendered as Jinja2; others copied verbatim
-- `template/CLAUDE.md` — plain file (NOT Jinja2), explains Jinja2 source layout to humans
+- `_subdirectory: template` - Copier renders this subtree into generated projects
+- `_skip_if_exists:` - preserves user-edited files on update (includes `CLAUDE.md`)
+- `_exclude:` - files not copied (`.git`, `.venv`, `__pycache__`, `*.pyc`)
+- `.jinja` suffix - files with this are rendered as Jinja2; others copied verbatim
+- `template/CLAUDE.md` - plain file (NOT Jinja2), explains Jinja2 source layout to humans
 
 ### Finding: `template/CLAUDE.md` is NOT a template
 
@@ -72,7 +72,7 @@ The 4-file model should be applied **inside `template/`** so **generated project
 1. Create `template/.claude/references/` (mirrors root `.claude/references/`)
 2. Extract long sections from `template/CLAUDE.md` into reference files (same topics as root, but generated-project context)
 3. Replace `template/CLAUDE.md` with thin wrapper (like root CLAUDE.md, but Jinja2-aware for generated project context)
-4. Create `template/AGENTS.md` — canonical guide for generated projects (mirrors root AGENTS.md)
+4. Create `template/AGENTS.md` - canonical guide for generated projects (mirrors root AGENTS.md)
 5. Copier will render these into generated projects, establishing the 4-file model automatically
 
 **Why deferred:** `template/` is a Copier template (Jinja2 source). Changes here affect all **future-generated projects**. This is higher risk and benefits from human review of the Jinja2 layer. The root refactor is complete and validates the 4-file model; the template pass applies it to future artifacts.
@@ -80,7 +80,7 @@ The 4-file model should be applied **inside `template/`** so **generated project
 ## Validation checklist
 
 - [x] All relative links in 4 root files resolve (`.AGENTS.md`, `.claude/references/*`)
-- [x] Each wrapper ≤ ~15–20 lines
+- [x] Each wrapper ≤ ~15-20 lines
 - [x] AGENTS.md preserves all substantive content by reference
 - [x] No MEMORY.md / CONFLICTS.md refs in instruction files outside this summary
 - [x] TEAM_ID verified: `python_project_template`
@@ -91,10 +91,10 @@ The 4-file model should be applied **inside `template/`** so **generated project
 
 ## Files created
 
-- `AGENTS.md` (66 lines) — canonical guide
-- `CLAUDE.md` (rewrote; now 11 lines) — Claude wrapper
-- `GEMINI.md` (11 lines) — Gemini wrapper
-- `CURSOR.md` (11 lines) — Cursor wrapper
+- `AGENTS.md` (66 lines) - canonical guide
+- `CLAUDE.md` (rewrote; now 11 lines) - Claude wrapper
+- `GEMINI.md` (11 lines) - Gemini wrapper
+- `CURSOR.md` (11 lines) - Cursor wrapper
 - `.claude/migration-summary.md` (this file)
 - `.claude/references/directory-structure.md`
 - `.claude/references/dev-setup.md`

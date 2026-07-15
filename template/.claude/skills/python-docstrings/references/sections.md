@@ -36,7 +36,7 @@ Args:
 - Separate name from description with `: ` (colon + space or colon + newline).
 - If no type annotation exists, include type in the description:
   `keys (list[str]): A sequence of key strings.`
-- If annotations exist, skip the type — don't duplicate it.
+- If annotations exist, skip the type - don't duplicate it.
 - `*args` and `**kwargs` are listed using their actual names including the `*` / `**`:
   ```
   Args:
@@ -44,7 +44,7 @@ Args:
       **kwargs: Keyword arguments forwarded to the base handler.
   ```
 
-### Alternative style — name on its own line (also valid)
+### Alternative style - name on its own line (also valid)
 ```
 Args:
     table_handle:
@@ -106,7 +106,7 @@ Returns:
 ```python
 def get_user_name(user_id: int) -> str:
     """Returns the display name for the given user ID."""
-    # Returns: section unnecessary — summary already covers it fully
+    # Returns: section unnecessary - summary already covers it fully
 ```
 
 ### Tuple returns
@@ -184,7 +184,7 @@ def connect_to_next_port(self, minimum: int) -> int:
 
     Raises:
         ConnectionError: If no available port is found.
-        # NOT listed: ValueError for minimum < 1024 — that's API misuse
+        # NOT listed: ValueError for minimum < 1024 - that's API misuse
     """
     if minimum < 1024:
         raise ValueError(f'Min. port must be at least 1024, not {minimum}.')
@@ -197,7 +197,7 @@ def connect_to_next_port(self, minimum: int) -> int:
 
 **Used in**: Class docstrings only.
 
-Documents public instance attributes (not `@property` — those are documented
+Documents public instance attributes (not `@property` - those are documented
 on the property itself).
 
 ```
@@ -210,8 +210,8 @@ Same format rules as `Args:`. Include type information only when there are no
 type annotations.
 
 ### What belongs in Attributes vs __init__ Args
-- `Attributes:` in the class docstring → documents what's *on the instance* after construction.
-- `Args:` in `__init__` docstring → documents the constructor *parameters*.
+- `Attributes:` in the class docstring - documents what's *on the instance* after construction.
+- `Args:` in `__init__` docstring - documents the constructor *parameters*.
 - These may overlap in name but serve different purposes and should both be present.
 
 ---
@@ -220,7 +220,7 @@ type annotations.
 
 Two formats are both acceptable. **Choose one per file.**
 
-### Style A — inline description
+### Style A - inline description
 ```python
 def f(table_handle, keys, require_all_keys=False):
     """Summary line.
@@ -240,7 +240,7 @@ def f(table_handle, keys, require_all_keys=False):
     """
 ```
 
-### Style B — name then indented description
+### Style B - name then indented description
 ```python
 def f(table_handle, keys, require_all_keys=False):
     """Summary line.

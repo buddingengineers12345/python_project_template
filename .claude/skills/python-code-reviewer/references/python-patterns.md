@@ -24,9 +24,9 @@
     query = f"SELECT * FROM users WHERE name = '{username}'"
     cursor.execute(query)
 
-    # Fix — parameterised query
+    # Fix - parameterised query
     cursor.execute("SELECT * FROM users WHERE name = %s", (username,))
-    # ORM (Django) — always safe
+    # ORM (Django) - always safe
     User.objects.filter(name=username)
 
 ### Unsafe YAML Loading
@@ -41,7 +41,7 @@
     # CRITICAL
     result = eval(user_expression)
 
-    # Fix — safe literal parsing only
+    # Fix - safe literal parsing only
     import ast
     result = ast.literal_eval(user_expression)
 
@@ -71,7 +71,7 @@
     DB_PASSWORD = os.environ["DB_PASSWORD"]
 
 ### Weak Crypto / Insecure Random
-    # HIGH — MD5 for passwords, predictable token generation
+    # HIGH - MD5 for passwords, predictable token generation
     import hashlib, random
     token = random.randint(100000, 999999)
     pw_hash = hashlib.md5(password.encode()).hexdigest()
@@ -82,11 +82,11 @@
     pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
 ### Unsafe Pickle
-    # CRITICAL — arbitrary code execution
+    # CRITICAL - arbitrary code execution
     import pickle
     obj = pickle.loads(user_bytes)
 
-    # Fix — use JSON for data exchange
+    # Fix - use JSON for data exchange
     import json
     obj = json.loads(user_bytes)
 
@@ -108,10 +108,10 @@
         return container
 
 ### Late-Binding Closure
-    # HIGH — all lambdas return 4, not 0..4
+    # HIGH - all lambdas return 4, not 0..4
     functions = [lambda: i for i in range(5)]
 
-    # Fix — capture value at creation time
+    # Fix - capture value at creation time
     functions = [lambda i=i: i for i in range(5)]
 
 ### Swallowing Exceptions
@@ -140,7 +140,7 @@
         data = f.read()
 
 ### String Concatenation in Loop
-    # MEDIUM — O(n²)
+    # MEDIUM - O(n²)
     result = ""
     for chunk in chunks:
         result += chunk
@@ -206,7 +206,7 @@
     elif command == "pick" and item:
         pick(item)
 
-    # match/case — clearer intent, exhaustiveness checkable
+    # match/case - clearer intent, exhaustiveness checkable
     match command.split():
         case ["quit"]:
             quit_game()
@@ -218,11 +218,11 @@
             print(f"Unknown command: {command}")
 
 ### tomllib for TOML (3.11 stdlib)
-    # Old — required third-party package
+    # Old - required third-party package
     import toml
     config = toml.load("config.toml")
 
-    # Modern — stdlib, no dependency needed
+    # Modern - stdlib, no dependency needed
     import tomllib
     with open("config.toml", "rb") as f:
         config = tomllib.load(f)
@@ -245,19 +245,19 @@
     from datetime import datetime
     now = datetime.utcnow()
 
-    # Correct — timezone-aware
+    # Correct - timezone-aware
     from datetime import datetime, timezone
     now = datetime.now(timezone.utc)
 
 ### Pathlib
-    # String-based — fragile
+    # String-based - fragile
     import os
     path = os.path.join(base, "subdir", "file.txt")
     if os.path.exists(path):
         with open(path) as f:
             data = f.read()
 
-    # Pathlib — composable and readable
+    # Pathlib - composable and readable
     from pathlib import Path
     path = Path(base) / "subdir" / "file.txt"
     if path.exists():
@@ -278,7 +278,7 @@
     def process(value: int | str) -> None: ...
 
 ### Self Return Type
-    # Old — fragile with subclassing
+    # Old - fragile with subclassing
     from typing import TypeVar
     T = TypeVar("T", bound="Builder")
     class Builder:
@@ -328,7 +328,7 @@
 ## 5. Error Handling Patterns
 
 ### Exception Chaining
-    # MEDIUM — original traceback lost
+    # MEDIUM - original traceback lost
     try:
         db.connect()
     except ConnectionError:
@@ -340,7 +340,7 @@
     except ConnectionError as e:
         raise RuntimeError("Database unavailable") from e
 
-### ExceptionGroup (3.11) — Concurrent Errors
+### ExceptionGroup (3.11) - Concurrent Errors
     # Multiple errors from concurrent tasks
     errors = []
     for task in tasks:
@@ -365,7 +365,7 @@
     # Too generic
     raise Exception("User not found")
 
-    # Better — specific, catchable by callers
+    # Better - specific, catchable by callers
     class AppError(Exception):
         """Base for all application errors."""
 
@@ -382,12 +382,12 @@
 ## 6. Testing Patterns
 
 ### Correct Mock Target
-    # Wrong — mocking where requests is defined
+    # Wrong - mocking where requests is defined
     from unittest.mock import patch
     @patch("requests.get")
     def test_fetch(mock_get): ...
 
-    # Right — mock where it is used
+    # Right - mock where it is used
     @patch("mymodule.requests.get")
     def test_fetch(mock_get): ...
 
@@ -420,7 +420,7 @@
 ## 7. Async Patterns
 
 ### Blocking I/O in Async
-    # HIGH — blocks the event loop
+    # HIGH - blocks the event loop
     async def fetch():
         response = requests.get(url)   # sync, blocking
 
@@ -432,11 +432,11 @@
         return response.json()
 
 ### Fire-and-Forget Bug
-    # HIGH — exception from background_job() is silently discarded
+    # HIGH - exception from background_job() is silently discarded
     async def handler():
         asyncio.create_task(background_job())
 
-    # Fix — store the task reference
+    # Fix - store the task reference
     _background_tasks: set[asyncio.Task] = set()
 
     async def handler():
@@ -444,11 +444,11 @@
         _background_tasks.add(task)
         task.add_done_callback(_background_tasks.discard)
 
-### TaskGroup (3.11) — Structured Concurrency
-    # Old — gather swallows some exceptions
+### TaskGroup (3.11) - Structured Concurrency
+    # Old - gather swallows some exceptions
     results = await asyncio.gather(task1(), task2(), task3())
 
-    # Modern — all tasks cancelled if any fails, errors surface cleanly
+    # Modern - all tasks cancelled if any fails, errors surface cleanly
     async with asyncio.TaskGroup() as tg:
         t1 = tg.create_task(task1())
         t2 = tg.create_task(task2())
@@ -456,7 +456,7 @@
     results = [t1.result(), t2.result(), t3.result()]
 
 ### Run Blocking Sync Code in Async
-    # MEDIUM — CPU-bound work blocks the event loop
+    # MEDIUM - CPU-bound work blocks the event loop
     async def process():
         result = heavy_computation(data)
 
@@ -478,7 +478,7 @@
     # Implication for review: split complex chains for better production debugging.
 
 ### tomllib (No External Dependency)
-    # 3.11 ships tomllib in stdlib — remove tomli / toml from dependencies
+    # 3.11 ships tomllib in stdlib - remove tomli / toml from dependencies
     import tomllib
     with open("pyproject.toml", "rb") as f:
         config = tomllib.load(f)
@@ -489,7 +489,7 @@
         NORTH = auto()   # value becomes "north" (lowercased name)
         SOUTH = auto()
 
-    assert Direction.NORTH == "north"   # True — no .value needed
+    assert Direction.NORTH == "north"   # True - no .value needed
 
 ### TaskGroup (see Async section above)
 

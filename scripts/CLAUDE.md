@@ -1,4 +1,4 @@
-# scripts/ — Automation Scripts
+# scripts/ - Automation Scripts
 
 This directory contains Python and shell scripts for CI automation and local maintenance
 tasks. Scripts are invoked via `just` recipes or GitHub Actions workflows.
@@ -13,7 +13,7 @@ tasks. Scripts are invoked via `just` recipes or GitHub Actions workflows.
 
 Generates a Git-history-based file freshness dashboard for the repository.
 
-**Invocation:** `just freshness` → `uv run python scripts/repo_file_freshness.py`
+**Invocation:** `just freshness` - `uv run python scripts/repo_file_freshness.py`
 
 **What it does:**
 - Queries `git ls-files` for all tracked files.
@@ -21,9 +21,9 @@ Generates a Git-history-based file freshness dashboard for the repository.
 - Classifies files as **green** (recently updated), **yellow** (aging), **red** (stale),
   or **blue** (ignored via `assets/freshness_ignore.json`).
 - Writes three output artifacts:
-  - `docs/repo_file_status_report.md` — human-readable dashboard table
-  - `assets/file_freshness.json` — per-file details (date, hash, status, commit count)
-  - `assets/freshness_summary.json` — aggregate counts + optional badge metadata
+  - `docs/repo_file_status_report.md` - human-readable dashboard table
+  - `assets/file_freshness.json` - per-file details (date, hash, status, commit count)
+  - `assets/freshness_summary.json` - aggregate counts + optional badge metadata
 
 **CLI flags:**
 
@@ -35,7 +35,7 @@ Generates a Git-history-based file freshness dashboard for the repository.
 
 **Thresholds (commits metric):**
 - green: ≥ 3 commits
-- yellow: 1–2 commits
+- yellow: 1-2 commits
 - red: 0 commits (file has never been updated after initial add)
 
 **Tested by:** `tests/unit/test_repo_file_freshness.py`
@@ -85,7 +85,7 @@ conventional commit subjects over a `git rev-list` range.
 - CI / check: `python3 scripts/pr_commit_policy.py pr` with `PR_TITLE` and `PR_BODY` set, or
   `python3 scripts/pr_commit_policy.py commits` with `PR_BASE_SHA` and `PR_HEAD_SHA` (or
   `--base` / `--head`).
-- Local automation: `just pr-draft` → `pr_commit_policy.py draft` prints a Conventional
+- Local automation: `just pr-draft` - `pr_commit_policy.py draft` prints a Conventional
   Commits title (from `type/slug-branch` or the latest valid commit subject) and a PR body
   from `.github/PULL_REQUEST_TEMPLATE.md` with *Changes introduced* bullets from
   `git log <base>..HEAD` (default base: `origin/main` or `main`).
@@ -101,7 +101,7 @@ conventional commit subjects over a `git rev-list` range.
 Validates that root and `template/` stay aligned on configured paths (for example GitHub
 Actions pins, shared recipes, and other policy maps).
 
-**Invocation:** `just sync-check` → `uv run python scripts/check_root_template_sync.py`
+**Invocation:** `just sync-check` - `uv run python scripts/check_root_template_sync.py`
 
 **What it does:**
 - Loads JSON policy maps under the repo (workflow action versions, justfile parity rules, etc.).
@@ -123,7 +123,7 @@ and their commit frequency.
 **What it does:**
 - Scans `template/` for all tracked paths.
 - For each path, checks the Git commit frequency to determine if it is user-customisable
-  (high churn = likely user-edited → should be in `_skip_if_exists`).
+  (high churn = likely user-edited - should be in `_skip_if_exists`).
 - Produces a suggested diff to `copier.yml`'s `_skip_if_exists` list.
 
 **Tested by:** `tests/unit/test_sync_skip_if_exists.py`

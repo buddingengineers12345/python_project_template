@@ -34,7 +34,7 @@ paths:
 
 # Database Rules (Prisma)
 
-- Never call `prisma` directly from components — use server actions or API routes
+- Never call `prisma` directly from components - use server actions or API routes
 - All Prisma queries in `src/lib/db/` one file per model (e.g., `user.ts`, `post.ts`)
 - Use `prisma.$transaction()` when multiple writes must be atomic
 - New migrations: `pnpm prisma migrate dev --name <description>`
@@ -47,7 +47,7 @@ paths:
 # Testing
 
 - Test runner: Vitest (`pnpm test`)
-- E2E: Playwright (`pnpm test:e2e`) — requires `pnpm dev` running in another terminal
+- E2E: Playwright (`pnpm test:e2e`) - requires `pnpm dev` running in another terminal
 - Unit test files: co-located as `*.test.ts`
 - Mock Prisma using `vitest-mock-extended` and the mock in `tests/__mocks__/prisma.ts`
 - Use React Testing Library for component tests; no Enzyme, no snapshot tests
@@ -92,7 +92,7 @@ paths:
 
 - All routes must have Pydantic request/response models
 - Use `Depends()` for all dependency injection (DB session, current user, etc.)
-- Route handlers should be thin: validate input → call service → return response
+- Route handlers should be thin: validate input - call service - return response
 - Business logic belongs in `src/services/`, not routers
 - Use `HTTPException` with meaningful status codes and detail messages
 - All routers tagged and included in `src/main.py` with prefix
@@ -101,7 +101,7 @@ paths:
 
 - Never import `engine` directly; use `get_db` dependency from `src/database.py`
 - Use `async with db.begin():` for transactions
-- Raw SQL only via `text()` with bound parameters — no string interpolation
+- Raw SQL only via `text()` with bound parameters - no string interpolation
 - Run migrations: `alembic upgrade head`
 - New migration: `alembic revision --autogenerate -m "description"`
 ```
@@ -160,7 +160,7 @@ paths:
 # Navigation Rules (React Navigation)
 
 - All screen names typed in `src/navigation/types.ts`
-- Use typed `useNavigation<StackNavigationProp<...>>()` — never cast as any
+- Use typed `useNavigation<StackNavigationProp<...>>()` - never cast as any
 - Navigate with `navigation.navigate('ScreenName', params)` not `push` (unless intentional stack duplication)
 - Deep link routes registered in `src/navigation/linking.ts`
 - Modal screens use separate `ModalStack`; don't mix with main stack
@@ -186,14 +186,14 @@ paths:
 
 ```
 apps/
-  web/        → Next.js customer app
-  admin/      → Next.js admin app
-  api/        → Express API server
+  web/        - Next.js customer app
+  admin/      - Next.js admin app
+  api/        - Express API server
 packages/
-  ui/         → Shared React component library
-  config/     → Shared ESLint, TypeScript, Tailwind configs
-  database/   → Prisma schema + generated client
-  types/      → Shared TypeScript types
+  ui/         - Shared React component library
+  config/     - Shared ESLint, TypeScript, Tailwind configs
+  database/   - Prisma schema + generated client
+  types/      - Shared TypeScript types
 ```
 
 ## Rules

@@ -31,7 +31,7 @@ against all possible feature combinations before you tag and ship.
    echo "Testing release for version: $VERSION"
    ```
 
-3. **Generate test projects** — Create 4 temporary projects covering all feature combinations:
+3. **Generate test projects** - Create 4 temporary projects covering all feature combinations:
 
    **a) Minimal config** (all optional features disabled)
    ```bash
@@ -69,7 +69,7 @@ against all possible feature combinations before you tag and ship.
    cd /tmp/test-datascience && just ci && cd -
    ```
 
-4. **Capture results** — for each test project, record:
+4. **Capture results** - for each test project, record:
    - Config used (feature combination)
    - Exit code of `just ci`
    - Any error messages (if failed)
@@ -84,25 +84,25 @@ against all possible feature combinations before you tag and ship.
 ## Success Criteria
 
 All four feature combinations must pass `just ci` completely. If any combination fails:
-- ✗ **Do NOT release** — fix the underlying issue first
+-  **Do NOT release** - fix the underlying issue first
 - Report which combination failed and why
 - Suggest fixes (e.g., missing dependency, syntax error in template)
 
 ## Output Format
 
 ```
-## Release Validation — v<VERSION>
+## Release Validation - v<VERSION>
 
 Testing template against all feature combinations...
 
 | Config | Status | Time | Error |
 |--------|--------|------|-------|
-| Minimal (no features) | ✓ PASS | 45s | — |
-| Full featured | ✓ PASS | 52s | — |
-| Docs only | ✓ PASS | 48s | — |
-| Data science stack | ✓ PASS | 50s | — |
+| Minimal (no features) |  PASS | 45s | - |
+| Full featured |  PASS | 52s | - |
+| Docs only |  PASS | 48s | - |
+| Data science stack |  PASS | 50s | - |
 
-✓ All feature combinations passed.
+ All feature combinations passed.
 Ready to release v<VERSION> with confidence.
 
 Next step: Run `/release` to tag and push.
@@ -111,18 +111,18 @@ Next step: Run `/release` to tag and push.
 OR (if a test fails):
 
 ```
-## Release Validation — v<VERSION>
+## Release Validation - v<VERSION>
 
 Testing template against all feature combinations...
 
 | Config | Status | Time | Error |
 |--------|--------|------|-------|
-| Minimal | ✓ PASS | 45s | — |
-| Full featured | ✗ FAIL | 42s | pytest: missing test files |
-| Docs only | ✓ PASS | 48s | — |
-| Data science stack | ✓ PASS | 50s | — |
+| Minimal |  PASS | 45s | - |
+| Full featured |  FAIL | 42s | pytest: missing test files |
+| Docs only |  PASS | 48s | - |
+| Data science stack |  PASS | 50s | - |
 
-✗ One configuration failed. Fix the issue and re-run validation.
+ One configuration failed. Fix the issue and re-run validation.
 
 **Issue:** Full-featured config (`include_docs=true, include_numpy=true, include_pandas_support=true`) fails at pytest stage.
 **Likely cause:** Test template not rendering correctly when all features enabled.
@@ -133,4 +133,4 @@ Testing template against all feature combinations...
 
 - Keep temp directories if a test fails (for debugging)
 - If uv.lock generation is slow, consider passing `--skip-tasks` to copier (after validation passes)
-- This is a pre-release gate — run it before `/release` every time
+- This is a pre-release gate - run it before `/release` every time

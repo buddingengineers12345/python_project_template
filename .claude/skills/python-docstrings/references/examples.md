@@ -14,20 +14,20 @@ Annotated real-world patterns with explanations of every fix.
 6. [Classes](#classes)
 7. [Exception Classes](#exception-classes)
 8. [Overridden Methods](#overridden-methods)
-9. [Full Module — Before/After Audit](#full-module-beforeafter-audit)
+9. [Full Module - Before/After Audit](#full-module-beforeafter-audit)
 
 ---
 
 ## Module Docstrings
 
-### ❌ Bad
+###  Bad
 ```python
-# No docstring at all — file starts with imports
+# No docstring at all - file starts with imports
 import os
 import json
 ```
 
-### ✅ Good
+###  Good
 ```python
 """Utilities for reading and writing user configuration files.
 
@@ -49,14 +49,14 @@ import json
 
 ## Simple Functions
 
-### ❌ Bad — summary not terminated, no period
+###  Bad - summary not terminated, no period
 ```python
 def greet(name: str) -> str:
     """Greet the user"""
     return f"Hello, {name}!"
 ```
 
-### ✅ Good
+###  Good
 ```python
 def greet(name: str) -> str:
     """Returns a greeting string for the given name."""
@@ -65,7 +65,7 @@ def greet(name: str) -> str:
 
 ---
 
-### ❌ Bad — unnecessary Args/Returns when signature is self-explanatory
+###  Bad - unnecessary Args/Returns when signature is self-explanatory
 ```python
 def add(a: int, b: int) -> int:
     """Adds two integers.
@@ -80,7 +80,7 @@ def add(a: int, b: int) -> int:
     return a + b
 ```
 
-### ✅ Good — one-liner is sufficient
+###  Good - one-liner is sufficient
 ```python
 def add(a: int, b: int) -> int:
     """Returns the sum of a and b."""
@@ -91,7 +91,7 @@ def add(a: int, b: int) -> int:
 
 ## Complex Functions
 
-### ❌ Bad — wrong style, missing sections, no hanging indent
+###  Bad - wrong style, missing sections, no hanging indent
 ```python
 def process_batch(items, max_retries=3, timeout=None):
     """
@@ -104,7 +104,7 @@ def process_batch(items, max_retries=3, timeout=None):
 **Problems**: Leading blank line inside `"""`, prose mixes args/returns/raises,
 no structured sections, no type info (and no annotations).
 
-### ✅ Good
+###  Good
 ```python
 def process_batch(
     items: list[dict],
@@ -137,7 +137,7 @@ def process_batch(
 
 ## Generator Functions
 
-### ❌ Bad — uses Returns: instead of Yields:
+###  Bad - uses Returns: instead of Yields:
 ```python
 def read_lines(filepath: str):
     """Reads lines from a file.
@@ -150,7 +150,7 @@ def read_lines(filepath: str):
             yield line.rstrip('\n')
 ```
 
-### ✅ Good
+###  Good
 ```python
 def read_lines(filepath: str) -> Iterator[str]:
     """Reads lines from a file one at a time.
@@ -167,7 +167,7 @@ def read_lines(filepath: str) -> Iterator[str]:
 
 ## Properties
 
-### ❌ Bad — uses "Returns" phrasing (wrong style for properties)
+###  Bad - uses "Returns" phrasing (wrong style for properties)
 ```python
 @property
 def butter_sticks(self) -> int:
@@ -175,7 +175,7 @@ def butter_sticks(self) -> int:
     return self._butter_sticks
 ```
 
-### ✅ Good — attribute-style, no "Returns"
+###  Good - attribute-style, no "Returns"
 ```python
 @property
 def butter_sticks(self) -> int:
@@ -187,7 +187,7 @@ def butter_sticks(self) -> int:
 
 ## Classes
 
-### ❌ Bad — says "Class that …", redundant; no Attributes section
+###  Bad - says "Class that ...", redundant; no Attributes section
 ```python
 class UserProfile:
     """Class that holds information about a user's profile."""
@@ -198,7 +198,7 @@ class UserProfile:
         self.is_active = True
 ```
 
-### ✅ Good — describes instance; has Attributes section; __init__ has Args
+###  Good - describes instance; has Attributes section; __init__ has Args
 ```python
 class UserProfile:
     """A user's profile information and account status.
@@ -225,13 +225,13 @@ class UserProfile:
 
 ## Exception Classes
 
-### ❌ Bad — describes when raised, not what it represents
+###  Bad - describes when raised, not what it represents
 ```python
 class DatabaseConnectionError(Exception):
     """Raised when a database connection cannot be established."""
 ```
 
-### ✅ Good — describes what the exception represents
+###  Good - describes what the exception represents
 ```python
 class DatabaseConnectionError(Exception):
     """Failure to establish or maintain a database connection."""
@@ -241,24 +241,24 @@ class DatabaseConnectionError(Exception):
 
 ## Overridden Methods
 
-### ❌ Bad — no @override, no docstring
+###  Bad - no @override, no docstring
 ```python
 class AdminUser(BaseUser):
     def get_permissions(self):
         return ['read', 'write', 'delete']
 ```
 
-### ✅ Good option A — add @override (docstring becomes optional)
+###  Good option A - add @override (docstring becomes optional)
 ```python
 from typing_extensions import override
 
 class AdminUser(BaseUser):
     @override
     def get_permissions(self) -> list[str]:
-        pass  # Contract unchanged — @override is sufficient
+        pass  # Contract unchanged - @override is sufficient
 ```
 
-### ✅ Good option B — no @override, provide docstring
+###  Good option B - no @override, provide docstring
 ```python
 class AdminUser(BaseUser):
     def get_permissions(self) -> list[str]:
@@ -266,7 +266,7 @@ class AdminUser(BaseUser):
         return ['read', 'write', 'delete']
 ```
 
-### ✅ Good option C — @override but with material difference
+###  Good option C - @override but with material difference
 ```python
 class AdminUser(BaseUser):
     @override
@@ -280,9 +280,9 @@ class AdminUser(BaseUser):
 
 ---
 
-## Full Module — Before/After Audit
+## Full Module - Before/After Audit
 
-### ❌ Before — multiple issues
+###  Before - multiple issues
 ```python
 import re
 from typing import Iterator
@@ -326,12 +326,12 @@ class ContactBook:
 - `parse_names` uses `'''` (should be `"""`)
 - `parse_names` summary not capitalized, not terminated with period
 - `stream_names` uses `Returns:` instead of `Yields:`
-- `ContactBook` class says "Class for …" (wrong pattern)
+- `ContactBook` class says "Class for ..." (wrong pattern)
 - `ContactBook` missing `Attributes:` section
-- `count` property says "Returns the …" (should be attribute style)
+- `count` property says "Returns the ..." (should be attribute style)
 - `add` summary not capitalized, not terminated with period
 
-### ✅ After — all issues resolved
+###  After - all issues resolved
 ```python
 """Utilities for parsing and managing contact information.
 

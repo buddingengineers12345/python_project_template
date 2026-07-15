@@ -19,13 +19,13 @@ the testing pyramid helps you decide what kind of test to write and how to struc
 The pyramid is a guideline for the ratio of test types in a healthy suite:
 
 ```
-        /  E2E  \          Few — slow, expensive, high confidence
+        /  E2E  \          Few - slow, expensive, high confidence
        /----------\
-      / Functional \       Some — moderate speed, real interactions
+      / Functional \       Some - moderate speed, real interactions
      /--------------\
-    /  Integration   \     More — exercise component boundaries
+    /  Integration   \     More - exercise component boundaries
    /------------------\
-  /      Unit          \   Most — fast, isolated, focused
+  /      Unit          \   Most - fast, isolated, focused
  /______________________\
 ```
 
@@ -40,10 +40,10 @@ touch the filesystem, network, database, or any external system.
 
 **Characteristics:**
 
-- Fast — milliseconds per test.
-- Deterministic — same result every time, regardless of environment.
-- Isolated — mock or stub all external dependencies.
-- Focused — one behaviour per test.
+- Fast - milliseconds per test.
+- Deterministic - same result every time, regardless of environment.
+- Isolated - mock or stub all external dependencies.
+- Focused - one behaviour per test.
 
 ```python
 # Unit test: pure logic, no I/O
@@ -72,8 +72,8 @@ def test_fetches_user_profile(mocker):
 **Organise** unit tests under `tests/unit/`, mirroring the source layout:
 
 ```
-src/myapp/orders.py          →  tests/unit/test_orders.py
-src/myapp/common/utils.py    →  tests/unit/common/test_utils.py
+src/myapp/orders.py          -  tests/unit/test_orders.py
+src/myapp/common/utils.py    -  tests/unit/common/test_utils.py
 ```
 
 ## Integration tests
@@ -85,7 +85,7 @@ exercise real boundaries: database queries, file I/O, inter-module communication
 
 - Slower than unit tests (seconds per test).
 - May require setup (databases, temp files, services).
-- Fewer mocks — the point is to test real interactions.
+- Fewer mocks - the point is to test real interactions.
 - Still isolated from the external world where possible (test DB, temp dirs).
 
 ```python
@@ -160,13 +160,13 @@ These tests are valuable because they catch integration issues that unit tests m
 ## End-to-end tests
 
 E2E tests simulate a complete user workflow from start to finish. They exercise the
-entire stack — application, database, external services (or realistic fakes).
+entire stack - application, database, external services (or realistic fakes).
 
 **Characteristics:**
 
 - Slowest test type (seconds to minutes per test).
-- Most realistic — closest to actual user experience.
-- Most brittle — sensitive to environment, timing, UI changes.
+- Most realistic - closest to actual user experience.
+- Most brittle - sensitive to environment, timing, UI changes.
 - Require the most infrastructure setup.
 
 ```python
