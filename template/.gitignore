@@ -270,3 +270,8 @@ full_runner.sh
 .testmondata
 .testmondata-shm
 .testmondata-wal
+
+# Claude skills live only in /home/engineer/agentspace/collection_skill.
+# Local .claude/skills entries are machine-local symlinks — do not commit them.
+.claude/skills/
+
