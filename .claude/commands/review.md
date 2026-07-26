@@ -15,8 +15,8 @@ Perform a thorough pre-merge code review of all recently modified Python files.
    - `just docs-check` - ruff `--select D` docstring check
 
    For detailed guidance on each tool, load the relevant skill:
-   - Linting: `.claude/skills/linting/SKILL.md`
-   - Type checking: `.claude/skills/type-checking/SKILL.md`
+   - Linting: `.claude/skills/python-code-quality/references/linting.md`
+   - Type checking: `.claude/skills/python-code-quality/references/type-checking.md`
    - Docstrings: `.claude/skills/python-docstrings/SKILL.md`
 
 2. **Manual symbol scan** - for every `.py` file under `src/my_library/` that was
