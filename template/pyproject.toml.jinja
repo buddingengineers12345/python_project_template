@@ -122,6 +122,7 @@ select = [
     "C90",   # McCabe complexity
     "PERF",  # perflint — catch performance anti-patterns
     "T20",   # flake8-print — discourage print() in non-test code
+    "T10",   # flake8-debugger — no committed breakpoint()/pdb
     "N",     # pep8-naming — case conventions
     "A",     # flake8-builtins — no shadowed builtins
     "ERA",   # eradicate — no commented-out code
@@ -249,6 +250,7 @@ reportUnknownVariableType = false
 
 [tool.pytest.ini_options]
 minversion = "8.0"
+asyncio_mode = "strict"  # pin pytest-asyncio default explicitly; async tests must be marked
 testpaths = ["tests"]
 pythonpath = ["src"]  # allows imports without editable install; complements hatch dev mode
 python_files = ["test_*.py"]

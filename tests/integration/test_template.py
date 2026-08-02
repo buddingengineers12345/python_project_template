@@ -49,7 +49,11 @@ def run_command(
             with a non-zero status.
         FileNotFoundError: When the executable (first element of ``cmd``) is missing.
     """
-    return subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
+    # A machine-wide UV_PROJECT_ENVIRONMENT pin would make generated-project uv
+    # tasks (uv lock / uv sync) rewrite that shared venv mid-suite; drop it so
+    # child uv commands stay project-local.
+    env = {k: v for k, v in os.environ.items() if k != "UV_PROJECT_ENVIRONMENT"}
+    return subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True, env=env)
 
 
 def get_default_command_list(test_dir: Path) -> list[str]:
