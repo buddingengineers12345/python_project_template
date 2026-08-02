@@ -288,14 +288,22 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
     pyproject_content = (temp_project_dir / "pyproject.toml").read_text(encoding="utf-8")
     assert 'name = "test_project"' in pyproject_content, "Incorrect project name in pyproject.toml"
 
+    # Docs contract: AGENTS.md is the canonical agent guide; CLAUDE.md is a thin
+    # wrapper pointing at it.
     claude_md = temp_project_dir / "CLAUDE.md"
     assert claude_md.is_file(), "Missing CLAUDE.md"
     claude_content = claude_md.read_text(encoding="utf-8")
-    assert "Test Project" in claude_content, "CLAUDE.md should include rendered project name"
-    assert "uv sync --frozen --extra dev" in claude_content, (
-        "CLAUDE.md should document uv sync setup"
+    assert "AGENTS.md" in claude_content, "CLAUDE.md should point at AGENTS.md"
+    assert "{{" not in claude_content, "CLAUDE.md must not contain unreplaced Jinja placeholders"
+
+    agents_md = temp_project_dir / "AGENTS.md"
+    assert agents_md.is_file(), "Missing AGENTS.md"
+    agents_content = agents_md.read_text(encoding="utf-8")
+    assert "Test Project" in agents_content, "AGENTS.md should include rendered project name"
+    assert "uv sync --frozen --extra dev" in agents_content, (
+        "AGENTS.md should document uv sync setup"
     )
-    assert "--extra test" in claude_content, "CLAUDE.md should include test extra for pytest"
+    assert "--extra test" in agents_content, "AGENTS.md should include test extra for pytest"
 
     claude_ide = temp_project_dir / ".claude"
     assert claude_ide.is_dir(), "Missing .claude directory from template"
@@ -315,14 +323,15 @@ def test_generate_default_project(temp_project_dir: Path) -> None:
     assert (claude_ide / "hooks" / "post-edit-refactor-test-guard.sh").is_file(), (
         "Missing .claude/hooks/post-edit-refactor-test-guard.sh"
     )
-    assert (claude_ide / "skills" / "tdd-workflow" / "SKILL.md").is_file(), (
-        "Missing .claude/skills/tdd-workflow/SKILL.md"
+    # Skills were consolidated into references/ and rules/ — assert that structure.
+    assert (claude_ide / "references" / "testing.md").is_file(), (
+        "Missing .claude/references/testing.md"
     )
-    assert (claude_ide / "skills" / "tdd-test-planner" / "SKILL.md").is_file(), (
-        "Missing .claude/skills/tdd-test-planner/SKILL.md"
+    assert (claude_ide / "rules" / "python" / "testing.md").is_file(), (
+        "Missing .claude/rules/python/testing.md"
     )
-    assert (claude_ide / "skills" / "test-quality-reviewer" / "SKILL.md").is_file(), (
-        "Missing .claude/skills/test-quality-reviewer/SKILL.md"
+    assert (claude_ide / "rules" / "common" / "git-workflow.md").is_file(), (
+        "Missing .claude/rules/common/git-workflow.md"
     )
 
 
