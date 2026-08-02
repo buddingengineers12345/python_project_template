@@ -1,4 +1,4 @@
-# template/ - Jinja2 Template Source
+# CLAUDE.md - template/ (Jinja2 Template Source)
 
 This directory is the **Copier template subdirectory** (`_subdirectory: template` in `copier.yml`).
 Everything here is rendered by Copier into the destination project. Files with a `.jinja` suffix are
@@ -6,11 +6,40 @@ processed as Jinja2; files without it are copied verbatim. **`CLAUDE.md.jinja`**
 `CLAUDE.md` in generated repos) enforces **logging only via `common.logging_manager` public APIs**
 and **preferring `src/<package>/common/`** over duplicating utilities in other package modules.
 
-> [!IMPORTANT]
-> Do **not** run Python or shell tools directly inside this directory - it is source material,
-> not executable code. To test rendering, use `copier copy . /tmp/test-output --trust --defaults --vcs-ref HEAD`.
+## Commands
 
-## Directory layout
+- Test rendering: `copier copy . /tmp/test-output --trust --defaults --vcs-ref HEAD`
+- Run the test suite: `just test`
+- Clean up a manual test render: `rm -rf /tmp/test-output`
+
+(See Testing below for the full workflow these commands belong to.)
+
+## Code style
+
+Jinja2 conventions in this directory:
+
+- Use `{{ variable_name }}` for substitution.
+- Use `{% if condition %}...{% endif %}` for conditional blocks.
+- File names may themselves be Jinja expressions: `src/{{ package_name }}/__init__.py.jinja`.
+- The `jinja2_time.TimeExtension` (`{% now %}`), `jinja2.ext.do`, and `jinja2.ext.loopcontrols`
+  extensions are enabled.
+- The `pre-write-jinja-syntax.sh` hook validates Jinja2 syntax before writing `.jinja` files.
+- The `post-edit-jinja.sh` hook re-validates after every edit.
+
+## Testing
+
+After any change to a `.jinja` file or `copier.yml`:
+
+1. Run the test suite: `just test`
+2. Manually inspect output: `copier copy . /tmp/test-output --trust --defaults --vcs-ref HEAD`
+3. Clean up: `rm -rf /tmp/test-output`
+
+Every new Copier variable or template file must have a corresponding test in
+`tests/integration/test_template.py`.
+
+## Architecture
+
+### Directory layout
 
 ```
 template/
@@ -96,7 +125,7 @@ template/
 └── {% if include_git_cliff %}cliff.toml{% endif %}.jinja
 ```
 
-## Key Copier variables used in templates
+### Key Copier variables used in templates
 
 | Variable | Type | Purpose |
 |---|---|---|
@@ -119,23 +148,13 @@ template/
 | `current_year` | str | Computed: `{% now 'utc', '%Y' %}` |
 | `github_actions_python_versions` | str | Computed: JSON array from `python_min_version` |
 
-## Jinja2 conventions in this directory
-
-- Use `{{ variable_name }}` for substitution.
-- Use `{% if condition %}...{% endif %}` for conditional blocks.
-- File names may themselves be Jinja expressions: `src/{{ package_name }}/__init__.py.jinja`.
-- The `jinja2_time.TimeExtension` (`{% now %}`), `jinja2.ext.do`, and `jinja2.ext.loopcontrols`
-  extensions are enabled.
-- The `pre-write-jinja-syntax.sh` hook validates Jinja2 syntax before writing `.jinja` files.
-- The `post-edit-jinja.sh` hook re-validates after every edit.
-
-## Dual `.claude/` hierarchy
+### Dual `.claude/` hierarchy
 
 This directory has its own `.claude/` tree that is rendered into generated projects:
 
 ```
-template/.claude/   ← rendered into GENERATED projects
-.claude/            ← used while DEVELOPING this template repo (root)
+template/.claude/   <- rendered into GENERATED projects
+.claude/            <- used while DEVELOPING this template repo (root)
 ```
 
 The generated-project `.claude/` has fewer hooks (no SessionStart, no Jinja/Copier-specific
@@ -144,13 +163,8 @@ push reminder, commit quality scan, config/lock protection, strict TDD enforceme
 (`pre-write-src-require-test.sh`), a commit-time coverage gate warning
 (`pre-bash-coverage-gate.sh`), and a refactor test reminder (`post-edit-refactor-test-guard.sh`).
 
-## Testing template changes
+## Gotchas
 
-After any change to a `.jinja` file or `copier.yml`:
-
-1. Run the test suite: `just test`
-2. Manually inspect output: `copier copy . /tmp/test-output --trust --defaults --vcs-ref HEAD`
-3. Clean up: `rm -rf /tmp/test-output`
-
-Every new Copier variable or template file must have a corresponding test in
-`tests/integration/test_template.py`.
+> [!IMPORTANT]
+> Do **not** run Python or shell tools directly inside this directory - it is source material,
+> not executable code. To test rendering, use `copier copy . /tmp/test-output --trust --defaults --vcs-ref HEAD`.

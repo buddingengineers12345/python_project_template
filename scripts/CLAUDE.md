@@ -1,13 +1,39 @@
-# scripts/ - Automation Scripts
+# CLAUDE.md - scripts/ (Automation Scripts)
 
 This directory contains Python and shell scripts for CI automation and local maintenance
 tasks. Scripts are invoked via `just` recipes or GitHub Actions workflows.
+
+## Code style
 
 > [!NOTE]
 > Scripts follow the same **Google-style docstrings** as the rest of the repo (ruff `D`). Only **`T20`**
 > (`print`) is ignored under `scripts/**` so CLI output stays simple.
 
-## Scripts
+## Commands
+
+Quick reference; full behavior for each script is under Architecture below.
+
+| Script | Invocation |
+|---|---|
+| `repo_file_freshness.py` | `just freshness` - `uv run python scripts/repo_file_freshness.py` |
+| `bump_version.py` | `python scripts/bump_version.py --bump patch` |
+| `pr_commit_policy.py` | CI: `python3 scripts/pr_commit_policy.py pr` (with `PR_TITLE`/`PR_BODY`) or `python3 scripts/pr_commit_policy.py commits` (with `PR_BASE_SHA`/`PR_HEAD_SHA` or `--base`/`--head`); local: `just pr-draft` (`pr_commit_policy.py draft`) |
+| `check_root_template_sync.py` | `just sync-check` - `uv run python scripts/check_root_template_sync.py` |
+| `sync_skip_if_exists.py` | Called by `.github/workflows/sync-skip-if-exists.yml` on push to `main` |
+
+## Testing
+
+Quick reference; see Architecture below for what each script does.
+
+| Script | Tested by |
+|---|---|
+| `repo_file_freshness.py` | `tests/unit/test_repo_file_freshness.py` |
+| `bump_version.py` | `tests/unit/test_bump_version.py` |
+| `pr_commit_policy.py` | `tests/unit/test_pr_commit_policy.py` |
+| `check_root_template_sync.py` | `tests/unit/test_root_template_sync.py`, `tests/unit/test_check_root_template_sync.py` |
+| `sync_skip_if_exists.py` | `tests/unit/test_sync_skip_if_exists.py` |
+
+## Architecture
 
 ### `repo_file_freshness.py`
 
@@ -34,7 +60,7 @@ Generates a Git-history-based file freshness dashboard for the repository.
 | `--ignore-config PATH` | `assets/freshness_ignore.json` | Glob patterns to mark blue |
 
 **Thresholds (commits metric):**
-- green: ≥ 3 commits
+- green: >= 3 commits
 - yellow: 1-2 commits
 - red: 0 commits (file has never been updated after initial add)
 
@@ -130,7 +156,7 @@ and their commit frequency.
 
 ---
 
-## Adding a new script
+### Adding a new script
 
 1. Place the script in this directory.
 2. Add a `just` recipe if the script is run regularly (see `justfile`).

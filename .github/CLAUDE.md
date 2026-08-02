@@ -1,4 +1,4 @@
-# .github/ - GitHub Actions Workflows (Meta-Repo)
+# CLAUDE.md - .github/ (GitHub Actions Workflows, Meta-Repo)
 
 This directory contains GitHub Actions workflows and community health files for
 **this Copier template repository** (the meta-repo). These workflows test and maintain
@@ -8,7 +8,13 @@ the template itself, not the projects generated from it.
 > Generated projects get their own separate set of workflows from `template/.github/workflows/`.
 > The meta-repo workflows here are not rendered into generated projects.
 
-## Workflows
+## Commands
+
+- Run `just ci` before pushing - CI must pass locally before merging.
+
+## Architecture
+
+### Workflows
 
 | File | Trigger | Purpose |
 |---|---|---|
@@ -24,7 +30,7 @@ the template itself, not the projects generated from it.
 | `labeler.yml` | PR | Auto-label PRs based on changed file paths |
 | `pr-policy.yml` | PR (opened/edited/synchronize/reopened) | Validates PR title, body (template), and commit subjects; required-check setup: [`docs/github-repository-settings.md`](../docs/github-repository-settings.md) |
 
-## Workflow design principles
+### Workflow design principles
 
 All workflows follow these conventions:
 
@@ -37,7 +43,7 @@ All workflows follow these conventions:
 - **No pinned Python interpreter conflicts** - workflows use `uv`'s managed Python, not
   the GitHub-hosted runner's system Python.
 
-## Release workflow (`release.yml`)
+### Release workflow (`release.yml`)
 
 The release workflow can be triggered two ways:
 
@@ -52,7 +58,7 @@ The release workflow can be triggered two ways:
 The `/release` and `/validate-release` Claude slash commands orchestrate this flow locally
 before pushing a tag.
 
-## Template workflows vs meta-repo workflows
+### Template workflows vs meta-repo workflows
 
 | Meta-repo (here) | Generated projects (`template/.github/workflows/`) |
 |---|---|
@@ -63,13 +69,7 @@ before pushing a tag.
 | `file-freshness.yml` - tracks template file age | _(no equivalent)_ |
 | `sync-skip-if-exists.yml` - syncs copier.yml | _(no equivalent)_ |
 
-## GitHub.com settings (maintainers)
-
-All steps for branch protection, merge options, and required checks are in one place:
-[`docs/github-repository-settings.md`](../docs/github-repository-settings.md). Generated
-projects receive the same document under `docs/` from the template.
-
-## Other files
+### Other files
 
 | Path | Purpose |
 |---|---|
@@ -80,9 +80,18 @@ projects receive the same document under `docs/` from the template.
 | `PULL_REQUEST_TEMPLATE.md` | Default PR description template (enforced in CI by `pr-policy.yml` when required) |
 | `workflows/pr-policy.yml` | PR title/body/commit validation via `scripts/pr_commit_policy.py` |
 
-## Modifying workflows
+## Environment
 
-- Run `just ci` before pushing - CI must pass locally before merging.
+### GitHub.com settings (maintainers)
+
+All steps for branch protection, merge options, and required checks are in one place:
+[`docs/github-repository-settings.md`](../docs/github-repository-settings.md). Generated
+projects receive the same document under `docs/` from the template.
+
+## Gotchas
+
+### Modifying workflows
+
 - After changing a workflow, check that the `sync-skip-if-exists.yml` does not need to be
   updated (it reads `copier.yml` `_skip_if_exists`).
 - When bumping GitHub Actions versions (e.g. `actions/checkout@v6`), also update the

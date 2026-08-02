@@ -3,8 +3,6 @@
 > Canonical, model-agnostic agent guide. CLAUDE.md / GEMINI.md / CURSOR.md are thin wrappers that
 > point here. Edit shared knowledge in THIS file only.
 
-## What this repo is
-
 This repository is a **Copier template repository** (a meta-project). Running Copier against
 this repo **generates** a new Python project by rendering the `template/` directory into a
 destination folder.
@@ -12,6 +10,40 @@ destination folder.
 > [!WARNING]
 > Copier can run **template tasks** during `copier copy`/`copier update`. Only use the
 > `--trust` flag with templates you trust.
+
+## Setup commands
+
+No install/build commands are inlined in this file. For environment setup, read:
+
+- Development setup: `.claude/references/dev-setup.md`
+- Just recipes: `.claude/references/justfile-recipes.md`
+
+## Code style
+
+- Code style and standards: `.claude/references/code-style.md`
+
+## Dev environment tips
+
+- Directory structure, project layout: `scripts/CLAUDE.md`, `tests/CLAUDE.md`, `.github/CLAUDE.md`, `template/CLAUDE.md`
+- Generating or updating projects: `.claude/references/copier-template.md`
+- Copier variables and Jinja2: `.claude/references/copier-variables.md`
+- Markdown file placement: `.claude/references/markdown-placement.md`
+- File management (what not to edit): `.claude/references/files-management.md`
+- Recent improvements: `.claude/references/recent-improvements.md`
+- AI rules, hooks, and skills: `.claude/rules/README.md`, `.claude/hooks/README.md`
+- Do not bulk-load all references - avoid context flooding.
+
+## Testing instructions
+
+- Testing strategy and patterns: `tests/CLAUDE.md` + `.claude/references/testing.md`
+- Standards enforcement (hooks, commands, definition of done): `.claude/references/standards-enforcement.md`
+
+## PR instructions
+
+No PR-specific process is defined in this file. GitHub workflows (including release/PR
+automation) live in `.github/CLAUDE.md`.
+
+<!-- House extensions (beyond the agents.md standard) -->
 
 ## Behavioral guidelines
 
