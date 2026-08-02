@@ -23,10 +23,14 @@ dev = [
     "jinja2-time>=0.2.0",
     "ruff>=0.8.0",
     "basedpyright>=1.21.0",
+    "bandit>=1.8.0",
+    "semgrep>=1.60.0",
     "pre-commit>=4.0.0",
     "typing-extensions>=4.12.0",
     "detect-secrets>=1.5.0",
     "commitizen>=4.0.0",
+    "validate-pyproject>=0.24",
+    "deptry>=0.20",
 ]
 
 test = [
@@ -36,6 +40,7 @@ test = [
     "pytest-cov>=6.0.0",
     "coverage[toml]>=7.6.0",
     "pytest-testmon>=2.2.0",
+    "pytest-randomly>=3.15.0",
 ]
 [dependency-groups]
 changelog = [
@@ -64,27 +69,52 @@ docstring-code-format = true
 
 [tool.ruff.lint]
 select = [
-    "E",    # pycodestyle errors
-    "F",    # pyflakes
-    "I",    # isort
-    "UP",   # pyupgrade
-    "B",    # flake8-bugbear
-    "SIM",  # flake8-simplify
-    "C4",   # flake8-comprehensions
-    "RUF",  # ruff-specific rules
-    "TCH",  # flake8-type-checking
-    "PGH",  # pygrep-hooks
-    "PT",   # flake8-pytest-style
-    "ARG",  # flake8-unused-arguments
-    "D",    # pydocstyle — enforce Google-style docstrings
-    "C90",  # McCabe complexity
-    "PERF", # perflint — catch performance anti-patterns
-    "T20",  # flake8-print — discourage print() in non-test code
+    "E",     # pycodestyle errors
+    "F",     # pyflakes
+    "I",     # isort
+    "UP",    # pyupgrade
+    "B",     # flake8-bugbear
+    "SIM",   # flake8-simplify
+    "C4",    # flake8-comprehensions
+    "RUF",   # ruff-specific rules
+    "TC",    # flake8-type-checking
+    "PGH",   # pygrep-hooks
+    "PT",    # flake8-pytest-style
+    "ARG",   # flake8-unused-arguments
+    "D",     # pydocstyle — enforce Google-style docstrings
+    "C90",   # McCabe complexity
+    "PERF",  # perflint — catch performance anti-patterns
+    "T20",   # flake8-print — discourage print() in non-test code
+    "N",     # pep8-naming — case conventions
+    "A",     # flake8-builtins — no shadowed builtins
+    "ERA",   # eradicate — no commented-out code
+    "TD",    # flake8-todos — well-formed TODO/FIXME markers
+    "DTZ",   # flake8-datetimez — no naive datetimes
+    "ASYNC", # flake8-async — no blocking calls in async code
+    "S",     # flake8-bandit — security patterns at edit time (standalone bandit stays for pre-commit/CI depth)
+    "TRY",   # tryceratops — exception-handling hygiene
+    "G",     # flake8-logging-format — no f-string/interpolated log messages
+    "PTH",   # flake8-use-pathlib — pathlib over os.path
+    "FBT",   # flake8-boolean-trap — no boolean positional flags
+    "PL",    # pylint — complexity limits, magic values, eq/hash pairing
+    "ANN",   # flake8-annotations — typed public functions
+    "TID",   # flake8-tidy-imports — banned-api / relative-import policy
+    "BLE",   # flake8-blind-except — no bare broad catches
 ]
 
-# E501 is intentionally ignored — line length is enforced by ruff format, not ruff check
+# Each ignore is deliberate:
+# E501 — line length is enforced by ruff format, not ruff check
+# TRY003 — long exception messages are fine; guides don't mandate message brevity
+# ANN401 — Any is allowed at integration boundaries; basedpyright owns deeper Any policy
+# TD002/TD003 — TODO author/issue-link mandates are heavier than the house marker policy
+# FBT003 — positional booleans in third-party calls are outside caller control
 ignore = [
     "E501",
+    "TRY003",
+    "ANN401",
+    "TD002",
+    "TD003",
+    "FBT003",
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -94,8 +124,15 @@ convention = "google"
 max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**"   = ["ARG", "T20"]  # print() OK in tests; unused args OK (fixtures); D enforced
-"scripts/**" = ["T20"]  # CLI scripts may use print(); docstrings enforced (D)
+# tests: print/unused-args OK (fixtures); assert is pytest's idiom (S101); magic values and
+# untyped/boolean-flag helpers are fine in test code; subprocess-driven integration tests
+# invoke git/uv/copier by name (S603/S607); local imports are idiomatic in tests (PLC0415).
+# D stays enforced.
+"tests/**"   = ["ARG", "T20", "S101", "PLR2004", "ANN", "FBT", "S603", "S607", "PLC0415", "S105", "S108"]
+# automation scripts: print() is their UI; they exist to run git/uv subprocesses with
+# repo-controlled arguments (S603/S607). Docstrings enforced (D).
+"scripts/**" = ["T20", "S603", "S607"]
+"template/scripts/**" = ["T20", "S603", "S607"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["scripts"]
@@ -121,6 +158,9 @@ venv = ".venv"
 reportImplicitOverride = false
 reportMissingImports = true
 reportMissingTypeStubs = false
+# Suppression hygiene (guides: typing/comments) — warnings first, upgrade to error once clean.
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportIgnoreCommentWithoutRule = "warning"
 reportUnknownMemberType = false
 reportUnknownArgumentType = false
 reportUnknownVariableType = false
@@ -194,9 +234,47 @@ output = "coverage.xml"
 [tool.coverage.html]
 directory = "htmlcov"
 
+# ==========================================================================
+# Deptry Configuration (undeclared/unused dependency gate)
+# ==========================================================================
+
+[tool.deptry]
+known_first_party = ["scripts", "tests"]
+
+[tool.deptry.per_rule_ignores]
+# DEP002: toolchain entries are CLI tools/plugins, invoked not imported.
+DEP002 = [
+    "copier",
+    "pytest",
+    "jinja2-time",
+    "ruff",
+    "basedpyright",
+    "bandit",
+    "semgrep",
+    "pre-commit",
+    "typing-extensions",
+    "detect-secrets",
+    "commitizen",
+    "validate-pyproject",
+    "deptry",
+    "pytest-asyncio",
+    "pytest-xdist",
+    "pytest-cov",
+    "coverage",
+    "pytest-testmon",
+    "pytest-randomly",
+    "git-cliff",
+]
+
 # Commitizen: conventional commits (`cz commit`), commit-msg validation via pre-commit.
 # version_provider = "pep621" means commitizen reads/writes [project].version — no duplicate.
 [tool.commitizen]
 name = "cz_conventional_commits"
 version_provider = "pep621"
 tag_format = "v$version"
+
+# Bandit: security lint. Scans scripts/ (this repo's source layout).
+[tool.bandit]
+targets = ["scripts"]
+skips = []
+exclude_dirs = [".venv", "build", "dist", "tests"]

@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 # ---------------------------------------------------------------------------
-# Regexes (workflows, TOML)
+# Regex patterns for workflows and TOML
 # ---------------------------------------------------------------------------
 
 SECTION_HEADER_RE = re.compile(r"^\[([^\]]+)\]\s*$", flags=re.MULTILINE)
@@ -51,7 +51,7 @@ def _load_map(path: Path) -> dict[str, Any]:
     except json.JSONDecodeError as exc:
         raise ValueError(f"invalid JSON/YAML mapping file {path}: {exc}") from exc
     if not isinstance(raw, dict):
-        raise ValueError("mapping root must be an object")
+        raise ValueError("mapping root must be an object")  # noqa: TRY004
     return raw
 
 
@@ -490,7 +490,7 @@ def _check_pyproject_sections(check: dict[str, Any], repo_root: Path) -> list[Vi
         or not isinstance(template_rel, str)
         or not isinstance(sections, list)
     ):
-        raise ValueError(f"{check_id}: root/template/sections are required")
+        raise ValueError(f"{check_id}: root/template/sections are required")  # noqa: TRY004
 
     root_path = repo_root / root_rel
     template_path = repo_root / template_rel

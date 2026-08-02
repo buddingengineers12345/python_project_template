@@ -208,8 +208,8 @@ def validate_commit_range(base: str, head: str) -> str | None:
     rev_list = _git_run(["rev-list", "--reverse", f"{base}..{head}"])
     if rev_list.returncode != 0:
         return f"git rev-list failed: {rev_list.stderr.strip()}"
-    for sha in rev_list.stdout.splitlines():
-        sha = sha.strip()
+    for raw_sha in rev_list.stdout.splitlines():
+        sha = raw_sha.strip()
         if not sha:
             continue
         try:
@@ -284,6 +284,7 @@ def _cmd_draft(
     repo: Path,
     base_ref: str | None,
     head_ref: str | None,
+    *,
     title_only: bool,
     body_only: bool,
 ) -> int:
@@ -346,7 +347,7 @@ def _cmd_commits(base: str, head: str) -> int:
     return 0
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:  # noqa: PLR0911 — CLI dispatcher; one early return per subcommand outcome
     """CLI entry: dispatch ``pr``, ``commits``, or ``draft`` subcommands."""
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)

@@ -23,7 +23,7 @@ from copier import run_copy
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 TEMPLATE_ROOT = REPO_ROOT / "template"
 COPIER_YAML = REPO_ROOT / "copier.yml"
-TEMPLATE_GIT_SRC = f"git+{Path('.').resolve().as_uri()}"
+TEMPLATE_GIT_SRC = f"git+{Path().resolve().as_uri()}"
 
 
 def run_command(
@@ -213,7 +213,7 @@ def load_pyproject(project_dir: Path) -> dict[str, object]:
 def require_mapping(value: object, *, name: str) -> Mapping[str, object]:
     """Assert ``value`` is a mapping with string keys; return it typed for callers."""
     if not isinstance(value, Mapping):
-        raise AssertionError(f"{name} must be a mapping, got {type(value).__name__}")
+        raise AssertionError(f"{name} must be a mapping, got {type(value).__name__}")  # noqa: TRY004
     value_map = cast("Mapping[object, object]", value)
     if not all(isinstance(key, str) for key in value_map):
         raise AssertionError(f"{name} must have string keys")
@@ -223,7 +223,7 @@ def require_mapping(value: object, *, name: str) -> Mapping[str, object]:
 def require_sequence(value: object, *, name: str) -> Sequence[object]:
     """Assert ``value`` is a non-string sequence; return it for further parsing."""
     if not isinstance(value, Sequence) or isinstance(value, (str, bytes, bytearray)):
-        raise AssertionError(f"{name} must be a sequence, got {type(value).__name__}")
+        raise AssertionError(f"{name} must be a sequence, got {type(value).__name__}")  # noqa: TRY004
     return value
 
 
@@ -503,7 +503,7 @@ def test_generate_from_vcs_git_file_url(tmp_path: Path) -> None:
 
     # Create a clean git repo that looks like a real template source.
     _ = shutil.copytree(
-        Path("."),
+        Path(),
         template_repo,
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns(
@@ -782,7 +782,7 @@ def test_copier_update_exits_zero_after_copy_and_commit(tmp_path: Path) -> None:
     test_dir = tmp_path / "update_clean"
 
     _ = shutil.copytree(
-        Path("."),
+        Path(),
         template_repo,
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns(
@@ -860,7 +860,7 @@ def test_copier_recopy_respects_skip_if_exists_for_user_edited_files(tmp_path: P
     test_dir = tmp_path / "update_skip_contract"
 
     _ = shutil.copytree(
-        Path("."),
+        Path(),
         template_repo,
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns(
@@ -1296,6 +1296,57 @@ def test_generated_pre_commit_includes_detect_secrets(tmp_path: Path) -> None:
     assert "just-check" in cfg
     assert "just check" in cfg
     assert (test_dir / ".secrets.baseline").is_file()
+
+
+def test_generated_pre_commit_includes_bandit_and_semgrep(tmp_path: Path) -> None:
+    """Pre-commit config and pyproject.toml should wire bandit + semgrep security scanning."""
+    test_dir = tmp_path / "security_hooks"
+    copy_with_data_from_worktree(
+        test_dir,
+        {"project_name": "Security Hooks", "include_docs": False, "include_git_cliff": False},
+    )
+    cfg = (test_dir / ".pre-commit-config.yaml").read_text(encoding="utf-8")
+    assert "id: bandit" in cfg
+    assert "id: semgrep" in cfg
+    assert "bandit -c pyproject.toml" in cfg
+    assert "semgrep --config p/python" in cfg
+
+    pyproject = (test_dir / "pyproject.toml").read_text(encoding="utf-8")
+    assert "[tool.bandit]" in pyproject
+    assert 'targets = ["src"]' in pyproject
+    assert "bandit>=" in pyproject
+    assert "semgrep>=" in pyproject
+
+    assert (test_dir / ".semgrep.yml").is_file()
+
+
+def test_generated_enforcement_stack(tmp_path: Path) -> None:
+    """Generated projects should carry the guide-driven enforcement stack.
+
+    Covers the deterministic surfaces added from manage_python/guides: expanded ruff
+    rule families, suppression-hygiene basedpyright diagnostics, validate-pyproject and
+    deptry hooks with their dependency floors, and pytest-randomly in test extras.
+    """
+    test_dir = tmp_path / "enforcement_stack"
+    copy_with_data_from_worktree(
+        test_dir,
+        {"project_name": "Enforcement Stack", "include_docs": False, "include_git_cliff": False},
+    )
+    cfg = (test_dir / ".pre-commit-config.yaml").read_text(encoding="utf-8")
+    assert "id: validate-pyproject" in cfg
+    assert "id: deptry" in cfg
+    assert "validate-pyproject pyproject.toml" in cfg
+    assert "deptry ." in cfg
+
+    pyproject = (test_dir / "pyproject.toml").read_text(encoding="utf-8")
+    assert "validate-pyproject>=" in pyproject
+    assert "deptry>=" in pyproject
+    assert "pytest-randomly>=" in pyproject
+    for family in ("N", "ERA", "DTZ", "ASYNC", "S", "TRY", "G", "PTH", "FBT", "PL", "ANN", "BLE"):
+        assert f'"{family}"' in pyproject, f"ruff family {family} missing from generated select"
+    assert '"TCH"' not in pyproject  # renamed to TC
+    assert "reportUnnecessaryTypeIgnoreComment" in pyproject
+    assert "reportIgnoreCommentWithoutRule" in pyproject
 
 
 def test_generated_renovate_enables_pre_commit(tmp_path: Path) -> None:

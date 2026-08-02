@@ -4,22 +4,23 @@ from __future__ import annotations
 
 from typing import Any
 
+{% if include_numpy -%}
+import numpy as np
+{% endif -%}
+{% if include_pandas_support -%}
+import pandas as pd
+{% endif -%}
 import pytest
 
-{% if include_numpy %}
-import numpy as np
-{% endif %}
-{% if include_pandas_support %}
-import pandas as pd
-{% endif %}
-
+{% if include_numpy and include_pandas_support -%}
+from {{ package_name }}.core import example_array_function, example_dataframe_function, example_function
+{%- elif include_numpy -%}
+from {{ package_name }}.core import example_array_function, example_function
+{%- elif include_pandas_support -%}
+from {{ package_name }}.core import example_dataframe_function, example_function
+{%- else -%}
 from {{ package_name }}.core import example_function
-{% if include_numpy %}
-from {{ package_name }}.core import example_array_function
-{% endif %}
-{% if include_pandas_support %}
-from {{ package_name }}.core import example_dataframe_function
-{% endif %}
+{%- endif %}
 
 pytestmark = pytest.mark.unit
 
@@ -28,9 +29,9 @@ pytestmark = pytest.mark.unit
 def test_example_function_various_inputs(input_value: Any) -> None:
     """``example_function`` must return its argument for diverse input types."""
     assert example_function(input_value) == input_value
+{%- if include_numpy %}
 
 
-{% if include_numpy %}
 @pytest.mark.parametrize(
     ("arr", "expected"),
     [
@@ -42,10 +43,10 @@ def test_example_array_function_parametrized(arr: Any, expected: Any) -> None:
     """``example_array_function`` squares each element (sign lost after squaring)."""
     result = example_array_function(arr)
     np.testing.assert_array_equal(result, expected)
-{% endif %}
+{%- endif %}
+{%- if include_pandas_support %}
 
 
-{% if include_pandas_support %}
 def test_example_dataframe_function() -> None:
     """Copied DataFrame must be equal to the original but not the same object."""
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
@@ -60,4 +61,4 @@ def test_example_dataframe_function_empty() -> None:
     df = pd.DataFrame()
     result = example_dataframe_function(df)
     pd.testing.assert_frame_equal(result, df)
-{% endif %}
+{%- endif %}

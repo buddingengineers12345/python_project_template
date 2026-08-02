@@ -45,7 +45,7 @@
   "editor.trimAutoWhitespace": true,
   "editor.wrappingStrategy": "advanced",
   "editor.minimap.enabled": false,
-  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.defaultInterpreterPath": "/home/engineer/.venv/bin/python",
   "python.terminal.activateEnvironment": true,
   "python.formatting.provider": "none",
   "python.linting.enabled": false,

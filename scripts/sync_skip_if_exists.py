@@ -207,9 +207,9 @@ def main(argv: list[str] | None = None) -> int:
 
     logger.error("drift detected")
     for label, items in ("current", current), ("desired", desired):
-        logger.error(f"  {label}:")
+        logger.error("  %s:", label)
         for item in items:
-            logger.error(f"    - {item}")
+            logger.error("    - %s", item)
 
     if not args.write:
         return 1

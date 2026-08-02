@@ -130,8 +130,8 @@ def validate_commit_range(base: str, head: str) -> str | None:
     rev_list = _git_run(["rev-list", "--reverse", f"{base}..{head}"])
     if rev_list.returncode != 0:
         return f"git rev-list failed: {rev_list.stderr.strip()}"
-    for sha in rev_list.stdout.splitlines():
-        sha = sha.strip()
+    for raw_sha in rev_list.stdout.splitlines():
+        sha = raw_sha.strip()
         if not sha:
             continue
         try:
@@ -149,11 +149,11 @@ def _cmd_pr() -> int:
     body = os.environ.get("PR_BODY")
     err = validate_pr_title(title)
     if err:
-        logger.error(f"invalid PR title: {err}")
+        logger.error("invalid PR title: %s", err)
         return 1
     err = validate_pr_body(body)
     if err:
-        logger.error(f"invalid PR body: {err}")
+        logger.error("invalid PR body: %s", err)
         return 1
     return 0
 

@@ -12,16 +12,19 @@ Configures structlog for two distinct execution modes selected at startup:
 Configure once from your application entry point::
 
     from {{ package_name }}.common.logging_manager import configure_logging
+
     configure_logging()
 
 Then in every module::
 
     import structlog
+
     log = structlog.get_logger()
 
-    log.info("order_created", order_id=123)                        # human only
-    log.warning("payment_failed", order_id=123,
-                reason="insufficient_funds", llm=True)             # human + LLM
+    log.info("order_created", order_id=123)  # human only
+    log.warning(
+        "payment_failed", order_id=123, reason="insufficient_funds", llm=True
+    )  # human + LLM
 
 Logging conventions for this project
 -------------------------------------
@@ -48,7 +51,7 @@ from typing import TYPE_CHECKING, Any
 import structlog
 
 if TYPE_CHECKING:
-    from structlog.types import EventDict, WrappedLogger  # noqa: TC002
+    from structlog.types import EventDict, WrappedLogger
 
 # ---------------------------------------------------------------------------
 # Execution-context detection
@@ -105,7 +108,7 @@ def _reset_configuration() -> None:
     allow configure_logging() to be called with different settings in separate
     tests without raising RuntimeError.
     """
-    global _configured, _config_signature
+    global _configured, _config_signature  # noqa: PLW0603 — module-level idempotent-config singleton by design
     with _config_lock:
         _configured = False
         _config_signature = None
@@ -117,8 +120,8 @@ def _reset_configuration() -> None:
 
 
 def _filter_llm_events(
-    _logger: WrappedLogger,  # noqa: ARG001
-    _method: str,  # noqa: ARG001
+    _logger: WrappedLogger,
+    _method: str,
     event_dict: EventDict,
 ) -> EventDict:
     if not event_dict.pop("llm", False):
@@ -127,8 +130,8 @@ def _filter_llm_events(
 
 
 def _drop_debug_events(
-    _logger: WrappedLogger,  # noqa: ARG001
-    method: str,  # noqa: ARG001
+    _logger: WrappedLogger,
+    method: str,
     event_dict: EventDict,
 ) -> EventDict:
     if method in ("debug", "trace"):
@@ -146,7 +149,7 @@ _LEVEL_SYMBOLS: dict[str, str] = {
 
 
 def _human_level_indicator(
-    _logger: WrappedLogger,  # noqa: ARG001
+    _logger: WrappedLogger,
     method: str,
     event_dict: EventDict,
 ) -> EventDict:
@@ -156,8 +159,8 @@ def _human_level_indicator(
 
 
 def _llm_promote_level(
-    _logger: WrappedLogger,  # noqa: ARG001
-    method: str,  # noqa: ARG001
+    _logger: WrappedLogger,
+    method: str,
     event_dict: EventDict,
 ) -> EventDict:
     level = event_dict.pop("level", method)
@@ -166,8 +169,8 @@ def _llm_promote_level(
 
 
 def _truncate_long_values(
-    _logger: WrappedLogger,  # noqa: ARG001
-    _method: str,  # noqa: ARG001
+    _logger: WrappedLogger,
+    _method: str,
     event_dict: EventDict,
     *,
     max_len: int = 200,
@@ -182,13 +185,12 @@ def _truncate_long_values(
 
 
 def _flatten_nested_dicts(
-    _logger: WrappedLogger,  # noqa: ARG001
-    _method: str,  # noqa: ARG001
+    _logger: WrappedLogger,
+    _method: str,
     event_dict: EventDict,
 ) -> EventDict:
     to_expand = [
-        key for key, value in event_dict.items()
-        if isinstance(value, dict) and key != "exception"
+        key for key, value in event_dict.items() if isinstance(value, dict) and key != "exception"
     ]
     for key in to_expand:
         nested: dict[str, Any] = event_dict.pop(key)
@@ -233,10 +235,10 @@ def configure_logging(
                  Defaults to the auto-detected :data:`EXECUTION_CONTEXT`.
 
     Examples:
-        >>> configure_logging()                              # auto-detect
-        >>> configure_logging(level="ERROR", context="llm") # explicit LLM
+        >>> configure_logging()  # auto-detect
+        >>> configure_logging(level="ERROR", context="llm")  # explicit LLM
     """
-    global _configured, _config_signature
+    global _configured, _config_signature  # noqa: PLW0603 — module-level idempotent-config singleton by design
 
     resolved_context = context if context is not None else EXECUTION_CONTEXT
     is_llm = resolved_context == "llm"
@@ -267,8 +269,8 @@ def configure_logging(
     numeric_level = getattr(logging, level_str, logging.INFO)
 
     # ---- Silence noisy third-party libraries ------------------------------
-    _QUIET = ("httpx", "httpcore", "urllib3", "asyncio", "botocore", "boto3")
-    for lib in _QUIET:
+    _quiet_libs = ("httpx", "httpcore", "urllib3", "asyncio", "botocore", "boto3")
+    for lib in _quiet_libs:
         logging.getLogger(lib).setLevel(logging.WARNING)
 
     # ---- Build processor chain --------------------------------------------

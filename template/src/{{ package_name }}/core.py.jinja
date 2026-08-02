@@ -13,11 +13,11 @@ Logging conventions used here:
 
 from __future__ import annotations
 
+{% if include_numpy or include_pandas_support -%}
 from typing import TYPE_CHECKING, TypeVar
 
 import structlog
 
-{% if include_numpy or include_pandas_support %}
 if TYPE_CHECKING:
 {%- if include_numpy %}
     import numpy as np
@@ -26,7 +26,11 @@ if TYPE_CHECKING:
 {%- if include_pandas_support %}
     import pandas as pd
 {%- endif %}
-{% endif %}
+{%- else -%}
+from typing import TypeVar
+
+import structlog
+{%- endif %}
 
 log = structlog.get_logger()
 
@@ -54,9 +58,9 @@ def example_function(value: T) -> T:
     """
     log.debug("example_function_called", value_type=type(value).__name__)
     return value
+{%- if include_numpy %}
 
 
-{% if include_numpy %}
 def example_array_function(arr: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """Return a new array whose elements are the squares of ``arr``.
 
@@ -75,10 +79,10 @@ def example_array_function(arr: npt.NDArray[np.float64]) -> npt.NDArray[np.float
     result: npt.NDArray[np.float64] = arr**2
     log.info("array_function_complete", input_shape=arr.shape, output_shape=result.shape, llm=True)
     return result
-{% endif %}
+{%- endif %}
+{%- if include_pandas_support %}
 
 
-{% if include_pandas_support %}
 def example_dataframe_function(df: pd.DataFrame) -> pd.DataFrame:
     """Return a shallow-safe copy of ``df`` (mutations to the copy do not affect ``df``).
 
@@ -108,4 +112,4 @@ def example_dataframe_function(df: pd.DataFrame) -> pd.DataFrame:
         llm=True,
     )
     return result
-{% endif %}
+{%- endif %}

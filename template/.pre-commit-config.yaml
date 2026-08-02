@@ -34,11 +34,41 @@ repos:
         pass_filenames: false
         stages: [pre-commit]
 
+      - id: bandit
+        name: Bandit (security lint)
+        entry: uv run --active bandit -c pyproject.toml -r src -ll -ii
+        language: system
+        types: [python]
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: validate-pyproject
+        name: Validate pyproject.toml (packaging metadata)
+        entry: uv run --active validate-pyproject pyproject.toml
+        language: system
+        files: ^pyproject\.toml$
+        pass_filenames: false
+        stages: [pre-commit]
+
       - id: basedpyright
         name: BasedPyright (type check)
         entry: uv run --active basedpyright
         language: system
         types: [python]
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: semgrep
+        name: Semgrep (pattern security scan)
+        entry: uv run --active semgrep --config p/python --config .semgrep.yml --error src
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: deptry
+        name: Deptry (undeclared/unused dependencies)
+        entry: uv run --active deptry .
+        language: system
         pass_filenames: false
         stages: [pre-push]
 

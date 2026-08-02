@@ -36,7 +36,7 @@ def has_nvidia_gpu() -> bool:
     cmd = shutil.which("nvidia-smi")
     if cmd is None:
         return False
-    subprocess.check_output([cmd])
+    subprocess.check_output([cmd])  # noqa: S603 — argv list, executable resolved via shutil.which, no user input
     return True
 
 
@@ -57,7 +57,7 @@ def load_project_env(dotenv_filename: str = ".env") -> bool:
     try:
         which_python = shutil.which("python")
         if which_python is None:
-            raise RuntimeError("python executable not found on PATH")
+            raise RuntimeError("python executable not found on PATH")  # noqa: TRY301 — local raise funnels every miss into the one fallback logger below
         python_path = Path(which_python).resolve()
         project_root: Path | None = None
         for parent in python_path.parents:
@@ -65,8 +65,8 @@ def load_project_env(dotenv_filename: str = ".env") -> bool:
                 project_root = parent
                 break
         if project_root is None:
-            raise RuntimeError(".venv not found in python path hierarchy")
-    except Exception as exc:
+            raise RuntimeError(".venv not found in python path hierarchy")  # noqa: TRY301 — see above
+    except Exception as exc:  # noqa: BLE001 — best-effort env loading: log and return False, never crash startup
         log_message(f"Could not determine project root from Python executable: {exc}")
         return False
 

@@ -1,0 +1,7 @@
+# .semgrep.yml
+# Local project-specific rules. Registry packs (p/python etc.) are passed as
+# --config flags in .pre-commit-config.yaml, not listed here.
+#
+# No custom rules yet. Add project-specific patterns here as they're identified;
+# each rule needs an id, pattern, message, languages, and severity.
+rules: []

@@ -920,7 +920,7 @@ def test_main_commits_success(tmp_path: Path) -> None:
         text=True,
     ).stdout.strip()
 
-    cwd = os.getcwd()
+    cwd = Path.cwd()
     try:
         os.chdir(tmp_path)
         rc = pcp.main(["commits", "--base", h1, "--head", h2])
@@ -1262,7 +1262,7 @@ def test_main_commits_with_bad_subjects(tmp_path: Path) -> None:
         text=True,
     ).stdout.strip()
 
-    cwd = os.getcwd()
+    cwd = Path.cwd()
     try:
         os.chdir(tmp_path)
         rc = pcp.main(["commits", "--base", h1, "--head", h2])

@@ -84,7 +84,7 @@ def _now_utc_from_env() -> datetime:
         return _now_utc()
     dt = _parse_git_iso_datetime(raw)
     if dt is None:
-        logger.warning(f"invalid FRESHNESS_NOW_ISO (expected ISO-8601): {raw!r}")
+        logger.warning("invalid FRESHNESS_NOW_ISO (expected ISO-8601): %r", raw)
         return _now_utc()
     return dt
 
@@ -207,17 +207,17 @@ def load_ignore_config(path: Path) -> IgnoreConfig:
     try:
         raw = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        logger.warning(f"failed to read {path}: {exc}")
+        logger.warning("failed to read %s: %s", path, exc)
         return IgnoreConfig.empty()
     if not isinstance(raw, dict):
-        logger.warning(f"ignore config root must be an object: {path}")
+        logger.warning("ignore config root must be an object: %s", path)
         return IgnoreConfig.empty()
 
     def get_list(key: str) -> list[str]:
         v = raw.get(key, [])
         if isinstance(v, list) and all(isinstance(x, str) for x in v):
             return cast("list[str]", v)
-        logger.warning(f"ignore key {key!r} must be a list[str]: {path}")
+        logger.warning("ignore key %r must be a list[str]: %s", key, path)
         return []
 
     files = frozenset(x.strip().replace("\\", "/") for x in get_list("files") if x.strip())
@@ -253,15 +253,19 @@ def ignored_status(rel_path: str, ignore: IgnoreConfig) -> bool:
     return any(fnmatch(p, pat) for pat in ignore.patterns)
 
 
+_GREEN_MAX_AGE_DAYS = 2
+_YELLOW_MAX_AGE_DAYS = 4
+
+
 def classify_days(age_days: int | None, *, is_ignored: bool) -> Status:
     """Classify using calendar age: green <=2d, yellow (2,4], red >4 or unknown."""
     if is_ignored:
         return "blue"
     if age_days is None:
         return "red"
-    if age_days <= 2:
+    if age_days <= _GREEN_MAX_AGE_DAYS:
         return "green"
-    if age_days <= 4:
+    if age_days <= _YELLOW_MAX_AGE_DAYS:
         return "yellow"
     return "red"
 
@@ -440,7 +444,7 @@ def build_badge_fields(summary: dict[str, int]) -> dict[str, str]:
 # ---------------------------------------------------------------------------
 
 
-def _classify_file_row(
+def _classify_file_row(  # noqa: PLR0913 — one keyword-only knob per freshness dimension; a params object would just rename the surface
     root: Path,
     rel_path: str,
     *,
@@ -491,7 +495,7 @@ def _classify_file_row(
     }
 
 
-def _safe_classify_file_row(
+def _safe_classify_file_row(  # noqa: PLR0913 — mirrors _classify_file_row's signature by design
     root: Path,
     rel_path: str,
     *,
@@ -529,8 +533,8 @@ def _safe_classify_file_row(
             green_max_commits=green_max_commits,
             yellow_max_commits=yellow_max_commits,
         )
-    except Exception as exc:  # per-file reliability: log and continue
-        logger.warning(f"failed processing {rel_path}: {exc}")
+    except Exception as exc:  # noqa: BLE001 — per-file reliability boundary: log and continue the scan
+        logger.warning("failed processing %s: %s", rel_path, exc)
         return {
             "file": rel_path,
             "last_commit": None,

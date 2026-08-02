@@ -17,6 +17,7 @@ from typing import Literal, Protocol, cast
 logger = logging.getLogger(__name__)
 
 _VERSION_RE = re.compile(r'^(?P<prefix>\s*version\s*=\s*")(?P<ver>\d+\.\d+\.\d+)(".*)$')
+_SEMVER_PARTS = 3
 
 BumpKind = Literal["patch", "minor", "major"]
 
@@ -49,7 +50,7 @@ class Version:
             ValueError: If ``s`` is not exactly three dot-separated digit groups.
         """
         parts = s.strip().split(".")
-        if len(parts) != 3 or any(not p.isdigit() for p in parts):
+        if len(parts) != _SEMVER_PARTS or any(not p.isdigit() for p in parts):
             raise ValueError(f"Invalid version (expected X.Y.Z): {s!r}")
         return cls(int(parts[0]), int(parts[1]), int(parts[2]))
 
@@ -185,7 +186,7 @@ def main(argv: list[str] | None = None) -> int:
     except RuntimeError as exc:
         raise SystemExit(f"bump_version: {exc}") from exc
 
-    logger.info(f"new version: {new}")
+    logger.info("new version: %s", new)
     return 0
 
 
