@@ -1333,6 +1333,23 @@ def test_generated_pre_commit_includes_bandit_and_semgrep(tmp_path: Path) -> Non
     assert (test_dir / ".semgrep.yml").is_file()
 
 
+def test_generated_pre_commit_includes_xenon(tmp_path: Path) -> None:
+    """Pre-commit + pyproject should wire xenon complexity grade gate (radon under the hood)."""
+    test_dir = tmp_path / "complexity_hooks"
+    copy_with_data_from_worktree(
+        test_dir,
+        {"project_name": "Complexity Hooks", "include_docs": False, "include_git_cliff": False},
+    )
+    cfg = (test_dir / ".pre-commit-config.yaml").read_text(encoding="utf-8")
+    assert "id: xenon" in cfg
+    assert "xenon --max-absolute B" in cfg
+    assert "max-average A src" in cfg
+
+    pyproject = (test_dir / "pyproject.toml").read_text(encoding="utf-8")
+    assert "radon>=" in pyproject
+    assert "xenon>=" in pyproject
+
+
 def test_generated_enforcement_stack(tmp_path: Path) -> None:
     """Generated projects should carry the guide-driven enforcement stack.
 

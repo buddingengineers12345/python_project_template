@@ -174,6 +174,13 @@ cz-commit:
 precommit:
     @SKIP=no-commit-to-branch uv run pre-commit run --all-files
 
+# Cyclomatic complexity report (radon) + grade gate (xenon).
+# Grade B = McCabe 6-10; aligns with ruff C90 max-complexity 10 (C+ fails).
+complexity:
+    @uv run radon cc scripts -s -n C
+    @uv run radon mi scripts -s
+    @uv run xenon --max-absolute B --max-modules B --max-average A scripts
+
 # Dependency audit matching .github/workflows/security.yml (pip-audit).
 # Uses ``uv run --with pip-audit`` so the tool runs with the project Python (``uv tool run``/``uvx``
 # can pick a different interpreter whose venv ``ensurepip`` fails on some hosts).
@@ -290,6 +297,7 @@ check:
     @uv sync --frozen --extra dev --extra test
     @just fmt-check
     @uv run ruff check .
+    @just complexity
     @uv run basedpyright
     @just sync-check
     @just docs-check
@@ -313,6 +321,8 @@ doctor:
     @echo "=== Python Tools ==="
     @uv run ruff --version
     @uv run basedpyright --version || echo "basedpyright not installed"
+    @uv run radon --version || echo "radon not installed"
+    @uv run xenon --version || echo "xenon not installed"
     @uv run pytest --version
     @uv run cz version || echo "commitizen installed"
     @echo ""

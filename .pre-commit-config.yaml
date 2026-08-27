@@ -72,6 +72,14 @@ repos:
         pass_filenames: false
         stages: [pre-push]
 
+      - id: xenon
+        name: Xenon (complexity grade gate via radon)
+        entry: uv run --active xenon --max-absolute B --max-modules B --max-average A scripts
+        language: system
+        types: [python]
+        pass_filenames: false
+        stages: [pre-push]
+
       - id: just-check
         name: just check (read-only CI gate before push)
         entry: just check
