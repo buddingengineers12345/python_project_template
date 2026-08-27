@@ -25,6 +25,8 @@ dev = [
     "basedpyright>=1.21.0",
     "bandit>=1.8.0",
     "semgrep>=1.60.0",
+    "radon>=6.0.0",
+    "xenon>=0.9.0",
     "pre-commit>=4.0.0",
     "typing-extensions>=4.12.0",
     "detect-secrets>=1.5.0",
@@ -41,6 +43,7 @@ test = [
     "coverage[toml]>=7.6.0",
     "pytest-testmon>=2.2.0",
     "pytest-randomly>=3.15.0",
+    "pytest-socket>=0.7.0",
 ]
 [dependency-groups]
 changelog = [
@@ -156,6 +159,7 @@ exclude = [
 
 venvPath = "."
 venv = ".venv"
+# PEP 698 @override decorator check off: pythonVersion 3.11 (typing.override is 3.12+); override *compatibility* checks stay on in standard mode.
 reportImplicitOverride = false
 reportMissingImports = true
 reportMissingTypeStubs = false
@@ -186,9 +190,12 @@ addopts = [
     "--log-level=WARNING",
     "-ra",
     "--testmon",
+    "--disable-socket",
+    "--allow-unix-socket",
 ]
 markers = [
     "e2e: End-to-end tests across the full stack or external systems",
+    "enable_socket: Integration tests that need network access (re-enables pytest-socket)",
     "integration: Tests crossing module boundaries, real I/O, subprocesses, or services",
     "regression: Guards a fixed bug or ticket-specific behaviour from returning",
     "slow: Routinely exceeds ~1s; excluded from default runs (override with -m slow)",
@@ -253,6 +260,8 @@ DEP002 = [
     "basedpyright",
     "bandit",
     "semgrep",
+    "radon",
+    "xenon",
     "pre-commit",
     "typing-extensions",
     "detect-secrets",
