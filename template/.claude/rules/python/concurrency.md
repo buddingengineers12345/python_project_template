@@ -6,7 +6,7 @@ paths:
 
 # Concurrency
 
-- Every task group, queue, pool, or semaphore must carry an explicit bound; unbounded workers exhaust memory and downstream capacity.
+- Every task group, queue, pool, semaphore, or dynamic fan-out (no bare `asyncio.gather` over dynamic collections) must carry an explicit bound; unbounded workers exhaust memory and downstream capacity.
 - All background work must propagate failures to the supervisor or caller; no fire-and-forget tasks without ownership.
 - Structured task lifecycle: acquire → set timeouts → handle cancellation → clean up resources; ordered shutdown fits the termination grace period.
 - Never block the event loop with synchronous I/O, sleeps, locks, or expensive computation; use `asyncio` for cooperative I/O only.
