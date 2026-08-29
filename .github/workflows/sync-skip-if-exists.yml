@@ -22,7 +22,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # Align with scripts/sync_skip_if_exists.py GIT_LOG_LIMIT (3000 commits).
           fetch-depth: 3000
