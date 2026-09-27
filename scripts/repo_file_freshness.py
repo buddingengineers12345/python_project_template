@@ -200,6 +200,47 @@ def _normalize_extension(s: str) -> str:
     return s2
 
 
+def _str_list_from_ignore(raw: dict[str, object], key: str, path: Path) -> list[str]:
+    """Return a list[str] from an ignore-config object key, or [] on bad shape."""
+    value = raw.get(key, [])
+    if isinstance(value, list) and all(isinstance(item, str) for item in value):
+        return cast("list[str]", value)
+    logger.warning("ignore key %r must be a list[str]: %s", key, path)
+    return []
+
+
+def _ignore_files(raw: dict[str, object], path: Path) -> frozenset[str]:
+    return frozenset(
+        x.strip().replace("\\", "/") for x in _str_list_from_ignore(raw, "files", path) if x.strip()
+    )
+
+
+def _ignore_directories(raw: dict[str, object], path: Path) -> tuple[str, ...]:
+    dirs = (
+        d
+        for d in (_normalize_dir_prefix(x) for x in _str_list_from_ignore(raw, "directories", path))
+        if d
+    )
+    return tuple(sorted(set(dirs), key=str.lower))
+
+
+def _ignore_extensions(raw: dict[str, object], path: Path) -> frozenset[str]:
+    return frozenset(
+        e
+        for e in (_normalize_extension(x) for x in _str_list_from_ignore(raw, "extensions", path))
+        if e
+    )
+
+
+def _ignore_patterns(raw: dict[str, object], path: Path) -> tuple[str, ...]:
+    pats = (
+        x.strip().replace("\\", "/")
+        for x in _str_list_from_ignore(raw, "patterns", path)
+        if x.strip()
+    )
+    return tuple(sorted(set(pats), key=str.lower))
+
+
 def load_ignore_config(path: Path) -> IgnoreConfig:
     """Load ignore configuration from JSON, falling back to empty on errors."""
     if not path.is_file():
@@ -212,26 +253,11 @@ def load_ignore_config(path: Path) -> IgnoreConfig:
     if not isinstance(raw, dict):
         logger.warning("ignore config root must be an object: %s", path)
         return IgnoreConfig.empty()
-
-    def get_list(key: str) -> list[str]:
-        v = raw.get(key, [])
-        if isinstance(v, list) and all(isinstance(x, str) for x in v):
-            return cast("list[str]", v)
-        logger.warning("ignore key %r must be a list[str]: %s", key, path)
-        return []
-
-    files = frozenset(x.strip().replace("\\", "/") for x in get_list("files") if x.strip())
-    directories = tuple(d for d in (_normalize_dir_prefix(x) for x in get_list("directories")) if d)
-    extensions = frozenset(
-        e for e in (_normalize_extension(x) for x in get_list("extensions")) if e
-    )
-    patterns = tuple(x.strip().replace("\\", "/") for x in get_list("patterns") if x.strip())
-
     return IgnoreConfig(
-        files=files,
-        directories=tuple(sorted(set(directories), key=str.lower)),
-        extensions=extensions,
-        patterns=tuple(sorted(set(patterns), key=str.lower)),
+        files=_ignore_files(raw, path),
+        directories=_ignore_directories(raw, path),
+        extensions=_ignore_extensions(raw, path),
+        patterns=_ignore_patterns(raw, path),
     )
 
 

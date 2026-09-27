@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Claude PostToolUse hook — Edit|Write
-# Run ruff check and basedpyright on every edited Python file for immediate feedback.
+# Format and lint every edited Python file for immediate feedback.
 #
 # If the edited file is a Python (.py) file, this hook:
-#   1. Runs ruff check (lint + docstring rules) on that file
-#   2. Runs basedpyright (type checking) on that file
+#   1. Runs ruff format (edit-time auto-apply)
+#   2. Runs ruff check --fix (lint + safe autofixes)
+#   3. Runs basedpyright (type checking)
 #
 # Output is surfaced back to Claude so it can self-correct in the same turn.
 # The hook always exits 0 so it never blocks the tool response.
@@ -35,10 +36,17 @@ echo "┌─ Standards check: $FILE_PATH"
 
 FAILED=0
 
-# --- Ruff: lint + docstrings ------------------------------------------------
+# --- Ruff: format (auto-apply) ----------------------------------------------
 echo "│"
-echo "│  ruff check"
-if ! uv run --active ruff check "$FILE_PATH" --output-format concise 2>&1; then
+echo "│  ruff format"
+if ! uv run --active ruff format "$FILE_PATH" 2>&1; then
+    FAILED=1
+fi
+
+# --- Ruff: lint + safe autofixes --------------------------------------------
+echo "│"
+echo "│  ruff check --fix"
+if ! uv run --active ruff check --fix "$FILE_PATH" --output-format concise 2>&1; then
     FAILED=1
 fi
 

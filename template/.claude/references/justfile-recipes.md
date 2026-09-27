@@ -23,6 +23,7 @@
 | Format check (read-only) | `just fmt-check` |
 | Auto-fix lint issues | `just fix` |
 | Type check | `just type` |
+| Complexity report + grade gate (radon / xenon) | `just complexity` |
 | Docstring check | `just docs-check` |
 | MkDocs recipes (generated projects only) | `just docs-help` |
 | Pre-merge review (fix + lint + type + docs) | `just review` |
